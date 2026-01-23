@@ -185,5 +185,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Acknowledgments
 
 - **[Agent OS](https://github.com/ericflo/agent-os)** - Inspiration for the 3-Layer Context Model
+- **[Roo Code](https://github.com/RooVetGit/Roo-Code)** - Inspiration for multi-agent orchestration patterns
 - **[Claude Code](https://claude.com/claude-code)** - Platform for multi-agent workflows
 - **[Context7](https://context7.com)** - MCP server for up-to-date documentation context
