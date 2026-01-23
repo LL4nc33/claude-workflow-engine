@@ -1,0 +1,40 @@
+# =============================================================================
+# GDPR-Compliant .gitignore
+# Ensures no sensitive/personal data enters version control
+# =============================================================================
+
+# Local Claude Code config (may contain personal preferences)
+CLAUDE.local.md
+*.local.md
+
+# Environment and credentials
+.env
+.env.*
+credentials.*
+secrets.*
+*.key
+*.pem
+*.p12
+
+# Workflow Engine local overrides
+workflow/local/
+workflow/*.local.yml
+
+
+# Backup files
+*.7z
+*.bak
+*.backup
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node modules (if any tooling is added)
+node_modules/

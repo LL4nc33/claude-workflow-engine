@@ -1,0 +1,11 @@
+# Claude Workflow Engine - GDPR/Security (auto-managed)
+CLAUDE.local.md
+*.local.md
+.env
+.env.*
+.env.local
+credentials.*
+secrets.*
+.installation-state.json
+.workflow-backups/
+.workflow-health-report.json

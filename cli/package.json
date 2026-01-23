@@ -1,0 +1,35 @@
+{
+  "name": "@oidanice/claude-workflow-engine-cli",
+  "version": "0.1.0",
+  "description": "CLI tools for Claude Workflow Engine",
+  "main": "dist/index.js",
+  "bin": {
+    "workflow": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "eslint src/",
+    "test": "node --test dist/**/*.test.js"
+  },
+  "keywords": [
+    "workflow",
+    "claude-workflow-engine",
+    "cli",
+    "devops",
+    "safety"
+  ],
+  "author": "oidanice",
+  "license": "MIT",
+  "dependencies": {
+    "yaml": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

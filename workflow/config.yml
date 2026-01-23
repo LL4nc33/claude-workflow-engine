@@ -1,0 +1,144 @@
+# =============================================================================
+# Claude Workflow Engine Configuration - oidanice-agents
+# Version: 0.1.0
+# GDPR-compliant setup for Austrian/EU usage
+# =============================================================================
+
+version: 0.1.0
+default_profile: default
+
+# -----------------------------------------------------------------------------
+# Claude Code Integration
+# -----------------------------------------------------------------------------
+
+# Enable Claude Code slash commands
+# Workflow: /plan-product, /shape-spec, /write-spec, /create-tasks, /orchestrate-tasks
+# Standards: /discover-standards, /index-standards, /inject-standards
+claude_code_commands: true
+
+# Allow delegation to specialized subagents (architect, debug, security, etc.)
+use_claude_code_subagents: true
+
+# Convert standards to Claude Code Skills for context-efficient auto-matching
+# This means Claude automatically applies relevant standards based on task context
+# rather than injecting all standards into every prompt
+standards_as_claude_code_skills: true
+
+# Disable non-Claude-Code agent outputs (Cursor, Codex, Gemini)
+workflow_engine_commands: false
+
+# -----------------------------------------------------------------------------
+# 3-Layer Context Model
+# -----------------------------------------------------------------------------
+
+context_model:
+  # Layer 1: HOW you build (conventions, patterns, best practices)
+  standards:
+    path: workflow/standards/
+    auto_inject: false  # Use skills-based matching instead
+    domains:
+      - global       # Cross-cutting conventions (tech-stack, naming)
+      - devops       # CI/CD, Docker, K8s, IaC
+      - agents       # Agent-specific standards
+      - api          # Response format, error handling
+      - database     # Migration patterns
+      - frontend     # Component standards
+      - testing      # Coverage targets, test structure
+
+  # Layer 2: WHAT you're building and WHY (mission, vision, roadmap)
+  product:
+    path: workflow/product/
+    files:
+      - mission.md
+      - roadmap.md
+      - architecture.md
+
+  # Layer 3: WHAT to build next (detailed feature specifications)
+  specs:
+    path: workflow/specs/
+    naming_convention: "{timestamp}-{feature-name}/"
+
+# -----------------------------------------------------------------------------
+# Agent System Integration
+# -----------------------------------------------------------------------------
+
+agents:
+  directory: .claude/agents/
+  available:
+    - name: architect
+      access: read-only
+      purpose: System design, ADRs, architectural review
+    - name: ask
+      access: read-only
+      purpose: Explanations, learning, documentation queries
+    - name: debug
+      access: full
+      purpose: Bug investigation with full filesystem access
+    - name: orchestrator
+      access: task-delegation
+      purpose: Task delegation using the Task tool
+    - name: researcher
+      access: read-only
+      purpose: Codebase analysis and documentation generation
+    - name: security
+      access: read-only
+      purpose: OWASP audits, vulnerability assessment
+    - name: devops
+      access: full
+      purpose: CI/CD, Docker, Kubernetes, IaC
+
+# -----------------------------------------------------------------------------
+# GDPR / EU Compliance
+# -----------------------------------------------------------------------------
+
+gdpr:
+  enabled: true
+  data_residency: eu-central-1  # Frankfurt - Austrian/EU compliance
+
+  # Local-only operation: Claude Workflow Engine makes NO external API calls
+  # Standards, specs, and configurations remain in filesystem/VCS
+  local_only: true
+
+  # Sensitive data handling
+  sensitive_data:
+    # Personal data must never appear in standards or specs
+    pii_in_standards: forbidden
+    pii_in_specs: forbidden
+
+    # Use .local.md files for any project-specific personal data
+    local_files_only: true
+
+    # These files are auto-gitignored
+    gitignored_patterns:
+      - "CLAUDE.local.md"
+      - "*.local.md"
+      - ".env*"
+      - "credentials.*"
+      - "secrets.*"
+
+  # Audit trail
+  audit:
+    log_spec_changes: true
+    log_standard_changes: true
+
+# -----------------------------------------------------------------------------
+# Orchestration
+# -----------------------------------------------------------------------------
+
+orchestration:
+  config_file: workflow/orchestration.yml
+  # Per-spec orchestration configs are generated in each spec folder
+  per_spec_config: workflow/specs/{folder}/orchestration.yml
+  default_execution_mode: phase-by-phase
+  track_progress: true
+
+# -----------------------------------------------------------------------------
+# Profile Configuration
+# -----------------------------------------------------------------------------
+
+profiles:
+  default:
+    description: Base standards applicable to all projects
+  oidanice:
+    inherits_from: default
+    description: oidanice-agents specific standards and conventions
