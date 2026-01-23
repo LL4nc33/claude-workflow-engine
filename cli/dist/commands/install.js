@@ -175,12 +175,19 @@ function performInstallation(options, log) {
         'workflow',
         'workflow/standards',
         'workflow/standards/global',
+        'workflow/standards/api',
+        'workflow/standards/database',
+        'workflow/standards/devops',
+        'workflow/standards/frontend',
+        'workflow/standards/testing',
+        'workflow/standards/agents',
         'workflow/product',
         'workflow/specs',
         '.claude',
         '.claude/agents',
         '.claude/commands/workflow',
         '.claude/skills/workflow',
+        'docs',
     ];
     for (const dir of dirs) {
         const fullDir = path.join(targetPath, dir);
@@ -189,25 +196,46 @@ function performInstallation(options, log) {
             log.step(`Created: ${dir}/`);
         }
     }
-    // Copy base templates (skip meta-files like .gitignore-add)
+    // Mapping: template source paths → target paths
+    // Templates use flat names to avoid npm issues with dotfiles
+    const pathMappings = {
+        '.claude-agents': '.claude/agents',
+        '.claude-commands': '.claude/commands',
+        '.claude-skills': '.claude/skills',
+        '.claude-CLAUDE.md': '.claude/CLAUDE.md',
+        'workflow/standards-full': 'workflow/standards',
+    };
     const skipFiles = new Set(['.gitignore-add']);
     if ((0, fs_utils_1.pathExists)(templateBase)) {
         const templateFiles = (0, fs_utils_1.listFilesRecursive)(templateBase, templateBase);
         for (const file of templateFiles) {
             if (skipFiles.has(path.basename(file)))
                 continue;
+            // Apply path mappings
+            let destFile = file;
+            for (const [from, to] of Object.entries(pathMappings)) {
+                if (destFile.startsWith(from)) {
+                    destFile = destFile.replace(from, to);
+                    break;
+                }
+            }
             const src = path.join(templateBase, file);
-            const dest = path.join(targetPath, file);
+            const dest = path.join(targetPath, destFile);
             const destDir = path.dirname(dest);
             if (!(0, fs_utils_1.pathExists)(destDir)) {
                 fs.mkdirSync(destDir, { recursive: true });
             }
+            // Don't overwrite existing files unless --force
+            if ((0, fs_utils_1.pathExists)(dest) && !options.force) {
+                log.info(`Skipped (exists): ${destFile}`);
+                continue;
+            }
             fs.copyFileSync(src, dest);
-            installedFiles.push(file);
-            log.step(`Installed: ${file}`);
+            installedFiles.push(destFile);
+            log.step(`Installed: ${destFile}`);
         }
     }
-    // Apply profile-specific templates
+    // Apply profile-specific templates (override defaults)
     if (options.profile !== 'default' && (0, fs_utils_1.pathExists)(profileDir)) {
         const profileFiles = (0, fs_utils_1.listFilesRecursive)(profileDir, profileDir);
         for (const file of profileFiles) {
@@ -222,23 +250,13 @@ function performInstallation(options, log) {
             log.step(`Profile [${options.profile}]: ${file}`);
         }
     }
-    // Generate CLAUDE.md if not exists
-    const claudeMdPath = path.join(targetPath, '.claude', 'CLAUDE.md');
-    if (!(0, fs_utils_1.pathExists)(claudeMdPath)) {
-        const claudeMd = generateClaudeMd(options);
-        (0, fs_utils_1.writeFileSafe)(claudeMdPath, claudeMd);
-        installedFiles.push('.claude/CLAUDE.md');
-        log.step('Generated: .claude/CLAUDE.md');
+    // Create specs/.gitkeep
+    const specsKeep = path.join(targetPath, 'workflow', 'specs', '.gitkeep');
+    if (!(0, fs_utils_1.pathExists)(specsKeep)) {
+        (0, fs_utils_1.writeFileSafe)(specsKeep, '');
+        installedFiles.push('workflow/specs/.gitkeep');
     }
-    // Generate config.yml if not exists
-    const configPath = path.join(targetPath, 'workflow', 'config.yml');
-    if (!(0, fs_utils_1.pathExists)(configPath)) {
-        const config = generateConfig(options);
-        (0, fs_utils_1.writeFileSafe)(configPath, config);
-        installedFiles.push('workflow/config.yml');
-        log.step('Generated: workflow/config.yml');
-    }
-    // Ensure .gitignore has GDPR patterns
+    // Ensure .gitignore has required patterns
     const gitignorePath = path.join(targetPath, '.gitignore');
     ensureGitignore(gitignorePath);
     if (!installedFiles.includes('.gitignore')) {
@@ -288,112 +306,6 @@ function dryRunInstall(options, log) {
     log.info(`  ${mergeResult.existingPermissions.length} permissions already present`);
     log.newline();
     log.done('Dry run complete. Use without --dry-run to install.');
-}
-/**
- * Generate CLAUDE.md content based on options
- */
-function generateClaudeMd(options) {
-    return `# Claude Workflow Engine - Multi-Agent System
-
-## System Overview
-
-This project uses Claude Workflow Engine for AI-assisted development with specialized agents.
-
-## Agent Hierarchy
-
-\`\`\`
-                    +------------------+
-                    |   orchestrator   |  (Task Delegation)
-                    +--------+---------+
-                             |
-         +-------------------+-------------------+
-         |         |         |         |         |
-    +----+---+ +---+----+ +-+------+ +-+------+ +---+-----+
-    |architect| |  debug | |devops  | |security| |researcher|
-    +---------+ +--------+ +--------+ +--------+ +----------+
-         |
-    +----+---+
-    |  ask   |  (Explanations)
-    +---------+
-\`\`\`
-
-## Workflow
-
-\`\`\`
-/plan-product --> /shape-spec --> /write-spec --> /create-tasks --> /orchestrate-tasks
-\`\`\`
-
-## Context Model (3 Layers)
-
-- **Layer 1 - Standards (HOW):** \`workflow/standards/\`
-- **Layer 2 - Product (WHAT/WHY):** \`workflow/product/\`
-- **Layer 3 - Specs (WHAT NEXT):** \`workflow/specs/\`
-
-## GDPR/EU Compliance
-
-- All data is LOCAL ONLY (no cloud sync)
-- EU data residency (eu-central-1)
-- No PII in standards or specs
-- Sensitive config in \`.local.md\` files (gitignored)
-
----
-*Installed by Claude Workflow Engine CLI v0.1.0 - Profile: ${options.profile}*
-`;
-}
-/**
- * Generate config.yml content based on options
- */
-function generateConfig(options) {
-    return `# =============================================================================
-# Claude Workflow Engine Configuration
-# Version: 3.0
-# GDPR-compliant setup
-# =============================================================================
-
-version: 3.0
-default_profile: ${options.profile}
-
-claude_code_commands: true
-use_claude_code_subagents: true
-standards_as_claude_code_skills: true
-workflow_commands: false
-
-context_model:
-  standards:
-    path: workflow/standards/
-    auto_inject: false
-    domains:
-      - global
-
-  product:
-    path: workflow/product/
-    files:
-      - mission.md
-      - roadmap.md
-      - architecture.md
-
-  specs:
-    path: workflow/specs/
-    naming_convention: "{timestamp}-{feature-name}/"
-
-agents:
-  directory: .claude/agents/
-
-gdpr:
-  enabled: true
-  data_residency: eu-central-1
-  local_only: true
-  sensitive_data:
-    pii_in_standards: forbidden
-    pii_in_specs: forbidden
-    local_files_only: true
-    gitignored_patterns:
-      - "CLAUDE.local.md"
-      - "*.local.md"
-      - ".env*"
-      - "credentials.*"
-      - "secrets.*"
-`;
 }
 /**
  * Ensure .gitignore has required GDPR patterns
