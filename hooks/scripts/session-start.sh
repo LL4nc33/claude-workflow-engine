@@ -55,8 +55,41 @@ if [ "${standards_count}" -gt 0 ]; then
   context_parts="${context_parts}${standards_count} Standards verfuegbar. "
 fi
 
+# NaNo learning status (fast check with cache)
+learning_status="$(get_learning_status)"
+if [ "${learning_status}" != "disabled" ]; then
+  context_parts="${context_parts}NaNo: ${learning_status}. "
+
+  # Check for pending evolution candidates
+  nano_dir="${ROOT}/workflow/nano"
+  if [ -d "${nano_dir}/evolution/candidates" ]; then
+    candidate_count=$(find "${nano_dir}/evolution/candidates" -name "*.yml" -type f 2>/dev/null | wc -l)
+    if [ "${candidate_count}" -gt 0 ]; then
+      context_parts="${context_parts}${candidate_count} evolution candidates ready! → /workflow:review-candidates. "
+    fi
+  fi
+
+  # Background: trigger analysis of unanalyzed sessions (non-blocking)
+  if [ -d "${nano_dir}/observations" ]; then
+    needs_analysis=false
+    if [ -f "${nano_dir}/patterns/delegation-patterns.md" ]; then
+      unanalyzed=$(find "${nano_dir}/observations" -name "session-*.toon" -type f \
+        -newer "${nano_dir}/patterns/delegation-patterns.md" 2>/dev/null | wc -l)
+      [ "${unanalyzed}" -gt 0 ] && needs_analysis=true
+    else
+      # No patterns file yet, check if any sessions exist
+      any_sessions=$(find "${nano_dir}/observations" -name "session-*.toon" -type f 2>/dev/null | head -1)
+      [ -n "${any_sessions}" ] && needs_analysis=true
+    fi
+
+    if [ "${needs_analysis}" = "true" ]; then
+      "${SCRIPT_DIR}/nano-observer.sh" analyze &>/dev/null &
+    fi
+  fi
+fi
+
 # Build compact context message
-context_msg="Workflow Engine v0.2.5"
+context_msg="Workflow Engine v0.2.7"
 if [ -n "${context_parts}" ]; then
   context_msg="${context_msg} | ${context_parts}"
 fi

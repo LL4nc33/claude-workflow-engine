@@ -145,7 +145,7 @@ Das Plugin-Manifest bündelt alle Schichten:
 ```json
 {
   "name": "claude-workflow-engine",
-  "version": "0.2.5",
+  "version": "0.2.7",
   "commands": "./.claude/commands",
   "agents": "./.claude/agents",
   "skills": "./.claude/skills",

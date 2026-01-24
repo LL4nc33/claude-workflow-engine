@@ -1,6 +1,6 @@
 # Workflow Guide
 
-Die Claude Workflow Engine (v0.2.5) bietet drei Wege zur Entwicklung:
+Die Claude Workflow Engine (v0.2.7) bietet drei Wege zur Entwicklung:
 
 ## Schnellstart
 

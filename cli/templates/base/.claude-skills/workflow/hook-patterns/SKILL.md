@@ -23,7 +23,7 @@ description: Hook-System Dokumentation und Patterns. Verwende bei hook, automati
 ```json
 {
   "hookSpecificOutput": {
-    "additionalContext": "Claude Workflow Engine v0.2.5 (6-Layer Plugin) | Produkt-Mission vorhanden. | Aktive Spezifikation: feature-xyz."
+    "additionalContext": "Claude Workflow Engine v0.2.7 (6-Layer Plugin) | Produkt-Mission vorhanden. | Aktive Spezifikation: feature-xyz."
   }
 }
 ```

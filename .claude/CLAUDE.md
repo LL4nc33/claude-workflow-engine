@@ -76,8 +76,15 @@ For full control, use individual phase commands:
 |---------|---------|---------------|
 | `/workflow:clone-setup` | Configure Firecrawl + SearXNG service URLs | Self-hosted instances |
 | `/workflow:visual-clone` | Extract visual identity (colors, fonts, CSS) from websites + optional Design Token Standards generation | `/workflow:clone-setup` |
+| `/workflow:homunculus-status` | NaNo Learning Status - Actionable Insights und Quick-Actions | `nano.local.md` |
+| `/workflow:nano-toggle` | NaNo ein/ausschalten + First-Run Setup | - |
+| `/workflow:nano-session` | Aktuelle Session-Observations anzeigen | NaNo aktiv |
+| `/workflow:nano-config` | Interaktive NaNo-Konfiguration | `nano.local.md` |
+| `/workflow:nano-reset` | NaNo-Daten zuruecksetzen (mit Confirmation) | NaNo data |
+| `/workflow:review-candidates` | Interaktives Review von NaNo Evolution-Candidates | NaNo patterns |
+| `/workflow:learning-report` | Umfassender NaNo-Analyse-Report | NaNo observations |
 
-Configuration is stored in `visual-clone.local.md` (gitignored, GDPR-compliant). API responses are converted to [TOON format](https://github.com/toon-format/toon) for ~40% token savings.
+Configuration is stored in `visual-clone.local.md` / `nano.local.md` (gitignored, GDPR-compliant). API responses are converted to [TOON format](https://github.com/toon-format/toon) for ~40% token savings.
 
 ## Context Model (3 Layers)
 
@@ -141,13 +148,15 @@ MCP tools are optional - agents fall back to standard tools if servers are unava
 
 ## Hook Behavior
 
-Three hooks automate workflow tasks (with adaptive timeouts per ADR-003):
+Five hooks automate workflow tasks (with adaptive timeouts per ADR-003):
 
 | Hook | Event | Timeout | Behavior |
 |------|-------|---------|----------|
-| SessionStart | Session begins | 30s | Checks standards freshness, provides workflow context, cleans cache |
+| SessionStart | Session begins | 30s | Checks standards freshness, provides workflow context, NaNo status (cached), triggers background-analyse, cleans cache |
 | PreToolUse (Write/Edit) | Before file writes | 15s | Blocks writes to .env, credentials.*, secrets.*, *.local.md |
 | PostToolUse (Write/Edit) | After file writes | 5s | Logs changes during active orchestration (filenames only, GDPR) |
+| PostToolUse (Task) | After agent delegation | 3s | NaNo: Atomic write delegation observation (flock-based, O(1) counter) |
+| Stop | Session ends | 10s | NaNo: Incremental pattern analysis (nur neue Sessions), evolution candidates |
 
 Error Recovery: See `workflow/ERROR-RECOVERY.md` for troubleshooting hook timeouts and other failures.
 

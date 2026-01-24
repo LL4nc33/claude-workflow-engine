@@ -171,7 +171,7 @@ Output:
 ```
 Claude Workflow Engine Status
 
-  Version:   0.2.5
+  Version:   0.2.7
   Mode:      template
   Scope:     local
   Profile:   node
@@ -190,7 +190,7 @@ Output:
 ```
 Claude Workflow Engine Status
 
-  Version:   0.2.5
+  Version:   0.2.7
   Mode:      template
   Scope:     local
   Profile:   node
@@ -255,7 +255,7 @@ Core Files
   [WARN] Missing: .gitignore
 
 Installation State
-  [PASS] Installed: v0.2.5 (2026-01-23T14:30:00Z)
+  [PASS] Installed: v0.2.7 (2026-01-23T14:30:00Z)
 
 File Integrity
   [PASS] 32 files intact
@@ -482,7 +482,7 @@ workflow version
 Output:
 
 ```
-workflow v0.2.5
+workflow v0.2.7
 ```
 
 ---

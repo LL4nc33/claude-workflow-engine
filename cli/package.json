@@ -1,6 +1,6 @@
 {
   "name": "@oidanice/claude-workflow-engine-cli",
-  "version": "0.2.5",
+  "version": "0.2.7",
   "description": "CLI tools for Claude Workflow Engine",
   "main": "dist/index.js",
   "bin": {

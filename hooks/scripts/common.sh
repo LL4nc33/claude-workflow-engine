@@ -114,3 +114,101 @@ clean_cache() {
     find "${CACHE_DIR}" -type f -mmin "+$((ttl_seconds / 60))" -delete 2>/dev/null
   fi
 }
+
+# =============================================================================
+# NaNo Learning Utilities (named after Nala & Nino)
+# Shared functions for the learning/observation system.
+# =============================================================================
+
+# Get NaNo directory path
+get_nano_dir() {
+  local root
+  root="$(get_project_root)"
+  echo "${root}/workflow/nano"
+}
+
+# Check if NaNo learning is enabled (fast check)
+is_nano_enabled() {
+  local root
+  root="$(get_project_root)"
+  local config="${root}/.claude/nano.local.md"
+
+  if [ ! -f "${config}" ]; then
+    return 1
+  fi
+
+  grep -q "^enabled: true" "${config}" 2>/dev/null
+}
+
+# Write a learning observation (generic helper)
+# Usage: write_learning_observation "type" "key=value,key2=value2"
+write_learning_observation() {
+  local obs_type="$1"
+  local obs_data="$2"
+
+  if ! is_nano_enabled; then
+    return 0
+  fi
+
+  local nano_dir
+  nano_dir="$(get_nano_dir)"
+  local obs_dir="${nano_dir}/observations"
+  local session_id="${CLAUDE_SESSION_ID:-$(date +%Y%m%d-%H%M%S)}"
+  local session_file="${obs_dir}/session-${session_id}.toon"
+  local timestamp
+  timestamp="$(date -Iseconds)"
+
+  mkdir -p "${obs_dir}"
+
+  # Initialize if needed
+  if [ ! -f "${session_file}" ]; then
+    cat > "${session_file}" << EOF
+session: ${session_id}
+started: ${timestamp}
+observations:
+EOF
+  fi
+
+  echo "  ${timestamp} | ${obs_type} | ${obs_data}" >> "${session_file}"
+}
+
+# Get learning status summary (single line, cached 60s)
+get_learning_status() {
+  local cache_file="/tmp/nano-status-cache"
+
+  # Cache valid for 60s
+  if [ -f "${cache_file}" ]; then
+    local cache_age
+    cache_age=$(($(date +%s) - $(stat -c %Y "${cache_file}" 2>/dev/null || echo 0)))
+    if [ "${cache_age}" -lt 60 ]; then
+      cat "${cache_file}"
+      return
+    fi
+  fi
+
+  if ! is_nano_enabled; then
+    echo "disabled" | tee "${cache_file}"
+    return
+  fi
+
+  local nano_dir
+  nano_dir="$(get_nano_dir)"
+
+  local obs_count=0
+  if [ -d "${nano_dir}/observations" ]; then
+    obs_count=$(find "${nano_dir}/observations" -name "session-*.toon" -type f 2>/dev/null | wc -l)
+  fi
+
+  local pattern_count=0
+  if [ -d "${nano_dir}/patterns" ]; then
+    pattern_count=$(find "${nano_dir}/patterns" -name "*.md" -type f 2>/dev/null | wc -l)
+  fi
+
+  local candidate_count=0
+  if [ -d "${nano_dir}/evolution/candidates" ]; then
+    candidate_count=$(find "${nano_dir}/evolution/candidates" -name "*.yml" -type f 2>/dev/null | wc -l)
+  fi
+
+  local result="active (${obs_count} sessions, ${pattern_count} patterns, ${candidate_count} candidates)"
+  echo "${result}" | tee "${cache_file}"
+}

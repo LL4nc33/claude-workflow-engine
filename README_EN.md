@@ -1,6 +1,6 @@
 # Claude Workflow Engine
 
-[![Version](https://img.shields.io/badge/version-0.2.5-blue.svg)](https://github.com/LL4nc33/claude-workflow-engine/releases)
+[![Version](https://img.shields.io/badge/version-0.2.7-blue.svg)](https://github.com/LL4nc33/claude-workflow-engine/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-ready-purple.svg)](https://claude.com/claude-code)
 
@@ -210,7 +210,7 @@ The Orchestrator analyzes tasks and delegates them to the appropriate specialize
 claude-workflow-engine/
 |
 |-- .claude-plugin/               # Layer 6: Plugin Packaging
-|   +-- plugin.json               # Plugin manifest (v0.2.5)
+|   +-- plugin.json               # Plugin manifest (v0.2.7)
 |
 |-- .claude/                      # Claude Code configuration
 |   |-- agents/                   # Layer 4: 7 agent definitions
@@ -236,7 +236,7 @@ claude-workflow-engine/
 |       +-- post-write-log.sh     # PostToolUse: Change logging
 |
 |-- workflow/                      # Knowledge layers (3-layer model)
-|   |-- config.yml                # Main configuration (v0.2.5)
+|   |-- config.yml                # Main configuration (v0.2.7)
 |   |-- orchestration.yml         # Orchestration settings
 |   |-- product/                  # Layer 2: Mission, Roadmap, Architecture
 |   |-- standards/                # Layer 1: 11 standards across 7 domains
