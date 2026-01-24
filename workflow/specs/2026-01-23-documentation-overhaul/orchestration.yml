@@ -1,0 +1,116 @@
+# Orchestration Configuration for Documentation Overhaul
+# Generated from: ./spec.md
+# Date: 2026-01-23
+
+feature: documentation-overhaul
+spec_folder: workflow/specs/2026-01-23-documentation-overhaul/
+
+task_groups:
+  - name: infrastructure
+    agent: debug
+    standards:
+      - global/naming
+    tasks:
+      - id: "1.1"
+        title: Verzeichnisstruktur erstellen
+        depends_on: []
+      - id: "1.2"
+        title: Credits Research
+        depends_on: []
+
+  - name: core-docs-de
+    agent: debug
+    standards:
+      - global/naming
+    tasks:
+      - id: "2.1"
+        title: README.md (Deutsch)
+        depends_on: ["1.1", "1.2"]
+      - id: "2.2"
+        title: erste-schritte.md
+        depends_on: ["1.1"]
+      - id: "2.3"
+        title: agenten.md
+        depends_on: ["1.1"]
+      - id: "2.4"
+        title: workflow.md
+        depends_on: ["1.1"]
+      - id: "2.5"
+        title: standards.md
+        depends_on: ["1.1"]
+      - id: "2.6"
+        title: cli.md
+        depends_on: ["1.1"]
+      - id: "2.7"
+        title: konfiguration.md
+        depends_on: ["1.1"]
+      - id: "2.8"
+        title: integration.md
+        depends_on: ["1.1"]
+
+  - name: neue-inhalte-de
+    agent: debug
+    standards:
+      - global/naming
+    tasks:
+      - id: "3.1"
+        title: How-To Guides
+        depends_on: ["2.1", "2.2", "2.3", "2.4", "2.6"]
+      - id: "3.2"
+        title: Use-Case Beispiele
+        depends_on: ["2.1", "2.2", "2.4", "2.6"]
+      - id: "3.3"
+        title: Tipps & Best Practices
+        depends_on: ["3.1", "3.2"]
+      - id: "3.4"
+        title: FAQ & Troubleshooting
+        depends_on: ["2.2", "2.6", "2.7"]
+
+  - name: englische-version
+    agent: debug
+    standards:
+      - global/naming
+    tasks:
+      - id: "4.1"
+        title: Englische Docs
+        depends_on: ["2.1", "3.1", "3.2", "3.3", "3.4"]
+      - id: "4.2"
+        title: README_EN.md
+        depends_on: ["4.1"]
+
+  - name: verification
+    agent: debug
+    standards:
+      - global/naming
+    tasks:
+      - id: "5.1"
+        title: Link-Verification & Cleanup
+        depends_on: ["4.1", "4.2"]
+
+execution_phases:
+  - phase: 1
+    parallel: ["1.1", "1.2"]
+  - phase: 2
+    parallel: ["2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8"]
+  - phase: 3
+    parallel: ["3.1", "3.2", "3.4"]
+  - phase: 4
+    parallel: ["3.3"]
+  - phase: 5
+    parallel: ["4.1", "4.2"]
+  - phase: 6
+    parallel: ["5.1"]
+
+agent_mapping:
+  debug: debug
+
+quality_gates:
+  after_core_docs:
+    - agent: debug
+      check: all_docs_have_valid_structure
+  after_neue_inhalte:
+    - agent: debug
+      check: code_examples_valid, links_consistent
+  after_english:
+    - agent: debug
+      check: all_links_valid, no_orphaned_files

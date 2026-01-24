@@ -43,7 +43,7 @@ const fs_utils_1 = require("./fs-utils");
 const logger_1 = require("./logger");
 const STATE_FILE = '.installation-state.json';
 const BACKUP_DIR = '.workflow-backups';
-const CURRENT_VERSION = '0.1.0';
+const CURRENT_VERSION = '0.2.0';
 class StateManager {
     targetPath;
     statePath;

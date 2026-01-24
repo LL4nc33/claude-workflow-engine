@@ -1,6 +1,6 @@
-# CLI Reference
+# CLI-Referenz
 
-The Claude Workflow Engine CLI (`workflow`) provides safety tools for installation, health monitoring, conflict detection, and GDPR compliance checking. It runs as a Node.js application and operates entirely locally.
+Das Claude Workflow Engine CLI (`workflow`) stellt Safety-Tools fuer Installation, Health-Monitoring, Konflikterkennung und DSGVO-Compliance bereit. Es laeuft als Node.js-Applikation und arbeitet vollstaendig lokal.
 
 ## Installation
 
@@ -10,20 +10,40 @@ npm install
 npm run build
 ```
 
-After building, the CLI is available at `cli/dist/index.js`:
+Nach dem Build ist das CLI unter `cli/dist/index.js` verfuegbar:
 
 ```bash
 node cli/dist/index.js --help
 ```
 
-Or link it globally:
+Ausgabe:
+
+```
+Usage: workflow <command> [options] [path]
+
+Commands:
+  install     Install the engine into a project
+  status      Show installation status
+  health      Run health checks
+  check       Run conflict/permission/GDPR checks
+  resolve     Resolve detected conflicts
+  rollback    Rollback to previous backup
+  version     Show version
+  help        Show help
+
+Options:
+  --help, -h     Show help
+  --version      Show version number
+```
+
+Alternativ kannst du das CLI global verlinken:
 
 ```bash
-npm link   # From the cli/ directory
+npm link   # Aus dem cli/-Verzeichnis
 workflow --help
 ```
 
-**Requirements:** Node.js >= 18
+**Voraussetzung:** Node.js >= 18
 
 ## Commands
 
@@ -31,85 +51,127 @@ workflow --help
 workflow <command> [options] [path]
 ```
 
-| Command | Purpose |
-|---------|---------|
-| `install` | Install the engine into a project |
-| `status` | Show installation status |
-| `health` | Run health checks |
-| `check` | Run conflict/permission/GDPR checks |
-| `resolve` | Resolve detected conflicts |
-| `rollback` | Rollback to previous backup |
-| `version` | Show version |
-| `help` | Show help |
+| Command | Zweck |
+|---------|-------|
+| `install` | Engine in ein Projekt installieren |
+| `status` | Installationsstatus anzeigen |
+| `health` | Health Checks ausfuehren |
+| `check` | Konflikte, Permissions und DSGVO pruefen |
+| `resolve` | Erkannte Konflikte loesen |
+| `rollback` | Backup wiederherstellen |
+| `version` | Version anzeigen |
+| `help` | Hilfe anzeigen |
 
-If `[path]` is omitted, commands operate on the current working directory.
+Wenn `[path]` weggelassen wird, arbeiten alle Commands im aktuellen Verzeichnis.
 
 ---
 
 ## workflow install
 
-Install Claude Workflow Engine into a target project.
+Installiert die Claude Workflow Engine in ein Zielprojekt.
 
 ```bash
 workflow install [options] [path]
 ```
 
-**Options:**
+**Optionen:**
 
-| Flag | Description |
-|------|-------------|
-| `--global` | Install globally (shared config) |
-| `--local` | Install locally (project-specific, default) |
-| `--mode <mode>` | `template` or `integrated` |
-| `--profile <profile>` | `default`, `node`, `python`, or `rust` |
-| `--dry-run` | Preview changes without writing anything |
-| `--force`, `-f` | Proceed despite warnings |
-| `--verbose`, `-v` | Detailed output |
+| Flag | Beschreibung |
+|------|--------------|
+| `--global` | Global installieren (gemeinsame Konfiguration) |
+| `--local` | Lokal installieren (projektspezifisch, Standard) |
+| `--mode <mode>` | `template` oder `integrated` |
+| `--profile <profile>` | `default`, `node`, `python` oder `rust` |
+| `--dry-run` | Aenderungen nur anzeigen, nichts schreiben |
+| `--force`, `-f` | Trotz Warnungen fortfahren |
+| `--verbose`, `-v` | Detaillierte Ausgabe |
 
-**Examples:**
+**Beispiele:**
 
 ```bash
-# Preview what would be installed
+# Vorschau was installiert wuerde
 workflow install --dry-run --verbose /path/to/project
+```
 
-# Install with Node.js profile
+Ausgabe:
+
+```
+[DRY-RUN] Would create: .claude/agents/architect.md
+[DRY-RUN] Would create: .claude/agents/debug.md
+[DRY-RUN] Would create: workflow/config.yml
+[DRY-RUN] Would create: workflow/standards/index.yml
+...
+[DRY-RUN] 32 files would be created
+```
+
+```bash
+# Mit Node.js-Profil installieren
 workflow install --profile node .
+```
 
-# Install globally with force
+Ausgabe:
+
+```
+Claude Workflow Engine Install
+
+  Mode:    template
+  Scope:   local
+  Profile: node
+  Target:  /path/to/project
+
+  Creating directory structure...
+  Copying agents, commands, skills...
+  Applying standards...
+  Merging settings...
+  Updating .gitignore...
+  Recording installation state...
+
+  [DONE] Installation complete. 32 files created.
+  Run "workflow health" to verify.
+```
+
+```bash
+# Global mit Force installieren
 workflow install --global --force /path/to/project
 ```
 
-**What it does:**
+**Was der Command tut:**
 
-1. Runs preflight checks (conflicts, permissions, GDPR)
-2. Creates the directory structure (`.claude/`, `workflow/`)
-3. Copies agents, commands, skills, standards, and configuration
-4. Merges settings into `.claude/settings.local.json`
-5. Updates `.gitignore` for sensitive files
-6. Records installation state for future health checks and rollback
+1. Fuehrt Preflight-Checks aus (Konflikte, Permissions, DSGVO)
+2. Erstellt die Verzeichnisstruktur (`.claude/`, `workflow/`)
+3. Kopiert Agents, Commands, Skills, Standards und Konfiguration
+4. Merged Settings in `.claude/settings.local.json`
+5. Aktualisiert `.gitignore` fuer sensible Dateien
+6. Speichert den Installationszustand fuer Health Checks und Rollback
 
 ---
 
 ## workflow status
 
-Show the current installation status.
+Zeigt den aktuellen Installationsstatus an.
 
 ```bash
-workflow status [--verbose] [path]
+workflow status [options] [path]
 ```
 
-**Options:**
+**Optionen:**
 
-| Flag | Description |
-|------|-------------|
-| `--verbose`, `-v` | Show detailed file list and history |
+| Flag | Beschreibung |
+|------|--------------|
+| `--verbose`, `-v` | Detaillierte Dateiliste und History anzeigen |
 
-**Example output:**
+**Beispiel:**
+
+```bash
+workflow status
+```
+
+Ausgabe:
 
 ```
 Claude Workflow Engine Status
 
-  Version:   0.1.0
+  Version:   0.2.0
   Mode:      template
   Scope:     local
   Profile:   node
@@ -119,36 +181,69 @@ Claude Workflow Engine Status
   History events: 3
 ```
 
+```bash
+workflow status --verbose
+```
+
+Ausgabe:
+
+```
+Claude Workflow Engine Status
+
+  Version:   0.2.0
+  Mode:      template
+  Scope:     local
+  Profile:   node
+  Installed: 2026-01-23T14:30:00Z
+
+  Files tracked: 32
+    .claude/CLAUDE.md
+    .claude/agents/architect.md
+    .claude/agents/debug.md
+    ...
+
+  History events: 3
+    2026-01-23T14:30:00Z  install  success
+    2026-01-22T10:15:00Z  health   fix-applied
+    2026-01-20T09:00:00Z  install  success
+```
+
 ---
 
 ## workflow health
 
-Run health checks on an existing installation.
+Fuehrt Health Checks auf einer bestehenden Installation aus.
 
 ```bash
 workflow health [options] [path]
 ```
 
-**Options:**
+**Optionen:**
 
-| Flag | Description |
-|------|-------------|
-| `--fix` | Auto-fix detected issues where possible |
-| `--report` | Save health report as JSON file |
-| `--verbose`, `-v` | Detailed output |
+| Flag | Beschreibung |
+|------|--------------|
+| `--fix` | Erkannte Probleme automatisch beheben |
+| `--report` | Health-Report als JSON-Datei speichern |
+| `--verbose`, `-v` | Detaillierte Ausgabe |
 
-**Checks performed:**
+**Ausgefuehrte Checks:**
 
-| Category | What it checks |
-|----------|---------------|
+| Kategorie | Was geprueft wird |
+|-----------|-------------------|
 | Core Files | `config.yml`, `CLAUDE.md`, `settings.local.json`, `.gitignore` |
-| Installation State | State file exists, no failed events in history |
-| File Integrity | All tracked files still exist and match checksums |
-| Settings | Required permissions present in settings.local.json |
-| GDPR | Gitignore patterns, no PII in standards/specs |
+| Installation State | State-Datei existiert, keine fehlgeschlagenen Events |
+| File Integrity | Alle getrackten Dateien existieren und Checksummen stimmen |
+| Settings | Erforderliche Permissions in `settings.local.json` vorhanden |
+| DSGVO | Gitignore-Patterns, keine PII in Standards/Specs |
 | Directory Structure | `workflow/`, `workflow/standards/`, `.claude/agents/`, etc. |
 
-**Example output:**
+**Beispiel:**
+
+```bash
+workflow health
+```
+
+Ausgabe:
 
 ```
 Claude Workflow Engine Health Check
@@ -160,7 +255,7 @@ Core Files
   [WARN] Missing: .gitignore
 
 Installation State
-  [PASS] Installed: v0.1.0 (2026-01-23T14:30:00Z)
+  [PASS] Installed: v0.2.0 (2026-01-23T14:30:00Z)
 
 File Integrity
   [PASS] 32 files intact
@@ -181,59 +276,75 @@ Summary
   Passed: 8 | Warnings: 1 | Errors: 0
 ```
 
-**With `--fix`:**
+**Mit `--fix`:**
 
 ```bash
 workflow health --fix
 ```
 
-Auto-fixes include:
-- Creating missing directories
-- Adding missing permissions to settings
-- Running GDPR auto-fix (gitignore patterns)
+Ausgabe:
 
-**With `--report`:**
+```
+Claude Workflow Engine Health Check
+
+Core Files
+  [PASS] workflow/config.yml
+  [PASS] .claude/CLAUDE.md
+  [PASS] .claude/settings.local.json
+  [FIXED] Created: .gitignore
+
+Summary
+  Overall Status: HEALTHY
+  Passed: 8 | Fixed: 1 | Errors: 0
+```
+
+Auto-Fixes umfassen:
+- Fehlende Verzeichnisse erstellen
+- Fehlende Permissions in Settings ergaenzen
+- DSGVO Auto-Fix (Gitignore-Patterns hinzufuegen)
+
+**Mit `--report`:**
 
 ```bash
 workflow health --report
 ```
 
-Saves `.workflow-health-report.json` in the target directory.
+Speichert `.workflow-health-report.json` im Zielverzeichnis.
 
 ---
 
 ## workflow check
 
-Run specific checks without the full health suite.
+Fuehrt spezifische Checks aus, ohne die vollstaendige Health-Suite.
 
 ```bash
 workflow check [options] [path]
 ```
 
-**Options:**
+**Optionen:**
 
-| Flag | Description |
-|------|-------------|
-| `--conflicts` | Check for file/command conflicts |
-| `--permissions` | Check filesystem permissions |
-| `--gdpr` | Check GDPR compliance |
-| `--fix` | Auto-fix where possible |
-| `--verbose`, `-v` | Detailed output |
+| Flag | Beschreibung |
+|------|--------------|
+| `--conflicts` | Datei- und Command-Konflikte pruefen |
+| `--permissions` | Dateisystem-Berechtigungen pruefen |
+| `--gdpr` | DSGVO-Compliance pruefen |
+| `--fix` | Automatisch beheben wo moeglich |
+| `--verbose`, `-v` | Detaillierte Ausgabe |
 
-If no specific check is requested, all three are run.
+Wenn kein spezifischer Check angegeben wird, werden alle drei ausgefuehrt.
 
-### Conflict detection (`--conflicts`)
+### Konflikterkennung (`--conflicts`)
 
-Checks for:
-- **File conflicts:** Engine files that already exist in the target (with different content)
-- **Command conflicts:** Slash commands that collide with existing commands
-- **Permission conflicts:** Files/directories that can't be written
+Prueft auf:
+- **Dateikonflikte:** Engine-Dateien die bereits im Ziel existieren (mit anderem Inhalt)
+- **Command-Konflikte:** Slash-Commands die mit bestehenden Commands kollidieren
+- **Permission-Konflikte:** Dateien/Verzeichnisse die nicht beschreibbar sind
 
 ```bash
 workflow check --conflicts /path/to/project
 ```
 
-Example output:
+Ausgabe:
 
 ```
 Conflict Detection
@@ -244,61 +355,106 @@ Conflict Detection
     /plan-product (existing: .claude/commands/plan-product.md)
 ```
 
-### Permission check (`--permissions`)
+### Permission-Check (`--permissions`)
 
-Verifies write access to target directories and settings files:
+Prueft Schreibzugriff auf Zielverzeichnisse und Settings-Dateien:
 
 ```bash
 workflow check --permissions
 ```
 
-### GDPR check (`--gdpr`)
+Ausgabe:
 
-Checks for:
-- Sensitive file patterns in `.gitignore` (`.env`, `*.local.md`, credentials)
-- PII in standards or spec files
-- Proper data residency configuration
+```
+Permission Check
+  [PASS] /path/to/project/.claude/ (writable)
+  [PASS] /path/to/project/workflow/ (writable)
+  [PASS] /path/to/project/.gitignore (writable)
+```
+
+### DSGVO-Check (`--gdpr`)
+
+Prueft auf:
+- Sensible Datei-Patterns in `.gitignore` (`.env`, `*.local.md`, Credentials)
+- PII in Standards- oder Spec-Dateien
+- Korrekte Data-Residency-Konfiguration
 
 ```bash
 workflow check --gdpr --fix
 ```
 
-The `--fix` flag auto-adds missing gitignore patterns.
+Ausgabe:
+
+```
+DSGVO/GDPR Check
+  [FIXED] Added .gitignore patterns: .env, *.local.md, credentials.*
+  [PASS] No PII detected in standards/specs
+  [PASS] Data residency: eu-central-1
+```
+
+Das `--fix`-Flag fuegt fehlende Gitignore-Patterns automatisch hinzu.
 
 ---
 
 ## workflow resolve
 
-Resolve conflicts detected by `workflow check --conflicts`.
+Loest Konflikte die von `workflow check --conflicts` erkannt wurden.
 
 ```bash
 workflow resolve [options] [path]
 ```
 
-**Options:**
+**Optionen:**
 
-| Flag | Description |
-|------|-------------|
-| `--auto-fix` | Automatically resolve conflicts (creates backups) |
-| `--verbose`, `-v` | Detailed output |
+| Flag | Beschreibung |
+|------|--------------|
+| `--auto-fix` | Konflikte automatisch loesen (erstellt Backups) |
+| `--verbose`, `-v` | Detaillierte Ausgabe |
 
-**Resolution strategies:**
+**Beispiel:**
 
-- Creates backups of conflicting files before overwriting
-- Merges settings rather than replacing them
-- Reports command conflicts that need manual resolution
+```bash
+workflow resolve --auto-fix /path/to/project
+```
+
+Ausgabe:
+
+```
+Claude Workflow Engine Resolve
+
+  Resolving 2 file conflict(s)...
+    [BACKUP] .claude/settings.local.json -> .claude/settings.local.json.bak
+    [MERGED] .claude/settings.local.json
+    [BACKUP] workflow/config.yml -> workflow/config.yml.bak
+    [REPLACED] workflow/config.yml
+
+  [DONE] 2 conflicts resolved.
+  Run "workflow health" to verify.
+```
+
+**Resolution-Strategien:**
+
+- Erstellt Backups von konfliktbehafteten Dateien vor dem Ueberschreiben
+- Merged Settings anstatt sie zu ersetzen
+- Meldet Command-Konflikte die manuell geloest werden muessen
 
 ---
 
 ## workflow rollback
 
-Revert to the most recent backup created during install/update operations.
+Stellt das letzte Backup wieder her, das bei Install- oder Update-Operationen erstellt wurde.
 
 ```bash
 workflow rollback [path]
 ```
 
-**Example:**
+**Beispiel:**
+
+```bash
+workflow rollback /path/to/project
+```
+
+Ausgabe:
 
 ```
 Claude Workflow Engine Rollback
@@ -315,23 +471,72 @@ Claude Workflow Engine Rollback
 
 ---
 
-## Exit codes
+## workflow version
 
-| Code | Meaning |
-|------|---------|
-| 0 | Success (or healthy) |
-| 1 | Error (or broken health) |
+Zeigt die aktuelle Version des CLI an.
 
-## Data privacy
+```bash
+workflow version
+```
 
-The CLI operates entirely locally. It:
-- Makes no network requests
-- Stores no data outside the project directory
-- Creates no telemetry or analytics
-- Writes only to the target path (plus `.workflow-health-report.json` if `--report` is used)
+Ausgabe:
 
-## See also
+```
+workflow v0.2.0
+```
 
-- [Getting Started](getting-started.md) - Initial setup
-- [Integration](integration.md) - Using the CLI to integrate with existing projects
-- [Configuration](configuration.md) - Files the CLI creates and manages
+---
+
+## workflow help
+
+Zeigt die Hilfe-Uebersicht an.
+
+```bash
+workflow help
+```
+
+Ausgabe:
+
+```
+Usage: workflow <command> [options] [path]
+
+Commands:
+  install     Install the engine into a project
+  status      Show installation status
+  health      Run health checks
+  check       Run conflict/permission/GDPR checks
+  resolve     Resolve detected conflicts
+  rollback    Rollback to previous backup
+  version     Show version
+  help        Show help
+
+Options:
+  --help, -h     Show help
+  --version      Show version number
+
+Run "workflow <command> --help" for details on a specific command.
+```
+
+---
+
+## Exit-Codes
+
+| Code | Bedeutung |
+|------|-----------|
+| 0 | Erfolg (bzw. Installation gesund) |
+| 1 | Fehler (bzw. Health Check fehlgeschlagen) |
+
+## Datenschutz
+
+Das CLI arbeitet vollstaendig lokal. Es:
+
+- Fuehrt keine Netzwerk-Requests aus
+- Speichert keine Daten ausserhalb des Projektverzeichnisses
+- Erzeugt keine Telemetrie oder Analytics
+- Schreibt ausschliesslich in den Zielpfad (plus `.workflow-health-report.json` bei `--report`)
+
+## Siehe auch
+
+- [Erste Schritte](erste-schritte.md) -- Ersteinrichtung
+- [Integration](integration.md) -- CLI-Integration in bestehende Projekte
+- [Konfiguration](konfiguration.md) -- Dateien die das CLI erstellt und verwaltet

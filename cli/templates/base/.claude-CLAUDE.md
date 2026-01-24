@@ -77,6 +77,58 @@ The standard development workflow follows 5 phases:
 - `workflow/standards/index.yml` - Standards registry
 - `.claude/settings.local.json` - Claude Code permissions
 
+## Platform Architecture (6 Layers)
+
+```
++------------------------------------------------------------------+
+|  Layer 6: Plugin Packaging (.claude-plugin/plugin.json)          |
+|  Bundles all layers into an installable package                  |
++------------------------------------------------------------------+
+|  Layer 5: Hooks (hooks/hooks.json)                               |
+|  Event-based automation (SessionStart, Pre/PostToolUse)          |
++------------------------------------------------------------------+
+|  Layer 4: Agents (.claude/agents/*.md)                           |
+|  7 specialized subagents with defined roles and MCP tools        |
++------------------------------------------------------------------+
+|  Layer 3: Skills (.claude/skills/workflow/)                       |
+|  Context-based knowledge (Standards, MCP-Usage, Hooks, Config)   |
++------------------------------------------------------------------+
+|  Layer 2: Commands (.claude/commands/workflow/)                   |
+|  8 slash commands for the 5-phase workflow                       |
++------------------------------------------------------------------+
+|  Layer 1: CLAUDE.md (.claude/CLAUDE.md)                          |
+|  Project instructions and system overview                        |
++------------------------------------------------------------------+
+```
+
+## Available MCP Tools
+
+When configured, the following MCP servers extend agent capabilities:
+
+| Server | Tools | Used By |
+|--------|-------|---------|
+| **Serena** | find_symbol, get_symbols_overview, find_referencing_symbols, replace_symbol_body, search_for_pattern | architect, researcher, debug, ask |
+| **Greptile** | list_merge_requests, get_merge_request, search_greptile_comments, list_merge_request_comments | orchestrator, security |
+
+MCP tools are optional - agents fall back to standard tools if servers are unavailable.
+
+## Hook Behavior
+
+Three hooks automate workflow tasks:
+
+| Hook | Event | Behavior |
+|------|-------|----------|
+| SessionStart | Session begins | Checks standards freshness, provides workflow context |
+| PreToolUse (Write/Edit) | Before file writes | Blocks writes to .env, credentials.*, secrets.*, *.local.md |
+| PostToolUse (Write/Edit) | After file writes | Logs changes during active orchestration (filenames only, GDPR) |
+
+## Recommended MCP Servers
+
+- **Serena** - Semantic code analysis via Language Server (symbol navigation, refactoring)
+- **Greptile** - PR management and code review integration
+
+Setup is documented in `docs/plattform-architektur.md`.
+
 ## GDPR/EU Compliance
 
 - All data is LOCAL ONLY (no cloud sync)

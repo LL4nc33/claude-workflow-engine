@@ -1,0 +1,108 @@
+# Orchestration Configuration for CLI Plugin Sync
+# Generated from: Abgleich Root vs CLI Templates
+# Date: 2026-01-24
+
+feature: cli-plugin-sync
+spec_folder: workflow/specs/2026-01-24-cli-plugin-sync/
+
+task_groups:
+  - name: template-files
+    agent: backend
+    standards:
+      - agents/agent-conventions
+      - global/naming
+    tasks:
+      - id: "1.1"
+        title: Plugin-Manifest Template
+        depends_on: []
+      - id: "1.2"
+        title: Hook-Templates
+        depends_on: []
+      - id: "1.3"
+        title: Agent-Templates aktualisieren
+        depends_on: []
+      - id: "1.4"
+        title: Neue Skill-Templates
+        depends_on: []
+      - id: "1.5"
+        title: CLAUDE.md Template aktualisieren
+        depends_on: []
+      - id: "1.6"
+        title: config.yml Template aktualisieren
+        depends_on: []
+
+  - name: cli-install
+    agent: backend
+    standards:
+      - global/tech-stack
+      - global/naming
+    tasks:
+      - id: "2.1"
+        title: Neue Verzeichnisse in install.ts
+        depends_on: ["1.1", "1.2"]
+      - id: "2.2"
+        title: chmod und pathMappings in install.ts
+        depends_on: ["2.1"]
+
+  - name: cli-health
+    agent: backend
+    standards:
+      - global/tech-stack
+    tasks:
+      - id: "3.1"
+        title: Neue Health-Checks
+        depends_on: ["2.2"]
+
+  - name: cli-meta
+    agent: backend
+    standards:
+      - global/naming
+    tasks:
+      - id: "4.1"
+        title: package.json Version Bump
+        depends_on: ["3.1"]
+      - id: "4.2"
+        title: Tests aktualisieren
+        depends_on: ["4.1"]
+
+  - name: template-docs
+    agent: backend
+    standards:
+      - global/naming
+    tasks:
+      - id: "5.1"
+        title: Template-Docs synchronisieren
+        depends_on: []
+
+execution_phases:
+  - phase: 1
+    parallel: ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "5.1"]
+  - phase: 2
+    parallel: ["2.1", "2.2"]
+  - phase: 3
+    parallel: ["3.1"]
+  - phase: 4
+    parallel: ["4.1", "4.2"]
+
+agent_mapping:
+  backend: debug
+  frontend: debug
+  testing: debug
+  database: debug
+  security: security
+  infrastructure: devops
+  ci_cd: devops
+  architecture: architect
+  documentation: researcher
+  review: architect
+
+quality_gates:
+  after_templates:
+    - agent: architect
+      check: template_completeness, file_identity_with_root
+  after_cli_code:
+    - agent: security
+      check: no_unsafe_chmod, proper_path_handling
+  after_tests:
+    - agent: architect
+      check: all_tests_pass, build_succeeds

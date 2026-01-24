@@ -1,0 +1,102 @@
+# Orchestration Configuration for CLI Tests
+# Generated from: ./spec.md
+# Date: 2026-01-23
+# Status: Completed
+
+feature: cli-tests
+spec_folder: workflow/specs/2026-01-23-cli-tests/
+
+task_groups:
+  - name: infrastructure
+    agent: debug
+    standards:
+      - testing/coverage
+      - global/naming
+    tasks:
+      - id: "1.1"
+        title: Test Helpers
+        depends_on: []
+        status: completed
+      - id: "1.2"
+        title: Build Configuration
+        depends_on: []
+        status: completed
+
+  - name: unit-tests
+    agent: debug
+    standards:
+      - testing/coverage
+    tasks:
+      - id: "2.1"
+        title: fs-utils Tests
+        depends_on: ["1.1", "1.2"]
+        status: completed
+      - id: "2.2"
+        title: state-manager Tests
+        depends_on: ["1.1"]
+        status: completed
+      - id: "2.3"
+        title: conflict-detector Tests
+        depends_on: ["1.1"]
+        status: completed
+      - id: "2.4"
+        title: gdpr-validator Tests
+        depends_on: ["1.1"]
+        status: completed
+      - id: "2.5"
+        title: settings-merger Tests
+        depends_on: ["1.1"]
+        status: completed
+      - id: "2.6"
+        title: preflight Tests
+        depends_on: ["1.1"]
+        status: completed
+
+  - name: integration-tests
+    agent: debug
+    standards:
+      - testing/coverage
+    tasks:
+      - id: "3.1"
+        title: Install Command Integration
+        depends_on: ["2.1", "2.2", "2.6"]
+        status: completed
+      - id: "3.2"
+        title: Commands Integration
+        depends_on: ["2.3", "2.4", "2.5"]
+        status: completed
+
+  - name: verification
+    agent: debug
+    standards:
+      - testing/coverage
+    tasks:
+      - id: "4.1"
+        title: Build & Verify
+        depends_on: ["3.1", "3.2"]
+        status: completed
+
+execution_phases:
+  - phase: 1
+    parallel: ["1.1", "1.2"]
+    status: completed
+  - phase: 2
+    parallel: ["2.1", "2.2", "2.3", "2.4", "2.5", "2.6"]
+    status: completed
+  - phase: 3
+    parallel: ["3.1", "3.2"]
+    status: completed
+  - phase: 4
+    parallel: ["4.1"]
+    status: completed
+
+agent_mapping:
+  debug: debug
+
+quality_gates:
+  after_unit_tests:
+    - agent: debug
+      check: all_tests_pass
+  after_integration_tests:
+    - agent: debug
+      check: build_succeeds, all_174_tests_pass

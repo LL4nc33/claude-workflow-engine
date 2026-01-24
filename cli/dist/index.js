@@ -56,7 +56,7 @@ const resolve_1 = require("./commands/resolve");
 const state_manager_1 = require("./lib/state-manager");
 const logger_1 = require("./lib/logger");
 const path = __importStar(require("path"));
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 async function main() {
     const args = process.argv.slice(2);
     const command = args[0];

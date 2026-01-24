@@ -1,0 +1,25 @@
+{
+  "hooks": [
+    {
+      "event": "SessionStart",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-start.sh",
+      "timeout": 10000
+    },
+    {
+      "event": "PreToolUse",
+      "matcher": {
+        "tool_name": ["Write", "Edit"]
+      },
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/pre-write-validate.sh",
+      "timeout": 5000
+    },
+    {
+      "event": "PostToolUse",
+      "matcher": {
+        "tool_name": ["Write", "Edit"]
+      },
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/post-write-log.sh",
+      "timeout": 5000
+    }
+  ]
+}

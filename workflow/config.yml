@@ -1,10 +1,10 @@
 # =============================================================================
 # Claude Workflow Engine Configuration - oidanice-agents
-# Version: 0.1.0
+# Version: 0.2.0
 # GDPR-compliant setup for Austrian/EU usage
 # =============================================================================
 
-version: 0.1.0
+version: 0.2.0
 default_profile: default
 
 # -----------------------------------------------------------------------------
@@ -131,6 +131,59 @@ orchestration:
   per_spec_config: workflow/specs/{folder}/orchestration.yml
   default_execution_mode: phase-by-phase
   track_progress: true
+
+# -----------------------------------------------------------------------------
+# Plugin Architecture (6 Layers)
+# -----------------------------------------------------------------------------
+
+plugin:
+  name: claude-workflow-engine
+  version: 0.2.0
+  manifest: .claude-plugin/plugin.json
+  layers:
+    - layer: 1
+      name: CLAUDE.md
+      path: .claude/CLAUDE.md
+    - layer: 2
+      name: Commands
+      path: .claude/commands/workflow/
+    - layer: 3
+      name: Skills
+      path: .claude/skills/workflow/
+    - layer: 4
+      name: Agents
+      path: .claude/agents/
+    - layer: 5
+      name: Hooks
+      path: hooks/hooks.json
+    - layer: 6
+      name: Plugin Packaging
+      path: .claude-plugin/plugin.json
+
+# -----------------------------------------------------------------------------
+# MCP Server Integration (recommended, not required)
+# -----------------------------------------------------------------------------
+
+mcp:
+  recommended_servers:
+    - name: serena
+      description: Semantic code analysis via Language Server
+      tools:
+        - find_symbol
+        - get_symbols_overview
+        - find_referencing_symbols
+        - replace_symbol_body
+        - search_for_pattern
+      used_by: [architect, researcher, debug, ask]
+
+    - name: greptile
+      description: PR management and code review integration
+      tools:
+        - list_merge_requests
+        - get_merge_request
+        - search_greptile_comments
+        - list_merge_request_comments
+      used_by: [orchestrator, security]
 
 # -----------------------------------------------------------------------------
 # Profile Configuration

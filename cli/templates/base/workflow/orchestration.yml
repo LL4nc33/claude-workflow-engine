@@ -2,11 +2,11 @@
 # Claude Workflow Engine Orchestration Configuration
 # Optimized for 7-agent system with 4 quality gates, fallback strategies,
 # and observability hooks.
-# Version: 0.1.0
+# Version: 0.2.0
 # =============================================================================
 
 project_name: "Claude Workflow Engine"
-version: "0.1.0"
+version: "0.2.0"
 
 # -----------------------------------------------------------------------------
 # Workflow Phases (5-Phase Command Chain)

@@ -23,7 +23,7 @@ import { StateManager } from './lib/state-manager';
 import { Logger } from './lib/logger';
 import * as path from 'path';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);

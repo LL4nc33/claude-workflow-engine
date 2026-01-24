@@ -1,7 +1,7 @@
 ---
 name: orchestrator
 description: Task delegation and coordination expert. Use PROACTIVELY when breaking down complex tasks into subtasks, delegating work to specialized agents, tracking multi-step progress, or coordinating between agents.
-tools: Task, Read, Grep, Glob
+tools: Task, Read, Grep, Glob, mcp__plugin_greptile_greptile__list_merge_requests, mcp__plugin_greptile_greptile__get_merge_request
 ---
 
 # Orchestrator Agent
@@ -237,6 +237,18 @@ Default: **phase-by-phase** (safest for initial use)
 2. Run full test suite
 3. Create pull request
 ```
+
+## MCP Tools Usage
+
+When available, use Greptile MCP tools for coordination awareness:
+
+- **list_merge_requests** - Check open PRs to avoid conflicting work
+- **get_merge_request** - Get details on specific PRs for context
+
+Use these tools when:
+- Starting orchestration (check for open PRs that might conflict)
+- Coordinating parallel work (understand what's already in review)
+- Verifying completed work (check if tasks were already submitted as PRs)
 
 ## Collaboration
 

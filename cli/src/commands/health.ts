@@ -48,6 +48,14 @@ export async function healthCommand(args: string[]): Promise<void> {
   log.section('DSGVO/GDPR');
   checks.push(...checkGDPR(targetPath, log, options.verbose));
 
+  // --- Hooks & Scripts ---
+  log.section('Hooks & Scripts');
+  checks.push(...checkHookScripts(targetPath, log, options.fix));
+
+  // --- Skills ---
+  log.section('Skills');
+  checks.push(...checkSkillsCount(targetPath, log));
+
   // --- Directory Structure ---
   log.section('Directory Structure');
   checks.push(...checkDirectoryStructure(targetPath, log));
@@ -124,6 +132,8 @@ function checkCoreFiles(targetPath: string, log: Logger): HealthCheck[] {
     { path: 'workflow/config.yml', critical: true },
     { path: '.claude/CLAUDE.md', critical: true },
     { path: '.claude/settings.local.json', critical: true },
+    { path: '.claude-plugin/plugin.json', critical: true },
+    { path: 'hooks/hooks.json', critical: true },
     { path: '.gitignore', critical: false },
   ];
 
@@ -336,6 +346,132 @@ function checkGDPR(targetPath: string, log: Logger, verbose: boolean): HealthChe
   return checks;
 }
 
+function checkHookScripts(targetPath: string, log: Logger, autoFix: boolean): HealthCheck[] {
+  const checks: HealthCheck[] = [];
+  const fs = require('fs');
+  const scriptsDir = path.join(targetPath, 'hooks', 'scripts');
+
+  if (!pathExists(scriptsDir)) {
+    log.fail('hooks/scripts/ directory missing');
+    checks.push({
+      component: 'hook_scripts',
+      status: 'error',
+      message: 'Hook scripts directory missing',
+      fixable: false,
+    });
+    return checks;
+  }
+
+  const expectedScripts = ['common.sh', 'session-start.sh', 'pre-write-validate.sh', 'post-write-log.sh'];
+  let allExecutable = true;
+
+  for (const script of expectedScripts) {
+    const scriptPath = path.join(scriptsDir, script);
+    if (!pathExists(scriptPath)) {
+      log.fail(`Missing: hooks/scripts/${script}`);
+      checks.push({
+        component: `hook_script_${script}`,
+        status: 'error',
+        message: `Hook script missing: ${script}`,
+        fixable: false,
+      });
+      allExecutable = false;
+      continue;
+    }
+
+    try {
+      const stats = fs.statSync(scriptPath);
+      const isExecutable = (stats.mode & 0o111) !== 0;
+      if (isExecutable) {
+        log.pass(`hooks/scripts/${script} (executable)`);
+      } else {
+        allExecutable = false;
+        if (autoFix) {
+          fs.chmodSync(scriptPath, 0o755);
+          log.pass(`hooks/scripts/${script} (fixed: chmod +x)`);
+        } else {
+          log.warn(`hooks/scripts/${script} is not executable`);
+          checks.push({
+            component: `hook_script_${script}`,
+            status: 'warning',
+            message: `${script} is not executable`,
+            fixable: true,
+            fixAction: `chmod +x hooks/scripts/${script}`,
+          });
+        }
+      }
+    } catch {
+      log.fail(`Cannot stat: hooks/scripts/${script}`);
+      allExecutable = false;
+    }
+  }
+
+  if (allExecutable && checks.filter(c => c.component.startsWith('hook_script_')).length === 0) {
+    checks.push({
+      component: 'hook_scripts',
+      status: 'ok',
+      message: 'All hook scripts present and executable',
+      fixable: false,
+    });
+  }
+
+  return checks;
+}
+
+function checkSkillsCount(targetPath: string, log: Logger): HealthCheck[] {
+  const checks: HealthCheck[] = [];
+  const fs = require('fs');
+  const skillsDir = path.join(targetPath, '.claude', 'skills', 'workflow');
+
+  if (!pathExists(skillsDir)) {
+    log.fail('.claude/skills/workflow/ directory missing');
+    checks.push({
+      component: 'skills_count',
+      status: 'error',
+      message: 'Skills directory missing',
+      fixable: false,
+    });
+    return checks;
+  }
+
+  // Count skill directories (each should have a SKILL.md)
+  let skillCount = 0;
+  try {
+    const entries = fs.readdirSync(skillsDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        const skillFile = path.join(skillsDir, entry.name, 'SKILL.md');
+        if (pathExists(skillFile)) {
+          skillCount++;
+        }
+      }
+    }
+  } catch {
+    // ignore read errors
+  }
+
+  const expectedMin = 10;
+  if (skillCount >= expectedMin) {
+    log.pass(`${skillCount} skills found (minimum: ${expectedMin})`);
+    checks.push({
+      component: 'skills_count',
+      status: 'ok',
+      message: `${skillCount} skills present`,
+      fixable: false,
+    });
+  } else {
+    log.warn(`Only ${skillCount} skills found (expected at least ${expectedMin})`);
+    checks.push({
+      component: 'skills_count',
+      status: 'warning',
+      message: `Only ${skillCount}/${expectedMin} skills found`,
+      fixable: false,
+    });
+  }
+
+  return checks;
+}
+
 function checkDirectoryStructure(targetPath: string, log: Logger): HealthCheck[] {
   const checks: HealthCheck[] = [];
 
@@ -346,6 +482,9 @@ function checkDirectoryStructure(targetPath: string, log: Logger): HealthCheck[]
     'workflow/specs',
     '.claude',
     '.claude/agents',
+    '.claude-plugin',
+    'hooks',
+    'hooks/scripts',
   ];
 
   let allPresent = true;
@@ -393,6 +532,7 @@ async function executeHealthFix(check: HealthCheck, targetPath: string, log: Log
       const dirs = [
         'workflow', 'workflow/standards', 'workflow/product',
         'workflow/specs', '.claude', '.claude/agents',
+        '.claude-plugin', 'hooks', 'hooks/scripts',
       ];
       for (const dir of dirs) {
         const fullPath = path.join(targetPath, dir);

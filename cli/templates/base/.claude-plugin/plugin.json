@@ -1,0 +1,19 @@
+{
+  "name": "claude-workflow-engine",
+  "version": "0.2.0",
+  "description": "Multi-Agent Workflow System: 7 specialized agents, 5-phase development workflow, standards injection, and spec-driven development",
+  "author": "LL4nc33",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "multi-agent",
+    "standards",
+    "orchestration",
+    "spec-driven",
+    "claude-code"
+  ],
+  "commands": "./.claude/commands",
+  "agents": "./.claude/agents",
+  "skills": "./.claude/skills",
+  "hooks": "./hooks/hooks.json"
+}

@@ -1,7 +1,7 @@
 ---
 name: security
 description: Security audit and vulnerability expert. Use PROACTIVELY when reviewing authentication, authorization, input validation, secrets management, dependency vulnerabilities, or any OWASP Top 10 concerns.
-tools: Read, Grep, Glob, Bash(trivy:*), Bash(grype:*), Bash(semgrep:*), Bash(nmap:*), Bash(curl:*)
+tools: Read, Grep, Glob, Bash(trivy:*), Bash(grype:*), Bash(semgrep:*), Bash(nmap:*), Bash(curl:*), mcp__plugin_greptile_greptile__search_greptile_comments, mcp__plugin_greptile_greptile__list_merge_request_comments
 ---
 
 # Security Agent
@@ -142,6 +142,18 @@ curl -I https://target.example.com  # Header inspection
 ### Findings
 [Specific issues found]
 ```
+
+## MCP Tools Usage
+
+When available, use Greptile MCP tools for PR-based security insights:
+
+- **search_greptile_comments** - Search past code review comments for security patterns
+- **list_merge_request_comments** - Review PR comments for security-related feedback
+
+Use these tools when:
+- Checking if similar security issues were flagged in past PRs
+- Understanding recurring security patterns in the codebase
+- Reviewing whether security feedback from past reviews was addressed
 
 ## Collaboration
 

@@ -1,28 +1,35 @@
 # Product Roadmap
 
-## Phase 1: Foundation (Completed)
-- [x] Research workflow integration patterns
-- [x] Set up base and project installation
-- [x] Configure config.yml with Claude Code integration
-- [x] Implement GDPR-compliant setup
-- [x] Prepare 3-Layer Context Model
-- [x] Define initial standards for all domains
-- [x] Create agent-specific skills
+## Phase 1: MVP (Current - v0.1.0)
 
-## Phase 2: Agent Integration (Completed)
-- [x] Enhance existing agents with workflow context references
-- [x] Create orchestration patterns for task delegation
-- [x] Set up /discover-standards workflow for codebase pattern extraction
-- [ ] Implement /improve-skills for skill optimization
+- [x] 7 specialized agents (architect, ask, debug, devops, orchestrator, researcher, security)
+- [x] 5-phase workflow commands (plan-product, shape-spec, write-spec, create-tasks, orchestrate-tasks)
+- [x] 3-layer context model (Standards, Product, Specs)
+- [x] 11 coding standards across 7 domains
+- [x] Standards-as-Skills integration with Claude Code
+- [x] CLI with install, health, check, status, resolve, rollback commands
+- [x] Cross-platform support (Linux, macOS, Windows)
+- [x] Documentation (getting-started, workflow, agents, standards, cli, integration, configuration)
+- [ ] Automated tests for CLI commands
+- [ ] End-to-end workflow tests
 
-## Phase 3: Workflow Refinement
-- [ ] Define spec templates for common feature types
-- [ ] Create profile inheritance for different project types
-- [ ] Implement cross-agent communication standards
-- [ ] Add monitoring/observability for agent performance
+## Phase 2: Distribution
 
-## Phase 4: Advanced Features
-- [ ] Consider claude-os integration for session memory persistence
-- [ ] Evaluate local embedding options for maximum data sovereignty
-- [ ] Create reusable profiles for common tech stacks
-- [ ] Document best practices and lessons learned
+- [ ] Publish CLI to npm (`npx @oidanice/claude-workflow-engine-cli install .`)
+- [ ] Community-contributed standards (shared standards registry)
+- [ ] Plugin system for custom agents
+- [ ] GitHub Actions for CI/CD of the engine itself
+
+## Phase 3: Expansion
+
+- [ ] Additional specialized agents (e.g., performance, accessibility, i18n)
+- [ ] Tech-stack profiles (React, Python, Rust, Go, etc.)
+- [ ] Profile inheritance for project types (API, fullstack, library, CLI)
+- [ ] Cross-agent communication improvements
+
+## Phase 4: Ecosystem
+
+- [ ] Shared standards marketplace
+- [ ] Session memory persistence between conversations
+- [ ] Metrics and observability for agent performance
+- [ ] Best practices documentation from community usage

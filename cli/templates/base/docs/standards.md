@@ -1,8 +1,8 @@
 # Standards
 
-Standards are the "HOW" layer in the 3-Layer Context Model. They define conventions, patterns, and best practices that agents follow when implementing tasks. Standards live in `workflow/standards/` and are organized by domain.
+Standards sind die "HOW"-Schicht im 3-Layer Context Model. Sie definieren Konventionen, Patterns und Best Practices, die Agenten bei der Task-Implementierung befolgen. Standards leben in `workflow/standards/` und sind nach Domaenen organisiert.
 
-## The 3-Layer Context Model
+## Das 3-Schichten-Kontextmodell
 
 ```
 Layer 1: Standards (HOW)     -> workflow/standards/
@@ -10,78 +10,81 @@ Layer 2: Product (WHAT/WHY)  -> workflow/product/
 Layer 3: Specs (WHAT NEXT)   -> workflow/specs/
 ```
 
-- **Standards** ensure consistency across features and agents
-- **Product** keeps the big picture visible (mission, roadmap, architecture)
-- **Specs** define concrete, actionable work items
+- **Standards** sichern Konsistenz ueber Features und Agenten hinweg
+- **Product** haelt das grosse Bild sichtbar (Mission, Roadmap, Architektur)
+- **Specs** definieren konkrete, umsetzbare Arbeitspakete
 
-## Domains and standards
+## Domaenen und Standards
 
-Claude Workflow Engine ships with 11 standards in 7 domains:
+Claude Workflow Engine liefert 11 Standards in 7 Domaenen:
 
-| Domain | Standards | Purpose |
-|--------|-----------|---------|
-| `global/` | tech-stack, naming | Cross-cutting conventions |
-| `api/` | response-format, error-handling | API design patterns |
-| `database/` | migrations | Schema change patterns |
-| `devops/` | ci-cd, containerization, infrastructure | Infrastructure conventions |
-| `frontend/` | components | UI component patterns |
-| `testing/` | coverage | Test structure and targets |
-| `agents/` | agent-conventions | Agent definition standards |
+| Domaene | Standards | Zweck |
+|---------|-----------|-------|
+| `global/` | tech-stack, naming | Uebergreifende Konventionen |
+| `api/` | response-format, error-handling | API-Design-Patterns |
+| `database/` | migrations | Schema-Change-Patterns |
+| `devops/` | ci-cd, containerization, infrastructure | Infrastruktur-Konventionen |
+| `frontend/` | components | UI-Component-Patterns |
+| `testing/` | coverage | Test-Struktur und Zielwerte |
+| `agents/` | agent-conventions | Agent-Definitions-Standards |
 
-### Where standards live
+### Verzeichnisstruktur
 
 ```
 workflow/standards/
-  index.yml                    # Registry of all standards
+  index.yml                    # Registry aller Standards
   global/
-    tech-stack.md              # Framework versions, tooling
-    naming.md                  # File/variable/API naming
+    tech-stack.md              # Framework-Versionen, Tooling
+    naming.md                  # Datei-/Variablen-/API-Benennung
   api/
-    response-format.md         # Response envelope, status codes
-    error-handling.md          # Error codes, logging, GDPR
+    response-format.md         # Response-Envelope, Status-Codes
+    error-handling.md          # Error-Codes, Logging, GDPR
   database/
-    migrations.md              # Migration naming, reversibility
+    migrations.md              # Migration-Benennung, Reversibilitaet
   devops/
-    ci-cd.md                   # Pipeline patterns
-    containerization.md        # Docker conventions
-    infrastructure.md          # Terraform/K8s patterns
+    ci-cd.md                   # Pipeline-Patterns
+    containerization.md        # Docker-Konventionen
+    infrastructure.md          # Terraform/K8s-Patterns
   frontend/
-    components.md              # Component structure, a11y
+    components.md              # Component-Struktur, Accessibility
   testing/
-    coverage.md                # Coverage targets, test structure
+    coverage.md                # Coverage-Zielwerte, Test-Struktur
   agents/
-    agent-conventions.md       # Agent permissions, skill formats
+    agent-conventions.md       # Agent-Permissions, Skill-Formate
 ```
 
-## How standards are used
+## Wie Standards genutzt werden
 
-Standards are consumed in three ways:
+Standards werden auf drei Arten konsumiert:
 
-### 1. Skills-based auto-matching
+### 1. Skills-basiertes Auto-Matching
 
-When `standards_as_claude_code_skills: true` in `config.yml` (default), standards are registered as Claude Code Skills in `.claude/skills/workflow/`. Claude automatically applies relevant standards based on the task context without loading all 11 into every prompt.
+Wenn `standards_as_claude_code_skills: true` in `config.yml` gesetzt ist (Default), werden Standards als Claude Code Skills in `.claude/skills/workflow/` registriert. Claude wendet automatisch relevante Standards basierend auf dem Task-Kontext an -- ohne alle 11 in jeden Prompt zu laden.
 
-Skills directories:
+Skills-Verzeichnisse:
 
 ```
 .claude/skills/workflow/
-  global-standards/
-  api-standards/
-  database-standards/
-  devops-standards/
-  frontend-standards/
-  testing-standards/
-  agent-standards/
+  global-standards/       # Standards-Skill
+  api-standards/          # Standards-Skill
+  database-standards/     # Standards-Skill
+  devops-standards/       # Standards-Skill
+  frontend-standards/     # Standards-Skill
+  testing-standards/      # Standards-Skill
+  agent-standards/        # Standards-Skill
+  mcp-usage/              # Plugin-Skill: MCP-Tool-Katalog
+  hook-patterns/          # Plugin-Skill: Hook-Referenz
+  plugin-config/          # Plugin-Skill: 6-Schichten-Architektur
 ```
 
-### 2. Inline injection during orchestration
+### 2. Inline-Injection waehrend Orchestrierung
 
-When the orchestrator delegates tasks, it reads the relevant standards files and pastes their full content into the delegation prompt. Subagents cannot read file references -- they need the text inline.
+Wenn der Orchestrator Tasks delegiert, liest er die relevanten Standards-Dateien und fuegt ihren vollstaendigen Inhalt in den Delegation-Prompt ein. Subagenten koennen keine Dateireferenzen lesen -- sie brauchen den Text inline.
 
-Which standards get injected depends on the task type:
+Welche Standards injiziert werden, haengt vom Task-Typ ab:
 
-| Task domain | Standards injected |
-|-------------|-------------------|
+| Task-Domaene | Injizierte Standards |
+|--------------|---------------------|
 | backend | global/tech-stack, global/naming, api/response-format, api/error-handling |
 | frontend | global/tech-stack, global/naming, frontend/components |
 | database | global/tech-stack, global/naming, database/migrations |
@@ -89,21 +92,21 @@ Which standards get injected depends on the task type:
 | devops | devops/ci-cd, devops/containerization, devops/infrastructure |
 | security | global/tech-stack, global/naming |
 
-`global/tech-stack` is always injected regardless of task type.
+`global/tech-stack` wird immer injiziert, unabhaengig vom Task-Typ.
 
-### 3. Manual injection via command
+### 3. Manuelle Injection via Command
 
-You can inject standards into the current conversation at any time:
+Du kannst Standards jederzeit in die aktuelle Konversation injizieren:
 
 ```
-/workflow/inject-standards                        # Auto-suggest relevant ones
-/workflow/inject-standards api                    # All standards in api/
-/workflow/inject-standards api/response-format    # Specific standard
+/workflow/inject-standards                        # Relevante automatisch vorschlagen
+/workflow/inject-standards api                    # Alle Standards in api/
+/workflow/inject-standards api/response-format    # Spezifischer Standard
 ```
 
-## The standards index
+## Der Standards-Index
 
-`workflow/standards/index.yml` is the registry that maps each standard to a description and tags for matching:
+`workflow/standards/index.yml` ist die Registry, die jeden Standard auf eine Beschreibung und Tags fuer Matching abbildet:
 
 ```yaml
 global:
@@ -123,79 +126,84 @@ api:
     tags: [error, exception, logging, error-code, gdpr]
 ```
 
-The index enables `/inject-standards` to suggest relevant standards without reading all files.
+Regeln fuer den Index:
 
-## Managing standards
+- Eintraege alphabetisch innerhalb jeder Domaene
+- Jeder Eintrag braucht `description` und `tags`
+- Tags ermoeglichen `/inject-standards` das Vorschlagen relevanter Standards ohne alle Dateien zu lesen
 
-### Discover standards from your codebase
+## Standards verwalten
+
+### Standards aus der Codebase entdecken
 
 ```
 /workflow/discover-standards
 ```
 
-This command:
-1. Analyzes your codebase for patterns (unusual, opinionated, tribal, consistent)
-2. Presents findings and lets you select which to document
-3. Asks "why" for each pattern to capture the reasoning
-4. Drafts concise standards files
-5. Updates the index
+Dieser Command:
 
-**Example:**
+1. Analysiert deine Codebase nach Patterns (ungewoehnlich, opinionated, tribal, konsistent)
+2. Praesentiert Ergebnisse und laesst dich waehlen, welche dokumentiert werden
+3. Fragt nach dem "Warum" fuer jedes Pattern
+4. Erstellt knappe Standards-Dateien
+5. Aktualisiert den Index
+
+**Beispiel-Interaktion:**
 
 ```
-Claude: I analyzed your API code and found these patterns:
-        1. Response Envelope - All responses use { success, data, error }
-        2. Error Codes - Custom codes like AUTH_001, DB_002
-        3. Pagination - Cursor-based with consistent param names
+Claude: Ich habe deinen API-Code analysiert und diese Patterns gefunden:
+        1. Response Envelope - Alle Responses nutzen { success, data, error }
+        2. Error Codes - Custom Codes wie AUTH_001, DB_002
+        3. Pagination - Cursor-basiert mit konsistenten Param-Namen
 
-        Which would you like to document?
-You:    Yes, all of them
+        Welche moechtest du dokumentieren?
+Du:     Ja, alle davon
 
-Claude: For the Response Envelope pattern:
-        - What problem does this solve?
-        - Are there exceptions?
-You:    Frontend always knows where to find data. No exceptions.
+Claude: Fuer das Response-Envelope-Pattern:
+        - Welches Problem loest das?
+        - Gibt es Ausnahmen?
+Du:     Frontend weiss immer wo die Daten sind. Keine Ausnahmen.
 
-Claude: Here's the draft for api/response-format.md:
-        [draft content]
-        Create this file?
+Claude: Hier ist der Entwurf fuer api/response-format.md:
+        [Entwurfsinhalt]
+        Diese Datei erstellen?
 ```
 
-### Rebuild the index
+### Index neu bauen
 
 ```
 /workflow/index-standards
 ```
 
-Scans `workflow/standards/` for all `.md` files, compares with the existing index, adds new entries, and removes stale ones. Run this after manually creating or deleting standards files.
+Scannt `workflow/standards/` nach allen `.md`-Dateien, vergleicht mit dem bestehenden Index, fuegt neue Eintraege hinzu und entfernt veraltete. Fuehre das aus nachdem du Standards-Dateien manuell erstellt oder geloescht hast.
 
-### Inject standards into context
+### Standards in den Kontext injizieren
 
 ```
 /workflow/inject-standards
 ```
 
-Three modes depending on context:
+Drei Modi abhaengig vom Kontext:
 
-1. **Conversation** - Reads standards content into the current chat
-2. **Skill creation** - Outputs `@file` references or full content for inclusion in a skill
-3. **Planning** - Outputs references or content for inclusion in a spec
+1. **Konversation** -- Liest Standards-Inhalt in den aktuellen Chat
+2. **Skill-Erstellung** -- Gibt `@file`-Referenzen oder vollstaendigen Inhalt fuer Skills aus
+3. **Planung** -- Gibt Referenzen oder Inhalt fuer Specs aus
 
-## Writing good standards
+## Gute Standards schreiben
 
-Standards are injected into AI context windows. Every word costs tokens. Write them to be scannable:
+Standards werden in AI-Context-Windows injiziert. Jedes Wort kostet Tokens. Schreibe sie scanbar:
 
 **Do:**
 
 ```markdown
 # Error Responses
 
-Use error codes: `AUTH_001`, `DB_001`, `VAL_001`
+Verwende Error-Codes: `AUTH_001`, `DB_001`, `VAL_001`
 
 { "success": false, "error": { "code": "AUTH_001", "message": "..." } }
 
-- Always include both code and message
-- Log full error server-side, return safe message to client
+- Immer Code und Message inkludieren
+- Vollen Error serverseitig loggen, sichere Message an Client zurueckgeben
 ```
 
 **Don't:**
@@ -203,53 +211,55 @@ Use error codes: `AUTH_001`, `DB_001`, `VAL_001`
 ```markdown
 # Error Handling Guidelines
 
-When an error occurs in our application, we have established a consistent
-pattern for how errors should be formatted and returned to the client.
-This helps maintain consistency across our API and makes it easier for
-frontend developers to handle errors appropriately...
-[continues for 3 more paragraphs]
+Wenn in unserer Applikation ein Error auftritt, haben wir ein konsistentes
+Pattern etabliert wie Errors formatiert und an den Client zurueckgegeben
+werden sollen. Das hilft die Konsistenz ueber unsere API zu wahren und
+macht es einfacher fuer Frontend-Entwickler Errors angemessen zu
+behandeln...
+[geht noch 3 Absaetze weiter]
 ```
 
-Rules for concise standards:
+Regeln fuer knappe Standards:
 
-- Lead with the rule, explain why second (if needed)
-- Use code examples -- show, don't tell
-- Skip the obvious (don't document what code makes clear)
-- One standard per concept
-- Bullet points over paragraphs
+- Regel zuerst, Erklaerung danach (wenn noetig)
+- Code-Beispiele verwenden -- zeigen, nicht erzaehlen
+- Offensichtliches weglassen (nicht dokumentieren was der Code klarmacht)
+- Ein Standard pro Konzept
+- Bullet Points statt Absaetze
 
-## Creating custom standards
+## Eigene Standards erstellen
 
-To add a new standard manually:
+Um einen neuen Standard manuell hinzuzufuegen:
 
-1. Create the file in the appropriate domain folder:
+1. **Datei erstellen** im passenden Domaenen-Ordner:
    ```
    workflow/standards/api/authentication.md
    ```
 
-2. Write concise content (see guidelines above)
+2. **Inhalt schreiben** (siehe Richtlinien oben)
 
-3. Update the index:
+3. **Index aktualisieren:**
    ```
    /workflow/index-standards
    ```
 
-4. If using skills-based matching, the standard will be auto-discovered. If you want explicit control, add it to the relevant skill in `.claude/skills/workflow/`.
+4. **Skill-Discovery:** Bei Skills-basiertem Matching wird der Standard automatisch entdeckt. Fuer explizite Kontrolle fuege ihn zum relevanten Skill in `.claude/skills/workflow/` hinzu.
 
-## Standards in orchestration
+## Standards in der Orchestrierung
 
-During `/workflow/orchestrate-tasks`, standards injection follows these rules from `orchestration.yml`:
+Waehrend `/workflow/orchestrate-tasks` folgt die Standards-Injection diesen Regeln aus `orchestration.yml`:
 
-- **Method:** `inline` (paste full content, not file references)
-- **Always inject:** `global/tech-stack`
-- **Max per task:** 5 standards (to avoid context overflow)
-- **Cache:** Orchestrator caches reads within a session
+- **Methode:** `inline` (vollstaendigen Inhalt einfuegen, keine Dateireferenzen)
+- **Immer injiziert:** `global/tech-stack`
+- **Max pro Task:** 5 Standards (um Context-Overflow zu vermeiden)
+- **Cache:** Orchestrator cached Reads innerhalb einer Session
 
-The orchestrator maps task domains to standards via `standards_injection.domain_mapping` in `orchestration.yml`. See [Configuration](configuration.md) for details.
+Der Orchestrator mappt Task-Domaenen auf Standards via `standards_injection.domain_mapping` in `orchestration.yml`. Siehe [Konfiguration](konfiguration.md) fuer Details.
 
-## See also
+## Siehe auch
 
-- [Workflow Guide](workflow.md) - How standards are surfaced during spec shaping
-- [Agents](agents.md) - Which standards each agent receives as context
-- [Configuration](configuration.md) - standards_injection settings in orchestration.yml
-- [Integration](integration.md) - How standards work when integrating into existing projects
+- [Workflow-Guide](workflow.md) -- Wie Standards waehrend Spec-Shaping auftauchen
+- [Agenten](agenten.md) -- Welche Standards jeder Agent als Kontext erhaelt
+- [Konfiguration](konfiguration.md) -- standards_injection-Settings in orchestration.yml
+- [Integration](integration.md) -- Wie Standards bei der Integration in bestehende Projekte funktionieren
+- [Plattform-Architektur](plattform-architektur.md) -- Skills im 6-Schichten-Modell

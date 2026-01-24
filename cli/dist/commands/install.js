@@ -187,6 +187,9 @@ function performInstallation(options, log) {
         '.claude/agents',
         '.claude/commands/workflow',
         '.claude/skills/workflow',
+        '.claude-plugin',
+        'hooks',
+        'hooks/scripts',
         'docs',
     ];
     for (const dir of dirs) {
@@ -203,6 +206,7 @@ function performInstallation(options, log) {
         '.claude-commands': '.claude/commands',
         '.claude-skills': '.claude/skills',
         '.claude-CLAUDE.md': '.claude/CLAUDE.md',
+        '.claude-plugin': '.claude-plugin',
         'workflow/standards-full': 'workflow/standards',
     };
     const skipFiles = new Set(['.gitignore-add']);
@@ -231,8 +235,15 @@ function performInstallation(options, log) {
                 continue;
             }
             fs.copyFileSync(src, dest);
+            // Make shell scripts executable (hooks/scripts/*.sh)
+            if (destFile.endsWith('.sh')) {
+                fs.chmodSync(dest, 0o755);
+                log.step(`Installed: ${destFile} (chmod +x)`);
+            }
+            else {
+                log.step(`Installed: ${destFile}`);
+            }
             installedFiles.push(destFile);
-            log.step(`Installed: ${destFile}`);
         }
     }
     // Apply profile-specific templates (override defaults)
@@ -282,6 +293,9 @@ function dryRunInstall(options, log) {
         '.claude/agents/',
         '.claude/commands/workflow/',
         '.claude/skills/workflow/',
+        '.claude-plugin/',
+        'hooks/',
+        'hooks/scripts/',
     ];
     log.info('Directories to create:');
     for (const dir of dirs) {
@@ -292,6 +306,9 @@ function dryRunInstall(options, log) {
     log.info('Files to generate:');
     log.info('  .claude/CLAUDE.md');
     log.info('  .claude/settings.local.json');
+    log.info('  .claude-plugin/plugin.json');
+    log.info('  hooks/hooks.json');
+    log.info('  hooks/scripts/*.sh (chmod +x)');
     log.info('  workflow/config.yml');
     log.info('  .gitignore (update)');
     log.newline();

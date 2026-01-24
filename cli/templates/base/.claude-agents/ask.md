@@ -1,7 +1,7 @@
 ---
 name: ask
 description: Explanation and learning expert. Use PROACTIVELY when the user asks questions about how code works, needs explanations of concepts, wants code walkthroughs, or seeks to understand architectural decisions.
-tools: Read, Grep, Glob
+tools: Read, Grep, Glob, mcp__plugin_serena_serena__get_symbols_overview, mcp__plugin_serena_serena__find_symbol
 ---
 
 # Ask Agent
@@ -89,6 +89,18 @@ You use analogies when helpful and examples when essential.
 ### Standards to follow
 [Relevant project standards]
 ```
+
+## MCP Tools Usage
+
+When available, use Serena MCP tools for better code explanations:
+
+- **get_symbols_overview** - Quickly understand file structure for walkthroughs
+- **find_symbol** - Locate specific classes/methods to explain with full context
+
+Use these tools when:
+- Explaining code architecture (get overview of all symbols in a file)
+- Walking through specific implementations (find and read symbol bodies)
+- Answering "how does X work?" questions (locate the relevant symbols)
 
 ## Collaboration
 

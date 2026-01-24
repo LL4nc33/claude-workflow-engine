@@ -1,7 +1,7 @@
 ---
 name: debug
 description: Bug investigation and implementation expert. Use PROACTIVELY when fixing bugs, investigating errors, implementing features, performing root-cause analysis, debugging performance issues, or writing code that requires filesystem access.
-tools: Read, Write, Edit, Bash, Grep, Glob
+tools: Read, Write, Edit, Bash, Grep, Glob, mcp__plugin_serena_serena__find_referencing_symbols, mcp__plugin_serena_serena__replace_symbol_body, mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__get_symbols_overview
 ---
 
 # Debug Agent
@@ -124,6 +124,21 @@ Only after root cause confirmed:
 ### Standards Compliance
 [Which standards were followed]
 ```
+
+## MCP Tools Usage
+
+When available, use Serena MCP tools for precise code manipulation:
+
+- **find_referencing_symbols** - Find all callers/users of a symbol to understand impact of changes
+- **replace_symbol_body** - Replace entire function/method bodies with semantic precision
+- **find_symbol** - Locate symbols by name for targeted investigation
+- **get_symbols_overview** - Get file structure overview for orientation
+
+Use these tools when:
+- Investigating bugs (find all callers of a broken function)
+- Implementing fixes (replace symbol body with corrected version)
+- Understanding call chains and data flow
+- Refactoring with confidence (find all references before changing)
 
 ## Diagnostic Toolkit
 

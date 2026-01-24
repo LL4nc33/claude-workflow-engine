@@ -23,7 +23,7 @@ import { Logger } from './logger';
 
 const STATE_FILE = '.installation-state.json';
 const BACKUP_DIR = '.workflow-backups';
-const CURRENT_VERSION = '0.1.0';
+const CURRENT_VERSION = '0.2.0';
 
 export class StateManager {
   private targetPath: string;

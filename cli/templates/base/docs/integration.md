@@ -1,82 +1,89 @@
-# Integration Guide
+# Integrations-Guide
 
-How to add Claude Workflow Engine to an existing project. This guide covers installation methods, conflict resolution, and what changes in your project.
+Wie du Claude Workflow Engine in ein bestehendes Projekt integrierst. Dieser Guide behandelt CLI-basierte und manuelle Installation, Konfliktloesung und Deinstallation.
 
-## Before you start
+## Bevor du startest
 
-Check if your project already has any of these:
-- `.claude/` directory (Claude Code configuration)
-- `.claude/settings.local.json` (Claude Code permissions)
-- `.claude/agents/` (existing agents)
-- `.claude/commands/` (existing slash commands)
-- `CLAUDE.md` (existing project context)
+Pruefe, ob in deinem Projekt bereits Folgendes existiert:
 
-If any exist, the CLI will detect conflicts and help you resolve them. Nothing gets silently overwritten.
+- `.claude/` Verzeichnis (Claude Code Konfiguration)
+- `.claude/settings.local.json` (Claude Code Berechtigungen)
+- `.claude/agents/` (bestehende Agenten)
+- `.claude/commands/` (bestehende Slash Commands)
+- `CLAUDE.md` (bestehender Projektkontext)
+- `workflow/` Verzeichnis (gleichnamiges Verzeichnis fuer andere Zwecke)
 
-## Method 1: CLI installation (recommended)
+Die CLI erkennt Konflikte automatisch und ueberschreibt nichts ohne Rueckfrage.
 
-The CLI handles conflicts, backups, and permissions safely.
+## Methode 1: CLI-Installation (empfohlen)
 
-### Step 1: Build the CLI
+Die CLI uebernimmt Konflikterkennung, Backups und Berechtigungen.
+
+### Schritt 1: CLI bauen
 
 ```bash
-# From the claude-workflow-engine repository
+# Aus dem claude-workflow-engine Repository
 cd cli
 npm install
 npm run build
 ```
 
-### Step 2: Preview changes
+### Schritt 2: Aenderungen vorschau (Dry Run)
 
-Always dry-run first:
+Fuehre immer zuerst einen Dry Run durch:
 
 ```bash
-node dist/index.js install --dry-run --verbose /path/to/your/project
+node dist/index.js install --dry-run --verbose /pfad/zu/deinem/projekt
 ```
 
-This shows exactly what would be created, modified, or skipped.
+Die Ausgabe zeigt dir exakt, welche Dateien erstellt, geaendert oder uebersprungen werden.
 
-### Step 3: Check for conflicts
+### Schritt 3: Konflikte pruefen
 
 ```bash
-node dist/index.js check --conflicts /path/to/your/project
+node dist/index.js check --conflicts /pfad/zu/deinem/projekt
 ```
 
-Possible conflict types:
-- **File conflicts:** Your project already has files that the engine wants to create
-- **Command conflicts:** Existing slash commands with the same names
-- **Permission issues:** Directories the CLI can't write to
+Moegliche Konflikttypen:
 
-### Step 4: Install
+- **File Conflicts:** Dein Projekt hat bereits Dateien, die die Engine erstellen will
+- **Command Conflicts:** Bestehende Slash Commands mit denselben Namen
+- **Permission Issues:** Verzeichnisse, in die die CLI nicht schreiben kann
+
+### Schritt 4: Installieren
 
 ```bash
-# Standard local installation
-node dist/index.js install /path/to/your/project
+# Standard-Installation (lokal)
+node dist/index.js install /pfad/zu/deinem/projekt
 
-# With a specific tech profile
-node dist/index.js install --profile node /path/to/your/project
+# Mit einem bestimmten Tech-Profil
+node dist/index.js install --profile node /pfad/zu/deinem/projekt
 
-# Force install (skips non-blocking warnings)
-node dist/index.js install --force /path/to/your/project
+# Force-Installation (ueberspringt nicht-blockierende Warnungen)
+node dist/index.js install --force /pfad/zu/deinem/projekt
 ```
 
-### Step 5: Verify
+### Schritt 5: Verifizieren
 
 ```bash
-node dist/index.js health /path/to/your/project
+node dist/index.js health /pfad/zu/deinem/projekt
 ```
 
-## Method 2: Manual installation
+Ein erfolgreicher Health Check zeigt dir den Status aller installierten Komponenten.
 
-If you prefer full control, copy files manually.
+## Methode 2: Manuelle Installation
 
-### Step 1: Create the directory structure
+Falls du volle Kontrolle bevorzugst, kopiere die Dateien manuell.
+
+### Schritt 1: Verzeichnisstruktur erstellen
 
 ```bash
-cd /path/to/your/project
+cd /pfad/zu/deinem/projekt
 mkdir -p .claude/agents
 mkdir -p .claude/commands/workflow
 mkdir -p .claude/skills/workflow
+mkdir -p .claude-plugin
+mkdir -p hooks/scripts
 mkdir -p workflow/standards/global
 mkdir -p workflow/standards/api
 mkdir -p workflow/standards/database
@@ -88,41 +95,49 @@ mkdir -p workflow/product
 mkdir -p workflow/specs
 ```
 
-### Step 2: Copy core files
+### Schritt 2: Core-Dateien kopieren
 
-From the claude-workflow-engine repository:
+Aus dem claude-workflow-engine Repository:
 
 ```bash
-# Agents
-cp .claude/agents/*.md /path/to/your/project/.claude/agents/
+# Agenten
+cp .claude/agents/*.md /pfad/zu/deinem/projekt/.claude/agents/
 
 # Commands
-cp .claude/commands/workflow/*.md /path/to/your/project/.claude/commands/workflow/
+cp .claude/commands/workflow/*.md /pfad/zu/deinem/projekt/.claude/commands/workflow/
 
 # Skills
-cp -r .claude/skills/workflow/* /path/to/your/project/.claude/skills/workflow/
+cp -r .claude/skills/workflow/* /pfad/zu/deinem/projekt/.claude/skills/workflow/
+
+# Plugin-Manifest
+cp .claude-plugin/plugin.json /pfad/zu/deinem/projekt/.claude-plugin/
+
+# Hooks
+cp hooks/hooks.json /pfad/zu/deinem/projekt/hooks/
+cp hooks/scripts/*.sh /pfad/zu/deinem/projekt/hooks/scripts/
+chmod +x /pfad/zu/deinem/projekt/hooks/scripts/*.sh
 
 # Standards
-cp -r workflow/standards/* /path/to/your/project/workflow/standards/
+cp -r workflow/standards/* /pfad/zu/deinem/projekt/workflow/standards/
 
-# Configuration
-cp workflow/config.yml /path/to/your/project/workflow/
-cp workflow/orchestration.yml /path/to/your/project/workflow/
+# Konfiguration
+cp workflow/config.yml /pfad/zu/deinem/projekt/workflow/
+cp workflow/orchestration.yml /pfad/zu/deinem/projekt/workflow/
 ```
 
-### Step 3: Create or merge CLAUDE.md
+### Schritt 3: CLAUDE.md erstellen oder mergen
 
-If your project doesn't have a `CLAUDE.md`, copy it:
+Falls dein Projekt keine `CLAUDE.md` hat:
 
 ```bash
-cp .claude/CLAUDE.md /path/to/your/project/.claude/
+cp .claude/CLAUDE.md /pfad/zu/deinem/projekt/.claude/
 ```
 
-If you already have one, add the agent hierarchy and workflow sections to your existing file. See the template in `.claude/CLAUDE.md` for the required sections.
+Falls bereits eine existiert, fuege die Sektionen fuer Agent Hierarchy, Workflow und Context Model zu deiner bestehenden Datei hinzu. Die Vorlage findest du in `.claude/CLAUDE.md`.
 
-### Step 4: Merge settings
+### Schritt 4: Settings mergen
 
-If `.claude/settings.local.json` exists, merge the required permissions. The engine needs these permission patterns:
+Falls `.claude/settings.local.json` bereits existiert, merge die benoetigten Berechtigungen. Die Engine benoetigt diese Permission Patterns:
 
 ```json
 {
@@ -142,14 +157,14 @@ If `.claude/settings.local.json` exists, merge the required permissions. The eng
 }
 ```
 
-If the file doesn't exist, create it with the above content.
+Falls die Datei nicht existiert, erstelle sie mit dem obigen Inhalt.
 
-### Step 5: Update .gitignore
+### Schritt 5: .gitignore aktualisieren
 
-Add these patterns to your `.gitignore`:
+Fuege diese Patterns zu deiner `.gitignore` hinzu:
 
 ```
-# Claude Workflow Engine - sensitive files
+# Claude Workflow Engine - sensible Dateien
 CLAUDE.local.md
 *.local.md
 .env*
@@ -159,134 +174,147 @@ secrets.*
 .workflow-state.json
 ```
 
-## What gets added to your project
+## Was in dein Projekt kommt
 
-| Path | Purpose | Size |
-|------|---------|------|
-| `.claude/agents/` | 7 agent definition files | ~15 KB |
-| `.claude/commands/workflow/` | 8 slash command files | ~30 KB |
-| `.claude/skills/workflow/` | 7 skill directories | ~10 KB |
-| `.claude/CLAUDE.md` | Project context for Claude | ~3 KB |
-| `workflow/config.yml` | Main configuration | ~3 KB |
-| `workflow/orchestration.yml` | Delegation configuration | ~15 KB |
-| `workflow/standards/` | 11 standard files + index | ~12 KB |
-| `workflow/product/` | Empty (created by /plan-product) | 0 |
-| `workflow/specs/` | Empty (created per feature) | 0 |
+| Pfad | Zweck | Groesse |
+|------|-------|---------|
+| `.claude/agents/` | 7 Agent-Definitionsdateien | ~15 KB |
+| `.claude/commands/workflow/` | 8 Slash-Command-Dateien | ~30 KB |
+| `.claude/skills/workflow/` | 10 Skill-Verzeichnisse (7 Standards + 3 Plugin) | ~15 KB |
+| `.claude/CLAUDE.md` | Projektkontext fuer Claude | ~4 KB |
+| `.claude-plugin/plugin.json` | Plugin-Manifest | ~0.5 KB |
+| `hooks/` | Hook-Definitionen und Scripts | ~5 KB |
+| `workflow/config.yml` | Hauptkonfiguration | ~3 KB |
+| `workflow/orchestration.yml` | Delegations-Konfiguration | ~15 KB |
+| `workflow/standards/` | 11 Standard-Dateien + Index | ~12 KB |
+| `workflow/product/` | Leer (erstellt durch /plan-product) | 0 |
+| `workflow/specs/` | Leer (erstellt pro Feature) | 0 |
 
-Total: approximately 90 KB of configuration and documentation files.
+**Total: ca. 100 KB** an Konfigurations- und Dokumentationsdateien.
 
-## Resolving conflicts
+## Konflikte loesen
 
-### Existing .claude/agents/
+### Bestehende .claude/agents/
 
-If you already have agents:
-- The engine adds its 7 agents alongside yours
-- Name collisions are flagged (e.g., if you already have `debug.md`)
-- Resolution: rename your agent or skip the engine's version
+Falls du bereits Agenten hast:
 
-### Existing .claude/commands/
+- Die Engine fuegt ihre 7 Agenten neben deinen bestehenden hinzu
+- Namenskollisionen werden erkannt (z.B. wenn du bereits eine `debug.md` hast)
+- **Loesung:** Benenne deinen Agenten um oder ueberspringe die Engine-Version
 
-If you already have slash commands:
-- The engine uses a `workflow/` prefix (e.g., `/workflow/plan-product`)
-- Collisions only happen if you also use the `workflow/` prefix
-- Resolution: rename your commands or skip conflicting engine commands
+### Bestehende .claude/commands/
 
-### Existing CLAUDE.md
+Falls du bereits Slash Commands hast:
 
-The engine's CLAUDE.md contains the agent hierarchy, workflow description, and context model reference. Options:
-- **Replace:** Use the engine's version (backs up yours)
-- **Merge:** Add the engine sections to your existing file
-- **Skip:** Keep yours, but agents may not be properly documented to Claude
+- Die Engine verwendet ein `workflow/` Prefix (z.B. `/workflow/plan-product`)
+- Kollisionen treten nur auf, wenn du ebenfalls das `workflow/` Prefix verwendest
+- **Loesung:** Benenne deine Commands um oder ueberspringe konfliktierende Engine-Commands
 
-### Existing settings.local.json
+### Bestehende CLAUDE.md
 
-The CLI merges permissions additively -- your existing permissions are kept, and the engine's required permissions are added. No permissions are removed.
+Die `CLAUDE.md` der Engine enthaelt Agent Hierarchy, Workflow-Beschreibung und Context Model Referenz. Optionen:
 
-### Existing workflow/ directory
+- **Ersetzen:** Verwende die Engine-Version (deine wird gesichert)
+- **Mergen:** Fuege die Engine-Sektionen zu deiner bestehenden Datei hinzu
+- **Ueberspringen:** Behalte deine Version, aber Agenten sind fuer Claude moeglicherweise nicht korrekt dokumentiert
 
-If you happen to have a `workflow/` directory for something else:
-- The CLI will warn about this conflict
-- Resolution: either rename your directory or configure a different path in `config.yml`
+### Bestehende settings.local.json
 
-## Customizing after installation
+Die CLI merged Permissions additiv -- deine bestehenden Berechtigungen bleiben erhalten, und die benoetigten Engine-Permissions werden hinzugefuegt. Keine Berechtigungen werden entfernt.
 
-### Change the standards path
+### Bestehendes workflow/ Verzeichnis
 
-Edit `workflow/config.yml`:
+Falls du ein `workflow/` Verzeichnis fuer andere Zwecke hast:
+
+- Die CLI warnt ueber diesen Konflikt
+- **Loesung:** Benenne dein Verzeichnis um oder konfiguriere einen anderen Pfad in `config.yml`
+
+## Anpassung nach Installation
+
+### Standards-Pfad aendern
+
+Editiere `workflow/config.yml`:
 
 ```yaml
 context_model:
   standards:
-    path: my-custom-standards-path/
+    path: mein-eigener-standards-pfad/
 ```
 
-### Remove agents you don't need
+### Agenten entfernen
 
-Delete agent files from `.claude/agents/`. The remaining agents will still work. The orchestrator will skip deleted agents during delegation.
+Loesche Agent-Dateien aus `.claude/agents/`. Die verbleibenden Agenten funktionieren weiterhin. Der Orchestrator ueberspringt geloeschte Agenten bei der Delegation.
 
-### Disable the CLI safety features
+### CLI-Features deaktivieren
 
-The CLI is optional. If you don't need it, simply don't build or run it. The workflow commands and agents work independently.
+Die CLI ist optional. Falls du sie nicht benoetigst, baue oder starte sie einfach nicht. Die Workflow Commands und Agenten funktionieren unabhaengig davon.
 
-### Adjust tech stack standard
+### Tech Stack Standard anpassen
 
-Edit `workflow/standards/global/tech-stack.md` to match your actual technology choices. This standard is injected into every delegated task.
+Editiere `workflow/standards/global/tech-stack.md` und passe sie an deine tatsaechlichen Technologie-Entscheidungen an. Dieser Standard wird in jede delegierte Task injiziert.
 
-## Uninstallation
+## Deinstallation
 
-### CLI rollback
+### CLI Rollback
 
-If you installed via CLI:
+Falls du via CLI installiert hast:
 
 ```bash
-node cli/dist/index.js rollback /path/to/your/project
+node cli/dist/index.js rollback /pfad/zu/deinem/projekt
 ```
 
-This restores files from the backup created during installation.
+Dies stellt die Dateien aus dem Backup wieder her, das waehrend der Installation erstellt wurde.
 
-### Manual removal
+### Manuelle Entfernung
 
 ```bash
-rm -rf .claude/agents/architect.md .claude/agents/ask.md .claude/agents/debug.md \
-       .claude/agents/devops.md .claude/agents/orchestrator.md \
-       .claude/agents/researcher.md .claude/agents/security.md
+# Engine-Agenten entfernen
+rm -f .claude/agents/architect.md .claude/agents/ask.md .claude/agents/debug.md \
+      .claude/agents/devops.md .claude/agents/orchestrator.md \
+      .claude/agents/researcher.md .claude/agents/security.md
+
+# Engine-Commands und Skills entfernen
 rm -rf .claude/commands/workflow/
 rm -rf .claude/skills/workflow/
+
+# Workflow-Verzeichnis entfernen
 rm -rf workflow/
-# Manually remove engine sections from CLAUDE.md if merged
-# Manually remove engine permissions from settings.local.json if merged
+
+# Falls CLAUDE.md gemerged wurde: Engine-Sektionen manuell entfernen
+# Falls settings.local.json gemerged wurde: Engine-Permissions manuell entfernen
 ```
 
 ## Troubleshooting
 
-### "Agent not found" after installation
+### "Agent nicht gefunden" nach Installation
 
-- Check that `.claude/agents/` contains the `.md` files
-- Check that `CLAUDE.md` references the agents
-- Restart Claude Code (`claude` command)
+- Pruefe, ob `.claude/agents/` die `.md`-Dateien enthaelt
+- Pruefe, ob `CLAUDE.md` die Agenten referenziert
+- Starte Claude Code neu (`claude` Befehl)
 
-### "Command not available"
+### "Command nicht verfuegbar"
 
-- Check that `.claude/commands/workflow/` contains the command files
-- Verify file permissions (must be readable)
-- Check `.claude/settings.local.json` for correct permissions
+- Pruefe, ob `.claude/commands/workflow/` die Command-Dateien enthaelt
+- Verifiziere die Dateiberechtigungen (muessen lesbar sein)
+- Pruefe `.claude/settings.local.json` auf korrekte Permissions
 
-### Standards not loading
+### "Standards laden nicht"
 
-- Verify `workflow/standards/index.yml` exists and is valid YAML
-- Run `/workflow/index-standards` to rebuild the index
-- Check that skills exist in `.claude/skills/workflow/`
+- Verifiziere, dass `workflow/standards/index.yml` existiert und valides YAML ist
+- Fuehre `/workflow/index-standards` aus, um den Index neu aufzubauen
+- Pruefe, ob die Skills in `.claude/skills/workflow/` vorhanden sind
 
-### GDPR warnings after installation
+### "DSGVO-Warnungen" nach Installation
 
 ```bash
-node cli/dist/index.js check --gdpr --fix /path/to/your/project
+node cli/dist/index.js check --gdpr --fix /pfad/zu/deinem/projekt
 ```
 
-This adds missing gitignore patterns automatically.
+Dies fuegt fehlende Gitignore-Patterns automatisch hinzu und stellt sicher, dass sensible Dateien nicht ins Repository gelangen.
 
-## See also
+## Siehe auch
 
-- [Getting Started](getting-started.md) - Fresh installation from scratch
-- [CLI Reference](cli.md) - All CLI commands in detail
-- [Configuration](configuration.md) - Customizing config files after installation
+- [Erste Schritte](erste-schritte.md) -- Neuinstallation von Grund auf
+- [CLI-Referenz](cli.md) -- Alle CLI-Befehle im Detail
+- [Konfiguration](konfiguration.md) -- Konfigurationsdateien nach der Installation anpassen
+- [Plattform-Architektur](plattform-architektur.md) -- 6-Schichten-Architektur und Hooks

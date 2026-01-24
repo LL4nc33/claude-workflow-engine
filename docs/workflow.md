@@ -1,133 +1,152 @@
 # Workflow Guide
 
-The Claude Workflow Engine uses a 5-phase workflow that takes you from product idea to implemented feature. Each phase builds on the previous one and produces specific artifacts.
+Die Claude Workflow Engine verwendet einen 5-Phasen-Workflow, der dich von der Produktidee bis zum implementierten Feature fuehrt. Jede Phase baut auf der vorherigen auf und erzeugt spezifische Artefakte.
 
 ```
 /plan-product --> /shape-spec --> /write-spec --> /create-tasks --> /orchestrate-tasks
 ```
 
-## Overview
+## Uebersicht
 
-| Phase | Command | What it does | Output |
-|-------|---------|-------------|--------|
-| 1 | `/workflow/plan-product` | Define product vision | `workflow/product/` |
-| 2 | `/workflow/shape-spec` | Gather requirements | `workflow/specs/{folder}/` |
-| 3 | `/workflow/write-spec` | Technical specification | `spec.md` |
-| 4 | `/workflow/create-tasks` | Task breakdown | `tasks.md`, `orchestration.yml` |
-| 5 | `/workflow/orchestrate-tasks` | Agent delegation | `progress.md` |
+| Phase | Command | Was es tut | Output |
+|-------|---------|-----------|--------|
+| 1 | `/workflow/plan-product` | Produktvision definieren | `workflow/product/` |
+| 2 | `/workflow/shape-spec` | Anforderungen sammeln | `workflow/specs/{folder}/` |
+| 3 | `/workflow/write-spec` | Technische Spezifikation | `spec.md` |
+| 4 | `/workflow/create-tasks` | Task-Aufteilung | `tasks.md`, `orchestration.yml` |
+| 5 | `/workflow/orchestrate-tasks` | Agent-Delegation | `progress.md` |
 
 ## Phase 1: Plan Product
 
 **Command:** `/workflow/plan-product`
 
-**Purpose:** Establish the foundational product documentation. This only needs to run once per project (or when the product direction changes).
+**Zweck:** Die grundlegende Produktdokumentation erstellen. Diese Phase muss nur einmal pro Projekt ausgefuehrt werden (oder wenn sich die Produktrichtung aendert).
 
-**What happens:**
+**Was passiert:**
 
-1. Claude asks about your product's problem, target users, and differentiator
-2. You describe your MVP features and post-launch plans
-3. You specify (or confirm) the tech stack
-4. Three files are created in `workflow/product/`
+1. Claude fragt nach dem Problem deines Produkts, den Zielnutzern und dem Alleinstellungsmerkmal
+2. Du beschreibst deine MVP-Features und Post-Launch-Plaene
+3. Du gibst den Tech Stack an (oder bestaetigst den vorgeschlagenen)
+4. Drei Dateien werden in `workflow/product/` erstellt
 
-**Output files:**
+**Output-Dateien:**
 
-| File | Contains |
-|------|----------|
-| `mission.md` | Problem, target users, unique solution |
-| `roadmap.md` | MVP features, post-launch features |
-| `tech-stack.md` | Frontend, backend, database, other tools |
+| Datei | Inhalt |
+|-------|--------|
+| `mission.md` | Problem, Zielnutzer, einzigartige Loesung |
+| `roadmap.md` | MVP-Features, Post-Launch-Features |
+| `tech-stack.md` | Frontend, Backend, Datenbank, weitere Tools |
 
-**Example interaction:**
+**Beispiel-Interaktion:**
 
 ```
 > /workflow/plan-product
 
-Claude: What problem does this product solve?
-You:    We need a dashboard for monitoring IoT sensor data in real time.
+Claude: Welches Problem loest dieses Produkt?
+Du:     Wir brauchen ein Dashboard zur Echtzeit-Ueberwachung von IoT-Sensordaten.
 
-Claude: Who is this product for?
-You:    Operations engineers at manufacturing plants.
+Claude: Fuer wen ist dieses Produkt?
+Du:     Operations Engineers in Fertigungsanlagen.
 
-Claude: What makes your solution unique?
-You:    Predictive alerts based on historical patterns, not just thresholds.
+Claude: Was macht deine Loesung einzigartig?
+Du:     Praediktive Alerts basierend auf historischen Mustern, nicht nur Schwellenwerten.
 ```
 
-**When to re-run:** When your product direction fundamentally changes. You can also update individual files manually.
+**Erwartete Ausgabe:**
+
+```
+workflow/product/
+  mission.md       # Problem: IoT-Monitoring, Zielgruppe: Ops Engineers
+  roadmap.md       # MVP: Dashboard + Alerts, Post-Launch: ML-Modelle
+  tech-stack.md    # React, Node.js, TimescaleDB, MQTT
+```
+
+**Wann erneut ausfuehren:** Wenn sich die Produktrichtung grundlegend aendert. Du kannst einzelne Dateien auch manuell aktualisieren.
 
 ## Phase 2: Shape Spec
 
 **Command:** `/workflow/shape-spec`
 
-**Prerequisite:** Must be in plan mode. Phase 1 should be completed (product docs exist).
+**Voraussetzung:** Phase 1 muss abgeschlossen sein (Produktdokumentation existiert). Du musst dich im Plan Mode befinden.
 
-**Purpose:** Gather all context needed before writing a technical spec. This is the "thinking before coding" phase.
+**Zweck:** Allen Kontext sammeln, der vor dem Schreiben einer technischen Spezifikation benoetigt wird. Das ist die "erst denken, dann coden"-Phase.
 
-**What happens:**
+**Was passiert:**
 
-1. You describe what you want to build
-2. Claude asks for visuals (mockups, screenshots, examples)
-3. You point to reference implementations in the codebase
-4. Claude surfaces relevant standards from `workflow/standards/`
-5. A spec folder is created with structured planning documents
+1. Du beschreibst, was du bauen willst
+2. Claude fragt nach Visuals (Mockups, Screenshots, Beispiele)
+3. Du verweist auf Reference Implementations in der Codebase
+4. Claude identifiziert relevante Standards aus `workflow/standards/`
+5. Ein Spec-Ordner wird mit strukturierten Planungsdokumenten erstellt
 
-**Output files:**
+**Output-Dateien:**
 
 ```
 workflow/specs/2026-01-23-1430-sensor-dashboard/
-  plan.md          # The full execution plan
-  shape.md         # Scope, decisions, context
-  standards.md     # Full content of applicable standards
-  references.md    # Pointers to similar code
-  visuals/         # Mockups if provided
+  plan.md          # Der vollstaendige Ausfuehrungsplan
+  shape.md         # Scope, Entscheidungen, Kontext
+  standards.md     # Vollstaendiger Inhalt anwendbarer Standards
+  references.md    # Verweise auf aehnlichen Code
+  visuals/         # Mockups falls bereitgestellt
 ```
 
-**The shape.md captures:**
+**Was shape.md erfasst:**
 
-- What you're building (scope)
-- Key decisions made during shaping
-- Visual references
-- Code references studied
-- Product alignment notes
-- Which standards apply and why
+- Was du baust (Scope)
+- Getroffene Entscheidungen waehrend des Shapings
+- Visuelle Referenzen
+- Untersuchte Code-Referenzen
+- Produkt-Alignment-Notizen
+- Welche Standards gelten und warum
 
-**Example interaction:**
+**Beispiel-Interaktion:**
 
 ```
 > /workflow/shape-spec
 
-Claude: What are we building?
-You:    A real-time sensor data chart component with 5-minute rolling window.
+Claude: Was bauen wir?
+Du:     Eine Echtzeit-Sensordaten-Chart-Komponente mit 5-Minuten Rolling Window.
 
-Claude: Do you have any visuals to reference?
-You:    Look at docs/mockups/chart-widget.png
+Claude: Hast du Visuals als Referenz?
+Du:     Schau dir docs/mockups/chart-widget.png an.
 
-Claude: Is there similar code in this codebase?
-You:    The notifications panel in src/features/notifications/ does real-time updates.
+Claude: Gibt es aehnlichen Code in dieser Codebase?
+Du:     Das Notifications Panel in src/features/notifications/ macht Echtzeit-Updates.
 
-Claude: Based on what we're building, these standards may apply:
-        1. frontend/components - UI component structure
-        2. api/response-format - API response envelope
-        Should I include these? (yes / adjust)
-You:    yes
+Claude: Basierend auf dem was wir bauen, koennten diese Standards relevant sein:
+        1. frontend/components - UI-Komponentenstruktur
+        2. api/response-format - API Response Envelope
+        Soll ich diese einbeziehen? (ja / anpassen)
+Du:     ja
+```
+
+**Erwartete Ausgabe:**
+
+```
+Spec-Ordner erstellt: workflow/specs/2026-01-23-1430-sensor-dashboard/
+  - shape.md: Scope, 3 Entscheidungen, 2 Standards
+  - references.md: 1 Code-Referenz (notifications/)
+  - standards.md: frontend/components + api/response-format
+  - visuals/: 1 Mockup verlinkt
 ```
 
 ## Phase 3: Write Spec
 
 **Command:** `/workflow/write-spec`
 
-**Prerequisite:** A spec folder must exist from Phase 2 (containing `shape.md`).
+**Voraussetzung:** Ein Spec-Ordner muss aus Phase 2 existieren (mit `shape.md`).
 
-**Purpose:** Transform the shaped requirements into an unambiguous technical specification that agents can implement from.
+**Zweck:** Die geformten Anforderungen in eine eindeutige technische Spezifikation umwandeln, von der Agents implementieren koennen.
 
-**What happens:**
+**Was passiert:**
 
-1. Claude reads the shape, references, and standards
-2. You confirm or adjust key technical decisions (data model, API design, state management)
-3. A complete `spec.md` is generated
+1. Claude liest Shape, References und Standards
+2. Du bestaetigst oder passt technische Schluesselentscheidungen an (Data Model, API Design, State Management)
+3. Eine vollstaendige `spec.md` wird generiert
 
-**Output file:** `spec.md` added to the spec folder.
+**Output-Datei:** `spec.md` wird dem Spec-Ordner hinzugefuegt.
 
-**Spec structure:**
+**Spec-Struktur:**
 
 ```markdown
 # Technical Specification: {Feature Name}
@@ -149,56 +168,66 @@ You:    yes
 ## Open Questions
 ```
 
-**Example interaction:**
+**Beispiel-Interaktion:**
 
 ```
 > /workflow/write-spec
 
-Claude: I found one spec: 2026-01-23-1430-sensor-dashboard/
-        Should I write the technical specification for this?
-You:    yes
+Claude: Ich habe eine Spec gefunden: 2026-01-23-1430-sensor-dashboard/
+        Soll ich die technische Spezifikation dafuer schreiben?
+Du:     ja
 
-Claude: Before writing the spec, I need to clarify:
-        1. Data Model: WebSocket stream with 5-min ring buffer? (yes / alternative)
-        2. API Design: GET /api/sensors/:id/stream via SSE? (yes / alternative)
-You:    1. yes, 2. Use WebSocket instead of SSE
+Claude: Bevor ich die Spec schreibe, muss ich klaeren:
+        1. Data Model: WebSocket-Stream mit 5-Min Ring Buffer? (ja / Alternative)
+        2. API Design: GET /api/sensors/:id/stream via SSE? (ja / Alternative)
+Du:     1. ja, 2. WebSocket statt SSE verwenden
+```
+
+**Erwartete Ausgabe:**
+
+```
+spec.md erstellt in workflow/specs/2026-01-23-1430-sensor-dashboard/
+  - 12 Sektionen
+  - Data Model: WebSocket + Ring Buffer
+  - API: WebSocket-Endpunkt /ws/sensors/:id
+  - 3 offene Fragen zur Klaerung markiert
 ```
 
 ## Phase 4: Create Tasks
 
 **Command:** `/workflow/create-tasks`
 
-**Prerequisite:** `spec.md` must exist in the spec folder.
+**Voraussetzung:** `spec.md` muss im Spec-Ordner existieren.
 
-**Purpose:** Break the specification into atomic, implementable tasks that can be delegated to specialized agents.
+**Zweck:** Die Spezifikation in atomare, implementierbare Tasks aufteilen, die an spezialisierte Agents delegiert werden koennen.
 
-**What happens:**
+**Was passiert:**
 
-1. Claude analyzes the spec and identifies task groups
-2. You confirm the breakdown structure
-3. Each task gets: description, agent assignment, dependencies, acceptance criteria, and file list
-4. An execution order (critical path) is calculated
-5. A per-spec `orchestration.yml` is generated for delegation
+1. Claude analysiert die Spec und identifiziert Task-Gruppen
+2. Du bestaetigst die Aufteilungsstruktur
+3. Jeder Task erhaelt: Beschreibung, Agent-Zuweisung, Abhaengigkeiten, Acceptance Criteria und Dateiliste
+4. Eine Ausfuehrungsreihenfolge (Critical Path) wird berechnet
+5. Eine spec-spezifische `orchestration.yml` wird fuer die Delegation generiert
 
-**Output files:**
+**Output-Dateien:**
 
-| File | Purpose |
-|------|---------|
-| `tasks.md` | Full task list with acceptance criteria |
-| `orchestration.yml` | Machine-readable delegation config |
+| Datei | Zweck |
+|-------|-------|
+| `tasks.md` | Vollstaendige Task-Liste mit Acceptance Criteria |
+| `orchestration.yml` | Maschinenlesbare Delegations-Konfiguration |
 
-**Task sizing:**
+**Task-Groessen:**
 
-| Size | Scope |
-|------|-------|
-| S | Single file, simple logic |
-| M | 2-4 files, moderate complexity |
-| L | 5+ files, complex logic |
+| Groesse | Scope |
+|---------|-------|
+| S | Einzelne Datei, einfache Logik |
+| M | 2-4 Dateien, moderate Komplexitaet |
+| L | 5+ Dateien, komplexe Logik |
 
-**Agent mapping:**
+**Agent-Mapping:**
 
-| Task type | Assigned agent |
-|-----------|---------------|
+| Task-Typ | Zugewiesener Agent |
+|----------|-------------------|
 | backend, frontend, testing, database | debug |
 | security | security |
 | infrastructure, ci_cd | devops |
@@ -206,86 +235,158 @@ You:    1. yes, 2. Use WebSocket instead of SSE
 | documentation | researcher |
 | explanation | ask |
 
-**Example output:**
+**Beispiel-Interaktion:**
 
 ```
-Task breakdown complete:
-  - 12 tasks in 4 groups
-  - 5 execution phases
-  - Estimated effort: M
+> /workflow/create-tasks
+
+Claude: Ich analysiere die Spec "Sensor Dashboard"...
+        Vorgeschlagene Aufteilung: 12 Tasks in 4 Gruppen.
+        Soll ich die Details zeigen? (ja / anpassen)
+Du:     ja
+
+Claude: Phase 1 - Foundation:
+          Task 1.1: DB-Schema (S, debug)
+          Task 1.2: TypeScript Types (S, debug)
+        Phase 2 - Backend:
+          Task 2.1: WebSocket Handler (M, debug)
+          Task 2.2: API Endpoint (M, debug)
+        Phase 3 - Frontend:
+          Task 3.1: Chart-Komponente (M, debug)
+          Task 3.2: State Management (M, debug)
+        Phase 4 - Quality:
+          Task 4.1: Unit Tests (M, debug)
+          Task 4.2: Integration Tests (M, debug)
+          Task 4.3: Security Review (S, security)
+        Phase 5 - Docs:
+          Task 5.1: API-Dokumentation (S, researcher)
+        Passt das? (ja / anpassen)
+Du:     ja
+```
+
+**Erwartete Ausgabe:**
+
+```
+Task-Aufteilung abgeschlossen:
+  - 12 Tasks in 4 Gruppen
+  - 5 Ausfuehrungsphasen
+  - Geschaetzter Aufwand: M
 
 Phase 1: Task 1.1 (Schema), Task 1.2 (Types)
-Phase 2: Task 2.1 (WebSocket handler), Task 2.2 (API endpoint)
-Phase 3: Task 3.1 (Chart component), Task 3.2 (State management)
-Phase 4: Task 4.1 (Unit tests), Task 4.2 (Integration tests)
-Phase 5: Task 5.1 (Documentation)
+Phase 2: Task 2.1 (WebSocket Handler), Task 2.2 (API Endpoint)
+Phase 3: Task 3.1 (Chart-Komponente), Task 3.2 (State Management)
+Phase 4: Task 4.1 (Unit Tests), Task 4.2 (Integration Tests)
+Phase 5: Task 5.1 (Dokumentation)
 ```
 
 ## Phase 5: Orchestrate Tasks
 
 **Command:** `/workflow/orchestrate-tasks`
 
-**Prerequisite:** `tasks.md` and `orchestration.yml` must exist in the spec folder.
+**Voraussetzung:** `tasks.md` und `orchestration.yml` muessen im Spec-Ordner existieren.
 
-**Purpose:** Delegate tasks to specialized agents, track progress, and enforce quality gates.
+**Zweck:** Tasks an spezialisierte Agents delegieren, Fortschritt tracken und Quality Gates durchsetzen.
 
-**What happens:**
+**Was passiert:**
 
-1. You choose an execution mode
-2. Tasks are delegated phase by phase to the appropriate agents
-3. Each delegation includes: task description, relevant standards (injected inline), spec context, and acceptance criteria
-4. After each task, output is verified against acceptance criteria
-5. Quality gates run at phase transitions
-6. Progress is tracked in `progress.md`
+1. Du waehlst einen Ausfuehrungsmodus
+2. Tasks werden phasenweise an die zustaendigen Agents delegiert
+3. Jede Delegation enthaelt: Task-Beschreibung, relevante Standards (inline injiziert), Spec-Kontext und Acceptance Criteria
+4. Nach jedem Task wird der Output gegen die Acceptance Criteria verifiziert
+5. Quality Gates laufen bei Phasenuebergaengen
+6. Fortschritt wird in `progress.md` getrackt
 
-**Execution modes:**
+**Ausfuehrungsmodi:**
 
-| Mode | Behavior |
-|------|----------|
-| automatic | Execute all phases, pause only on failures |
-| phase-by-phase | Confirm after each phase (default) |
-| task-by-task | Confirm after each individual task |
-| selective | Pick specific tasks to execute |
+| Modus | Verhalten |
+|-------|-----------|
+| automatic | Alle Phasen ausfuehren, nur bei Fehlern pausieren |
+| phase-by-phase | Nach jeder Phase bestaetigen (Standard) |
+| task-by-task | Nach jedem einzelnen Task bestaetigen |
+| selective | Bestimmte Tasks zur Ausfuehrung auswaehlen |
 
-**Quality gates:**
+**Quality Gates:**
 
-The orchestration enforces 4 quality gates:
+Die Orchestration erzwingt 4 Quality Gates:
 
-1. **Pre-Implementation** (after write-spec): Architect + Security review the spec
-2. **Pre-Execution** (after create-tasks): Architect verifies task coverage
-3. **Post-Phase** (after each phase): Phase-specific checks (schema valid, tests passing, etc.)
-4. **Final Acceptance** (after all phases): Security scan + architecture review + user sign-off
+1. **Pre-Implementation** (nach write-spec): Architect + Security pruefen die Spec
+2. **Pre-Execution** (nach create-tasks): Architect verifiziert Task-Abdeckung
+3. **Post-Phase** (nach jeder Phase): Phasenspezifische Checks (Schema valide, Tests bestehen, etc.)
+4. **Final Acceptance** (nach allen Phasen): Security Scan + Architecture Review + User Sign-off
 
-Gate results: `PASS` (proceed), `WARN` (log and continue), `BLOCK` (stop and report).
+Gate-Ergebnisse: `PASS` (weiter), `WARN` (loggen und fortfahren), `BLOCK` (stoppen und berichten).
 
-**Failure handling:**
+**Fehlerbehandlung:**
 
-When a task fails:
-1. Retry with additional context (up to 2 retries)
-2. Retry with rephrased instructions
-3. Escalate to user with diagnostics
+Wenn ein Task fehlschlaegt:
+1. Retry mit zusaetzlichem Kontext (bis zu 2 Retries)
+2. Retry mit umformulierten Instruktionen
+3. Eskalation an den User mit Diagnostik
 
-**Output file:** `progress.md` in the spec folder, continuously updated.
+**Beispiel-Interaktion:**
 
-## Skipping phases
+```
+> /workflow/orchestrate-tasks
 
-You don't have to run every phase every time:
+Claude: Spec gefunden: 2026-01-23-1430-sensor-dashboard/
+        12 Tasks in 5 Phasen bereit.
+        Ausfuehrungsmodus? (automatic / phase-by-phase / task-by-task / selective)
+Du:     phase-by-phase
 
-- **Already have a product vision?** Skip Phase 1.
-- **Know exactly what to build?** Start at Phase 3 (manually create a spec).
-- **Want to implement manually?** Stop after Phase 4 and pick tasks yourself.
-- **Only need one agent?** Skip orchestration entirely and delegate directly.
+Claude: Starte Phase 1 - Foundation...
+        > Task 1.1: DB-Schema wird an debug-Agent delegiert...
+        > Task 1.1: PASS - Schema erstellt, Migration lauffaehig
+        > Task 1.2: TypeScript Types wird an debug-Agent delegiert...
+        > Task 1.2: PASS - Types generiert, konsistent mit Schema
+        Phase 1 abgeschlossen. Quality Gate: PASS
+        Weiter mit Phase 2? (ja / stopp / details)
+Du:     ja
+```
 
-## Tips
+**Hook-Verhalten waehrend der Orchestrierung:**
 
-- Run phases in order the first time to understand the full flow
-- Phase 2 (shape-spec) is the most valuable for preventing scope creep
-- Use `phase-by-phase` execution mode until you trust the workflow
-- Standards are injected as full text into delegation prompts (agents can't read file references)
-- Progress.md serves as an audit trail -- check it when something goes wrong
+- **PreToolUse Hook:** Jeder Write/Edit-Aufruf wird gegen Secrets-Patterns geprueft. Schreibzugriffe auf `.env`, `credentials.*`, `secrets.*` und `*.local.md` werden automatisch blockiert.
+- **PostToolUse Hook:** Bei aktiver Orchestrierung (Spec mit `in-progress` Status) werden alle Dateiaenderungen in `delegation.log` protokolliert (nur Dateiname + Zeitstempel, GDPR-konform).
 
-## See also
+**Output-Datei:** `progress.md` im Spec-Ordner, wird kontinuierlich aktualisiert.
 
-- [Agents](agents.md) - Which agent handles which task type
-- [Standards](standards.md) - How standards are injected during orchestration
-- [Configuration](configuration.md) - Customize execution modes and quality gates
+**Erwartete Ausgabe (progress.md):**
+
+```markdown
+# Progress: Sensor Dashboard
+
+## Status: In Ausfuehrung (Phase 2/5)
+
+| Task | Agent | Status | Dauer |
+|------|-------|--------|-------|
+| 1.1 Schema | debug | PASS | 45s |
+| 1.2 Types | debug | PASS | 30s |
+| 2.1 WebSocket | debug | IN_PROGRESS | - |
+| 2.2 API | debug | PENDING | - |
+```
+
+## Phasen ueberspringen
+
+Du musst nicht jede Phase jedes Mal ausfuehren:
+
+- **Produktvision existiert bereits?** Ueberspringe Phase 1.
+- **Du weisst genau was du bauen willst?** Starte bei Phase 3 (erstelle manuell eine Spec).
+- **Willst du manuell implementieren?** Hoere nach Phase 4 auf und waehle Tasks selbst aus.
+- **Brauchst du nur einen Agent?** Ueberspringe die Orchestration komplett und delegiere direkt.
+
+## Tipps
+
+- Fuehre die Phasen beim ersten Mal der Reihe nach aus, um den gesamten Flow zu verstehen
+- Phase 2 (shape-spec) ist am wertvollsten zur Vermeidung von Scope Creep
+- Verwende den `phase-by-phase`-Modus bis du dem Workflow vertraust
+- Standards werden als Volltext in Delegations-Prompts injiziert (Agents koennen keine Datei-Referenzen lesen)
+- Die progress.md dient als Audit Trail -- pruefe sie wenn etwas schiefgeht
+- Jede Phase ist idempotent: erneutes Ausfuehren ueberschreibt vorherige Ergebnisse
+- Bei grossen Features lohnt es sich, die Task-Aufteilung manuell zu pruefen bevor du orchestrierst
+
+## Siehe auch
+
+- [Agenten](agenten.md) - Welcher Agent welchen Task-Typ bearbeitet
+- [Standards](standards.md) - Wie Standards waehrend der Orchestration injiziert werden
+- [Konfiguration](konfiguration.md) - Ausfuehrungsmodi und Quality Gates anpassen
+- [Plattform-Architektur](plattform-architektur.md) - Hook-Verhalten und Event-basierte Automatisierung
