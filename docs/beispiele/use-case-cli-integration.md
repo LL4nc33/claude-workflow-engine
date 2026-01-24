@@ -1,17 +1,17 @@
 # Use Case: CLI in bestehendes Node.js Projekt integrieren
 
-Die Claude Workflow Engine in ein bestehendes Express.js Projekt integrieren -- mit Konfliktpruefung, sicherem Install und Health Check.
+Die Claude Workflow Engine in ein bestehendes Express.js Projekt integrieren -- mit Konfliktprüfung, sicherem Install und Health Check.
 
 ## Szenario
 
-Du hast ein bestehendes Express.js Projekt (REST API fuer ein E-Commerce Backend), das seit 8 Monaten in Entwicklung ist. Das Projekt hat bereits:
+Du hast ein bestehendes Express.js Projekt (REST API für ein E-Commerce Backend), das seit 8 Monaten in Entwicklung ist. Das Projekt hat bereits:
 
 - Eine `.claude/`-Datei (nicht Verzeichnis) mit Claude-Notizen
 - Ein `workflow/`-Verzeichnis mit Gulp-Task-Definitionen
 - Bestehende `.gitignore`, `package.json`, Tests
 - 3 Teammitglieder die aktiv entwickeln
 
-Du willst die Claude Workflow Engine integrieren, ohne bestehende Strukturen zu zerstoeren.
+Du willst die Claude Workflow Engine integrieren, ohne bestehende Strukturen zu zerstören.
 
 ---
 
@@ -19,7 +19,7 @@ Du willst die Claude Workflow Engine integrieren, ohne bestehende Strukturen zu 
 
 ### Schritt 1: Vorab-Check auf Konflikte
 
-Bevor du irgendetwas installierst, pruefe auf potenzielle Konflikte:
+Bevor du irgendetwas installierst, prüfe auf potenzielle Konflikte:
 
 ```bash
 workflow check . --type conflicts
@@ -47,7 +47,7 @@ Conflicts found: 2
 Run 'workflow resolve .' for resolution options.
 ```
 
-Zwei Konflikte gefunden. Schauen wir uns die Loesungsoptionen an:
+Zwei Konflikte gefunden. Schauen wir uns die Lösungsoptionen an:
 
 ```bash
 workflow resolve .
@@ -218,7 +218,7 @@ Health Check Results:
 Status: HEALTHY (8/8 checks passed)
 ```
 
-### Schritt 6: Status pruefen
+### Schritt 6: Status prüfen
 
 ```bash
 workflow status .
@@ -255,13 +255,13 @@ Da das Projekt bereits existiert, nutze `plan-product` um den Ist-Zustand zu dok
 > /workflow/plan-product
 
 Claude: Welches Problem loest dieses Produkt?
-Du:     Wir bauen ein E-Commerce Backend (REST API) fuer einen
+Du:     Wir bauen ein E-Commerce Backend (REST API) für einen
         Online-Marktplatz. Haendler listen Produkte, Kunden
         bestellen, das System verwaltet Bestellungen und Zahlungen.
 
 Claude: Tech Stack?
-Du:     Express.js, PostgreSQL mit Sequelize, Redis fuer Caching,
-        Stripe fuer Payments. Tests mit Jest + Supertest.
+Du:     Express.js, PostgreSQL mit Sequelize, Redis für Caching,
+        Stripe für Payments. Tests mit Jest + Supertest.
 ```
 
 Die `workflow/product/`-Dateien werden basierend auf dem bestehenden Projekt erstellt.
@@ -289,7 +289,7 @@ Hier wird die bestehende Struktur erweitert, nicht ersetzt.
 
 ### Bestehende `workflow/` mit gleichnamigen Dateien
 
-Wenn dein Projekt zufaellig eine `workflow/config.yml` hat (z.B. fuer GitHub Actions):
+Wenn dein Projekt zufaellig eine `workflow/config.yml` hat (z.B. für GitHub Actions):
 
 ```
   [CONFLICT] workflow/config.yml - File exists with different schema
@@ -303,7 +303,7 @@ Wenn dein Projekt zufaellig eine `workflow/config.yml` hat (z.B. fuer GitHub Act
 
 ### DSGVO/Datenschutz-Check
 
-Fuer Projekte im EU-Raum, pruefe die DSGVO-Konformitaet:
+Fuer Projekte im EU-Raum, prüfe die DSGVO-Konformitaet:
 
 ```bash
 workflow check . --type gdpr
@@ -322,7 +322,7 @@ GDPR/DSGVO Check Results:
 Status: PASS (4 OK, 1 Warning)
 ```
 
-### Berechtigungen pruefen
+### Berechtigungen prüfen
 
 ```bash
 workflow check . --type permissions
@@ -378,7 +378,7 @@ Rollback Options:
 | Verifikation | `workflow health .` | 8/8 Checks bestanden |
 | Status | `workflow status .` | Naechste Schritte angezeigt |
 
-**Wichtig:** Zu keinem Zeitpunkt wurden bestehende Dateien geloescht oder ueberschrieben. Die Engine arbeitet additiv und erstellt bei jeder Installation ein Backup.
+**Wichtig:** Zu keinem Zeitpunkt wurden bestehende Dateien geloescht oder überschrieben. Die Engine arbeitet additiv und erstellt bei jeder Installation ein Backup.
 
 ---
 
@@ -392,16 +392,16 @@ Bei Monorepos installierst du die Engine im Root:
 workflow install /path/to/monorepo
 ```
 
-Die Standards gelten dann fuer alle Packages. Spezifische Overrides kannst du ueber Domain-Erweiterungen in den Standards definieren.
+Die Standards gelten dann für alle Packages. Spezifische Overrides kannst du über Domain-Erweiterungen in den Standards definieren.
 
 ### Projekt ohne Node.js
 
-Die Claude Workflow Engine braucht Node.js nur fuer das CLI selbst. Das Zielprojekt kann in jeder Sprache sein (Python, Go, Rust). Die Standards und Agents werden entsprechend angepasst:
+Die Claude Workflow Engine braucht Node.js nur für das CLI selbst. Das Zielprojekt kann in jeder Sprache sein (Python, Go, Rust). Die Standards und Agents werden entsprechend angepasst:
 
 ```bash
 # Python-Projekt
 workflow install /path/to/python-project
-# -> Standards werden fuer Python-Konventionen konfiguriert
+# -> Standards werden für Python-Konventionen konfiguriert
 ```
 
 ### CI/CD-Integration
@@ -422,4 +422,4 @@ Nach der Installation kannst du den Health-Check in deine Pipeline einbauen:
 - [CLI-Referenz](../cli.md) -- Alle Befehle im Detail
 - [Konfiguration](../konfiguration.md) -- config.yml Optionen
 - [Standards anpassen](../standards.md) -- Eigene Standards definieren
-- [Erste Schritte](../erste-schritte.md) -- Einfuehrung fuer neue Nutzer
+- [Erste Schritte](../erste-schritte.md) -- Einfuehrung für neue Nutzer

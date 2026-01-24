@@ -9,17 +9,17 @@ Claude Workflow Engine ist ein Multi-Agent-System, das Claude Code um strukturie
 - 7 spezialisierte Agents (Architect, Debug, Security, DevOps, u.a.)
 - Einen 5-Phasen-Workflow von der Idee bis zur Implementierung
 - Standards, die automatisch auf delegierte Tasks angewendet werden
-- CLI Safety Tools fuer Installation und Health Monitoring
+- CLI Safety Tools für Installation und Health Monitoring
 
 ## Voraussetzungen
 
 | Tool | Version | Zweck |
 |------|---------|-------|
 | Claude Code | aktuell | [claude.ai/code](https://claude.ai/code) -- installiert und authentifiziert |
-| Node.js | >= 18 | [nodejs.org](https://nodejs.org) -- nur fuer CLI Tools |
+| Node.js | >= 18 | [nodejs.org](https://nodejs.org) -- nur für CLI Tools |
 | Git | aktuell | Versionskontrolle |
 
-Pruefe dein Setup:
+Prüfe dein Setup:
 
 ```bash
 claude --version
@@ -27,7 +27,7 @@ node --version   # >= 18
 git --version
 ```
 
-Erwartete Ausgabe (Versionen koennen abweichen):
+Erwartete Ausgabe (Versionen können abweichen):
 
 ```
 1.0.x
@@ -44,11 +44,11 @@ git clone https://github.com/LL4nc33/claude-workflow-engine.git
 cd claude-workflow-engine
 ```
 
-Das ist der schnellste Weg fuer ein neues Projekt. Du hast sofort alle Agents, Commands und Standards verfuegbar.
+Das ist der schnellste Weg für ein neues Projekt. Du hast sofort alle Agents, Commands und Standards verfügbar.
 
 ### Option B: In bestehendes Projekt integrieren
 
-Wenn du Claude Workflow Engine zu einem bestehenden Projekt hinzufuegen willst, nutze den CLI Installer. Details findest du im [Integration Guide](integration.md).
+Wenn du Claude Workflow Engine zu einem bestehenden Projekt hinzufügen willst, nutze den CLI Installer. Details findest du im [Integration Guide](integration.md).
 
 Kurzfassung:
 
@@ -59,7 +59,7 @@ cd cli && npm install && npm run build
 # Vorschau (keine Aenderungen)
 node dist/index.js install --dry-run /pfad/zu/deinem/projekt
 
-# Installation ausfuehren
+# Installation ausführen
 node dist/index.js install /pfad/zu/deinem/projekt
 ```
 
@@ -92,9 +92,9 @@ cli/                   # Safety Tools (optional)
 
 Die wichtigsten Verzeichnisse:
 
-- **`.claude/agents/`** -- Hier leben die Agent-Definitionen. Jeder Agent hat eine eigene Markdown-Datei mit Persoenlichkeit, Zugriffslevel und Aufgabenbereich.
+- **`.claude/agents/`** -- Hier leben die Agent-Definitionen. Jeder Agent hat eine eigene Markdown-Datei mit Persönlichkeit, Zugriffslevel und Aufgabenbereich.
 - **`.claude/commands/workflow/`** -- Die Slash Commands, die du im naechsten Abschnitt nutzen wirst.
-- **`.claude-plugin/`** -- Das Plugin-Manifest, das alle 6 Schichten buendelt.
+- **`.claude-plugin/`** -- Das Plugin-Manifest, das alle 6 Schichten bündelt.
 - **`hooks/`** -- Event-basierte Automatisierung (Secrets-Schutz, Aenderungs-Logging).
 - **`workflow/standards/`** -- Konventionen und Patterns, die automatisch als Context in Tasks injiziert werden.
 - **`workflow/specs/`** -- Hier entstehen deine Feature-Spezifikationen.
@@ -107,7 +107,7 @@ Starte Claude Code in deinem Projektverzeichnis:
 claude
 ```
 
-Jetzt durchlaeufst du die 5 Phasen des Workflows. Jede Phase baut auf der vorherigen auf.
+Jetzt durchläufst du die 5 Phasen des Workflows. Jede Phase baut auf der vorherigen auf.
 
 ---
 
@@ -126,7 +126,7 @@ claude> /workflow/plan-product
 
 Claude: Was ist die Mission deines Produkts? Was soll es loesen?
 
-Du: Eine Task-Management-App fuer kleine Teams mit Fokus auf Einfachheit.
+Du: Eine Task-Management-App für kleine Teams mit Fokus auf Einfachheit.
 
 Claude: Welche technischen Constraints gibt es?
 
@@ -153,14 +153,14 @@ workflow/product/architecture.md  # Architektur-Ueberblick (falls definiert)
 /workflow/shape-spec
 ```
 
-Hier sammelst du Requirements fuer ein konkretes Feature. Claude fragt nach User Stories, Referenzen und anwendbaren Standards.
+Hier sammelst du Requirements für ein konkretes Feature. Claude fragt nach User Stories, Referenzen und anwendbaren Standards.
 
 **Beispiel-Interaktion:**
 
 ```
 claude> /workflow/shape-spec
 
-Claude: Welches Feature moechtest du spezifizieren?
+Claude: Welches Feature möchtest du spezifizieren?
 
 Du: User Authentication mit Email/Password und OAuth.
 
@@ -263,7 +263,7 @@ Tasks werden an spezialisierte Agents delegiert. Der Orchestrator tracked den Fo
 ```
 claude> /workflow/orchestrate-tasks
 
-Claude: Starte Orchestration fuer 20260123-user-auth.
+Claude: Starte Orchestration für 20260123-user-auth.
         Phase 1/3: Design Review (architect agent)
         [...]
         Phase 2/3: Implementation (debug agent)
@@ -288,7 +288,7 @@ Nach dem Klonen oder der Installation pruefst du, ob das System korrekt geladen 
 Starte Claude Code und frage:
 
 ```
-claude> Welche Agents sind verfuegbar?
+claude> Welche Agents sind verfügbar?
 ```
 
 **Erwartete Antwort:** Claude listet alle 7 Agents auf (architect, ask, debug, devops, orchestrator, researcher, security). Wenn nicht, pruefe ob `.claude/agents/` die Agent-Dateien enthaelt und ob `CLAUDE.md` vorhanden ist.
@@ -299,7 +299,7 @@ claude> Welche Agents sind verfuegbar?
 claude> /workflow/
 ```
 
-Claude sollte Autocompletion fuer die 8 Workflow Commands anbieten:
+Claude sollte Autocompletion für die 8 Workflow Commands anbieten:
 
 ```
 /workflow/plan-product
@@ -338,18 +338,18 @@ Overall: HEALTHY
 
 Claude Workflow Engine selbst macht **keine API-Calls** und speichert **keine Daten extern**. Alle Standards, Specs und Konfigurationen bleiben in deinem lokalen Dateisystem und deiner Versionskontrolle.
 
-**Wichtig:** Claude Code selbst nutzt die Anthropic API. Deine Prompts und Code-Context werden als Teil des normalen Claude-Code-Betriebs an Anthropic-Server gesendet. Das ist nichts, was die Workflow Engine kontrolliert -- so funktioniert Claude Code. Siehe [Anthropics Datenschutzerklaerung](https://www.anthropic.com/privacy) fuer Details.
+**Wichtig:** Claude Code selbst nutzt die Anthropic API. Deine Prompts und Code-Context werden als Teil des normalen Claude-Code-Betriebs an Anthropic-Server gesendet. Das ist nichts, was die Workflow Engine kontrolliert -- so funktioniert Claude Code. Siehe [Anthropics Datenschutzerklaerung](https://www.anthropic.com/privacy) für Details.
 
 **DSGVO-Massnahmen im Projekt:**
 
 - Daten-Residenz konfiguriert auf `eu-central-1` (Frankfurt)
 - Keine PII (personenbezogene Daten) in Standards oder Specs erlaubt
-- Sensitive Daten gehoeren in `.local.md`-Dateien (automatisch gitignored)
+- Sensitive Daten gehören in `.local.md`-Dateien (automatisch gitignored)
 - Patterns wie `.env*`, `credentials.*`, `secrets.*` sind ausgeschlossen
 
 ## CLI Tools installieren (optional)
 
-Die CLI bietet Safety Tools fuer Health Monitoring, Conflict Detection und DSGVO-Checks:
+Die CLI bietet Safety Tools für Health Monitoring, Conflict Detection und DSGVO-Checks:
 
 ```bash
 cd cli
@@ -362,17 +362,17 @@ node dist/index.js --help
 
 ```
 install     Workflow Engine in ein Projekt installieren
-health      System-Gesundheitscheck ausfuehren
+health      System-Gesundheitscheck ausführen
 check       Konflikte, DSGVO-Compliance pruefen
 rollback    Installation rueckgaengig machen
 ```
 
-Siehe [CLI Referenz](cli.md) fuer alle Befehle im Detail.
+Siehe [CLI Referenz](cli.md) für alle Befehle im Detail.
 
 ## Naechste Schritte
 
 - [Workflow Guide](workflow.md) -- Jede Phase im Detail verstehen
 - [Agenten](agenten.md) -- Was jeder Agent kann und wann du ihn einsetzt
 - [Standards](standards.md) -- Wie das Standards-System funktioniert
-- [Konfiguration](konfiguration.md) -- Die Engine fuer dein Projekt anpassen
+- [Konfiguration](konfiguration.md) -- Die Engine für dein Projekt anpassen
 - [Plattform-Architektur](plattform-architektur.md) -- 6-Schichten-Architektur, Hooks und MCP-Server

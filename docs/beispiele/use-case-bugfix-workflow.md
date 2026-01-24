@@ -1,6 +1,6 @@
 # Use Case: Systematisches Debugging mit dem Debug-Agent
 
-Ein praxisnahes Beispiel fuer die Fehlersuche bei sporadischen 500er-Fehlern in einer Produktionsumgebung -- ohne den vollen 5-Phasen-Workflow.
+Ein praxisnahes Beispiel für die Fehlersuche bei sporadischen 500er-Fehlern in einer Produktionsumgebung -- ohne den vollen 5-Phasen-Workflow.
 
 ## Szenario
 
@@ -30,8 +30,8 @@ Deine Express.js API gibt seit gestern sporadisch HTTP 500 Fehler zurueck. Betro
 
 - Der Bug auf ein grundlegendes Design-Problem hinweist
 - Der Fix Aenderungen an mehreren Services/Systemen erfordert
-- Neue Standards oder Patterns eingefuehrt werden muessen
-- Das Problem wiederkehrend ist und eine architekturelle Loesung braucht
+- Neue Standards oder Patterns eingeführt werden müssen
+- Das Problem wiederkehrend ist und eine architekturelle Lösung braucht
 
 In unserem Fall: **Debug-Agent direkt.** Der Bug ist lokalisiert, wir brauchen Investigation und einen gezielten Fix.
 
@@ -197,8 +197,8 @@ async getProfile(userId: string) {
 
 Aenderungen:
 
-1. Null-Check fuer den gesamten User (defensiv, war vorher auch nicht da)
-2. Nullish Coalescing (`??`) fuer socialLinks -- leeres Array als Fallback
+1. Null-Check für den gesamten User (defensiv, war vorher auch nicht da)
+2. Nullish Coalescing (`??`) für socialLinks -- leeres Array als Fallback
 
 **Regressionstest hinzugefuegt:**
 
@@ -233,7 +233,7 @@ describe("GET /api/users/:id/profile", () => {
     expect(res.body.data.socialLinks[0].platform).toBe("github");
   });
 
-  it("gibt 404 fuer nicht-existierenden User", async () => {
+  it("gibt 404 für nicht-existierenden User", async () => {
     const token = generateToken("existing-user-id");
 
     const res = await request(app)
@@ -257,25 +257,25 @@ Ca. 5% der Requests auf den Profile-Endpoint geben HTTP 500 zurueck.
 TypeError: Cannot read properties of null (reading 'map').
 
 ### Root Cause
-Commit a3f2c1d fuehrte Social Links in den Profile-Response ein.
+Commit a3f2c1d führte Social Links in den Profile-Response ein.
 Der Code geht davon aus, dass jeder User socialLinks hat (non-null).
-847 User haben keine Social Links, was zu einem Null-Reference-Fehler fuehrt.
+847 User haben keine Social Links, was zu einem Null-Reference-Fehler führt.
 
 ### Fix angewendet
-- Nullish Coalescing Operator fuer socialLinks (Fallback auf leeres Array)
-- Defensiver Null-Check fuer den gesamten User
+- Nullish Coalescing Operator für socialLinks (Fallback auf leeres Array)
+- Defensiver Null-Check für den gesamten User
 - Datei: src/services/user.service.ts
 
 ### Praevention
 - Code Review Checklist um "Null-Safety bei optionalen Relationen" erweitern
 - Prisma-Relations die optional sind IMMER mit Fallback behandeln
-- Standard-Regel: Neue Includes immer mit Test fuer "Relation existiert nicht" absichern
+- Standard-Regel: Neue Includes immer mit Test für "Relation existiert nicht" absichern
 
 ### Regressionstest
 tests/integration/user-profile.test.ts
-- Test fuer User ohne Social Links
-- Test fuer User mit Social Links
-- Test fuer nicht-existierenden User
+- Test für User ohne Social Links
+- Test für User mit Social Links
+- Test für nicht-existierenden User
 ```
 
 ---
@@ -308,8 +308,8 @@ Wenn die Hypothese 2 (Race Condition) zutreffen wuerde, waere der Debugging-Ansa
 Wenn der Bug aufzeigt, dass das System grundsaetzlich falsch designt ist (z.B. synchrone statt asynchrone Verarbeitung), wechsle zum vollen Workflow:
 
 1. Debug-Agent dokumentiert das Problem und die Analyse
-2. Architect-Agent erstellt ein ADR fuer die neue Architektur
-3. Spec wird geschrieben fuer den Umbau
+2. Architect-Agent erstellt ein ADR für die neue Architektur
+3. Spec wird geschrieben für den Umbau
 4. Tasks werden erstellt und orchestriert
 
 ### Heisenbug (verschwindet unter Beobachtung)
@@ -319,7 +319,7 @@ Bei Bugs die nur in Produktion auftreten:
 - Distributed Tracing einsetzen (OpenTelemetry)
 - Structured Logging mit Correlation IDs
 - Feature Flags zum kontrollierten Rollback
-- Canary Deployments fuer den Fix
+- Canary Deployments für den Fix
 
 ---
 

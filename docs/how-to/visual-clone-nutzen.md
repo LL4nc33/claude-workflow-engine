@@ -1,6 +1,6 @@
 # How-To: Visual Website Cloner nutzen
 
-Dieser Guide zeigt dir, wie du die visuelle Identitaet einer Website extrahierst und als CSS Variables, Tailwind Config oder Design Tokens ausgibst.
+Dieser Guide zeigt dir, wie du die visuelle Identität einer Website extrahierst und als CSS Variables, Tailwind Config oder Design Tokens ausgibst.
 
 ## Ziel
 
@@ -13,9 +13,9 @@ Nach diesem Guide hast du:
 ## Voraussetzungen
 
 - Claude Workflow Engine ist installiert
-- **Firecrawl** laeuft als self-hosted Instanz (Docker empfohlen)
-- **SearXNG** laeuft als self-hosted Instanz (optional, fuer Multi-Page-Discovery)
-- Node.js >= 18 (fuer `npx @toon-format/cli`)
+- **Firecrawl** läuft als self-hosted Instanz (Docker empfohlen)
+- **SearXNG** läuft als self-hosted Instanz (optional, für Multi-Page-Discovery)
+- Node.js >= 18 (für `npx @toon-format/cli`)
 
 ### Services aufsetzen
 
@@ -25,12 +25,12 @@ Falls du Firecrawl und SearXNG noch nicht hast:
 # Firecrawl (Docker)
 git clone https://github.com/mendableai/firecrawl.git
 cd firecrawl && docker compose up -d
-# Laeuft auf http://localhost:3002
+# Läuft auf http://localhost:3002
 
 # SearXNG (Docker)
 git clone https://github.com/searxng/searxng-docker.git
 cd searxng-docker && docker compose up -d
-# Laeuft auf http://localhost:8080
+# Läuft auf http://localhost:8080
 ```
 
 ---
@@ -76,22 +76,22 @@ Falls ein Service nicht erreichbar ist, kannst du die URL korrigieren oder trotz
 ```
 > /workflow/visual-clone
 
-Claude: Welche Website moechtest du visuell klonen?
+Claude: Welche Website möchtest du visuell klonen?
 Du:     https://stripe.com
 
 Claude: In welchem Format soll das Ergebnis ausgegeben werden?
 Du:     CSS Variables
 
-Claude: Wie verhaelt sich die Zielseite?
+Claude: Wie verhält sich die Zielseite?
 Du:     Standard (statisch/SSR)
 ```
 
 ### Was passiert
 
-1. **Scraping** — Firecrawl laedt die Seite (HTML, Screenshot, Links)
+1. **Scraping** — Firecrawl lädt die Seite (HTML, Screenshot, Links)
 2. **CSS-Analyse** — Farben, Fonts, Spacing, Breakpoints werden extrahiert
-3. **Optional: Multi-Page** — SearXNG findet weitere Unterseiten fuer vollstaendigeres Design-System
-4. **Output** — Dateien werden im gewaehlten Format generiert
+3. **Optional: Multi-Page** — SearXNG findet weitere Unterseiten für vollständigeres Design-System
+4. **Output** — Dateien werden im gewählten Format generiert
 
 ### Beispiel-Output (CSS Variables)
 
@@ -122,7 +122,7 @@ Du:     Standard (statisch/SSR)
 
 ## Token-Optimierung mit TOON
 
-API-Responses werden automatisch in [TOON-Format](https://github.com/toon-format/toon) konvertiert bevor sie in den LLM-Kontext geladen werden. Das spart ~40% Tokens gegenueber JSON:
+API-Responses werden automatisch in [TOON-Format](https://github.com/toon-format/toon) konvertiert bevor sie in den LLM-Kontext geladen werden. Das spart ~40% Tokens gegenüber JSON:
 
 ```
 # JSON (~200 Tokens)
@@ -134,25 +134,25 @@ API-Responses werden automatisch in [TOON-Format](https://github.com/toon-format
   Pricing,https://example.com/pricing
 ```
 
-Die Konvertierung passiert via `npx @toon-format/cli` — keine manuelle Aktion noetig.
+Die Konvertierung passiert via `npx @toon-format/cli` — keine manuelle Aktion nötig.
 
 ---
 
 ## Tipps
 
-- **SPA-Seiten:** Waehle "SPA (React/Vue/Angular)" im Site-Type-Dialog — Firecrawl wartet dann laenger und scrollt
-- **Cookie-Banner:** Die Option "Cookie-Banner vorhanden" klickt automatisch gaengige Consent-Buttons
-- **Dark Mode:** Wenn die Seite Dark Mode unterstuetzt, fuehre den Workflow zweimal aus (einmal light, einmal dark)
+- **SPA-Seiten:** Wähle "SPA (React/Vue/Angular)" im Site-Type-Dialog — Firecrawl wartet dann länger und scrollt
+- **Cookie-Banner:** Die Option "Cookie-Banner vorhanden" klickt automatisch gängige Consent-Buttons
+- **Dark Mode:** Wenn die Seite Dark Mode unterstützt, führe den Workflow zweimal aus (einmal light, einmal dark)
 - **Google Fonts:** Font-URLs werden direkt aus dem HTML-Head extrahiert
 - **Framework-Seiten:** Bei Tailwind/MUI wird die compiled CSS analysiert, nicht die Utility-Klassen
 
 ## Fehlerbehebung
 
-| Problem | Loesung |
+| Problem | Lösung |
 |---------|---------|
-| Firecrawl nicht erreichbar | `/workflow/clone-setup` erneut ausfuehren |
-| Leere rawHtml | "SPA"-Modus waehlen (wartet auf JS-Rendering) |
-| Keine Fonts gefunden | Google Fonts Links im HTML-Head pruefen |
+| Firecrawl nicht erreichbar | `/workflow/clone-setup` erneut ausführen |
+| Leere rawHtml | "SPA"-Modus wählen (wartet auf JS-Rendering) |
+| Keine Fonts gefunden | Google Fonts Links im HTML-Head prüfen |
 | Timeout | `onlyMainContent: true` verwenden |
 
 ---
@@ -164,4 +164,4 @@ Nach dem Extrahieren kannst du:
 - Die CSS Variables direkt in dein Projekt importieren
 - Den Tailwind Config in `tailwind.config.js` mergen
 - Design Tokens in ein Design-System-Tool (Figma Tokens, Style Dictionary) importieren
-- `/workflow/visual-clone` erneut ausfuehren fuer weitere Seiten
+- `/workflow/visual-clone` erneut ausführen für weitere Seiten

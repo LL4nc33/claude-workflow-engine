@@ -26,11 +26,11 @@ Die Claude Workflow Engine nutzt alle 6 Erweiterungsschichten von Claude Code al
 +------------------------------------------------------------------+
 |  Layer 2: Commands                                               |
 |  .claude/commands/workflow/*.md                                   |
-|  8 Slash-Commands fuer den 5-Phasen-Workflow                     |
+|  8 Slash-Commands für den 5-Phasen-Workflow                     |
 +------------------------------------------------------------------+
 |  Layer 1: CLAUDE.md                                              |
 |  .claude/CLAUDE.md                                               |
-|  Projekt-Anweisungen und Systemueberblick                        |
+|  Projekt-Anweisungen und Systemüberblick                        |
 +------------------------------------------------------------------+
 ```
 
@@ -42,11 +42,11 @@ Die Claude Workflow Engine nutzt alle 6 Erweiterungsschichten von Claude Code al
 
 Die Basis-Schicht. Wird bei jeder Session geladen und gibt Claude Code den Projektkontext:
 - Agent-Hierarchie und -Verzeichnis
-- Workflow-Uebersicht (5 Phasen)
+- Workflow-Übersicht (5 Phasen)
 - 3-Schichten Kontextmodell (Standards/Product/Specs)
 - Standards-Domaenen
 - Konfigurationsdateien
-- MCP-Tool-Uebersicht
+- MCP-Tool-Übersicht
 - Hook-Verhalten
 - GDPR/EU Compliance
 
@@ -56,7 +56,7 @@ Die Basis-Schicht. Wird bei jeder Session geladen und gibt Claude Code den Proje
 
 **Pfad:** `.claude/commands/workflow/`
 
-8 Slash-Commands fuer den strukturierten Workflow:
+8 Slash-Commands für den strukturierten Workflow:
 
 | Command | Phase | Funktion |
 |---------|-------|----------|
@@ -116,7 +116,7 @@ Event-basierte Automatisierung mit Shell-Scripts:
 
 ### SessionStart Hook
 - **Script:** `hooks/scripts/session-start.sh`
-- **Funktion:** Prueft Standards-Aktualitaet, gibt Workflow-Kontext zurueck
+- **Funktion:** Prueft Standards-Aktualitaet, gibt Workflow-Kontext zurück
 - **Output:** `additionalContext` mit Engine-Version, Mission-Status, aktiver Spec
 
 ### PreToolUse Hook (Write/Edit)
@@ -163,7 +163,7 @@ Serena bietet Language-Server-basierte Code-Navigation:
 
 1. Serena-Konfiguration im Projekt erstellen (`.serena/`)
 2. MCP-Server in Claude Code konfigurieren
-3. Agents nutzen automatisch die verfuegbaren Tools
+3. Agents nutzen automatisch die verfügbaren Tools
 
 **Genutzt von:** architect, researcher, debug, ask
 
@@ -173,20 +173,20 @@ Greptile bietet PR-Management und Review-Integration:
 
 1. Greptile-Account erstellen
 2. MCP-Server mit API-Key konfigurieren
-3. Agents nutzen automatisch die verfuegbaren Tools
+3. Agents nutzen automatisch die verfügbaren Tools
 
 **Genutzt von:** orchestrator, security
 
 ### Fallback-Verhalten
 
-Wenn ein MCP-Server nicht verfuegbar ist, fallen Agents auf Standard-Tools zurueck:
+Wenn ein MCP-Server nicht verfügbar ist, fallen Agents auf Standard-Tools zurück:
 - `find_symbol` -> `Grep` + `Glob`
 - `replace_symbol_body` -> `Edit`
 - `list_merge_requests` -> `Bash(gh pr list)`
 
 ---
 
-## Schicht-Abhaengigkeiten
+## Schicht-Abhängigkeiten
 
 ```
 Layer 6 ──referenziert──> Layer 5, 4, 3, 2

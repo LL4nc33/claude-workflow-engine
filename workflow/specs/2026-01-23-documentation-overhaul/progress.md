@@ -22,7 +22,7 @@
 | 3.2 | Use-Case Beispiele | debug | done | 5 Use Cases: API, Bugfix, Greenfield, CLI, Team |
 | 3.3 | Tipps & Best Practices | debug | done | Cheat Sheet, Do/Dont, 10 Fehler, Performance |
 | 3.4 | FAQ & Troubleshooting | debug | done | 22 Fragen in 6 Kategorien |
-| 4.1 | Englische Docs | debug | done | 18 Dateien uebersetzt (7 Core + 4 How-To + 5 Examples + 2 Tips/FAQ) |
+| 4.1 | Englische Docs | debug | done | 18 Dateien übersetzt (7 Core + 4 How-To + 5 Examples + 2 Tips/FAQ) |
 | 4.2 | README_EN.md | debug | done | Englische README mit Links auf docs/en/ |
 | 5.1 | Link-Verification & Cleanup | debug | done | 160 Links geprueft, 7 gefixt, 3 Duplikate geloescht |
 

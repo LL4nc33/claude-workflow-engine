@@ -5,11 +5,11 @@ description: MCP Tool-Katalog und Nutzungsanleitung. Verwende bei semantic code 
 
 # MCP Tools - Nutzungsanleitung
 
-## Verfuegbare MCP-Server
+## Verfügbare MCP-Server
 
 ### Serena (Semantic Code Analysis)
 
-Serena bietet semantische Code-Navigation und -Manipulation ueber den Language Server.
+Serena bietet semantische Code-Navigation und -Manipulation über den Language Server.
 
 | Tool | Funktion | Typischer Einsatz |
 |------|----------|-------------------|
@@ -32,7 +32,7 @@ find_symbol(name_path_pattern="MyClass", depth=1, include_body=False)
 # Wer ruft diese Methode auf?
 find_referencing_symbols(name_path="MyClass/myMethod", relative_path="src/service.ts")
 
-# Ueberblick ueber Dateistruktur
+# Überblick über Dateistruktur
 get_symbols_overview(relative_path="src/controllers/auth.ts", depth=1)
 
 # Methode ersetzen
@@ -91,8 +91,8 @@ search_greptile_comments(query="authentication vulnerability")
 
 ## Voraussetzungen
 
-MCP-Tools sind nur verfuegbar wenn die entsprechenden Server konfiguriert sind:
+MCP-Tools sind nur verfügbar wenn die entsprechenden Server konfiguriert sind:
 - **Serena:** Erfordert `.serena/` Konfiguration im Projekt
 - **Greptile:** Erfordert Greptile-Account und API-Key
 
-Falls ein MCP-Server nicht verfuegbar ist, fallen Agents automatisch auf Standard-Tools zurueck.
+Falls ein MCP-Server nicht verfügbar ist, fallen Agents automatisch auf Standard-Tools zurück.

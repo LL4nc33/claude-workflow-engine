@@ -10,7 +10,7 @@ Layer 2: Product (WHAT/WHY)  -> workflow/product/
 Layer 3: Specs (WHAT NEXT)   -> workflow/specs/
 ```
 
-- **Standards** sichern Konsistenz ueber Features und Agenten hinweg
+- **Standards** sichern Konsistenz über Features und Agenten hinweg
 - **Product** haelt das grosse Bild sichtbar (Mission, Roadmap, Architektur)
 - **Specs** definieren konkrete, umsetzbare Arbeitspakete
 
@@ -79,7 +79,7 @@ Skills-Verzeichnisse:
 
 ### 2. Inline-Injection waehrend Orchestrierung
 
-Wenn der Orchestrator Tasks delegiert, liest er die relevanten Standards-Dateien und fuegt ihren vollstaendigen Inhalt in den Delegation-Prompt ein. Subagenten koennen keine Dateireferenzen lesen -- sie brauchen den Text inline.
+Wenn der Orchestrator Tasks delegiert, liest er die relevanten Standards-Dateien und fügt ihren vollständigen Inhalt in den Delegation-Prompt ein. Subagenten können keine Dateireferenzen lesen -- sie brauchen den Text inline.
 
 Welche Standards injiziert werden, haengt vom Task-Typ ab:
 
@@ -106,7 +106,7 @@ Du kannst Standards jederzeit in die aktuelle Konversation injizieren:
 
 ## Der Standards-Index
 
-`workflow/standards/index.yml` ist die Registry, die jeden Standard auf eine Beschreibung und Tags fuer Matching abbildet:
+`workflow/standards/index.yml` ist die Registry, die jeden Standard auf eine Beschreibung und Tags für Matching abbildet:
 
 ```yaml
 global:
@@ -126,7 +126,7 @@ api:
     tags: [error, exception, logging, error-code, gdpr]
 ```
 
-Regeln fuer den Index:
+Regeln für den Index:
 
 - Eintraege alphabetisch innerhalb jeder Domaene
 - Jeder Eintrag braucht `description` und `tags`
@@ -144,7 +144,7 @@ Dieser Command:
 
 1. Analysiert deine Codebase nach Patterns (ungewoehnlich, opinionated, tribal, konsistent)
 2. Praesentiert Ergebnisse und laesst dich waehlen, welche dokumentiert werden
-3. Fragt nach dem "Warum" fuer jedes Pattern
+3. Fragt nach dem "Warum" für jedes Pattern
 4. Erstellt knappe Standards-Dateien
 5. Aktualisiert den Index
 
@@ -164,7 +164,7 @@ Claude: Fuer das Response-Envelope-Pattern:
         - Gibt es Ausnahmen?
 Du:     Frontend weiss immer wo die Daten sind. Keine Ausnahmen.
 
-Claude: Hier ist der Entwurf fuer api/response-format.md:
+Claude: Hier ist der Entwurf für api/response-format.md:
         [Entwurfsinhalt]
         Diese Datei erstellen?
 ```
@@ -175,7 +175,7 @@ Claude: Hier ist der Entwurf fuer api/response-format.md:
 /workflow/index-standards
 ```
 
-Scannt `workflow/standards/` nach allen `.md`-Dateien, vergleicht mit dem bestehenden Index, fuegt neue Eintraege hinzu und entfernt veraltete. Fuehre das aus nachdem du Standards-Dateien manuell erstellt oder geloescht hast.
+Scannt `workflow/standards/` nach allen `.md`-Dateien, vergleicht mit dem bestehenden Index, fügt neue Eintraege hinzu und entfernt veraltete. Führe das aus nachdem du Standards-Dateien manuell erstellt oder geloescht hast.
 
 ### Standards in den Kontext injizieren
 
@@ -186,8 +186,8 @@ Scannt `workflow/standards/` nach allen `.md`-Dateien, vergleicht mit dem besteh
 Drei Modi abhaengig vom Kontext:
 
 1. **Konversation** -- Liest Standards-Inhalt in den aktuellen Chat
-2. **Skill-Erstellung** -- Gibt `@file`-Referenzen oder vollstaendigen Inhalt fuer Skills aus
-3. **Planung** -- Gibt Referenzen oder Inhalt fuer Specs aus
+2. **Skill-Erstellung** -- Gibt `@file`-Referenzen oder vollständigen Inhalt für Skills aus
+3. **Planung** -- Gibt Referenzen oder Inhalt für Specs aus
 
 ## Gute Standards schreiben
 
@@ -203,7 +203,7 @@ Verwende Error-Codes: `AUTH_001`, `DB_001`, `VAL_001`
 { "success": false, "error": { "code": "AUTH_001", "message": "..." } }
 
 - Immer Code und Message inkludieren
-- Vollen Error serverseitig loggen, sichere Message an Client zurueckgeben
+- Vollen Error serverseitig loggen, sichere Message an Client zurückgeben
 ```
 
 **Don't:**
@@ -212,14 +212,14 @@ Verwende Error-Codes: `AUTH_001`, `DB_001`, `VAL_001`
 # Error Handling Guidelines
 
 Wenn in unserer Applikation ein Error auftritt, haben wir ein konsistentes
-Pattern etabliert wie Errors formatiert und an den Client zurueckgegeben
-werden sollen. Das hilft die Konsistenz ueber unsere API zu wahren und
-macht es einfacher fuer Frontend-Entwickler Errors angemessen zu
+Pattern etabliert wie Errors formatiert und an den Client zurückgegeben
+werden sollen. Das hilft die Konsistenz über unsere API zu wahren und
+macht es einfacher für Frontend-Entwickler Errors angemessen zu
 behandeln...
 [geht noch 3 Absaetze weiter]
 ```
 
-Regeln fuer knappe Standards:
+Regeln für knappe Standards:
 
 - Regel zuerst, Erklaerung danach (wenn noetig)
 - Code-Beispiele verwenden -- zeigen, nicht erzaehlen
@@ -249,12 +249,12 @@ Um einen neuen Standard manuell hinzuzufuegen:
 
 Waehrend `/workflow/orchestrate-tasks` folgt die Standards-Injection diesen Regeln aus `orchestration.yml`:
 
-- **Methode:** `inline` (vollstaendigen Inhalt einfuegen, keine Dateireferenzen)
+- **Methode:** `inline` (vollständigen Inhalt einfuegen, keine Dateireferenzen)
 - **Immer injiziert:** `global/tech-stack`
 - **Max pro Task:** 5 Standards (um Context-Overflow zu vermeiden)
 - **Cache:** Orchestrator cached Reads innerhalb einer Session
 
-Der Orchestrator mappt Task-Domaenen auf Standards via `standards_injection.domain_mapping` in `orchestration.yml`. Siehe [Konfiguration](konfiguration.md) fuer Details.
+Der Orchestrator mappt Task-Domaenen auf Standards via `standards_injection.domain_mapping` in `orchestration.yml`. Siehe [Konfiguration](konfiguration.md) für Details.
 
 ## Siehe auch
 

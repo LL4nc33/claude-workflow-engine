@@ -1,6 +1,6 @@
 # Tipps & Best Practices
 
-Praxiserprobte Empfehlungen fuer den effektiven Einsatz des Claude Workflow Engine Multi-Agent Systems.
+Praxiserprobte Empfehlungen für den effektiven Einsatz des Claude Workflow Engine Multi-Agent Systems.
 
 ---
 
@@ -12,13 +12,13 @@ Praxiserprobte Empfehlungen fuer den effektiven Einsatz des Claude Workflow Engi
 | Bug in Production | `debug` | Voller Zugriff, hypothesengetriebene Investigation |
 | Neues Feature implementieren | `debug` (via `orchestrator`) | Orchestrator delegiert, debug implementiert |
 | CI/CD Pipeline aufsetzen | `devops` | Spezialisiert auf Docker, K8s, IaC |
-| Code auf Vulnerabilities pruefen | `security` | OWASP-Audits, RESTRICTED Access |
-| Codebase verstehen/erklaeren | `ask` | READ-ONLY, didaktische Erklaerungen |
+| Code auf Vulnerabilities prüfen | `security` | OWASP-Audits, RESTRICTED Access |
+| Codebase verstehen/erklären | `ask` | READ-ONLY, didaktische Erklärungen |
 | Technologie evaluieren | `researcher` | Analyse, Vergleiche, Reports |
 | Mehrere Tasks koordinieren | `orchestrator` | Task-Delegation, Parallelisierung |
-| Bestehenden Code refactoren | `debug` | Voller Zugriff, minimale Aenderungen |
+| Bestehenden Code refactoren | `debug` | Voller Zugriff, minimale Änderungen |
 | API Design Review | `architect` | API-Konventionen, Response-Formate |
-| DSGVO-Compliance pruefen | `security` | Datenschutz-Audit, Vulnerability Assessment |
+| DSGVO-Compliance prüfen | `security` | Datenschutz-Audit, Vulnerability Assessment |
 | Performance-Problem analysieren | `debug` | Profiling, Log-Analyse, Zustandsinspektion |
 | Documentation schreiben | `researcher` | READ-ONLY Analyse, strukturierte Reports |
 
@@ -28,26 +28,26 @@ Praxiserprobte Empfehlungen fuer den effektiven Einsatz des Claude Workflow Engi
 
 ## Workflow-Abkuerzungen
 
-Nicht jedes Vorhaben braucht alle 5 Phasen. Hier erfaehrst du, wann du abkuerzen kannst.
+Nicht jedes Vorhaben braucht alle 5 Phasen. Hier erfährst du, wann du abkürzen kannst.
 
 ```
 plan-product -> shape-spec -> write-spec -> create-tasks -> orchestrate-tasks
 ```
 
-| Situation | Ueberspringe | Starte mit |
+| Situation | Überspringe | Starte mit |
 |-----------|--------------|------------|
 | Product existiert bereits | `plan-product` | `shape-spec` |
 | Spec ist klar im Kopf | `shape-spec` | `write-spec` |
 | Nur 1-2 kleine Tasks | `create-tasks` | Direkte Agent-Delegation |
 | Bugfix | Alles | `debug` direkt |
 | Prototyping | Standards-Injection | `write-spec` (minimal) |
-| Bekanntes Pattern | `shape-spec` ausfuehrlich | Einzeiler-Shape genuegt |
+| Bekanntes Pattern | `shape-spec` ausführlich | Einzeiler-Shape genügt |
 
 ### Beispiele
 
 **Schneller Bugfix:**
 ```bash
-# Direkt zum debug Agent, kein Workflow noetig
+# Direkt zum debug Agent, kein Workflow nötig
 claude agents/debug "Fix den TypeError in api/handler.ts Zeile 42"
 ```
 
@@ -55,7 +55,7 @@ claude agents/debug "Fix den TypeError in api/handler.ts Zeile 42"
 ```bash
 # shape-spec ist ein Einzeiler
 claude /workflow/write-spec
-# In der Spec: "CRUD-Endpunkt fuer Users, analog zu Products-Endpunkt"
+# In der Spec: "CRUD-Endpunkt für Users, analog zu Products-Endpunkt"
 ```
 
 **Grosses Feature:**
@@ -65,7 +65,7 @@ claude /workflow/plan-product    # Mission & Goals definieren
 claude /workflow/shape-spec      # Requirements sammeln
 claude /workflow/write-spec      # Technische Spec
 claude /workflow/create-tasks    # Tasks aufteilen
-claude /workflow/orchestrate-tasks  # Delegieren & ausfuehren
+claude /workflow/orchestrate-tasks  # Delegieren & ausführen
 ```
 
 ---
@@ -74,9 +74,9 @@ claude /workflow/orchestrate-tasks  # Delegieren & ausfuehren
 
 ### Do
 
-- **Kurz und scanbar** -- Agents lesen Standards im Context Window, jedes Token zaehlt
+- **Kurz und scanbar** -- Agents lesen Standards im Context Window, jedes Token zählt
 - **Ein Konzept pro Standard** -- Fokussiert und klar abgegrenzt
-- **Code-Beispiele statt langer Erklaerungen** -- Zeigen statt beschreiben
+- **Code-Beispiele statt langer Erklärungen** -- Zeigen statt beschreiben
 - **Opinionated** -- Klare Entscheidungen treffen, keine Optionen auflisten
 - **Testbare Regeln** -- Jede Regel muss verifizierbar sein
 
@@ -119,20 +119,20 @@ rules:
 
 ---
 
-## Haeufige Fehler und Loesungen
+## Häufige Fehler und Lösungen
 
-| Nr. | Fehler | Problem | Loesung |
+| Nr. | Fehler | Problem | Lösung |
 |-----|--------|---------|---------|
 | 1 | Zu viele Standards auf einmal injizieren | Context Window Overflow, Agent verliert Fokus | Max 5 Standards pro Delegation |
-| 2 | Agent mit falschen Tools konfigurieren | Fehlschlaege bei Delegation | Agent-Boundaries in Definition pruefen |
+| 2 | Agent mit falschen Tools konfigurieren | Fehlschläge bei Delegation | Agent-Boundaries in Definition prüfen |
 | 3 | Specs ohne Acceptance Criteria | Vage Implementation, endlose Iterationen | Jede Spec braucht messbare Kriterien |
-| 4 | Product-Phase ueberspringen | Features ohne Zusammenhang, kein roter Faden | Zumindest Mission und Architecture definieren |
-| 5 | Orchestrator fuer Einzeltasks nutzen | Unnoetigter Overhead | Direkt an den passenden Agent delegieren |
+| 4 | Product-Phase überspringen | Features ohne Zusammenhang, kein roter Faden | Zumindest Mission und Architecture definieren |
+| 5 | Orchestrator für Einzeltasks nutzen | Unnötigter Overhead | Direkt an den passenden Agent delegieren |
 | 6 | Standards nie aktualisieren | Drift zwischen Code und Standards | Quartalsweise Review einplanen |
 | 7 | Alle Tasks sequentiell statt parallel | Langsame Ausfuehrung | `parallel: true` in orchestration.yml nutzen |
 | 8 | Quality Gates zu streng | Blockierte Workflows, Frustration | Gates nur an kritischen Uebergaengen |
-| 9 | Zu grosse Spec-Ordner | Unuebersichtlich, schwer zu navigieren | 1 Spec = 1 Feature, nicht 1 Projekt |
-| 10 | Agent-Definitionen ohne klare Boundaries | Ueberlappende Verantwortlichkeiten | Access-Level und Scope explizit definieren |
+| 9 | Zu große Spec-Ordner | Unübersichtlich, schwer zu navigieren | 1 Spec = 1 Feature, nicht 1 Projekt |
+| 10 | Agent-Definitionen ohne klare Boundaries | Überlappende Verantwortlichkeiten | Access-Level und Scope explizit definieren |
 
 ---
 
@@ -140,9 +140,9 @@ rules:
 
 ### Context-Window Optimierung
 
-- **Max 5 Standards pro Delegation** -- Mehr fuehrt zu Qualitaetsverlust
-- **Standards-Granularitaet beachten** -- Kurz aber komplett, keine Roman-Standards
-- **Task-Beschreibungen kompakt halten** -- Praezise statt ausfuehrlich
+- **Max 5 Standards pro Delegation** -- Mehr führt zu Qualitätsverlust
+- **Standards-Granularität beachten** -- Kurz aber komplett, keine Roman-Standards
+- **Task-Beschreibungen kompakt halten** -- Präzise statt ausführlich
 - **Spezialisierte Agents nutzen** -- Bessere Ergebnisse bei weniger Tokens als General-Purpose
 
 ### Token-Optimierung
@@ -165,7 +165,7 @@ tasks:
     parallel_group: "implementation"
   - id: database-migration
     agent: debug
-    parallel_group: "implementation"  # Laeuft parallel mit api-endpoints
+    parallel_group: "implementation"  # Läuft parallel mit api-endpoints
   - id: integration-tests
     agent: debug
     depends_on: [api-endpoints, database-migration]  # Wartet auf beide
@@ -177,7 +177,7 @@ tasks:
 |-------------|----------------|-----------------|
 | Standards auf 5 begrenzen | ~30% weniger Input-Tokens | - |
 | Parallele Tasks | - | 2-3x schneller |
-| Spezialisierter Agent | ~20% weniger Output-Tokens | Praezisere Ergebnisse |
+| Spezialisierter Agent | ~20% weniger Output-Tokens | Präzisere Ergebnisse |
 | Kompakte Task-Beschreibungen | ~15% weniger Input-Tokens | - |
 
 ---
@@ -188,16 +188,16 @@ tasks:
 
 | Modus | Beschreibung | Anwendungsfall |
 |-------|--------------|----------------|
-| `automatic` | Alle Tasks werden ohne Intervention ausgefuehrt | Bekannte, sichere Workflows |
-| `phase-by-phase` | Pause nach jeder Phase fuer Review | Neue Features, kritische Aenderungen |
-| `manual` | Jeder Task benoetigt explizite Freigabe | Production-Deployments, Security-Fixes |
+| `automatic` | Alle Tasks werden ohne Intervention ausgeführt | Bekannte, sichere Workflows |
+| `phase-by-phase` | Pause nach jeder Phase für Review | Neue Features, kritische Änderungen |
+| `manual` | Jeder Task benötigt explizite Freigabe | Production-Deployments, Security-Fixes |
 
 ### Parallele vs. Sequentielle Tasks erkennen
 
 **Parallelisierbar:**
 - Unabhaengige API-Endpunkte
-- Tests fuer verschiedene Module
-- Frontend-Komponenten ohne gemeinsame Abhaengigkeiten
+- Tests für verschiedene Module
+- Frontend-Komponenten ohne gemeinsame Abhängigkeiten
 - Documentation und Implementation
 
 **Sequentiell:**
@@ -250,7 +250,7 @@ workflow/
     architecture.md
     roadmap.md
   specs/
-    2024-01-auth-system/        # Datum + Feature fuer chronologische Ordnung
+    2024-01-auth-system/        # Datum + Feature für chronologische Ordnung
     2024-02-payment-integration/
     2024-03-notification-service/
   standards/
@@ -267,7 +267,7 @@ workflow/
 domains:
   global:
     path: workflow/standards/global/
-    scope: engine        # Engine-Standards (nicht aendern)
+    scope: engine        # Engine-Standards (nicht ändern)
   team:
     path: workflow/standards/team/
     scope: project       # Projekt-spezifische Standards (frei anpassbar)
@@ -284,10 +284,10 @@ domains:
 
 - [Workflow Guide](workflow.md) -- Detaillierte Beschreibung aller 5 Phasen
 - [Agenten](agenten.md) -- Alle Agents im Detail
-- [Standards](standards.md) -- Standards-System erklaert
+- [Standards](standards.md) -- Standards-System erklärt
 - [CLI-Referenz](cli.md) -- Alle Befehle und Optionen
 - [Konfiguration](konfiguration.md) -- config.yml und orchestration.yml
-- [FAQ](faq.md) -- Antworten auf haeufige Fragen
+- [FAQ](faq.md) -- Antworten auf häufige Fragen
 
 ### How-Tos
 

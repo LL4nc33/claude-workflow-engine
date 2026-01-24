@@ -1,6 +1,6 @@
 # How-To: Standards erweitern
 
-Dieser Guide zeigt dir, wie du neue Standards fuer die Claude Workflow Engine erstellst. Standards sind die "HOW"-Schicht im Context Model -- sie definieren Konventionen und Patterns, die Agents bei der Implementation befolgen.
+Dieser Guide zeigt dir, wie du neue Standards für die Claude Workflow Engine erstellst. Standards sind die "HOW"-Schicht im Context Model -- sie definieren Konventionen und Patterns, die Agents bei der Implementation befolgen.
 
 ## Ziel
 
@@ -8,13 +8,13 @@ Nach diesem Guide hast du:
 
 - Einen neuen Standard in der passenden Domain erstellt
 - Den Standard im Index registriert
-- Einen Skill fuer automatisches Matching konfiguriert
+- Einen Skill für automatisches Matching konfiguriert
 - Den Standard validiert und getestet
 
 ## Voraussetzungen
 
 - Claude Workflow Engine ist installiert (siehe [CLI-Installation](cli-installation.md))
-- Verstaendnis des 3-Schichten-Kontextmodells (siehe [Standards-Referenz](../standards.md))
+- Verständnis des 3-Schichten-Kontextmodells (siehe [Standards-Referenz](../standards.md))
 - Ein konkretes Pattern oder eine Konvention die du dokumentieren willst
 
 ## Das 3-Schichten-Kontextmodell
@@ -25,17 +25,17 @@ Layer 2: Product (WHAT/WHY)  -> workflow/product/
 Layer 3: Specs (WHAT NEXT)   -> workflow/specs/
 ```
 
-Standards werden an Agents injiziert und bestimmen **wie** Code geschrieben wird. Sie sichern Konsistenz ueber Features und Agents hinweg.
+Standards werden an Agents injiziert und bestimmen **wie** Code geschrieben wird. Sie sichern Konsistenz über Features und Agents hinweg.
 
 ---
 
 ## Schritt 1: Domain identifizieren
 
-Standards sind in Domaenen organisiert. Waehle die passende:
+Standards sind in Domänen organisiert. Wähle die passende:
 
-| Domain | Pfad | Fuer |
+| Domain | Pfad | Für |
 |--------|------|------|
-| `global/` | `workflow/standards/global/` | Uebergreifende Konventionen |
+| `global/` | `workflow/standards/global/` | Übergreifende Konventionen |
 | `api/` | `workflow/standards/api/` | API-Design-Patterns |
 | `database/` | `workflow/standards/database/` | Schema und Migrations |
 | `devops/` | `workflow/standards/devops/` | Infrastruktur-Konventionen |
@@ -51,7 +51,7 @@ Wenn keine bestehende Domain passt, erstelle eine neue:
 mkdir -p workflow/standards/monitoring/
 ```
 
-Fuege die Domain in `workflow/config.yml` unter `context_model.standards.domains` hinzu:
+Füge die Domain in `workflow/config.yml` unter `context_model.standards.domains` hinzu:
 
 ```yaml
 context_model:
@@ -113,39 +113,39 @@ Strukturiertes JSON-Logging:
 - Immer strukturiert loggen (kein `console.log("error: " + msg)`)
 - Nie PII loggen (keine Emails, Namen, IPs im Klartext)
 - User-IDs nur als anonymisierte Hashes
-- TraceId fuer Request-Korrelation in jedem Log-Entry
+- TraceId für Request-Korrelation in jedem Log-Entry
 - ERROR-Level triggert Alert -- sparsam verwenden
 - Log-Retention: 30 Tage (GDPR-konform)
 
 ## Anti-Patterns
 
 - `console.log` in Production-Code
-- Stack Traces an Client zurueckgeben
+- Stack Traces an Client zurückgeben
 - Passwort-Felder in Debug-Logs
 - Log-Level per Environment statt per Konfiguration
 ```
 
-### Schreibregeln fuer gute Standards
+### Schreibregeln für gute Standards
 
 Standards werden in AI-Context-Windows injiziert. Jedes Wort kostet Tokens.
 
 **Do:**
 
-- Regel zuerst, Erklaerung danach (wenn noetig)
-- Code-Beispiele verwenden -- zeigen, nicht erzaehlen
+- Regel zuerst, Erklärung danach (wenn nötig)
+- Code-Beispiele verwenden -- zeigen, nicht erzählen
 - Offensichtliches weglassen
 - Ein Standard pro Konzept
-- Bullet Points statt Absaetze
-- Tabellen fuer strukturierte Informationen
+- Bullet Points statt Absätze
+- Tabellen für strukturierte Informationen
 
 **Don't:**
 
-- Lange einleitende Absaetze
+- Lange einleitende Absätze
 - Wiederholung von Informationen die der Code zeigt
 - Allgemeine Best Practices die jeder kennt
-- Mehrere unzusammenhaengende Themen in einer Datei
+- Mehrere unzusammenhängende Themen in einer Datei
 
-### Richtige Granularitaet
+### Richtige Granularität
 
 | Zu grob | Richtig | Zu fein |
 |---------|---------|---------|
@@ -153,13 +153,13 @@ Standards werden in AI-Context-Windows injiziert. Jedes Wort kostet Tokens.
 | `quality.md` (alles) | `coverage.md` | `unit-test-naming.md` |
 | `infrastructure.md` (alles) | `containerization.md` | `dockerfile-from-line.md` |
 
-Faustregel: Ein Standard sollte 20-80 Zeilen lang sein. Kuerzer ist meistens besser.
+Faustregel: Ein Standard sollte 20-80 Zeilen lang sein. Kürzer ist meistens besser.
 
 ---
 
 ## Schritt 3: Im Index registrieren
 
-Oeffne `workflow/standards/index.yml` und fuege den neuen Standard hinzu:
+Öffne `workflow/standards/index.yml` und füge den neuen Standard hinzu:
 
 ```yaml
 api:
@@ -176,10 +176,10 @@ api:
 
 ### Index-Regeln
 
-- Eintraege alphabetisch innerhalb jeder Domain
+- Einträge alphabetisch innerhalb jeder Domain
 - Jeder Eintrag braucht `description` und `tags`
 - `description`: Ein Satz der den Inhalt zusammenfasst
-- `tags`: 4-8 Keywords fuer intelligentes Matching
+- `tags`: 4-8 Keywords für intelligentes Matching
 
 ### Alternativ: Automatisch indexieren
 
@@ -191,7 +191,7 @@ Dieser Command scannt `workflow/standards/` nach allen `.md`-Dateien und aktuali
 
 ---
 
-## Schritt 4: Skill fuer Standards-Injection erstellen
+## Schritt 4: Skill für Standards-Injection erstellen
 
 Wenn `standards_as_claude_code_skills: true` in `config.yml` gesetzt ist (Default), werden Standards als Claude Code Skills registriert. Damit Claude deinen Standard automatisch anwendet, erstelle einen Skill.
 
@@ -203,10 +203,10 @@ Wenn `standards_as_claude_code_skills: true` in `config.yml` gesetzt ist (Defaul
 
 ### Neuen Skill erstellen
 
-Fuer eine bestehende Domain: Ergaenze den bestehenden Skill.
-Fuer eine neue Domain: Erstelle ein neues Verzeichnis.
+Für eine bestehende Domain: Ergänze den bestehenden Skill.
+Für eine neue Domain: Erstelle ein neues Verzeichnis.
 
-Beispiel fuer eine neue Domain `monitoring`:
+Beispiel für eine neue Domain `monitoring`:
 
 ```bash
 mkdir -p .claude/skills/workflow/monitoring-standards/
@@ -226,9 +226,9 @@ When working on monitoring, logging, metrics, or observability:
 @workflow/standards/monitoring/metrics.md
 ```
 
-### Bestehenden Skill ergaenzen
+### Bestehenden Skill ergänzen
 
-Fuer einen Standard in einer bestehenden Domain (z.B. `api/logging.md`), ergaenze den bestehenden Skill in `.claude/skills/workflow/api-standards/SKILL.md`:
+Für einen Standard in einer bestehenden Domain (z.B. `api/logging.md`), ergänze den bestehenden Skill in `.claude/skills/workflow/api-standards/SKILL.md`:
 
 ```markdown
 ---
@@ -247,11 +247,11 @@ When working on API endpoints, responses, or error handling:
 
 ## Schritt 5: In orchestration.yml referenzieren
 
-Damit der Orchestrator den Standard bei der Delegation injiziert, fuege ihn zum Domain-Mapping hinzu.
+Damit der Orchestrator den Standard bei der Delegation injiziert, füge ihn zum Domain-Mapping hinzu.
 
 ### Standards Injection Mapping
 
-Oeffne `workflow/orchestration.yml` und ergaenze unter `standards_injection.domain_mapping`:
+Öffne `workflow/orchestration.yml` und ergänze unter `standards_injection.domain_mapping`:
 
 ```yaml
 standards_injection:
@@ -295,7 +295,7 @@ Wenn du mehr als 5 Standards in einer Domain hast, priorisiere die wichtigsten.
 
 ### Health Check
 
-Fuehre nach Aenderungen einen Health Check aus:
+Führe nach Änderungen einen Health Check aus:
 
 ```bash
 workflow health
@@ -309,25 +309,25 @@ Teste ob der Standard korrekt injiziert wird:
 > /workflow/inject-standards api/logging
 ```
 
-Erwartete Ausgabe: Der vollstaendige Inhalt von `workflow/standards/api/logging.md` wird in den aktuellen Kontext geladen.
+Erwartete Ausgabe: Der vollständige Inhalt von `workflow/standards/api/logging.md` wird in den aktuellen Kontext geladen.
 
 ### Delegation testen
 
-Erstelle einen Test-Task und pruefe ob der Standard ankommt:
+Erstelle einen Test-Task und prüfe ob der Standard ankommt:
 
 ```
 > @orchestrator Delegiere einen Backend-Task an debug: "Implementiere einen
   Health-Check-Endpoint mit strukturiertem Logging."
 ```
 
-Pruefe in der Delegation ob `api/logging` im Standards-Block enthalten ist.
+Prüfe in der Delegation ob `api/logging` im Standards-Block enthalten ist.
 
 ### Checkliste
 
 - [ ] Standard-Datei existiert in `workflow/standards/{domain}/{name}.md`
 - [ ] Format ist knapp und scanbar (Regeln, Code-Beispiele, Anti-Patterns)
 - [ ] Index-Eintrag in `workflow/standards/index.yml` vorhanden
-- [ ] Tags sind aussagekraeftig (4-8 Keywords)
+- [ ] Tags sind aussagekräftig (4-8 Keywords)
 - [ ] Skill referenziert den Standard (bei Skills-basiertem Matching)
 - [ ] Domain-Mapping in `orchestration.yml` aktualisiert
 - [ ] Health Check zeigt keine Fehler
@@ -348,14 +348,14 @@ Wenn du bestehende Patterns in deiner Codebase formalisieren willst:
 ```
 Claude: Ich habe deinen Code analysiert und diese Patterns gefunden:
         1. Structured Logging - Alle Services nutzen winston mit JSON-Format
-        2. Request Correlation - TraceId wird ueber X-Request-ID Header propagiert
+        2. Request Correlation - TraceId wird über X-Request-ID Header propagiert
         3. Error Wrapping - Alle Services wrappen Errors in AppError-Klasse
 
-        Welche moechtest du dokumentieren?
+        Welche möchtest du dokumentieren?
 Du:     Alle drei.
 
-Claude: Fuer Structured Logging:
-        - Welches Problem loest das?
+Claude: Für Structured Logging:
+        - Welches Problem löst das?
         - Gibt es Ausnahmen?
 Du:     Konsistente Log-Aggregation in CloudWatch. Keine Ausnahmen.
 
@@ -372,29 +372,29 @@ Du hast jetzt:
 
 - Einen neuen Standard in `workflow/standards/{domain}/{name}.md`
 - Den Standard im Index unter `workflow/standards/index.yml` registriert
-- Einen Skill fuer automatisches Context-Matching konfiguriert
+- Einen Skill für automatisches Context-Matching konfiguriert
 - Den Standard in der Orchestration-Konfiguration referenziert
 - Validiert dass der Standard korrekt injiziert wird
 
-## Naechste Schritte
+## Nächste Schritte
 
-- **Weitere Standards:** Wiederhole den Prozess fuer andere Patterns in deiner Codebase
+- **Weitere Standards:** Wiederhole den Prozess für andere Patterns in deiner Codebase
 - **Standards entdecken:** Nutze `/workflow/discover-standards` um implizite Patterns zu formalisieren
 - **Team-Alignment:** Stelle sicher dass das Team die Standards kennt und akzeptiert
 - **Iteration:** Beobachte ob Agents die Standards korrekt anwenden und passe sie an
 
-## Best Practices fuer gute Standards
+## Best Practices für gute Standards
 
-1. **Aus der Praxis:** Dokumentiere was bereits funktioniert, nicht was theoretisch ideal waere
-2. **Minimal:** Nur das Wichtigste -- Agents koennen General Knowledge selbst anwenden
+1. **Aus der Praxis:** Dokumentiere was bereits funktioniert, nicht was theoretisch ideal wäre
+2. **Minimal:** Nur das Wichtigste -- Agents können General Knowledge selbst anwenden
 3. **Opinionated:** Standards die "es kommt darauf an" sagen helfen niemandem
 4. **Aktuell halten:** Veraltete Standards sind schlimmer als keine Standards
-5. **Team-Konsens:** Standards die niemand befolgt sind Dokumentationsmuell
+5. **Team-Konsens:** Standards die niemand befolgt sind Dokumentationsmüll
 6. **Testbar:** Jede Regel sollte mit einem Check verifizierbar sein
 
 ## Siehe auch
 
-- [Standards-Referenz](../standards.md) -- Vollstaendige Standards-Dokumentation
-- [Agenten-Uebersicht](../agenten.md) -- Welche Standards jeder Agent erhaelt
+- [Standards-Referenz](../standards.md) -- Vollständige Standards-Dokumentation
+- [Agenten-Übersicht](../agenten.md) -- Welche Standards jeder Agent erhält
 - [Workflow-Guide](../workflow.md) -- Wie Standards im Spec-Shaping auftauchen
 - [CLI-Referenz](../cli.md) -- Health Checks und Index-Rebuild

@@ -9,7 +9,7 @@
 
 ## Summary
 
-Automatisierte Unit- und Integration-Tests fuer alle 6 Lib-Module und 5 Command-Module der Claude Workflow Engine CLI, implementiert mit dem Node.js built-in test runner (`node:test` + `node:assert`).
+Automatisierte Unit- und Integration-Tests für alle 6 Lib-Module und 5 Command-Module der Claude Workflow Engine CLI, implementiert mit dem Node.js built-in test runner (`node:test` + `node:assert`).
 
 ## Technical Design
 
@@ -219,7 +219,7 @@ function restoreConsole() {
 
 ## Standards Compliance
 
-- **testing/coverage**: 174 Tests, 70%+ funktionale Coverage aller oeffentlichen APIs
+- **testing/coverage**: 174 Tests, 70%+ funktionale Coverage aller öffentlichen APIs
 - **global/naming**: `{module}.test.ts` Namenskonvention
 - **global/tech-stack**: Node.js built-in test runner, keine externen Test-Dependencies
 
@@ -237,8 +237,8 @@ Keine externen Dependencies erforderlich.
 
 ### Unit Tests (6 Module)
 - Jede exportierte Funktion/Methode wird getestet
-- Positive und negative Faelle (happy path + error cases)
-- Randfaelle (leere Eingaben, fehlende Dateien, korrupte Daten)
+- Positive und negative Fälle (happy path + error cases)
+- Randfälle (leere Eingaben, fehlende Dateien, korrupte Daten)
 
 ### Integration Tests (5 Commands)
 - End-to-End Flows in isolierten temp directories
@@ -247,7 +247,7 @@ Keine externen Dependencies erforderlich.
 
 ### Isolation
 - Jeder Test nutzt eigenes temp dir via `createTempDir()`
-- `afterEach` raeumt auf via `cleanupTempDir()`
+- `afterEach` räumt auf via `cleanupTempDir()`
 - Keine Modifikation echter Projektdateien
 - Kein Netzwerk-Zugriff
 
@@ -257,7 +257,7 @@ Keine externen Dependencies erforderlich.
 # Kompilieren
 cd cli && npm run build
 
-# Tests ausfuehren
+# Tests ausführen
 npm test
 
 # Watch-Modus (Entwicklung)
@@ -277,12 +277,12 @@ npm run test:watch
 
 - Tests laufen in ~1.2 Sekunden (174 Tests)
 - Temp-Dir-Erstellung ist der Hauptkostenfaktor
-- Keine Parallelisierung noetig bei dieser Testanzahl
+- Keine Parallelisierung nötig bei dieser Testanzahl
 
 ## Migration / Rollout
 
 - Tests kompilieren mit dem Hauptprojekt (gleiche tsconfig)
-- Kein separater Test-Build-Step noetig
+- Kein separater Test-Build-Step nötig
 - `dist/tests/*.test.js` wird automatisch vom `tsc` Build erzeugt
 
 ## Verification Results
@@ -302,4 +302,4 @@ npm run test:watch
 - [x] Test-Framework: Node.js built-in (entschieden)
 - [x] Filesystem-Mocking: Nein, echte temp dirs (entschieden)
 - [x] Coverage-Tool: Noch nicht konfiguriert (c8 oder --experimental-test-coverage)
-- [ ] CI-Integration: GitHub Actions Workflow fuer automatische Test-Ausfuehrung
+- [ ] CI-Integration: GitHub Actions Workflow für automatische Test-Ausfuehrung

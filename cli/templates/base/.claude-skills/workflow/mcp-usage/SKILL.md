@@ -5,18 +5,18 @@ description: MCP Tool-Katalog und Nutzungsanleitung. Verwende bei semantic code 
 
 # MCP Tools - Nutzungsanleitung
 
-## Verfuegbare MCP-Server
+## Verfügbare MCP-Server
 
 ### Serena (Semantic Code Analysis)
 
-Serena bietet semantische Code-Navigation und -Manipulation ueber den Language Server.
+Serena bietet semantische Code-Navigation und -Manipulation über den Language Server.
 
 | Tool | Funktion | Typischer Einsatz |
 |------|----------|-------------------|
 | `get_symbols_overview` | Symbole in einer Datei auflisten | Dateistruktur verstehen |
 | `find_symbol` | Symbol per Name-Pfad finden | Klasse/Methode lokalisieren |
-| `find_referencing_symbols` | Referenzen auf ein Symbol finden | Abhaengigkeiten tracken |
-| `replace_symbol_body` | Symbol-Body ersetzen | Praezise Code-Aenderungen |
+| `find_referencing_symbols` | Referenzen auf ein Symbol finden | Abhängigkeiten tracken |
+| `replace_symbol_body` | Symbol-Body ersetzen | Präzise Code-Änderungen |
 | `search_for_pattern` | Regex-Suche in der Codebase | Pattern-Erkennung |
 | `insert_after_symbol` | Code nach einem Symbol einfuegen | Neue Methoden hinzufuegen |
 | `insert_before_symbol` | Code vor einem Symbol einfuegen | Imports hinzufuegen |
@@ -32,7 +32,7 @@ find_symbol(name_path_pattern="MyClass", depth=1, include_body=False)
 # Wer ruft diese Methode auf?
 find_referencing_symbols(name_path="MyClass/myMethod", relative_path="src/service.ts")
 
-# Ueberblick ueber Dateistruktur
+# Überblick über Dateistruktur
 get_symbols_overview(relative_path="src/controllers/auth.ts", depth=1)
 
 # Methode ersetzen
@@ -91,8 +91,8 @@ search_greptile_comments(query="authentication vulnerability")
 
 ## Voraussetzungen
 
-MCP-Tools sind nur verfuegbar wenn die entsprechenden Server konfiguriert sind:
+MCP-Tools sind nur verfügbar wenn die entsprechenden Server konfiguriert sind:
 - **Serena:** Erfordert `.serena/` Konfiguration im Projekt
 - **Greptile:** Erfordert Greptile-Account und API-Key
 
-Falls ein MCP-Server nicht verfuegbar ist, fallen Agents automatisch auf Standard-Tools zurueck.
+Falls ein MCP-Server nicht verfügbar ist, fallen Agents automatisch auf Standard-Tools zurück.

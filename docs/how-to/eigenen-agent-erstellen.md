@@ -1,6 +1,6 @@
 # How-To: Einen eigenen Agent erstellen
 
-Dieser Guide zeigt dir, wie du einen neuen spezialisierten Agent fuer die Claude Workflow Engine erstellst. Agents sind Markdown-Dateien mit definierter Rolle, Zugangsstufe und Toolset.
+Dieser Guide zeigt dir, wie du einen neuen spezialisierten Agent für die Claude Workflow Engine erstellst. Agents sind Markdown-Dateien mit definierter Rolle, Zugangsstufe und Toolset.
 
 ## Ziel
 
@@ -15,7 +15,7 @@ Nach diesem Guide hast du:
 ## Voraussetzungen
 
 - Claude Workflow Engine ist installiert (siehe [CLI-Installation](cli-installation.md))
-- Grundverstaendnis des Agent-Systems (siehe [Agenten-Uebersicht](../agenten.md))
+- Grundverständnis des Agent-Systems (siehe [Agenten-Übersicht](../agenten.md))
 - Klare Vorstellung der Spezialisierung deines Agents
 
 ## Schritt 1: Agent-Datei erstellen
@@ -32,7 +32,7 @@ Erstelle eine neue Datei:
 
 Jede Agent-Datei besteht aus zwei Teilen:
 
-1. **Frontmatter** (YAML zwischen `---`) -- Metadaten fuer das System
+1. **Frontmatter** (YAML zwischen `---`) -- Metadaten für das System
 2. **Body** (Markdown) -- System Prompt und Verhaltensdefinition
 
 ```markdown
@@ -46,7 +46,7 @@ tools: Read, Grep, Glob
 
 ## Identity
 
-[Agent-Persoenlichkeit und Spezialisierung]
+[Agent-Persönlichkeit und Spezialisierung]
 
 ## Context Sources
 
@@ -54,7 +54,7 @@ tools: Read, Grep, Glob
 
 ## Rules
 
-[Verhaltensregeln und Einschraenkungen]
+[Verhaltensregeln und Einschränkungen]
 
 ## Output Format
 
@@ -76,17 +76,17 @@ Das Frontmatter definiert die technischen Eigenschaften des Agents.
 | Feld | Pflicht | Beschreibung |
 |------|---------|--------------|
 | `name` | Ja | Eindeutiger Bezeichner (lowercase, keine Leerzeichen) |
-| `description` | Ja | Wann und wofuer Claude diesen Agent verwenden soll |
+| `description` | Ja | Wann und wofür Claude diesen Agent verwenden soll |
 | `tools` | Ja | Kommaseparierte Liste erlaubter Tools |
 
-### Zugangsstufen und zugehoerige Tools
+### Zugangsstufen und zugehörige Tools
 
 | Zugangsstufe | Tools | Verwendung |
 |--------------|-------|------------|
-| READ-ONLY | Read, Grep, Glob | Analyse, Review, Erklaerungen |
+| READ-ONLY | Read, Grep, Glob | Analyse, Review, Erklärungen |
 | READ-ONLY + Web | Read, Grep, Glob, WebSearch, WebFetch | Research, Evaluation |
 | FULL | Read, Write, Edit, Bash, Grep, Glob | Implementation, Fixes |
-| RESTRICTED | Read, Grep, Glob, Bash (eingeschraenkt) | Security Scanning |
+| RESTRICTED | Read, Grep, Glob, Bash (eingeschränkt) | Security Scanning |
 | TASK-DELEGATION | Task, Read, Grep, Glob | Koordination |
 
 ### Beispiel-Frontmatter
@@ -99,13 +99,13 @@ tools: Read, Grep, Glob
 ---
 ```
 
-**Wichtig zur `description`:** Claude verwendet dieses Feld um zu entscheiden, wann der Agent proaktiv eingesetzt wird. Formuliere es so, dass klar ist in welchen Situationen der Agent gewaehlt werden soll.
+**Wichtig zur `description`:** Claude verwendet dieses Feld um zu entscheiden, wann der Agent proaktiv eingesetzt wird. Formuliere es so, dass klar ist in welchen Situationen der Agent gewählt werden soll.
 
 ---
 
 ## Schritt 3: System Prompt schreiben
 
-Der Body der Markdown-Datei ist der System Prompt des Agents. Er definiert Persoenlichkeit, Verhalten und Ausgabeformate.
+Der Body der Markdown-Datei ist der System Prompt des Agents. Er definiert Persönlichkeit, Verhalten und Ausgabeformate.
 
 ### Identity-Sektion
 
@@ -148,11 +148,11 @@ Definiere klare Verhaltensregeln:
 ```markdown
 ## Rules
 
-1. **READ-ONLY access** - Analysiere und empfehle, veraendere nie Code direkt
-2. **Konstruktiv** - Jedes Finding enthaelt einen konkreten Verbesserungsvorschlag
+1. **READ-ONLY access** - Analysiere und empfehle, verändere nie Code direkt
+2. **Konstruktiv** - Jedes Finding enthält einen konkreten Verbesserungsvorschlag
 3. **Severity-Ratings** - Kategorisiere Findings: Critical, Major, Minor, Suggestion
-4. **Standards-aware** - Pruefe Compliance mit Standards aus `workflow/standards/`
-5. **Scope-aware** - Reviewe nur Code der zum PR/Change gehoert
+4. **Standards-aware** - Prüfe Compliance mit Standards aus `workflow/standards/`
+5. **Scope-aware** - Reviewe nur Code der zum PR/Change gehört
 6. **No Nitpicking** - Formatierungs-Issues nur wenn kein Formatter konfiguriert ist
 7. **GDPR-conscious** - Flagge PII-Exposure oder Logging-Probleme
 ```
@@ -169,7 +169,7 @@ Definiere standardisierte Ausgabeformate:
 ## Code Review: {PR/Feature}
 
 ### Summary
-[1-2 Saetze Gesamteindruck]
+[1-2 Sätze Gesamteindruck]
 
 ### Findings
 
@@ -213,7 +213,7 @@ Definiere wie der Agent mit anderen zusammenarbeitet:
 
 ## Schritt 4: Kontext-Quellen konfigurieren
 
-Kontext-Quellen bestimmen welches Wissen dem Agent zur Verfuegung steht. Waehle bewusst aus:
+Kontext-Quellen bestimmen welches Wissen dem Agent zur Verfügung steht. Wähle bewusst aus:
 
 ### Empfohlene Kontext-Quellen pro Agent-Typ
 
@@ -228,8 +228,8 @@ Kontext-Quellen bestimmen welches Wissen dem Agent zur Verfuegung steht. Waehle 
 ### Regeln
 
 - **Weniger ist mehr:** Jede Quelle kostet Tokens im Context Window
-- **Relevanz:** Nur Standards referenzieren die der Agent tatsaechlich braucht
-- **Produktkontext:** `mission.md` sollte fast jeder Agent haben (fuer Alignment)
+- **Relevanz:** Nur Standards referenzieren die der Agent tatsächlich braucht
+- **Produktkontext:** `mission.md` sollte fast jeder Agent haben (für Alignment)
 - **Architecture:** Agents die Designentscheidungen beeinflussen brauchen `architecture.md`
 
 ---
@@ -238,9 +238,9 @@ Kontext-Quellen bestimmen welches Wissen dem Agent zur Verfuegung steht. Waehle 
 
 Damit der Orchestrator deinen Agent delegieren kann, registriere ihn in der Konfiguration.
 
-### Agent Registry ergaenzen
+### Agent Registry ergänzen
 
-Oeffne `workflow/orchestration.yml` und fuege den Agent unter `agents.registry` hinzu:
+Öffne `workflow/orchestration.yml` und füge den Agent unter `agents.registry` hinzu:
 
 ```yaml
 agents:
@@ -264,9 +264,9 @@ agents:
         - workflow/product/architecture.md
 ```
 
-### Task Group ergaenzen (optional)
+### Task Group ergänzen (optional)
 
-Wenn dein Agent eine eigene Task-Kategorie bearbeitet, fuege eine Task Group hinzu:
+Wenn dein Agent eine eigene Task-Kategorie bearbeitet, füge eine Task Group hinzu:
 
 ```yaml
 task_groups:
@@ -282,7 +282,7 @@ task_groups:
 
 ### Fallback definieren (optional)
 
-Definiere was passiert wenn dein Agent nicht verfuegbar ist:
+Definiere was passiert wenn dein Agent nicht verfügbar ist:
 
 ```yaml
 fallbacks:
@@ -301,7 +301,7 @@ fallbacks:
 
 ### Direkter Test
 
-Rufe den Agent direkt auf um sein Verhalten zu pruefen:
+Rufe den Agent direkt auf um sein Verhalten zu prüfen:
 
 ```
 > @reviewer Reviewe die Datei src/services/auth.service.ts
@@ -319,28 +319,28 @@ Teste die Delegation durch den Orchestrator:
 
 ### Checkliste
 
-Pruefe folgende Punkte:
+Prüfe folgende Punkte:
 
 - [ ] Agent wird bei relevanten Aufgaben automatisch vorgeschlagen
 - [ ] Zugangsstufe wird korrekt erzwungen (kein Schreibzugriff bei READ-ONLY)
 - [ ] Kontext-Quellen werden geladen (Agent kennt den Tech Stack)
 - [ ] Output folgt dem definierten Format
 - [ ] Collaboration-Regeln werden eingehalten (eskaliert korrekt)
-- [ ] Standards werden bei der Bewertung beruecksichtigt
+- [ ] Standards werden bei der Bewertung berücksichtigt
 
-### Haeufige Probleme
+### Häufige Probleme
 
-| Problem | Ursache | Loesung |
+| Problem | Ursache | Lösung |
 |---------|---------|---------|
-| Agent wird nicht gefunden | Dateiname/Pfad falsch | Pruefe `.claude/agents/reviewer.md` existiert |
-| Falscher Zugang | Tools-Feld falsch | Pruefe Frontmatter `tools:` Zeile |
-| Kein Kontext | `@`-Referenzen fehlen | Pruefe Context Sources Pfade |
-| Nicht delegierbar | Nicht in orchestration.yml | Fuege Agent zur Registry hinzu |
-| Schlechte Qualitaet | Vager System Prompt | Mache Rules und Output Format konkreter |
+| Agent wird nicht gefunden | Dateiname/Pfad falsch | Prüfe `.claude/agents/reviewer.md` existiert |
+| Falscher Zugang | Tools-Feld falsch | Prüfe Frontmatter `tools:` Zeile |
+| Kein Kontext | `@`-Referenzen fehlen | Prüfe Context Sources Pfade |
+| Nicht delegierbar | Nicht in orchestration.yml | Füge Agent zur Registry hinzu |
+| Schlechte Qualität | Vager System Prompt | Mache Rules und Output Format konkreter |
 
 ---
 
-## Vollstaendiges Beispiel
+## Vollständiges Beispiel
 
 Hier ist der komplette `reviewer.md` Agent:
 
@@ -436,20 +436,20 @@ Du hast jetzt:
 - Klar definierte Rolle, Zugang, Tools und Ausgabeformate
 - Einen getesteten und einsatzbereiten Agent
 
-## Naechste Schritte
+## Nächste Schritte
 
 - **Agent verfeinern:** Beobachte die Ausgaben und passe Rules/Output Format an
-- **Standards fuer Agents:** Siehe [Standards erweitern](standards-erweitern.md)
+- **Standards für Agents:** Siehe [Standards erweitern](standards-erweitern.md)
 - **Im Workflow nutzen:** Erstelle Tasks die an deinen Agent delegiert werden
-- **Fallbacks testen:** Pruefe ob der Fallback-Agent bei Nicht-Verfuegbarkeit funktioniert
+- **Fallbacks testen:** Prüfe ob der Fallback-Agent bei Nicht-Verfügbarkeit funktioniert
 
 ## Best Practices
 
-### Agent-Granularitaet
+### Agent-Granularität
 
 - **Ein Agent, eine Verantwortung:** Keine "Eierlegende Wollmilchsau"-Agents
 - **Klare Abgrenzung:** Jeder Agent hat einen eindeutigen Kompetenzbereich
-- **Ueberlappung vermeiden:** Wenn zwei Agents dasselbe koennen, ist einer zu viel
+- **Überlappung vermeiden:** Wenn zwei Agents dasselbe können, ist einer zu viel
 
 ### Naming
 
@@ -460,10 +460,10 @@ Du hast jetzt:
 ### Zusammenarbeit
 
 - Definiere explizit mit welchen Agents zusammengearbeitet wird
-- Verwende `escalate` fuer Probleme ausserhalb der Kompetenz
-- Vermeide zirkulaere Delegationen (A -> B -> A)
+- Verwende `escalate` für Probleme außerhalb der Kompetenz
+- Vermeide zirkuläre Delegationen (A -> B -> A)
 
-### System Prompt Qualitaet
+### System Prompt Qualität
 
 - **Spezifisch:** "You review code for SOLID violations" statt "You help with code"
 - **Actionable Rules:** Jede Regel muss konkret umsetzbar sein
@@ -472,7 +472,7 @@ Du hast jetzt:
 
 ## Siehe auch
 
-- [Agenten-Uebersicht](../agenten.md) -- Alle 7 Standard-Agents im Detail
-- [Standards](../standards.md) -- Kontext-Quellen fuer Agents verstehen
+- [Agenten-Übersicht](../agenten.md) -- Alle 7 Standard-Agents im Detail
+- [Standards](../standards.md) -- Kontext-Quellen für Agents verstehen
 - [Workflow-Guide](../workflow.md) -- Wie Agents im Workflow eingesetzt werden
-- [CLI-Referenz](../cli.md) -- Health Checks nach Aenderungen ausfuehren
+- [CLI-Referenz](../cli.md) -- Health Checks nach Änderungen ausführen

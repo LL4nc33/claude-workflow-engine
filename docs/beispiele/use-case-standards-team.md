@@ -1,10 +1,10 @@
 # Use Case: Team-Standards etablieren und durchsetzen
 
-Einheitliche Coding-Standards fuer ein 4-koepfiges Team definieren, registrieren und in den Workflow integrieren.
+Einheitliche Coding-Standards für ein 4-köpfiges Team definieren, registrieren und in den Workflow integrieren.
 
 ## Szenario
 
-Dein Team (4 Entwickler) arbeitet an einer SaaS-Plattform. Aktuell hat jeder seinen eigenen Stil: unterschiedliche Error-Handling-Patterns, inkonsistente Componenten-Benennung, variable Testabdeckung. Code Reviews dauern ewig, weil staendig Stil-Diskussionen aufflammen.
+Dein Team (4 Entwickler) arbeitet an einer SaaS-Plattform. Aktuell hat jeder seinen eigenen Stil: unterschiedliche Error-Handling-Patterns, inkonsistente Componenten-Benennung, variable Testabdeckung. Code Reviews dauern ewig, weil ständig Stil-Diskussionen aufflammen.
 
 **Ziel:** Verbindliche Standards definieren, die von den Agenten bei der Code-Generierung automatisch befolgt werden. Keine Stil-Diskussionen mehr in Reviews -- die Standards sind die Single Source of Truth.
 
@@ -50,7 +50,7 @@ Custom: 0 (all defaults)
 
 In einem Team-Meeting definiert ihr drei Bereiche, die am dringendsten Standards brauchen:
 
-1. **API Error Handling** -- Jeder macht es anders, Clients koennen sich auf kein Format verlassen
+1. **API Error Handling** -- Jeder macht es anders, Clients können sich auf kein Format verlassen
 2. **Component Naming** -- Frontend-Komponenten heissen mal `UserCard`, mal `cardUser`, mal `user-card-component`
 3. **Test Coverage** -- Reicht von 20% bis 90%, kein einheitliches Minimum
 
@@ -58,7 +58,7 @@ Die ersten zwei erfordern Anpassungen bestehender Standards. Fuer spezifische Te
 
 ### Schritt 3: Eigene Domain erstellen
 
-Fuer team-spezifische Standards, die ueber die Templates hinausgehen:
+Fuer team-spezifische Standards, die über die Templates hinausgehen:
 
 **Verzeichnis erstellen:**
 
@@ -76,7 +76,7 @@ workflow/standards/
 
 ## Review-Pflichten
 - Jeder PR braucht mindestens 1 Approval
-- PRs ueber 400 Zeilen muessen aufgeteilt werden
+- PRs über 400 Zeilen müssen aufgeteilt werden
 - Self-Review vor PR-Erstellung (Checkliste durchgehen)
 
 ## Review-Fokus (in dieser Reihenfolge)
@@ -153,7 +153,7 @@ Jede Fehlerantwort folgt diesem Schema:
 | code | string | Ja | Maschinenlesbarer Error-Code (SCREAMING_SNAKE_CASE) |
 | message | string | Ja | Menschenlesbare Beschreibung (Deutsch oder Englisch je nach Accept-Language) |
 | details | object/null | Nein | Zusaetzliche Informationen (z.B. Validierungsfehler pro Feld) |
-| request_id | string | Ja | Eindeutige Request-ID fuer Log-Korrelation |
+| request_id | string | Ja | Eindeutige Request-ID für Log-Korrelation |
 
 ### Error-Code-Namenskonvention
 
@@ -192,7 +192,7 @@ Beispiele:
 | 404 | Ressource existiert nicht | RESOURCE_NOT_FOUND |
 | 409 | Konfliktzustand | USER_EMAIL_ALREADY_EXISTS |
 | 422 | Semantisch ungueltig | ORDER_AMOUNT_NEGATIVE |
-| 429 | Rate Limit ueberschritten | RATE_LIMIT_EXCEEDED |
+| 429 | Rate Limit überschritten | RATE_LIMIT_EXCEEDED |
 | 500 | Interner Fehler | INTERNAL_SERVER_ERROR |
 
 ### Implementierung (Express Middleware)
@@ -230,7 +230,7 @@ export function errorHandler(err, req, res, next) {
 ### Regeln
 - NIEMALS Stack-Traces an den Client senden
 - NIEMALS interne IDs oder Datenbank-Details in Error Messages
-- Request-ID IMMER mitloggen (fuer Support-Anfragen)
+- Request-ID IMMER mitloggen (für Support-Anfragen)
 - PII NIEMALS in Error Messages (DSGVO)
 ```
 
@@ -309,7 +309,7 @@ export function UserCard({ user, isCompact = false, onSelect }: UserCardProps) {
       <h3>{user.name}</h3>
       {onSelect && (
         <button onClick={() => onSelect(user.id)}>
-          Auswaehlen
+          Auswählen
         </button>
       )}
     </div>
@@ -343,7 +343,7 @@ Format: [Unit unter Test] + [Szenario] + [erwartetes Ergebnis]
 Beispiele:
 - "UserService.create erstellt User mit gueltigen Daten"
 - "UserService.create wirft Fehler bei doppelter Email"
-- "OrderController.getById gibt 404 fuer unbekannte ID"
+- "OrderController.getById gibt 404 für unbekannte ID"
 
 ## Test-Struktur
 
@@ -365,7 +365,7 @@ describe("[Klasse/Modul]", () => {
 - Auth/Authz-Logik (positiv und negativ)
 - Edge Cases: Leere Listen, Null-Werte, Grenzwerte
 
-## Was KANN uebersprungen werden
+## Was KANN übersprungen werden
 
 - Rein dekorative Frontend-Components (nur Styling, keine Logik)
 - Auto-generierter Code (Prisma Client, GraphQL Types)
@@ -584,7 +584,7 @@ identifiziere das haeufigste Error-Handling-Pattern. Erstelle
 daraus einen Standard-Vorschlag.
 ```
 
-### Standards fuer mehrere Projekte teilen
+### Standards für mehrere Projekte teilen
 
 Wenn dein Team mehrere Projekte hat, kannst du Standards als Git-Submodul oder Package teilen:
 
@@ -609,7 +609,7 @@ Falls Teammitglieder Standards als "Buerokratie" empfinden:
 
 - Standards sollen Entscheidungen dokumentieren, nicht erfinden
 - Wenn ein Standard keinen Konsens hat, ist er noch nicht reif
-- Standards koennen jederzeit geaendert werden (sie sind Code, kein Gesetz)
+- Standards können jederzeit geändert werden (sie sind Code, kein Gesetz)
 - Der Nutzen zeigt sich besonders bei Onboarding neuer Teammitglieder
 
 ---
@@ -619,4 +619,4 @@ Falls Teammitglieder Standards als "Buerokratie" empfinden:
 - [Standards im Detail](../standards.md) -- Registry, Domaenen, Format
 - [Konfiguration](../konfiguration.md) -- Standards in config.yml referenzieren
 - [Agenten und Standards-Injection](../agenten.md) -- Wie Agenten Standards nutzen
-- [How-To: Standards erweitern](../how-to/standards-erweitern.md) -- Schritt-fuer-Schritt-Anleitung
+- [How-To: Standards erweitern](../how-to/standards-erweitern.md) -- Schritt-für-Schritt-Anleitung

@@ -1,6 +1,6 @@
 # How-To: Ein neues Feature entwickeln
 
-Dieser Guide fuehrt dich durch den kompletten 5-Phasen-Workflow der Claude Workflow Engine -- von der Produktidee bis zur fertigen Implementation. Als Beispiel verwenden wir "User-Authentifizierung implementieren".
+Dieser Guide führt dich durch den kompletten 5-Phasen-Workflow der Claude Workflow Engine -- von der Produktidee bis zur fertigen Implementation. Als Beispiel verwenden wir "User-Authentifizierung implementieren".
 
 ## Ziel
 
@@ -9,7 +9,7 @@ Nach diesem Guide hast du:
 - Die Produktvision dokumentiert
 - Eine technische Spezifikation erstellt
 - Tasks aufgeteilt und an spezialisierte Agents delegiert
-- Ein vollstaendig implementiertes Feature mit Tests und Dokumentation
+- Ein vollständig implementiertes Feature mit Tests und Dokumentation
 
 ## Voraussetzungen
 
@@ -18,7 +18,7 @@ Nach diesem Guide hast du:
 - Du befindest dich im Projektverzeichnis
 - Claude Code ist aktiv und erkennt die Slash Commands
 
-## Der 5-Phasen-Workflow im Ueberblick
+## Der 5-Phasen-Workflow im Überblick
 
 ```
 /workflow/plan-product --> /workflow/shape-spec --> /workflow/write-spec --> /workflow/create-tasks --> /workflow/orchestrate-tasks
@@ -38,9 +38,9 @@ Nach diesem Guide hast du:
 
 **Command:** `/workflow/plan-product`
 
-Diese Phase definiert das grosse Bild deines Projekts. Sie muss nur einmal pro Projekt ausgefuehrt werden (oder wenn sich die Produktrichtung grundlegend aendert).
+Diese Phase definiert das große Bild deines Projekts. Sie muss nur einmal pro Projekt ausgeführt werden (oder wenn sich die Produktrichtung grundlegend ändert).
 
-### Ausfuehrung
+### Ausführung
 
 ```
 > /workflow/plan-product
@@ -49,17 +49,17 @@ Diese Phase definiert das grosse Bild deines Projekts. Sie muss nur einmal pro P
 ### Interaktion mit Claude
 
 ```
-Claude: Welches Problem loest dieses Produkt?
+Claude: Welches Problem löst dieses Produkt?
 Du:     Wir brauchen ein sicheres Login-System mit OAuth2 und Session Management
-        fuer unsere SaaS-Plattform.
+        für unsere SaaS-Plattform.
 
-Claude: Fuer wen ist dieses Produkt?
+Claude: Für wen ist dieses Produkt?
 Du:     B2B-Kunden die ihre Teams verwalten. Admins erstellen Accounts,
         Mitarbeiter loggen sich ein.
 
-Claude: Was macht deine Loesung einzigartig?
-Du:     Multi-Tenant-faehig mit rollenbasiertem Zugriff, GDPR-konform,
-        und Social Login fuer schnelles Onboarding.
+Claude: Was macht deine Lösung einzigartig?
+Du:     Multi-Tenant-fähig mit rollenbasiertem Zugriff, GDPR-konform,
+        und Social Login für schnelles Onboarding.
 
 Claude: Welchen Tech Stack verwendest du?
 Du:     TypeScript, Node.js mit Express, PostgreSQL, React Frontend.
@@ -85,7 +85,7 @@ Produktdokumentation erstellt in workflow/product/:
 
 ### Hinweis
 
-Wenn du bereits eine Produktvision hast, kannst du diese Phase ueberspringen und die Dateien manuell in `workflow/product/` anlegen.
+Wenn du bereits eine Produktvision hast, kannst du diese Phase überspringen und die Dateien manuell in `workflow/product/` anlegen.
 
 ---
 
@@ -95,9 +95,9 @@ Wenn du bereits eine Produktvision hast, kannst du diese Phase ueberspringen und
 
 **Voraussetzung:** Phase 1 abgeschlossen (Produktdokumentation existiert).
 
-In dieser Phase sammelst du allen Kontext, der vor dem Schreiben der technischen Spezifikation benoetigt wird: Visuals, Code-Referenzen, relevante Standards.
+In dieser Phase sammelst du allen Kontext, der vor dem Schreiben der technischen Spezifikation benötigt wird: Visuals, Code-Referenzen, relevante Standards.
 
-### Ausfuehrung
+### Ausführung
 
 ```
 > /workflow/shape-spec
@@ -113,14 +113,14 @@ Du:     User-Authentifizierung mit Email/Password und Google OAuth2.
 Claude: Hast du Visuals als Referenz?
 Du:     Nein, keine Mockups vorhanden.
 
-Claude: Gibt es aehnlichen Code in dieser Codebase?
+Claude: Gibt es ähnlichen Code in dieser Codebase?
 Du:     Das User-Model in src/models/user.ts hat bereits ein Schema.
         Die Middleware in src/middleware/auth.ts hat einen Placeholder.
 
-Claude: Basierend auf dem was wir bauen, koennten diese Standards relevant sein:
+Claude: Basierend auf dem was wir bauen, könnten diese Standards relevant sein:
         1. api/response-format - API Response Envelope
         2. api/error-handling - Error Codes und GDPR-konforme Responses
-        3. database/migrations - Schema-Aenderungen
+        3. database/migrations - Schema-Änderungen
         4. testing/coverage - Test-Anforderungen
         Soll ich diese einbeziehen?
 Du:     Ja, alle davon.
@@ -133,7 +133,7 @@ workflow/specs/2026-01-23-1430-user-auth/
   shape.md         # Scope, Entscheidungen, Kontext
   references.md    # Code-Referenzen (user.ts, auth.ts)
   standards.md     # 4 relevante Standards (Volltext)
-  plan.md          # Ausfuehrungsplan
+  plan.md          # Ausführungsplan
 ```
 
 ### Erwartete Ausgabe
@@ -154,9 +154,9 @@ Spec-Ordner erstellt: workflow/specs/2026-01-23-1430-user-auth/
 
 **Voraussetzung:** Spec-Ordner aus Phase 2 existiert (mit `shape.md`).
 
-Claude wandelt die gesammelten Anforderungen in eine vollstaendige technische Spezifikation um.
+Claude wandelt die gesammelten Anforderungen in eine vollständige technische Spezifikation um.
 
-### Ausfuehrung
+### Ausführung
 
 ```
 > /workflow/write-spec
@@ -166,10 +166,10 @@ Claude wandelt die gesammelten Anforderungen in eine vollstaendige technische Sp
 
 ```
 Claude: Ich habe eine Spec gefunden: 2026-01-23-1430-user-auth/
-        Soll ich die technische Spezifikation dafuer schreiben?
+        Soll ich die technische Spezifikation dafür schreiben?
 Du:     Ja.
 
-Claude: Bevor ich die Spec schreibe, muss ich klaeren:
+Claude: Bevor ich die Spec schreibe, muss ich klären:
         1. Data Model: users-Tabelle mit email, password_hash, oauth_provider?
         2. API Design: POST /api/auth/login, POST /api/auth/register,
            POST /api/auth/refresh, DELETE /api/auth/logout?
@@ -181,7 +181,7 @@ Du:     1. Ja, plus role und tenant_id Spalten.
 
 ### Erzeugte Datei
 
-Die `spec.md` wird dem Spec-Ordner hinzugefuegt mit folgender Struktur:
+Die `spec.md` wird dem Spec-Ordner hinzugefügt mit folgender Struktur:
 
 ```markdown
 # Technical Specification: User Authentication
@@ -216,10 +216,10 @@ spec.md erstellt in workflow/specs/2026-01-23-1430-user-auth/
 
 ### Quality Gate 1: Pre-Implementation
 
-Nach dem Schreiben der Spec wird automatisch ein Quality Gate ausgefuehrt:
+Nach dem Schreiben der Spec wird automatisch ein Quality Gate ausgeführt:
 
-- **Architect** prueft: Architektonisch sinnvoll? Dependencies identifiziert? Tech Stack aligned?
-- **Security** prueft: Keine Security-Antipatterns? Auth-Modell definiert? GDPR-konform?
+- **Architect** prüft: Architektonisch sinnvoll? Dependencies identifiziert? Tech Stack aligned?
+- **Security** prüft: Keine Security-Antipatterns? Auth-Modell definiert? GDPR-konform?
 
 ```
 Quality Gate 1 (Pre-Implementation): PASS
@@ -237,7 +237,7 @@ Quality Gate 1 (Pre-Implementation): PASS
 
 Die Spezifikation wird in atomare, implementierbare Tasks aufgeteilt und den passenden Agents zugewiesen.
 
-### Ausfuehrung
+### Ausführung
 
 ```
 > /workflow/create-tasks
@@ -274,7 +274,7 @@ Du:     Ja, genau so.
 
 ```
 workflow/specs/2026-01-23-1430-user-auth/
-  tasks.md            # Vollstaendige Task-Liste mit Acceptance Criteria
+  tasks.md            # Vollständige Task-Liste mit Acceptance Criteria
   orchestration.yml   # Maschinenlesbare Delegations-Konfiguration
 ```
 
@@ -284,16 +284,16 @@ workflow/specs/2026-01-23-1430-user-auth/
 ## Task 2.1: Auth Service
 
 **Agent:** debug
-**Groesse:** M (2-4 Dateien)
-**Abhaengigkeiten:** Task 1.1, Task 1.2
+**Größe:** M (2-4 Dateien)
+**Abhängigkeiten:** Task 1.1, Task 1.2
 
 **Beschreibung:**
 Implementiere den AuthService mit register(), login(), logout() Methoden.
-Verwende bcrypt fuer Password Hashing mit Cost Factor 12.
+Verwende bcrypt für Password Hashing mit Cost Factor 12.
 
 **Acceptance Criteria:**
 - [ ] register() erstellt User mit gehashtem Passwort
-- [ ] login() validiert Credentials und gibt Token-Paar zurueck
+- [ ] login() validiert Credentials und gibt Token-Paar zurück
 - [ ] logout() invalidiert Refresh Token
 - [ ] Alle Methoden werfen typisierte Fehler (AUTH_001 bis AUTH_005)
 
@@ -318,9 +318,9 @@ Quality Gate 2 (Pre-Execution): PASS
 
 **Voraussetzung:** `tasks.md` und `orchestration.yml` existieren im Spec-Ordner.
 
-Der Orchestrator delegiert Tasks phasenweise an die zustaendigen Agents und trackt den Fortschritt.
+Der Orchestrator delegiert Tasks phasenweise an die zuständigen Agents und trackt den Fortschritt.
 
-### Ausfuehrung
+### Ausführung
 
 ```
 > /workflow/orchestrate-tasks
@@ -331,7 +331,7 @@ Der Orchestrator delegiert Tasks phasenweise an die zustaendigen Agents und trac
 ```
 Claude: Spec gefunden: 2026-01-23-1430-user-auth/
         10 Tasks in 5 Phasen bereit.
-        Ausfuehrungsmodus? (automatic / phase-by-phase / task-by-task / selective)
+        Ausführungsmodus? (automatic / phase-by-phase / task-by-task / selective)
 Du:     phase-by-phase
 
 Claude: Starte Phase 1 - Data Layer...
@@ -354,7 +354,7 @@ Claude: Starte Phase 2 - Backend...
         > Task 2.3: OAuth2 Integration wird an debug-Agent delegiert...
         > Task 2.3: PASS - Google OAuth2 Flow implementiert
         > Task 2.4: Auth Middleware wird an debug-Agent delegiert...
-        > Task 2.4: PASS - Middleware schuetzt Routen, prueft Token-Validitaet
+        > Task 2.4: PASS - Middleware schützt Routen, prüft Token-Validität
         Phase 2 abgeschlossen. Quality Gate: PASS
         Weiter mit Phase 3?
 Du:     Ja.
@@ -402,7 +402,7 @@ Am Ende laufen automatisch die finalen Checks:
 
 - **Security Agent:** Keine neuen Vulnerabilities, Secrets nicht exponiert, GDPR-konform
 - **Architect Agent:** Implementation passt zur Spec, keine Architectural Drift
-- **User:** Acceptance Criteria erfuellt
+- **User:** Acceptance Criteria erfüllt
 
 ---
 
@@ -420,24 +420,24 @@ Nach Abschluss aller 5 Phasen hast du:
 | Tests | `tests/unit/auth/`, `tests/integration/auth/` |
 | API-Doku | `docs/api/auth.md` |
 
-## Naechste Schritte
+## Nächste Schritte
 
 - **Weiteres Feature?** Starte wieder bei Phase 2 (`/workflow/shape-spec`) -- die Produktvision bleibt bestehen.
 - **Standards anpassen?** Siehe [Standards erweitern](standards-erweitern.md).
 - **Eigene Agents?** Siehe [Eigenen Agent erstellen](eigenen-agent-erstellen.md).
-- **Phasen ueberspringen?** Du kannst jederzeit bei einer spaeteren Phase einsteigen, solange die Voraussetzungen erfuellt sind.
+- **Phasen überspringen?** Du kannst jederzeit bei einer späteren Phase einsteigen, solange die Voraussetzungen erfüllt sind.
 
 ## Tipps
 
 - Verwende beim ersten Mal den `phase-by-phase`-Modus um den Flow zu verstehen
 - Phase 2 (shape-spec) ist die wertvollste Phase zur Vermeidung von Scope Creep
-- Die `progress.md` dient als Audit Trail -- pruefe sie wenn etwas schiefgeht
-- Jede Phase ist idempotent: erneutes Ausfuehren ueberschreibt vorherige Ergebnisse
-- Standards werden als Volltext in Delegations-Prompts injiziert (Agents koennen keine Datei-Referenzen lesen)
+- Die `progress.md` dient als Audit Trail -- prüfe sie wenn etwas schiefgeht
+- Jede Phase ist idempotent: erneutes Ausführen überschreibt vorherige Ergebnisse
+- Standards werden als Volltext in Delegations-Prompts injiziert (Agents können keine Datei-Referenzen lesen)
 
 ## Siehe auch
 
 - [Workflow-Referenz](../workflow.md) -- Detaillierte Beschreibung jeder Phase
-- [Agenten-Uebersicht](../agenten.md) -- Welcher Agent welchen Task-Typ bearbeitet
-- [Standards](../standards.md) -- Wie Standards waehrend der Orchestration injiziert werden
+- [Agenten-Übersicht](../agenten.md) -- Welcher Agent welchen Task-Typ bearbeitet
+- [Standards](../standards.md) -- Wie Standards während der Orchestration injiziert werden
 - [CLI-Referenz](../cli.md) -- Alle CLI-Commands

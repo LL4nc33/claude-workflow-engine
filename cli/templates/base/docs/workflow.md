@@ -6,7 +6,7 @@ Die Claude Workflow Engine verwendet einen 5-Phasen-Workflow, der dich von der P
 /plan-product --> /shape-spec --> /write-spec --> /create-tasks --> /orchestrate-tasks
 ```
 
-## Uebersicht
+## Übersicht
 
 | Phase | Command | Was es tut | Output |
 |-------|---------|-----------|--------|
@@ -61,7 +61,7 @@ workflow/product/
   tech-stack.md    # React, Node.js, TimescaleDB, MQTT
 ```
 
-**Wann erneut ausfuehren:** Wenn sich die Produktrichtung grundlegend aendert. Du kannst einzelne Dateien auch manuell aktualisieren.
+**Wann erneut ausführen:** Wenn sich die Produktrichtung grundlegend aendert. Du kannst einzelne Dateien auch manuell aktualisieren.
 
 ## Phase 2: Shape Spec
 
@@ -136,7 +136,7 @@ Spec-Ordner erstellt: workflow/specs/2026-01-23-1430-sensor-dashboard/
 
 **Voraussetzung:** Ein Spec-Ordner muss aus Phase 2 existieren (mit `shape.md`).
 
-**Zweck:** Die geformten Anforderungen in eine eindeutige technische Spezifikation umwandeln, von der Agents implementieren koennen.
+**Zweck:** Die geformten Anforderungen in eine eindeutige technische Spezifikation umwandeln, von der Agents implementieren können.
 
 **Was passiert:**
 
@@ -144,7 +144,7 @@ Spec-Ordner erstellt: workflow/specs/2026-01-23-1430-sensor-dashboard/
 2. Du bestaetigst oder passt technische Schluesselentscheidungen an (Data Model, API Design, State Management)
 3. Eine vollstaendige `spec.md` wird generiert
 
-**Output-Datei:** `spec.md` wird dem Spec-Ordner hinzugefuegt.
+**Output-Datei:** `spec.md` wird dem Spec-Ordner hinzugefügt.
 
 **Spec-Struktur:**
 
@@ -174,7 +174,7 @@ Spec-Ordner erstellt: workflow/specs/2026-01-23-1430-sensor-dashboard/
 > /workflow/write-spec
 
 Claude: Ich habe eine Spec gefunden: 2026-01-23-1430-sensor-dashboard/
-        Soll ich die technische Spezifikation dafuer schreiben?
+        Soll ich die technische Spezifikation dafür schreiben?
 Du:     ja
 
 Claude: Bevor ich die Spec schreibe, muss ich klaeren:
@@ -199,15 +199,15 @@ spec.md erstellt in workflow/specs/2026-01-23-1430-sensor-dashboard/
 
 **Voraussetzung:** `spec.md` muss im Spec-Ordner existieren.
 
-**Zweck:** Die Spezifikation in atomare, implementierbare Tasks aufteilen, die an spezialisierte Agents delegiert werden koennen.
+**Zweck:** Die Spezifikation in atomare, implementierbare Tasks aufteilen, die an spezialisierte Agents delegiert werden können.
 
 **Was passiert:**
 
 1. Claude analysiert die Spec und identifiziert Task-Gruppen
 2. Du bestaetigst die Aufteilungsstruktur
-3. Jeder Task erhaelt: Beschreibung, Agent-Zuweisung, Abhaengigkeiten, Acceptance Criteria und Dateiliste
+3. Jeder Task erhaelt: Beschreibung, Agent-Zuweisung, Abhängigkeiten, Acceptance Criteria und Dateiliste
 4. Eine Ausfuehrungsreihenfolge (Critical Path) wird berechnet
-5. Eine spec-spezifische `orchestration.yml` wird fuer die Delegation generiert
+5. Eine spec-spezifische `orchestration.yml` wird für die Delegation generiert
 
 **Output-Dateien:**
 
@@ -283,7 +283,7 @@ Phase 5: Task 5.1 (Dokumentation)
 
 **Command:** `/workflow/orchestrate-tasks`
 
-**Voraussetzung:** `tasks.md` und `orchestration.yml` muessen im Spec-Ordner existieren.
+**Voraussetzung:** `tasks.md` und `orchestration.yml` müssen im Spec-Ordner existieren.
 
 **Zweck:** Tasks an spezialisierte Agents delegieren, Fortschritt tracken und Quality Gates durchsetzen.
 
@@ -293,16 +293,16 @@ Phase 5: Task 5.1 (Dokumentation)
 2. Tasks werden phasenweise an die zustaendigen Agents delegiert
 3. Jede Delegation enthaelt: Task-Beschreibung, relevante Standards (inline injiziert), Spec-Kontext und Acceptance Criteria
 4. Nach jedem Task wird der Output gegen die Acceptance Criteria verifiziert
-5. Quality Gates laufen bei Phasenuebergaengen
+5. Quality Gates laufen bei Phasenübergaengen
 6. Fortschritt wird in `progress.md` getrackt
 
 **Ausfuehrungsmodi:**
 
 | Modus | Verhalten |
 |-------|-----------|
-| automatic | Alle Phasen ausfuehren, nur bei Fehlern pausieren |
-| phase-by-phase | Nach jeder Phase bestaetigen (Standard) |
-| task-by-task | Nach jedem einzelnen Task bestaetigen |
+| automatic | Alle Phasen ausführen, nur bei Fehlern pausieren |
+| phase-by-phase | Nach jeder Phase bestätigen (Standard) |
+| task-by-task | Nach jedem einzelnen Task bestätigen |
 | selective | Bestimmte Tasks zur Ausfuehrung auswaehlen |
 
 **Quality Gates:**
@@ -365,9 +365,9 @@ Du:     ja
 | 2.2 API | debug | PENDING | - |
 ```
 
-## Phasen ueberspringen
+## Phasen überspringen
 
-Du musst nicht jede Phase jedes Mal ausfuehren:
+Du musst nicht jede Phase jedes Mal ausführen:
 
 - **Produktvision existiert bereits?** Ueberspringe Phase 1.
 - **Du weisst genau was du bauen willst?** Starte bei Phase 3 (erstelle manuell eine Spec).
@@ -376,12 +376,12 @@ Du musst nicht jede Phase jedes Mal ausfuehren:
 
 ## Tipps
 
-- Fuehre die Phasen beim ersten Mal der Reihe nach aus, um den gesamten Flow zu verstehen
+- Führe die Phasen beim ersten Mal der Reihe nach aus, um den gesamten Flow zu verstehen
 - Phase 2 (shape-spec) ist am wertvollsten zur Vermeidung von Scope Creep
 - Verwende den `phase-by-phase`-Modus bis du dem Workflow vertraust
-- Standards werden als Volltext in Delegations-Prompts injiziert (Agents koennen keine Datei-Referenzen lesen)
+- Standards werden als Volltext in Delegations-Prompts injiziert (Agents können keine Datei-Referenzen lesen)
 - Die progress.md dient als Audit Trail -- pruefe sie wenn etwas schiefgeht
-- Jede Phase ist idempotent: erneutes Ausfuehren ueberschreibt vorherige Ergebnisse
+- Jede Phase ist idempotent: erneutes Ausfuehren überschreibt vorherige Ergebnisse
 - Bei grossen Features lohnt es sich, die Task-Aufteilung manuell zu pruefen bevor du orchestrierst
 
 ## Siehe auch

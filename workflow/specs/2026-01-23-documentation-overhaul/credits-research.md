@@ -1,7 +1,7 @@
 # Credits Research - Inspirationsprojekte
 
 **Erstellt:** 2026-01-23
-**Zweck:** Referenzdokument fuer die Credits-Sektion in der Projektdokumentation
+**Zweck:** Referenzdokument für die Credits-Sektion in der Projektdokumentation
 
 ## Verifizierte Projekte
 
@@ -14,7 +14,7 @@
 | **Lizenz** | MIT |
 | **Status** | Aktiv, URL verifiziert |
 
-**Was wir uebernommen haben:**
+**Was wir übernommen haben:**
 
 Das Konzept des 3-Layer Context Models stammt von Agent OS. Die Idee, Kontext in drei
 Schichten zu organisieren - Standards (HOW: Konventionen und Patterns), Product (WHAT/WHY:
@@ -32,12 +32,12 @@ inspiriert, bei dem gut dokumentierte Standards die KI-gestuetzte Code-Generieru
 | **Typ** | VS Code Extension |
 | **Status** | Aktiv, URL verifiziert |
 
-**Was wir uebernommen haben:**
+**Was wir übernommen haben:**
 
-Die Multi-Agent Orchestration Patterns von Roo Code waren Vorbild fuer unsere
+Die Multi-Agent Orchestration Patterns von Roo Code waren Vorbild für unsere
 Agent-Architektur. Roo Code setzt auf spezialisierte Modi (Code, Architect, Ask, Debug),
 die jeweils eigene Zugriffsrechte und Verantwortlichkeiten haben - genau dieses Muster
-haben wir mit unseren 7 Agents uebernommen (Architect=READ-ONLY, Debug=FULL, etc.).
+haben wir mit unseren 7 Agents übernommen (Architect=READ-ONLY, Debug=FULL, etc.).
 Das Konzept, dass Agents nicht simultan, sondern sequentiell mit definierten Handoffs
 arbeiten, stammt ebenfalls aus diesem Projekt.
 
@@ -52,7 +52,7 @@ arbeiten, stammt ebenfalls aus diesem Projekt.
 | **Typ** | CLI Tool |
 | **Status** | Aktiv, URL verifiziert |
 
-**Was wir uebernommen haben:**
+**Was wir übernommen haben:**
 
 Claude Code ist die Plattform und Runtime, auf der unser gesamtes Multi-Agent System
 laeuft. Als agentic CLI-Tool versteht es die Codebase, fuehrt Befehle aus und ermoeglicht
@@ -71,7 +71,7 @@ Erweiterungsmechanismen von Claude Code, um spezialisierte Workflows zu realisie
 | **Typ** | MCP Server |
 | **Status** | Aktiv, URL verifiziert |
 
-**Was wir uebernommen haben:**
+**Was wir übernommen haben:**
 
 Das MCP-Server-Konzept von Context7 hat uns inspiriert, wie man aktuelle Dokumentation
 in den KI-Kontext injiziert. Context7 loest das Problem veralteter Trainingsdaten, indem
@@ -94,5 +94,5 @@ Entwicklungskontext bereitstellt.
 ## Hinweise
 
 - Alle URLs wurden am 2026-01-23 verifiziert und sind erreichbar
-- Diese Datei dient als Referenz fuer die Credits-Sektion in README.md und anderen Dokumenten
+- Diese Datei dient als Referenz für die Credits-Sektion in README.md und anderen Dokumenten
 - Bei Verwendung in der Dokumentation bitte die Beschreibungen als Basis nehmen und ggf. kuerzen

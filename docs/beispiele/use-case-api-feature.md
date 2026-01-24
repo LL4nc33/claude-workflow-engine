@@ -1,17 +1,17 @@
 # Use Case: REST API von Idee bis Implementation
 
-Ein vollstaendiger Durchlauf aller 5 Workflow-Phasen am Beispiel eines neuen `/api/tasks` Endpoints mit CRUD-Operationen.
+Ein vollständiger Durchlauf aller 5 Workflow-Phasen am Beispiel eines neuen `/api/tasks` Endpoints mit CRUD-Operationen.
 
 ## Szenario
 
-Dein Team entwickelt ein Projektmanagement-Tool. Jetzt braucht ihr einen neuen REST API Endpoint `/api/tasks`, der Tasks erstellen, lesen, aktualisieren und loeschen kann. Das Backend laeuft auf Express.js mit PostgreSQL, das Frontend ist eine React-Applikation.
+Dein Team entwickelt ein Projektmanagement-Tool. Jetzt braucht ihr einen neuen REST API Endpoint `/api/tasks`, der Tasks erstellen, lesen, aktualisieren und löschen kann. Das Backend läuft auf Express.js mit PostgreSQL, das Frontend ist eine React-Applikation.
 
 **Ausgangslage:**
 
 - Bestehendes Projekt mit Claude Workflow Engine
 - `workflow/product/` existiert bereits mit grundlegender Produktvision
-- Standards fuer API und Testing sind definiert
-- Noch keine Task-bezogene Funktionalitaet vorhanden
+- Standards für API und Testing sind definiert
+- Noch keine Task-bezogene Funktionalität vorhanden
 
 ---
 
@@ -43,7 +43,7 @@ Falls dein Projekt noch keine `workflow/product/`-Dateien hat, erstellt diese Ph
 - Testing: Vitest + Testing Library
 ```
 
-**Wann diese Phase ueberspringen:** Wenn dein Projekt bereits vollstaendig definierte Product-Dateien hat und sich an der Produktrichtung nichts aendert, kannst du direkt mit Phase 2 starten.
+**Wann diese Phase überspringen:** Wenn dein Projekt bereits vollständig definierte Product-Dateien hat und sich an der Produktrichtung nichts ändert, kannst du direkt mit Phase 2 starten.
 
 ---
 
@@ -53,14 +53,14 @@ Falls dein Projekt noch keine `workflow/product/`-Dateien hat, erstellt diese Ph
 > /workflow/shape-spec
 ```
 
-Claude fragt nach den Anforderungen fuer das neue Feature. Du beschreibst:
+Claude fragt nach den Anforderungen für das neue Feature. Du beschreibst:
 
 ```
 Du:  Ich brauche einen /api/tasks Endpoint mit CRUD.
      Tasks haben: title, description, status (open/in_progress/done),
      priority (low/medium/high), assignee_id, due_date.
      Pagination, Filtering nach Status und Assignee.
-     Nur authentifizierte User duerfen zugreifen.
+     Nur authentifizierte User dürfen zugreifen.
 ```
 
 **Ergebnis in `workflow/specs/api-tasks/`:**
@@ -71,25 +71,25 @@ workflow/specs/api-tasks/
   questions.md       # Offene Fragen (z.B. Soft Delete vs. Hard Delete?)
 ```
 
-`references.md` enthaelt die konsolidierten Anforderungen:
+`references.md` enthält die konsolidierten Anforderungen:
 
 ```markdown
 ## Anforderungen
 
 ### Funktional
-- CRUD-Operationen fuer Tasks
+- CRUD-Operationen für Tasks
 - Pagination (Cursor-based, Default: 20 Items)
 - Filter: status, assignee_id, priority
 - Sortierung: created_at, due_date, priority
 
 ### Nicht-funktional
 - Authentifizierung via JWT (Bearer Token)
-- Response-Format gemaess api/response-format Standard
-- Error-Handling gemaess api/error-handling Standard
+- Response-Format gemäß api/response-format Standard
+- Error-Handling gemäß api/error-handling Standard
 - Input-Validierung mit Zod Schemas
 
 ### Constraints
-- Kein Soft Delete (harte Loeschung, DSGVO-konform)
+- Kein Soft Delete (harte Löschung, DSGVO-konform)
 - Assignee muss existierender User sein (FK Constraint)
 - Title: max 200 Zeichen, required
 - Description: max 5000 Zeichen, optional
@@ -164,7 +164,7 @@ Response (200): { "success": true, "data": Task }
 Response (204): No Content
 
 ## Error Responses
-- 400: Validierungsfehler (ungueltige Eingabedaten)
+- 400: Validierungsfehler (ungültige Eingabedaten)
 - 401: Nicht authentifiziert
 - 403: Nicht autorisiert (fremder Task)
 - 404: Task nicht gefunden
@@ -209,8 +209,8 @@ Claude zerlegt die Spec in implementierbare Tasks:
 Agent: debug
 Standards: database/migrations
 - Prisma Schema erweitern (Task Model)
-- Migration erstellen und ausfuehren
-- Seed-Daten fuer Development
+- Migration erstellen und ausführen
+- Seed-Daten für Development
 
 ## Task 2: Zod Validation Schemas
 Agent: debug
@@ -238,7 +238,7 @@ Standards: api/response-format, api/error-handling
 ## Task 5: Integration Tests
 Agent: debug
 Standards: testing/coverage
-- Happy-Path Tests fuer alle Endpoints
+- Happy-Path Tests für alle Endpoints
 - Error-Case Tests (401, 403, 404)
 - Pagination Tests
 - Filter Tests
@@ -247,7 +247,7 @@ Standards: testing/coverage
 Agent: architect
 Standards: api/response-format, global/naming
 - API-Konsistenz mit bestehenden Endpoints
-- Naming-Konventionen pruefen
+- Naming-Konventionen prüfen
 - Erweiterbarkeit bewerten
 ```
 
@@ -259,7 +259,7 @@ Standards: api/response-format, global/naming
 > /workflow/orchestrate-tasks
 ```
 
-Der Orchestrator delegiert die Tasks an die spezialisierten Agenten. Die Reihenfolge ergibt sich aus den Abhaengigkeiten.
+Der Orchestrator delegiert die Tasks an die spezialisierten Agenten. Die Reihenfolge ergibt sich aus den Abhängigkeiten.
 
 **Durchlauf:**
 
@@ -421,7 +421,7 @@ describe("GET /api/tasks", () => {
     expect(res.body.success).toBe(false);
   });
 
-  it("gibt paginierte Tasks zurueck", async () => {
+  it("gibt paginierte Tasks zurück", async () => {
     const res = await request(app)
       .get("/api/tasks?limit=10")
       .set("Authorization", `Bearer ${token}`);
@@ -478,7 +478,7 @@ describe("POST /api/tasks", () => {
 
 **Task 6 - Architecture Review (architect Agent):**
 
-Der Architect Agent prueft die Implementation auf Konsistenz:
+Der Architect Agent prüft die Implementation auf Konsistenz:
 
 ```markdown
 ## Review-Ergebnis
@@ -490,9 +490,9 @@ Der Architect Agent prueft die Implementation auf Konsistenz:
 - Cursor-based Pagination skaliert besser als Offset-based
 
 ### Empfehlungen
-- Rate Limiting fuer POST/PUT/DELETE Endpoints hinzufuegen
+- Rate Limiting für POST/PUT/DELETE Endpoints hinzufügen
 - OpenAPI/Swagger-Dokumentation generieren
-- Bulk-Delete Endpoint fuer spaetere Phase vormerken
+- Bulk-Delete Endpoint für spätere Phase vormerken
 ```
 
 ---
@@ -518,26 +518,26 @@ Nach Abschluss aller Phasen hast du:
 
 ### Minimaler Durchlauf
 
-Wenn du nur einen einfachen Endpoint ohne komplexe Anforderungen brauchst, kannst du Phase 2 (Shape Spec) verkuerzen, indem du alle Anforderungen direkt in der Konversation beschreibst statt sie in separaten Dokumenten zu sammeln.
+Wenn du nur einen einfachen Endpoint ohne komplexe Anforderungen brauchst, kannst du Phase 2 (Shape Spec) verkürzen, indem du alle Anforderungen direkt in der Konversation beschreibst statt sie in separaten Dokumenten zu sammeln.
 
 ### Mehrere Features parallel
 
-Bei groesseren Releases kannst du mehrere Specs parallel erstellen (Phase 2-3), dann die Tasks zusammen orchestrieren. Der Orchestrator erkennt Abhaengigkeiten zwischen Features und ordnet die Ausfuehrung entsprechend.
+Bei größeren Releases kannst du mehrere Specs parallel erstellen (Phase 2-3), dann die Tasks zusammen orchestrieren. Der Orchestrator erkennt Abhängigkeiten zwischen Features und ordnet die Ausführung entsprechend.
 
 ### Ohne Frontend
 
-Wenn du nur die API ohne Frontend brauchst, entfaellt der Frontend-Task in Phase 4. Der Orchestrator delegiert ausschliesslich an den Debug-Agent fuer Backend-Arbeit und den Architect-Agent fuer das Review.
+Wenn du nur die API ohne Frontend brauchst, entfällt der Frontend-Task in Phase 4. Der Orchestrator delegiert ausschließlich an den Debug-Agent für Backend-Arbeit und den Architect-Agent für das Review.
 
 ### Mit Security Review
 
-Fuer sicherheitskritische APIs (z.B. mit personenbezogenen Daten) fuege einen zusaetzlichen Task fuer den Security-Agent hinzu:
+Für sicherheitskritische APIs (z.B. mit personenbezogenen Daten) füge einen zusätzlichen Task für den Security-Agent hinzu:
 
 ```markdown
 ## Task 7: Security Audit
 Agent: security
 - OWASP Top 10 Check
 - Input Sanitization Review
-- Authorization-Logik pruefen
+- Authorization-Logik prüfen
 ```
 
 ---

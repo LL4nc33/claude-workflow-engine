@@ -5,7 +5,7 @@ description: Plugin-Konfiguration und 6-Schichten-Architektur. Verwende bei plug
 
 # Plugin-Konfiguration - 6-Schichten-Architektur
 
-## Architektur-Ueberblick
+## Architektur-Überblick
 
 Die Claude Workflow Engine nutzt alle 6 Erweiterungsschichten von Claude Code:
 
@@ -24,10 +24,10 @@ Die Claude Workflow Engine nutzt alle 6 Erweiterungsschichten von Claude Code:
 |  Kontextbasiertes Wissen (Standards, MCP-Usage, Hooks, Config)   |
 +------------------------------------------------------------------+
 |  Layer 2: Commands (.claude/commands/workflow/)                   |
-|  8 Slash-Commands fuer den 5-Phasen-Workflow                     |
+|  8 Slash-Commands für den 5-Phasen-Workflow                     |
 +------------------------------------------------------------------+
 |  Layer 1: CLAUDE.md (.claude/CLAUDE.md)                          |
-|  Projekt-Anweisungen und Systemueberblick                        |
+|  Projekt-Anweisungen und Systemüberblick                        |
 +------------------------------------------------------------------+
 ```
 
@@ -76,7 +76,7 @@ Definiert event-basierte Automatisierung:
 
 **Pfad:** `workflow/standards/index.yml`
 
-Registry aller Standards mit Tags fuer automatisches Matching.
+Registry aller Standards mit Tags für automatisches Matching.
 
 ## Installation in ein neues Projekt
 
@@ -93,7 +93,7 @@ cd claude-workflow-engine
 claude
 ```
 
-Das Plugin wird automatisch erkannt ueber `.claude-plugin/plugin.json`.
+Das Plugin wird automatisch erkannt über `.claude-plugin/plugin.json`.
 
 ### 3. Empfohlene MCP-Server einrichten
 
@@ -166,4 +166,4 @@ Layer 1 (CLAUDE.md) ──beschreibt──> Alle Schichten
 ### Neuen Command hinzufuegen
 
 1. Erstelle `.claude/commands/workflow/my-command.md`
-2. Command ist als `/workflow/my-command` verfuegbar
+2. Command ist als `/workflow/my-command` verfügbar

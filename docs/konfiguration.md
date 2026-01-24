@@ -1,17 +1,17 @@
 # Konfiguration
 
-Die Claude Workflow Engine verwendet mehrere Konfigurationsdateien. Diese Referenz erklaert jede Datei, ihre Optionen und wie sie zusammenspielen.
+Die Claude Workflow Engine verwendet mehrere Konfigurationsdateien. Diese Referenz erklärt jede Datei, ihre Optionen und wie sie zusammenspielen.
 
 ---
 
-## Konfig-Dateien Uebersicht
+## Konfig-Dateien Übersicht
 
 | Datei | Zweck | Erforderlich |
 |-------|-------|:------------:|
 | `workflow/config.yml` | Hauptkonfiguration | Ja |
 | `workflow/orchestration.yml` | Task-Delegation und Quality Gates | Ja |
 | `workflow/standards/index.yml` | Standards-Registry | Ja |
-| `.claude/CLAUDE.md` | Projektkontext fuer Claude Code | Ja |
+| `.claude/CLAUDE.md` | Projektkontext für Claude Code | Ja |
 | `.claude/settings.local.json` | Claude Code Berechtigungen | Ja |
 | `.claude-plugin/plugin.json` | Plugin-Manifest (6-Schichten-Architektur) | Ja |
 | `hooks/hooks.json` | Hook-Definitionen (Event-basierte Automatisierung) | Ja |
@@ -20,7 +20,7 @@ Die Claude Workflow Engine verwendet mehrere Konfigurationsdateien. Diese Refere
 
 ## workflow/config.yml
 
-Die Hauptkonfiguration steuert, welche Features aktiv sind, wie das Context Model aufgebaut ist und welche Agents verfuegbar sind.
+Die Hauptkonfiguration steuert, welche Features aktiv sind, wie das Context Model aufgebaut ist und welche Agents verfügbar sind.
 
 ### Vollstaendige Referenz
 
@@ -40,10 +40,10 @@ use_claude_code_subagents: true
 
 # Standards als Claude Code Skills registrieren
 # true:  Claude wendet relevante Standards automatisch basierend auf Task-Kontext an
-# false: Standards muessen manuell oder durch den Orchestrator injiziert werden
+# false: Standards müssen manuell oder durch den Orchestrator injiziert werden
 standards_as_claude_code_skills: true
 
-# Ausgaben fuer andere AI-Tools deaktivieren (Cursor, Codex, Gemini)
+# Ausgaben für andere AI-Tools deaktivieren (Cursor, Codex, Gemini)
 workflow_engine_commands: false
 
 # --- 3-Layer Context Model ---
@@ -85,7 +85,7 @@ agents:
       purpose: System Design, ADRs, Architektur-Review
     - name: ask
       access: read-only
-      purpose: Erklaerungen, Lern-Anfragen, Dokumentations-Queries
+      purpose: Erklärungen, Lern-Anfragen, Dokumentations-Queries
     - name: debug
       access: full
       purpose: Bug-Investigation mit vollem Dateisystem-Zugriff
@@ -106,7 +106,7 @@ agents:
 
 gdpr:
   enabled: true
-  data_residency: eu-central-1     # Frankfurt - oesterreichische/EU-Compliance
+  data_residency: eu-central-1     # Frankfurt - österreichische/EU-Compliance
 
   # Die Engine macht KEINE externen API-Aufrufe
   local_only: true
@@ -114,7 +114,7 @@ gdpr:
   sensitive_data:
     pii_in_standards: forbidden     # Keine personenbezogenen Daten in Standards
     pii_in_specs: forbidden         # Keine personenbezogenen Daten in Specs
-    local_files_only: true          # .local.md fuer persoenliche Daten verwenden
+    local_files_only: true          # .local.md für persönliche Daten verwenden
     gitignored_patterns:
       - "CLAUDE.local.md"
       - "*.local.md"
@@ -138,7 +138,7 @@ orchestration:
 
 profiles:
   default:
-    description: Basis-Standards fuer alle Projekte
+    description: Basis-Standards für alle Projekte
 ```
 
 ### Wichtige Einstellungen
@@ -147,9 +147,9 @@ profiles:
 |-------------|---------|---------|
 | `standards_as_claude_code_skills` | `true` | Standards werden automatisch via Skills-System zugeordnet |
 | `context_model.standards.auto_inject` | `false` | Wenn true: alle Standards immer injiziert (Token-intensiv) |
-| `orchestration.default_execution_mode` | `phase-by-phase` | Standard-Ausfuehrungsmodus der Orchestrierung |
+| `orchestration.default_execution_mode` | `phase-by-phase` | Standard-Ausführungsmodus der Orchestrierung |
 | `gdpr.enabled` | `true` | GDPR-Compliance-Checks aktivieren |
-| `gdpr.data_residency` | `eu-central-1` | Ziel-AWS-Region fuer Infrastruktur |
+| `gdpr.data_residency` | `eu-central-1` | Ziel-AWS-Region für Infrastruktur |
 
 ---
 
@@ -159,7 +159,7 @@ Steuert die Task-Delegation, Quality Gates und Fehlerbehandlung. Dies ist die ko
 
 ### Workflow-Phasen
 
-Die 5-Phasen Command Chain definiert den Ablauf von der Planung bis zur Ausfuehrung:
+Die 5-Phasen Command Chain definiert den Ablauf von der Planung bis zur Ausführung:
 
 ```yaml
 workflow:
@@ -219,7 +219,7 @@ Jede Phase erfordert den Abschluss ihrer Prerequisite-Phase. Die Phasen sind str
 
 ### Agent Registry
 
-Vollstaendige Capability-Definition fuer jeden der 7 Agents:
+Vollstaendige Capability-Definition für jeden der 7 Agents:
 
 ```yaml
 agents:
@@ -239,7 +239,7 @@ agents:
       access: read-only
       tools: [Read, Grep, Glob]
       strengths:
-        - Code-Erklaerungen und Walkthroughs
+        - Code-Erklärungen und Walkthroughs
         - Konzept-Klaerung
         - Pattern-Identifikation und Erklaerung
       standards_domains: [global]
@@ -382,16 +382,16 @@ task_groups:
 
 ### Standards Injection Konfiguration
 
-Steuert, wie Standards-Inhalte an delegierte Agents uebergeben werden:
+Steuert, wie Standards-Inhalte an delegierte Agents übergeben werden:
 
 ```yaml
 standards_injection:
-  # Methode: inline = vollstaendigen Inhalt in den Delegation-Prompt einfuegen
-  # Subagents koennen keine Dateireferenzen lesen - sie brauchen Inhalt inline
+  # Methode: inline = vollstaendigen Inhalt in den Delegation-Prompt einfügen
+  # Subagents können keine Dateireferenzen lesen - sie brauchen Inhalt inline
   method: inline
   standards_path: workflow/standards/
 
-  # Immer injiziert, unabhaengig vom Task-Typ (globale Baseline)
+  # Immer injiziert, unabhängig vom Task-Typ (globale Baseline)
   always_inject:
     - global/tech-stack
 
@@ -414,7 +414,7 @@ standards_injection:
 
 ### Quality Gates (4-Gate-Architektur)
 
-Quality Gates erzwingen Review-Checkpoints an kritischen Workflow-Uebergaengen:
+Quality Gates erzwingen Review-Checkpoints an kritischen Workflow-Übergängen:
 
 **Gate 1: Pre-Implementation** -- Feuert nach `/write-spec`, vor `/create-tasks`:
 
@@ -426,7 +426,7 @@ gate_1_pre_implementation:
     - agent: architect
       checks:
         - spec_architecturally_sound      # Spec ist architektonisch sinnvoll
-        - dependencies_identified         # Abhaengigkeiten identifiziert
+        - dependencies_identified         # Abhängigkeiten identifiziert
         - tech_stack_aligned              # Tech-Stack passt
         - scope_reasonable                # Scope ist angemessen
     - agent: security
@@ -434,7 +434,7 @@ gate_1_pre_implementation:
         - no_security_antipatterns        # Keine Security-Antipatterns
         - auth_model_defined              # Auth-Modell definiert
         - data_flow_gdpr_compliant        # Datenfluss GDPR-konform
-        - threat_model_considered         # Threat-Model beruecksichtigt
+        - threat_model_considered         # Threat-Model berücksichtigt
   pass_condition: all_reviewers_approve
   on_failure:
     action: pause_and_report
@@ -453,7 +453,7 @@ gate_2_pre_execution:
     - agent: architect
       checks:
         - tasks_cover_spec_requirements   # Tasks decken Spec-Anforderungen ab
-        - dependencies_correctly_ordered  # Abhaengigkeiten korrekt geordnet
+        - dependencies_correctly_ordered  # Abhängigkeiten korrekt geordnet
         - agent_assignments_appropriate   # Agent-Zuweisungen passend
         - no_scope_creep                  # Kein Scope Creep
   pass_condition: all_reviewers_approve
@@ -471,7 +471,7 @@ gate_3_post_phase:
   blocking: true
   checks_by_phase:
     data_layer:
-      - schema_valid                    # Schema gueltig
+      - schema_valid                    # Schema gültig
       - types_consistent                # Typen konsistent
       - migrations_reversible           # Migrationen umkehrbar
     api_layer:
@@ -491,7 +491,7 @@ gate_3_post_phase:
       - no_flaky_tests                  # Keine flaky Tests
     infrastructure_layer:
       - iac_valid                       # terraform validate / docker build --check
-      - security_scanned                # Security-Scan durchgefuehrt
+      - security_scanned                # Security-Scan durchgeführt
       - eu_compliance_verified          # EU-Compliance verifiziert
       - rollback_path_defined           # Rollback-Pfad definiert
   on_failure:
@@ -535,17 +535,17 @@ Laufzeitverhalten der Orchestrierung:
 
 ```yaml
 execution:
-  # Ausfuehrungsmodus
+  # Ausführungsmodus
   # automatic:      Alles automatisch durchlaufen
   # phase-by-phase: Nach jeder Phase pausieren
   # task-by-task:   Nach jedem Task pausieren
-  # selective:      Nur ausgewaehlte Tasks ausfuehren
+  # selective:      Nur ausgewählte Tasks ausführen
   default_mode: phase-by-phase
 
   max_retries: 2                   # Retries vor Eskalation an User
   verify_after_each: true          # Acceptance Criteria nach jedem Task verifizieren
   track_progress: true             # Fortschritt in progress.md tracken
-  parallel_within_phase: true      # Unabhaengige Tasks innerhalb einer Phase parallel
+  parallel_within_phase: true      # Unabhängige Tasks innerhalb einer Phase parallel
   task_timeout: 300                # Sekunden pro Task (0 = kein Timeout)
 
   # Bedingungen die Orchestrierung pausieren
@@ -569,7 +569,7 @@ Definieren das Verhalten wenn Primaer-Delegation fehlschlaegt:
 
 ```yaml
 fallbacks:
-  # Agent nicht verfuegbar
+  # Agent nicht verfügbar
   agent_unavailable:
     architect:
       fallback_to: researcher
@@ -577,16 +577,16 @@ fallbacks:
       limitation: "Keine architektonische Autoritaet - Ergebnisse sind beratend"
     security:
       fallback_to: debug
-      reason: "Debug hat vollen Zugriff fuer security-relevantes Code-Review"
+      reason: "Debug hat vollen Zugriff für security-relevantes Code-Review"
       limitation: "Kein Zugriff auf trivy/grype/semgrep Scanning-Tools"
     devops:
       fallback_to: debug
-      reason: "Debug hat vollen Dateisystem-Zugriff fuer Infrastruktur-Code"
+      reason: "Debug hat vollen Dateisystem-Zugriff für Infrastruktur-Code"
       limitation: "Moegliche Luecken bei infrastrukturspezifischem Domain-Wissen"
     researcher:
       fallback_to: ask
       reason: "Ask kann im Read-Only-Modus erklaeren und analysieren"
-      limitation: "Kein WebSearch/WebFetch fuer externe Recherche"
+      limitation: "Kein WebSearch/WebFetch für externe Recherche"
     ask:
       fallback_to: researcher
       reason: "Researcher hat aehnliche Read + Explain Capabilities"
@@ -615,7 +615,7 @@ fallbacks:
       - identify_failing_checks           # Fehlende Checks identifizieren
       - create_remediation_tasks          # Behebungs-Tasks erstellen
       - delegate_remediation              # Behebung delegieren
-      - re_run_gate                       # Gate erneut ausfuehren
+      - re_run_gate                       # Gate erneut ausführen
     max_remediation_cycles: 2
     then: escalate_to_user
 ```
@@ -723,9 +723,9 @@ frontend:
 ### Regeln
 
 - Domaenen alphabetisch ordnen, dann Standards innerhalb jeder Domaene
-- Descriptions sind ein kurzer Satz (verwendet fuer Matching, nicht fuer Dokumentation)
+- Descriptions sind ein kurzer Satz (verwendet für Matching, nicht für Dokumentation)
 - Tags sind lowercase, mit Bindestrich getrennte Keywords
-- Neue Standards immer ueber den Command `/workflow/index-standards` verwalten
+- Neue Standards immer über den Command `/workflow/index-standards` verwalten
 
 ### Verwaltung
 
@@ -744,7 +744,7 @@ Die Projektkontext-Datei, die Claude Code beim Start liest.
 
 ### Was drin steht
 
-- Systemuebersicht (was die Engine ist)
+- Systemübersicht (was die Engine ist)
 - Agent-Hierarchie-Diagramm
 - Agent-Verzeichnis-Tabelle (Name, Zweck, Access-Level)
 - Workflow-Command-Chain
@@ -755,13 +755,13 @@ Die Projektkontext-Datei, die Claude Code beim Start liest.
 
 ### Warum es wichtig ist
 
-Diese Datei ist das, was Claude Code ueber das Multi-Agent-System informiert. Ohne sie weiss Claude weder, dass die Agents existieren, noch wie der Workflow funktioniert. Sie wird bei jedem Gespraech automatisch als Kontext geladen.
+Diese Datei ist das, was Claude Code über das Multi-Agent-System informiert. Ohne sie weiss Claude weder, dass die Agents existieren, noch wie der Workflow funktioniert. Sie wird bei jedem Gespraech automatisch als Kontext geladen.
 
 ---
 
 ## .claude/settings.local.json
 
-Die Berechtigungsdatei fuer Claude Code. Die Engine benoetigt folgende Tool-Berechtigungen:
+Die Berechtigungsdatei für Claude Code. Die Engine benoetigt folgende Tool-Berechtigungen:
 
 ### Erforderliche Berechtigungen
 
@@ -832,7 +832,7 @@ Diese Datei enthaelt:
 - Task-Dependencies (Abhaengigkeitsreihenfolge)
 - Execution-Phasen
 - Agent-Mapping-Overrides (falls abweichend vom globalen Mapping)
-- Quality-Gate-Konfigurationen spezifisch fuer dieses Feature
+- Quality-Gate-Konfigurationen spezifisch für dieses Feature
 
 ### Inhalt
 
@@ -873,7 +873,7 @@ Diese Dateien sind gitignored und dienen der lokalen Konfiguration:
 
 | Datei | Zweck |
 |-------|-------|
-| `CLAUDE.local.md` | Persoenliche Praeferenzen, API-Keys, lokale Pfade |
+| `CLAUDE.local.md` | Persoenliche Präferenzen, API-Keys, lokale Pfade |
 | `*.local.md` | Agent-spezifische lokale Overrides |
 | `.env*` | Umgebungsvariablen |
 | `credentials.*` | Credentials (werden nie committet) |
@@ -887,7 +887,7 @@ Alle sensitiven Dateien bleiben lokal. Die Engine macht keine externen API-Aufru
 
 ## Haeufige Anpassungen
 
-### Ausfuehrungsmodus aendern
+### Ausführungsmodus aendern
 
 In `workflow/orchestration.yml`:
 
@@ -900,7 +900,7 @@ execution:
 - `automatic` -- Laeuft komplett durch, pausiert nur bei Fehlern
 - `phase-by-phase` -- Pausiert nach jeder Phase zur Ueberpruefung
 - `task-by-task` -- Pausiert nach jedem einzelnen Task
-- `selective` -- Nur ausgewaehlte Tasks ausfuehren
+- `selective` -- Nur ausgewählte Tasks ausführen
 
 ### Task Timeout erhoehen
 
@@ -909,7 +909,7 @@ execution:
   task_timeout: 600   # 10 Minuten statt der Standard-5-Minuten
 ```
 
-Setze auf `0` fuer kein Timeout (nicht empfohlen in Produktionsumgebungen).
+Setze auf `0` für kein Timeout (nicht empfohlen in Produktionsumgebungen).
 
 ### Quality Gate deaktivieren
 
@@ -965,7 +965,7 @@ context_model:
 4. Index aktualisieren:
 
 ```bash
-# /workflow/index-standards ausfuehren
+# /workflow/index-standards ausführen
 ```
 
 5. Domain-Mapping in `orchestration.yml` hinzufuegen:
@@ -1075,7 +1075,7 @@ Alle Scripts liegen in `hooks/scripts/`:
 | `post-write-log.sh` | Aenderungs-Logging in delegation.log |
 | `common.sh` | Shared Utilities (get_project_root, json_escape, etc.) |
 
-Siehe [Hook-Patterns Skill](../docs/plattform-architektur.md#layer-5-hooks) fuer Details und Debugging-Tipps.
+Siehe [Hook-Patterns Skill](../docs/plattform-architektur.md#layer-5-hooks) für Details und Debugging-Tipps.
 
 ---
 
@@ -1107,7 +1107,7 @@ mcp:
 
 ### Fallback-Verhalten
 
-Wenn ein MCP-Server nicht verfuegbar ist, fallen Agents automatisch auf Standard-Tools zurueck:
+Wenn ein MCP-Server nicht verfügbar ist, fallen Agents automatisch auf Standard-Tools zurueck:
 - `find_symbol` -> `Grep` + `Glob`
 - `replace_symbol_body` -> `Edit`
 - `list_merge_requests` -> `Bash(gh pr list)`

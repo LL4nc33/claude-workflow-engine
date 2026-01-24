@@ -1,6 +1,6 @@
 # CLI-Referenz
 
-Das Claude Workflow Engine CLI (`workflow`) stellt Safety-Tools fuer Installation, Health-Monitoring, Konflikterkennung und DSGVO-Compliance bereit. Es laeuft als Node.js-Applikation und arbeitet vollstaendig lokal.
+Das Claude Workflow Engine CLI (`workflow`) stellt Safety-Tools für Installation, Health-Monitoring, Konflikterkennung und DSGVO-Compliance bereit. Es läuft als Node.js-Applikation und arbeitet vollständig lokal.
 
 ## Installation
 
@@ -10,7 +10,7 @@ npm install
 npm run build
 ```
 
-Nach dem Build ist das CLI unter `cli/dist/index.js` verfuegbar:
+Nach dem Build ist das CLI unter `cli/dist/index.js` verfügbar:
 
 ```bash
 node cli/dist/index.js --help
@@ -55,9 +55,9 @@ workflow <command> [options] [path]
 |---------|-------|
 | `install` | Engine in ein Projekt installieren |
 | `status` | Installationsstatus anzeigen |
-| `health` | Health Checks ausfuehren |
+| `health` | Health Checks ausführen |
 | `check` | Konflikte, Permissions und DSGVO pruefen |
-| `resolve` | Erkannte Konflikte loesen |
+| `resolve` | Erkannte Konflikte lösen |
 | `rollback` | Backup wiederherstellen |
 | `version` | Version anzeigen |
 | `help` | Hilfe anzeigen |
@@ -82,7 +82,7 @@ workflow install [options] [path]
 | `--local` | Lokal installieren (projektspezifisch, Standard) |
 | `--mode <mode>` | `template` oder `integrated` |
 | `--profile <profile>` | `default`, `node`, `python` oder `rust` |
-| `--dry-run` | Aenderungen nur anzeigen, nichts schreiben |
+| `--dry-run` | Änderungen nur anzeigen, nichts schreiben |
 | `--force`, `-f` | Trotz Warnungen fortfahren |
 | `--verbose`, `-v` | Detaillierte Ausgabe |
 
@@ -141,8 +141,8 @@ workflow install --global --force /path/to/project
 2. Erstellt die Verzeichnisstruktur (`.claude/`, `workflow/`)
 3. Kopiert Agents, Commands, Skills, Standards und Konfiguration
 4. Merged Settings in `.claude/settings.local.json`
-5. Aktualisiert `.gitignore` fuer sensible Dateien
-6. Speichert den Installationszustand fuer Health Checks und Rollback
+5. Aktualisiert `.gitignore` für sensible Dateien
+6. Speichert den Installationszustand für Health Checks und Rollback
 
 ---
 
@@ -300,7 +300,7 @@ Summary
 
 Auto-Fixes umfassen:
 - Fehlende Verzeichnisse erstellen
-- Fehlende Permissions in Settings ergaenzen
+- Fehlende Permissions in Settings ergänzen
 - DSGVO Auto-Fix (Gitignore-Patterns hinzufuegen)
 
 **Mit `--report`:**
@@ -315,7 +315,7 @@ Speichert `.workflow-health-report.json` im Zielverzeichnis.
 
 ## workflow check
 
-Fuehrt spezifische Checks aus, ohne die vollstaendige Health-Suite.
+Fuehrt spezifische Checks aus, ohne die vollständige Health-Suite.
 
 ```bash
 workflow check [options] [path]
@@ -408,7 +408,7 @@ workflow resolve [options] [path]
 
 | Flag | Beschreibung |
 |------|--------------|
-| `--auto-fix` | Konflikte automatisch loesen (erstellt Backups) |
+| `--auto-fix` | Konflikte automatisch lösen (erstellt Backups) |
 | `--verbose`, `-v` | Detaillierte Ausgabe |
 
 **Beispiel:**
@@ -434,9 +434,9 @@ Claude Workflow Engine Resolve
 
 **Resolution-Strategien:**
 
-- Erstellt Backups von konfliktbehafteten Dateien vor dem Ueberschreiben
+- Erstellt Backups von konfliktbehafteten Dateien vor dem Überschreiben
 - Merged Settings anstatt sie zu ersetzen
-- Meldet Command-Konflikte die manuell geloest werden muessen
+- Meldet Command-Konflikte die manuell gelöst werden müssen
 
 ---
 
@@ -489,7 +489,7 @@ workflow v0.2.0
 
 ## workflow help
 
-Zeigt die Hilfe-Uebersicht an.
+Zeigt die Hilfe-Übersicht an.
 
 ```bash
 workflow help
@@ -528,10 +528,10 @@ Run "workflow <command> --help" for details on a specific command.
 
 ## Datenschutz
 
-Das CLI arbeitet vollstaendig lokal. Es:
+Das CLI arbeitet vollständig lokal. Es:
 
 - Fuehrt keine Netzwerk-Requests aus
-- Speichert keine Daten ausserhalb des Projektverzeichnisses
+- Speichert keine Daten außerhalb des Projektverzeichnisses
 - Erzeugt keine Telemetrie oder Analytics
 - Schreibt ausschliesslich in den Zielpfad (plus `.workflow-health-report.json` bei `--report`)
 

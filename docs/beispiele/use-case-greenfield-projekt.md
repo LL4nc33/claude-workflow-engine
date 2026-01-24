@@ -4,14 +4,14 @@ Ein Greenfield-Projekt mit der Claude Workflow Engine starten -- von der Produkt
 
 ## Szenario
 
-Du startest ein neues SaaS-Projekt: eine Zeiterfassungs-App fuer Freelancer. Noch existiert kein Code, kein Repository, keine Infrastruktur. Du willst von Anfang an strukturiert arbeiten und die Claude Workflow Engine als Entwicklungs-Framework nutzen.
+Du startest ein neues SaaS-Projekt: eine Zeiterfassungs-App für Freelancer. Noch existiert kein Code, kein Repository, keine Infrastruktur. Du willst von Anfang an strukturiert arbeiten und die Claude Workflow Engine als Entwicklungs-Framework nutzen.
 
 **Ausgangslage:**
 
 - Leeres Projektverzeichnis
 - Node.js 20 LTS installiert
 - Idee im Kopf, aber noch nicht dokumentiert
-- Team: 1 Entwickler (du), spaeter sollen 2-3 Leute dazukommen
+- Team: 1 Entwickler (du), später sollen 2-3 Leute dazukommen
 
 ---
 
@@ -25,7 +25,7 @@ mkdir timetrack-app && cd timetrack-app
 git init
 
 # Claude Workflow Engine CLI einrichten
-# (Angenommen das CLI ist global installiert oder als lokale Dependency verfuegbar)
+# (Angenommen das CLI ist global installiert oder als lokale Dependency verfügbar)
 workflow install . --dry-run
 ```
 
@@ -127,10 +127,10 @@ Claude: Fuer wen ist dieses Produkt?
 Du:     Solo-Freelancer und kleine Agenturen (2-5 Personen) im
         DACH-Raum. Technisch affin, aber keine Entwickler.
 
-Claude: Was ist die einzigartige Loesung?
+Claude: Was ist die einzigartige Lösung?
 
 Du:     Automatische Zeiterkennung basierend auf Kalender-Events und
-        Projekt-Zuordnung. Ein-Klick-Export fuer Rechnungen.
+        Projekt-Zuordnung. Ein-Klick-Export für Rechnungen.
         Privacy-first: Alle Daten lokal oder in EU-Cloud.
 ```
 
@@ -151,7 +151,7 @@ Einnahmeverlusten bei der Rechnungsstellung.
 - Kleine Agenturen (2-5 Personen)
 - Technisch affin, aber keine Entwickler
 
-## Einzigartige Loesung
+## Einzigartige Lösung
 Automatische Zeiterkennung basierend auf Kalender-Integration
 mit Privacy-first-Ansatz (EU-Datenresidenz, lokale Verarbeitung).
 ```
@@ -165,7 +165,7 @@ mit Privacy-first-Ansatz (EU-Datenresidenz, lokale Verarbeitung).
 - Manuelle Zeiterfassung (Start/Stop Timer)
 - Projekt- und Kundenverwaltung
 - Tages-/Wochen-/Monatsansicht
-- CSV-Export fuer Rechnungen
+- CSV-Export für Rechnungen
 
 ## Post-Launch (Phase 2)
 - Kalender-Integration (Google Calendar, Outlook)
@@ -174,7 +174,7 @@ mit Privacy-first-Ansatz (EU-Datenresidenz, lokale Verarbeitung).
 - Team-Funktionalitaet (Einladungen, gemeinsame Projekte)
 
 ## Zukunft (Phase 3)
-- KI-basierte Zeitschaetzung fuer neue Projekte
+- KI-basierte Zeitschaetzung für neue Projekte
 - Integrations-API (Zapier, Make)
 - Mobile App (React Native)
 ```
@@ -264,7 +264,7 @@ packages/
   "success": false,
   "error": {
     "code": "TIMER_ALREADY_RUNNING",
-    "message": "Es laeuft bereits ein Timer fuer dieses Projekt",
+    "message": "Es laeuft bereits ein Timer für dieses Projekt",
     "details": {}  // Optional, nur bei Validierungsfehlern
   }
 }
@@ -393,12 +393,12 @@ Agent: debug
 - Timer-Display mit Echtzeit-Counter
 - Start/Stop Button
 - Projekt-Auswahl Dropdown
-- WebSocket oder Polling fuer Timer-Sync
+- WebSocket oder Polling für Timer-Sync
 
 ## Task 5: Tests
 Agent: debug
-- Unit Tests fuer Timer Service
-- Integration Tests fuer API
+- Unit Tests für Timer Service
+- Integration Tests für API
 - E2E Test: Timer starten, warten, stoppen
 ```
 
@@ -410,7 +410,7 @@ Der Orchestrator fuehrt die Tasks der Reihe nach aus und delegiert an den Debug-
 
 ---
 
-### Bonus: DevOps-Agent fuer CI/CD
+### Bonus: DevOps-Agent für CI/CD
 
 Sobald das erste Feature implementiert ist, setzt du CI/CD auf:
 
@@ -481,7 +481,7 @@ Nach diesem Durchlauf hast du:
 | Git Repository | Initialisiert mit .gitignore |
 | Workflow Engine | `.claude/` und `workflow/` vollstaendig |
 | Produktvision | `workflow/product/mission.md`, `roadmap.md`, `tech-stack.md` |
-| Angepasste Standards | `workflow/standards/` (fuer dein Projekt konfiguriert) |
+| Angepasste Standards | `workflow/standards/` (für dein Projekt konfiguriert) |
 | Erste Feature-Spec | `workflow/specs/timer/spec.md` |
 | Implementiertes Feature | Timer-API mit Tests |
 | CI/CD Pipeline | `.github/workflows/ci.yml` |
@@ -545,11 +545,11 @@ Als Solo-Entwickler kannst du die Product-Phase schlanker halten -- eine kurze M
 
 ### Anderer Tech Stack
 
-Die Workflow Engine ist Stack-agnostisch. Statt Fastify/SvelteKit koenntest du genauso mit Django/React oder Go/HTMX arbeiten. Die `tech-stack.md` in den Standards definiert, was fuer dein Projekt gilt.
+Die Workflow Engine ist Stack-agnostisch. Statt Fastify/SvelteKit koenntest du genauso mit Django/React oder Go/HTMX arbeiten. Die `tech-stack.md` in den Standards definiert, was für dein Projekt gilt.
 
-### Bestehendes Team uebernehmen
+### Bestehendes Team übernehmen
 
-Wenn du ein Projekt von einem anderen Team uebernimmst, starte trotzdem mit `plan-product`. Nutze den Researcher-Agent um die bestehende Codebase zu analysieren und die Product-Dateien daraus abzuleiten:
+Wenn du ein Projekt von einem anderen Team übernimmst, starte trotzdem mit `plan-product`. Nutze den Researcher-Agent um die bestehende Codebase zu analysieren und die Product-Dateien daraus abzuleiten:
 
 ```
 Researcher-Agent: Analysiere die Codebase und erstelle

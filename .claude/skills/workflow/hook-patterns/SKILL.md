@@ -148,7 +148,7 @@ chmod +x hooks/scripts/my-hook.sh
 |----------|--------------|
 | `get_project_root` | Projekt-Root ermitteln |
 | `get_active_spec` | Aktive Spezifikation finden |
-| `json_escape` | String fuer JSON escapen |
+| `json_escape` | String für JSON escapen |
 | `is_secrets_path` | Pruefen ob Pfad ein Secret ist |
 
 ## Debugging-Tipps
@@ -167,7 +167,7 @@ chmod +x hooks/scripts/my-hook.sh
    - Pruefe ob Scripts executable sind (`ls -la hooks/scripts/`)
    - Pruefe Timeout (max 5-10 Sekunden)
    - Pruefe JSON-Output-Format (muss valides JSON sein)
-   - Teste mit `bash -x hooks/scripts/my-hook.sh` fuer Trace-Output
+   - Teste mit `bash -x hooks/scripts/my-hook.sh` für Trace-Output
 
 4. **WSL2-Kompatibilitaet:**
    - Verwende `#!/usr/bin/env bash` (nicht `#!/bin/bash`)

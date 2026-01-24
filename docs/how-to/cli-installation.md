@@ -1,6 +1,6 @@
 # How-To: CLI installieren und nutzen
 
-Dieser Guide fuehrt dich durch die Installation des Claude Workflow Engine CLI und zeigt die wichtigsten Befehle fuer den taeglichen Einsatz.
+Dieser Guide führt dich durch die Installation des Claude Workflow Engine CLI und zeigt die wichtigsten Befehle für den täglichen Einsatz.
 
 ## Ziel
 
@@ -8,19 +8,19 @@ Nach diesem Guide hast du:
 
 - Das CLI gebaut und einsatzbereit
 - Die Workflow Engine in ein Projekt installiert
-- Einen Health Check erfolgreich durchgefuehrt
-- Das CLI optional global verfuegbar gemacht
+- Einen Health Check erfolgreich durchgeführt
+- Das CLI optional global verfügbar gemacht
 
 ## Voraussetzungen
 
-- **Node.js >= 18** (pruefe mit `node --version`)
+- **Node.js >= 18** (prüfe mit `node --version`)
 - **npm** (wird mit Node.js mitgeliefert)
 - Ein Projektverzeichnis in das du die Engine installieren willst
 - Terminal-Zugang (Bash, Zsh oder PowerShell)
 
 ---
 
-## Schritt 1: Repository klonen und Build ausfuehren
+## Schritt 1: Repository klonen und Build ausführen
 
 ### Repository klonen
 
@@ -42,7 +42,7 @@ Erwartete Ausgabe:
 added 42 packages in 3s
 ```
 
-### Build ausfuehren
+### Build ausführen
 
 ```bash
 npm run build
@@ -57,7 +57,7 @@ Erwartete Ausgabe:
 Successfully compiled to cli/dist/
 ```
 
-Nach dem Build ist das CLI unter `cli/dist/index.js` verfuegbar.
+Nach dem Build ist das CLI unter `cli/dist/index.js` verfügbar.
 
 ### Funktionstest
 
@@ -87,9 +87,9 @@ Options:
 
 ---
 
-## Schritt 2: Dry-Run (Vorabpruefung)
+## Schritt 2: Dry-Run (Vorabprüfung)
 
-Bevor du tatsaechlich installierst, pruefe was passieren wuerde:
+Bevor du tatsächlich installierst, prüfe was passieren würde:
 
 ```bash
 node cli/dist/index.js install --dry-run --verbose /path/to/your/project
@@ -113,12 +113,12 @@ Erwartete Ausgabe:
 [DRY-RUN] 32 files would be created
 ```
 
-### Was der Dry-Run prueft
+### Was der Dry-Run prüft
 
 - Welche Dateien erstellt werden
 - Ob Konflikte mit bestehenden Dateien existieren
 - Ob Schreibberechtigungen vorhanden sind
-- Ob DSGVO-relevante Patterns beruecksichtigt sind
+- Ob DSGVO-relevante Patterns berücksichtigt sind
 
 ---
 
@@ -159,7 +159,7 @@ node cli/dist/index.js install --profile node /path/to/your/project
 
 Profile passen die Standards an den Tech Stack an:
 
-| Profil | Optimiert fuer |
+| Profil | Optimiert für |
 |--------|----------------|
 | `default` | Allgemeine Projekte |
 | `node` | Node.js / TypeScript |
@@ -172,13 +172,13 @@ Profile passen die Standards an den Tech Stack an:
 node cli/dist/index.js install --force /path/to/your/project
 ```
 
-Das `--force`-Flag ueberspringt Warnungen (z.B. bei bestehenden Dateien). Backups werden trotzdem erstellt.
+Das `--force`-Flag überspringt Warnungen (z.B. bei bestehenden Dateien). Backups werden trotzdem erstellt.
 
 ---
 
 ## Schritt 4: Health Check nach Installation
 
-Pruefe ob die Installation korrekt ist:
+Prüfe ob die Installation korrekt ist:
 
 ```bash
 node cli/dist/index.js health /path/to/your/project
@@ -226,8 +226,8 @@ node cli/dist/index.js health --fix /path/to/your/project
 Auto-Fixes umfassen:
 
 - Fehlende Verzeichnisse erstellen
-- Fehlende Permissions in Settings ergaenzen
-- DSGVO-Patterns in `.gitignore` hinzufuegen
+- Fehlende Permissions in Settings ergänzen
+- DSGVO-Patterns in `.gitignore` hinzufügen
 
 ### Health Report speichern
 
@@ -239,7 +239,7 @@ Speichert `.workflow-health-report.json` im Projektverzeichnis.
 
 ---
 
-## Schritt 5: Installations-Status pruefen
+## Schritt 5: Installations-Status prüfen
 
 ```bash
 node cli/dist/index.js status /path/to/your/project
@@ -260,7 +260,7 @@ Claude Workflow Engine Status
   History events: 1
 ```
 
-Fuer detaillierte Informationen:
+Für detaillierte Informationen:
 
 ```bash
 node cli/dist/index.js status --verbose /path/to/your/project
@@ -270,7 +270,7 @@ node cli/dist/index.js status --verbose /path/to/your/project
 
 ## Schritt 6: Globale Installation mit npm link
 
-Damit du `workflow` ueberall im Terminal nutzen kannst, ohne den vollen Pfad anzugeben:
+Damit du `workflow` überall im Terminal nutzen kannst, ohne den vollen Pfad anzugeben:
 
 ```bash
 cd cli
@@ -284,7 +284,7 @@ Erwartete Ausgabe:
 /usr/local/bin/workflow -> /usr/local/lib/node_modules/workflow-cli/dist/index.js
 ```
 
-Danach kannst du von ueberall aufrufen:
+Danach kannst du von überall aufrufen:
 
 ```bash
 workflow --help
@@ -302,23 +302,23 @@ npm unlink
 
 ---
 
-## Schritt 7: Weitere nuetzliche Commands
+## Schritt 7: Weitere nützliche Commands
 
-### Konflikte pruefen
+### Konflikte prüfen
 
 ```bash
 workflow check /path/to/project
 ```
 
-Prueft auf Datei-Konflikte, Permission-Probleme und DSGVO-Compliance.
+Prüft auf Datei-Konflikte, Permission-Probleme und DSGVO-Compliance.
 
-### Konflikte loesen
+### Konflikte lösen
 
 ```bash
 workflow resolve --auto-fix /path/to/project
 ```
 
-Erstellt Backups und loest Konflikte automatisch.
+Erstellt Backups und löst Konflikte automatisch.
 
 ### Rollback
 
@@ -328,7 +328,7 @@ workflow rollback /path/to/project
 
 Stellt das letzte Backup wieder her (z.B. nach einer fehlgeschlagenen Installation).
 
-### Version pruefen
+### Version prüfen
 
 ```bash
 workflow version
@@ -346,19 +346,19 @@ workflow v0.2.0
 
 ### Problem: "command not found: workflow"
 
-**Ursache:** `npm link` wurde nicht ausgefuehrt oder der PATH stimmt nicht.
+**Ursache:** `npm link` wurde nicht ausgeführt oder der PATH stimmt nicht.
 
-**Loesung:**
+**Lösung:**
 
 ```bash
-# Pruefe ob npm globales bin-Verzeichnis im PATH ist
+# Prüfe ob npm globales bin-Verzeichnis im PATH ist
 npm config get prefix
 # Ausgabe z.B.: /usr/local
 
-# Pruefe ob /usr/local/bin im PATH ist
+# Prüfe ob /usr/local/bin im PATH ist
 echo $PATH | tr ':' '\n' | grep -q "/usr/local/bin" && echo "OK" || echo "FEHLT"
 
-# Alternative: Direkt ausfuehren
+# Alternative: Direkt ausführen
 node /path/to/oidanice-agents/cli/dist/index.js --help
 ```
 
@@ -366,7 +366,7 @@ node /path/to/oidanice-agents/cli/dist/index.js --help
 
 **Ursache:** Dependencies nicht installiert.
 
-**Loesung:**
+**Lösung:**
 
 ```bash
 cd cli
@@ -379,10 +379,10 @@ npm run build
 
 **Ursache:** Keine Schreibrechte im Zielverzeichnis.
 
-**Loesung:**
+**Lösung:**
 
 ```bash
-# Berechtigungen pruefen
+# Berechtigungen prüfen
 workflow check --permissions /path/to/project
 
 # Berechtigungen setzen (Linux/macOS)
@@ -393,7 +393,7 @@ chmod -R u+w /path/to/project/.claude /path/to/project/workflow
 
 **Ursache:** Das Zielverzeichnis existiert nicht.
 
-**Loesung:**
+**Lösung:**
 
 ```bash
 # Verzeichnis erstellen
@@ -405,9 +405,9 @@ workflow install /path/to/project
 
 ### Problem: Health Check zeigt Fehler
 
-**Ursache:** Installation ist unvollstaendig oder Dateien wurden manuell geloescht.
+**Ursache:** Installation ist unvollständig oder Dateien wurden manuell gelöscht.
 
-**Loesung:**
+**Lösung:**
 
 ```bash
 # Auto-Fix versuchen
@@ -421,13 +421,13 @@ workflow install --force /path/to/project
 
 **Ursache:** Bestehende Dateien die sich von den Engine-Dateien unterscheiden.
 
-**Loesung:**
+**Lösung:**
 
 ```bash
 # Konflikte anzeigen
 workflow check --conflicts /path/to/project
 
-# Automatisch loesen (erstellt Backups)
+# Automatisch lösen (erstellt Backups)
 workflow resolve --auto-fix /path/to/project
 
 # Oder: Rollback und neu installieren
@@ -439,10 +439,10 @@ workflow install --force /path/to/project
 
 **Ursache:** Node.js < 18.
 
-**Loesung:**
+**Lösung:**
 
 ```bash
-# Version pruefen
+# Version prüfen
 node --version
 
 # Update via nvm (empfohlen)
@@ -466,33 +466,33 @@ Du hast jetzt:
 
 - Das CLI erfolgreich gebaut
 - Die Workflow Engine in ein Projekt installiert
-- Einen Health Check ohne Fehler durchgefuehrt
-- (Optional) Das CLI global verfuegbar gemacht
+- Einen Health Check ohne Fehler durchgeführt
+- (Optional) Das CLI global verfügbar gemacht
 
-## Naechste Schritte
+## Nächste Schritte
 
 - **Erstes Feature entwickeln:** Siehe [Neues Feature entwickeln](neues-feature-entwickeln.md)
 - **Standards anpassen:** Siehe [Standards erweitern](standards-erweitern.md)
 - **Eigene Agents:** Siehe [Eigenen Agent erstellen](eigenen-agent-erstellen.md)
-- **Workflow starten:** Fuehre `/workflow/plan-product` in Claude Code aus
+- **Workflow starten:** Führe `/workflow/plan-product` in Claude Code aus
 
 ## Zusammenfassung der wichtigsten Commands
 
 | Command | Zweck |
 |---------|-------|
 | `workflow install [path]` | Engine in Projekt installieren |
-| `workflow install --dry-run [path]` | Vorschau ohne Aenderungen |
+| `workflow install --dry-run [path]` | Vorschau ohne Änderungen |
 | `workflow status [path]` | Installationsstatus anzeigen |
-| `workflow health [path]` | Health Checks ausfuehren |
+| `workflow health [path]` | Health Checks ausführen |
 | `workflow health --fix [path]` | Probleme automatisch beheben |
-| `workflow check [path]` | Konflikte/Permissions/DSGVO pruefen |
-| `workflow resolve --auto-fix [path]` | Konflikte loesen |
+| `workflow check [path]` | Konflikte/Permissions/DSGVO prüfen |
+| `workflow resolve --auto-fix [path]` | Konflikte lösen |
 | `workflow rollback [path]` | Backup wiederherstellen |
 | `workflow version` | Version anzeigen |
 
 ## Siehe auch
 
-- [CLI-Referenz](../cli.md) -- Vollstaendige Command-Dokumentation
+- [CLI-Referenz](../cli.md) -- Vollständige Command-Dokumentation
 - [Konfiguration](../konfiguration.md) -- Dateien die das CLI erstellt
 - [Erste Schritte](../erste-schritte.md) -- Ersteinrichtung des Projekts
 - [Workflow-Guide](../workflow.md) -- Nach der Installation: der 5-Phasen-Workflow

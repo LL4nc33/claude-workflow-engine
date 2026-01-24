@@ -12,9 +12,9 @@ erstelle ein Issue im Repository.
 
 Du brauchst folgende Tools auf deinem System:
 
-- **Node.js >= 18** (fuer die CLI)
-- **Claude Code CLI** (als Runtime fuer die Agents)
-- **Git** (fuer Versionskontrolle und Standards-Management)
+- **Node.js >= 18** (für die CLI)
+- **Claude Code CLI** (als Runtime für die Agents)
+- **Git** (für Versionskontrolle und Standards-Management)
 
 Pruefe deine Installation:
 
@@ -59,7 +59,7 @@ workflow/
   specs/            # Feature-Spezifikationen
 ```
 
-Bestehende Dateien werden nie ueberschrieben. Bei Konflikten zeigt die CLI eine `CONFLICT`-Warnung (siehe Troubleshooting weiter unten).
+Bestehende Dateien werden nie überschrieben. Bei Konflikten zeigt die CLI eine `CONFLICT`-Warnung (siehe Troubleshooting weiter unten).
 
 ---
 
@@ -70,9 +70,9 @@ Ja, das ist moeglich. Du kannst die Dateien manuell einrichten:
 1. Kopiere die Verzeichnisstruktur (`workflow/`, `.claude/agents/`) in dein Projekt
 2. Erstelle oder passe die `CLAUDE.md` im Projekt-Root an
 3. Registriere die Standards in `workflow/standards/index.yml`
-4. Konfiguriere `workflow/config.yml` fuer dein Projekt
+4. Konfiguriere `workflow/config.yml` für dein Projekt
 
-Der Nachteil: Du verlierst CLI-Features wie `--dry-run`, automatische Konflikterkennung, und `workflow check`. Die manuelle Einrichtung eignet sich vor allem fuer Sonderfaelle oder wenn du die Struktur stark anpassen willst.
+Der Nachteil: Du verlierst CLI-Features wie `--dry-run`, automatische Konflikterkennung, und `workflow check`. Die manuelle Einrichtung eignet sich vor allem für Sonderfaelle oder wenn du die Struktur stark anpassen willst.
 
 ---
 
@@ -81,7 +81,7 @@ Der Nachteil: Du verlierst CLI-Features wie `--dry-run`, automatische Konflikter
 Nein. Die Agents sind als Claude Code Subagents implementiert und benoetigen die Claude Code Runtime. Konkret:
 
 - Agent-Definitionen in `.claude/agents/` werden von Claude Code als Subagents geladen
-- Das `Task`-Tool fuer Agent-Delegation ist ein Claude Code Feature
+- Das `Task`-Tool für Agent-Delegation ist ein Claude Code Feature
 - Slash-Commands (`/plan-product`, `/shape-spec`, etc.) sind Claude Code Commands
 
 Ohne Claude Code kannst du die Standards und Specs als reine Dokumentation nutzen, aber die Agent-Orchestrierung funktioniert nicht.
@@ -100,7 +100,7 @@ Nein. Die Phasen bauen aufeinander auf, aber du kannst einsteigen wo es Sinn mac
 | Product existiert, neues Feature | `/shape-spec` |
 | Shape ist schon klar, nur Spec fehlt | `/write-spec` |
 | Spec existiert, brauche Tasks | `/create-tasks` |
-| Tasks sind definiert, nur ausfuehren | `/orchestrate-tasks` |
+| Tasks sind definiert, nur ausführen | `/orchestrate-tasks` |
 
 Beachte: Spaetere Phasen erwarten bestimmte Artefakte. Wenn du `/create-tasks` startest, muss eine `spec.md` im Spec-Ordner vorhanden sein.
 
@@ -114,7 +114,7 @@ Ja. Du kannst jederzeit abbrechen (Ctrl+C oder Session beenden). Alle bisher erz
 - Der Fortschritt steht in `progress.md`
 - Du kannst spaeter an der gleichen Stelle weiterarbeiten
 
-Es gibt keinen "korrupten Zustand" -- die Engine ist idempotent. Wiederholtes Ausfuehren einer Phase ueberschreibt die vorherigen Artefakte in diesem Ordner.
+Es gibt keinen "korrupten Zustand" -- die Engine ist idempotent. Wiederholtes Ausfuehren einer Phase überschreibt die vorherigen Artefakte in diesem Ordner.
 
 ---
 
@@ -126,12 +126,12 @@ Die Engine pausiert und zeigt eine Fehlermeldung mit Kontext:
 [ERROR] Phase 'write-spec' failed: quality gate 'gate_1_pre_implementation' not passed
   - Check: spec_architecturally_sound -> FAILED
   - Reason: Missing dependency analysis for database layer
-  - Action: Ergaenze die Spec um Datenbank-Abhaengigkeiten und starte erneut
+  - Action: Ergaenze die Spec um Datenbank-Abhängigkeiten und starte erneut
 ```
 
 Du kannst:
 1. Das Problem beheben und die Phase erneut starten
-2. Den Quality Gate manuell ueberschreiben (wenn `allow_override: true` konfiguriert ist)
+2. Den Quality Gate manuell überschreiben (wenn `allow_override: true` konfiguriert ist)
 3. Zurueck zur vorherigen Phase gehen und dort nachbessern
 
 ---
@@ -160,7 +160,7 @@ Features sind voneinander unabhaengig. Wenn Feature B von Feature A abhaengt, do
 
 ### 9. Kann ich eigene Agents erstellen?
 
-Ja. Erstelle eine Markdown-Datei in `.claude/agents/` mit Frontmatter fuer die Konfiguration:
+Ja. Erstelle eine Markdown-Datei in `.claude/agents/` mit Frontmatter für die Konfiguration:
 
 ```markdown
 ---
@@ -193,13 +193,13 @@ Das ist ein bewusstes Design-Prinzip: **Separation of Concerns**.
 - Der Debug-Agent **implementiert** -- aber trifft keine architektonischen Entscheidungen
 - Der Orchestrator **delegiert** -- aber fuehrt selbst keine Tasks aus
 
-Wenn der Architect schreiben duerfte, koennten architektonische Reviews und gleichzeitige Code-Aenderungen zu unkontrollierten Zustaenden fuehren. Die Trennung sorgt dafuer, dass jede Aenderung durch den vorgesehenen Kanal (Debug-Agent mit Standards-Injection) laeuft.
+Wenn der Architect schreiben duerfte, koennten architektonische Reviews und gleichzeitige Code-Aenderungen zu unkontrollierten Zustaenden fuehren. Die Trennung sorgt dafür, dass jede Aenderung durch den vorgesehenen Kanal (Debug-Agent mit Standards-Injection) laeuft.
 
 ---
 
 ### 11. Wie kommunizieren die Agents untereinander?
 
-Agents kommunizieren **nicht direkt** miteinander. Die Kommunikation laeuft ausschliesslich ueber den Orchestrator:
+Agents kommunizieren **nicht direkt** miteinander. Die Kommunikation laeuft ausschliesslich über den Orchestrator:
 
 ```
 Orchestrator --[Task-Tool]--> Debug-Agent
@@ -241,7 +241,7 @@ Ja. Die Zugriffsrechte werden an zwei Stellen definiert:
      tools: [Read, Write, Edit, Bash, Grep, Glob]
    ```
 
-Beide muessen konsistent sein. Die Tools in der Agent-Datei bestimmen, was Claude Code dem Agent tatsaechlich erlaubt.
+Beide müssen konsistent sein. Die Tools in der Agent-Datei bestimmen, was Claude Code dem Agent tatsaechlich erlaubt.
 
 ---
 
@@ -252,12 +252,12 @@ Beide muessen konsistent sein. Die Tools in der Agent-Datei bestimmen, was Claud
 | Aspekt | Standards | Specs |
 |--------|-----------|-------|
 | **Zweck** | HOW (wie wird gebaut) | WHAT NEXT (was wird gebaut) |
-| **Lebensdauer** | Langlebig, projektuebergreifend | Einmalig pro Feature |
+| **Lebensdauer** | Langlebig, projektübergreifend | Einmalig pro Feature |
 | **Pfad** | `workflow/standards/` | `workflow/specs/{feature}/` |
 | **Beispiel** | "API-Responses haben immer ein `data`-Envelope" | "User-Auth braucht Login, Register, Password-Reset" |
 | **Wer nutzt sie** | Alle Agents (via Injection) | Orchestrator und zustaendiger Agent |
 
-Standards definieren die Qualitaetsregeln. Specs definieren was konkret umgesetzt wird. Ein Feature-Spec referenziert relevante Standards, aber Standards referenzieren nie einzelne Specs.
+Standards definieren die Qualitätsregeln. Specs definieren was konkret umgesetzt wird. Ein Feature-Spec referenziert relevante Standards, aber Standards referenzieren nie einzelne Specs.
 
 ---
 
@@ -287,7 +287,7 @@ Drei Schritte:
    my-domain:
      my-topic:
        description: Beschreibung des Standards
-       tags: [relevante, tags, fuer, matching]
+       tags: [relevante, tags, für, matching]
    ```
 
 4. **Standards-Zuordnung in `orchestration.yml`** ergaenzen:
@@ -306,8 +306,8 @@ Fuer eine ausfuehrliche Anleitung siehe [Standards erweitern](how-to/standards-e
 
 Ja, basierend auf der Konfiguration in `workflow/orchestration.yml`:
 
-- `always_inject` Standards werden bei **jeder** Delegation eingefuegt (z.B. `global/tech-stack`)
-- `domain_mapping` bestimmt welche Standards fuer welchen Task-Typ geladen werden
+- `always_inject` Standards werden bei **jeder** Delegation eingefügt (z.B. `global/tech-stack`)
+- `domain_mapping` bestimmt welche Standards für welchen Task-Typ geladen werden
 - Die `task_groups` in `orchestration.yml` definieren welche Standards pro Task-Gruppe relevant sind
 
 Beispiel: Ein Backend-Task bekommt automatisch:
@@ -318,7 +318,7 @@ api/response-format (domain_mapping: backend)
 api/error-handling (domain_mapping: backend)
 ```
 
-Die Injection passiert inline -- der Standard-Inhalt wird direkt in den Delegation-Prompt eingefuegt, da Subagents keine Dateipfade aufloesen koennen.
+Die Injection passiert inline -- der Standard-Inhalt wird direkt in den Delegation-Prompt eingefügt, da Subagents keine Dateipfade auflösen können.
 
 ---
 
@@ -353,7 +353,7 @@ workflow install --skip       # Ueberspringt Konflikte
 ```
 
 **CLAUDE.md existiert bereits:**
-Die CLI fuegt den Workflow-Abschnitt an bestehende CLAUDE.md-Dateien an, statt sie zu ueberschreiben. Falls die Datei gesperrt ist oder unerwartete Inhalte hat, pruefe sie manuell.
+Die CLI fügt den Workflow-Abschnitt an bestehende CLAUDE.md-Dateien an, statt sie zu überschreiben. Falls die Datei gesperrt ist oder unerwartete Inhalte hat, pruefe sie manuell.
 
 ---
 
@@ -433,7 +433,7 @@ Beachte: `workflow rollback` entfernt nur die Engine-Dateien, nicht deine Specs 
    grep -A5 "standards:" workflow/orchestration.yml
    ```
 
-4. **Kontext-Ueberlauf** -- Zu viele Standards koennen den Kontext sprengen:
+4. **Kontext-Ueberlauf** -- Zu viele Standards können den Kontext sprengen:
    ```yaml
    # In orchestration.yml:
    context_optimization:
@@ -487,9 +487,9 @@ workflow check --type conflicts
 
 # Optionen zur Aufloesung:
 workflow resolve              # Interaktiver Merge
-workflow resolve --theirs     # Engine-Version uebernehmen
+workflow resolve --theirs     # Engine-Version übernehmen
 workflow resolve --ours       # Lokale Version behalten
-workflow install --force      # Alles ueberschreiben (Vorsicht!)
+workflow install --force      # Alles überschreiben (Vorsicht!)
 ```
 
 Konflikte entstehen typischerweise wenn:
@@ -518,11 +518,11 @@ Konflikte entstehen typischerweise wenn:
    ```
 
 3. **Injection-Methode pruefen:**
-   Die Standards muessen `inline` injiziert werden (Standard-Einstellung). Subagents koennen keine Dateipfade aufloesen:
+   Die Standards müssen `inline` injiziert werden (Standard-Einstellung). Subagents können keine Dateipfade auflösen:
    ```yaml
    # In orchestration.yml:
    standards_injection:
-     method: inline  # MUSS inline sein fuer Subagents
+     method: inline  # MUSS inline sein für Subagents
    ```
 
 4. **Max-Limit pruefen:**
@@ -541,8 +541,8 @@ Konflikte entstehen typischerweise wenn:
 - [Erste Schritte](erste-schritte.md) -- Schnellstart-Anleitung
 - [CLI-Referenz](cli.md) -- Alle CLI-Befehle im Detail
 - [Workflow Guide](workflow.md) -- Die 5 Phasen im Detail
-- [Agenten](agenten.md) -- Alle 7 Agents mit Faehigkeiten und Konfiguration
-- [Standards](standards.md) -- Standards-System und Domain-Uebersicht
+- [Agenten](agenten.md) -- Alle 7 Agents mit Fähigkeiten und Konfiguration
+- [Standards](standards.md) -- Standards-System und Domain-Übersicht
 - [Konfiguration](konfiguration.md) -- config.yml und orchestration.yml Referenz
 - How-Tos:
   - [Feature entwickeln](how-to/neues-feature-entwickeln.md)

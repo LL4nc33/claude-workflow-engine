@@ -57,7 +57,7 @@ graph TD
 
 #### Task 1.1: Verzeichnisstruktur erstellen [TODO]
 
-- **Description:** Neue Ordnerstruktur fuer die Dokumentation anlegen: docs/how-to/, docs/beispiele/, docs/en/, docs/en/how-to/, docs/en/examples/
+- **Description:** Neue Ordnerstruktur für die Dokumentation anlegen: docs/how-to/, docs/beispiele/, docs/en/, docs/en/how-to/, docs/en/examples/
 - **Agent:** debug
 - **Dependencies:** None
 - **Effort:** S
@@ -67,7 +67,7 @@ graph TD
   - [ ] docs/en/ existiert
   - [ ] docs/en/how-to/ existiert
   - [ ] docs/en/examples/ existiert
-  - [ ] Alte englische Docs bleiben vorerst bestehen (werden spaeter ersetzt)
+  - [ ] Alte englische Docs bleiben vorerst bestehen (werden später ersetzt)
 - **Files to create:**
   - `docs/how-to/.gitkeep`
   - `docs/beispiele/.gitkeep`
@@ -77,14 +77,14 @@ graph TD
 
 #### Task 1.2: Credits Research [TODO]
 
-- **Description:** Die 4 Inspirationsprojekte recherchieren und kurze Beschreibungen formulieren, was genau wir von jedem uebernommen haben. URLs verifizieren.
+- **Description:** Die 4 Inspirationsprojekte recherchieren und kurze Beschreibungen formulieren, was genau wir von jedem übernommen haben. URLs verifizieren.
 - **Agent:** debug
 - **Dependencies:** None
 - **Effort:** S
 - **Acceptance Criteria:**
-  - [ ] Alle 4 URLs geprueft und gueltig
-  - [ ] Fuer jedes Projekt: 2-3 Saetze was wir davon inspiriert/uebernommen haben
-  - [ ] Ergebnis in einer Referenzdatei gespeichert fuer Wiederverwendung
+  - [ ] Alle 4 URLs geprüft und gültig
+  - [ ] Fuer jedes Projekt: 2-3 Sätze was wir davon inspiriert/übernommen haben
+  - [ ] Ergebnis in einer Referenzdatei gespeichert für Wiederverwendung
 - **Files to create:**
   - `workflow/specs/2026-01-23-documentation-overhaul/credits-research.md`
 
@@ -94,7 +94,7 @@ graph TD
 
 #### Task 2.1: README.md (Deutsch) [TODO]
 
-- **Description:** README.md komplett neu schreiben auf Deutsch. Professionell-technisch mit Tutorial-Elementen. Enthalt: Teaser, Features, Schnellstart, Architektur, Projektstruktur, korrekte Credits.
+- **Description:** README.md komplett neu schreiben auf Deutsch. Professionell-technisch mit Tutorial-Elementen. Enthält: Teaser, Features, Schnellstart, Architektur, Projektstruktur, korrekte Credits.
 - **Agent:** debug
 - **Dependencies:** 1.1, 1.2
 - **Effort:** M
@@ -106,13 +106,13 @@ graph TD
   - [ ] Architektur-Diagramm (3-Schichten + Agenten-Hierarchie)
   - [ ] Korrekte Credits (buildermethods/agent-os, RooCodeInc/Roo-Code, anthropics/claude-code, upstash/context7)
   - [ ] Links zu allen deutschen Docs
-  - [ ] Badge fuer Version, License, Claude Code
+  - [ ] Badge für Version, License, Claude Code
 - **Files to create/modify:**
   - `README.md` — Komplett ersetzen
 
 #### Task 2.2: erste-schritte.md [TODO]
 
-- **Description:** Getting Started Guide auf Deutsch im Tutorial-Stil. Schritt-fuer-Schritt Anleitung von der Installation bis zum ersten erfolgreichen Workflow-Durchlauf.
+- **Description:** Getting Started Guide auf Deutsch im Tutorial-Stil. Schritt-für-Schritt Anleitung von der Installation bis zum ersten erfolgreichen Workflow-Durchlauf.
 - **Agent:** debug
 - **Dependencies:** 1.1
 - **Effort:** M
@@ -225,7 +225,7 @@ graph TD
 
 #### Task 3.1: How-To Guides [TODO]
 
-- **Description:** 4 Schritt-fuer-Schritt Anleitungen erstellen: Neues Feature entwickeln, eigenen Agent erstellen, Standards erweitern, CLI Installation.
+- **Description:** 4 Schritt-für-Schritt Anleitungen erstellen: Neues Feature entwickeln, eigenen Agent erstellen, Standards erweitern, CLI Installation.
 - **Agent:** debug
 - **Dependencies:** 2.1, 2.2, 2.3, 2.4, 2.6
 - **Effort:** L
@@ -271,7 +271,7 @@ graph TD
 - **Effort:** M
 - **Acceptance Criteria:**
   - [ ] Agent-Auswahl Cheat Sheet (Tabelle: Situation -> Agent)
-  - [ ] Workflow-Abkuerzungen (wann welche Phase ueberspringen)
+  - [ ] Workflow-Abkuerzungen (wann welche Phase überspringen)
   - [ ] Standards-Design Regeln (Do/Don't)
   - [ ] Haeufige Fehler und Loesungen
   - [ ] Performance-Tipps (Context-Window, Token-Optimierung)
@@ -300,7 +300,7 @@ graph TD
 
 #### Task 4.1: Englische Docs [TODO]
 
-- **Description:** Alle deutschen Docs ins Englische uebersetzen und unter docs/en/ ablegen.
+- **Description:** Alle deutschen Docs ins Englische übersetzen und unter docs/en/ ablegen.
 - **Agent:** debug
 - **Dependencies:** 2.1, 3.1, 3.2, 3.3, 3.4
 - **Effort:** L

@@ -11,13 +11,13 @@ Pruefe, ob in deinem Projekt bereits Folgendes existiert:
 - `.claude/agents/` (bestehende Agenten)
 - `.claude/commands/` (bestehende Slash Commands)
 - `CLAUDE.md` (bestehender Projektkontext)
-- `workflow/` Verzeichnis (gleichnamiges Verzeichnis fuer andere Zwecke)
+- `workflow/` Verzeichnis (gleichnamiges Verzeichnis für andere Zwecke)
 
-Die CLI erkennt Konflikte automatisch und ueberschreibt nichts ohne Rueckfrage.
+Die CLI erkennt Konflikte automatisch und überschreibt nichts ohne Rueckfrage.
 
 ## Methode 1: CLI-Installation (empfohlen)
 
-Die CLI uebernimmt Konflikterkennung, Backups und Berechtigungen.
+Die CLI übernimmt Konflikterkennung, Backups und Berechtigungen.
 
 ### Schritt 1: CLI bauen
 
@@ -30,13 +30,13 @@ npm run build
 
 ### Schritt 2: Aenderungen vorschau (Dry Run)
 
-Fuehre immer zuerst einen Dry Run durch:
+Führe immer zuerst einen Dry Run durch:
 
 ```bash
 node dist/index.js install --dry-run --verbose /pfad/zu/deinem/projekt
 ```
 
-Die Ausgabe zeigt dir exakt, welche Dateien erstellt, geaendert oder uebersprungen werden.
+Die Ausgabe zeigt dir exakt, welche Dateien erstellt, geaendert oder übersprungen werden.
 
 ### Schritt 3: Konflikte pruefen
 
@@ -59,7 +59,7 @@ node dist/index.js install /pfad/zu/deinem/projekt
 # Mit einem bestimmten Tech-Profil
 node dist/index.js install --profile node /pfad/zu/deinem/projekt
 
-# Force-Installation (ueberspringt nicht-blockierende Warnungen)
+# Force-Installation (überspringt nicht-blockierende Warnungen)
 node dist/index.js install --force /pfad/zu/deinem/projekt
 ```
 
@@ -133,7 +133,7 @@ Falls dein Projekt keine `CLAUDE.md` hat:
 cp .claude/CLAUDE.md /pfad/zu/deinem/projekt/.claude/
 ```
 
-Falls bereits eine existiert, fuege die Sektionen fuer Agent Hierarchy, Workflow und Context Model zu deiner bestehenden Datei hinzu. Die Vorlage findest du in `.claude/CLAUDE.md`.
+Falls bereits eine existiert, fuege die Sektionen für Agent Hierarchy, Workflow und Context Model zu deiner bestehenden Datei hinzu. Die Vorlage findest du in `.claude/CLAUDE.md`.
 
 ### Schritt 4: Settings mergen
 
@@ -181,7 +181,7 @@ secrets.*
 | `.claude/agents/` | 7 Agent-Definitionsdateien | ~15 KB |
 | `.claude/commands/workflow/` | 8 Slash-Command-Dateien | ~30 KB |
 | `.claude/skills/workflow/` | 10 Skill-Verzeichnisse (7 Standards + 3 Plugin) | ~15 KB |
-| `.claude/CLAUDE.md` | Projektkontext fuer Claude | ~4 KB |
+| `.claude/CLAUDE.md` | Projektkontext für Claude | ~4 KB |
 | `.claude-plugin/plugin.json` | Plugin-Manifest | ~0.5 KB |
 | `hooks/` | Hook-Definitionen und Scripts | ~5 KB |
 | `workflow/config.yml` | Hauptkonfiguration | ~3 KB |
@@ -198,9 +198,9 @@ secrets.*
 
 Falls du bereits Agenten hast:
 
-- Die Engine fuegt ihre 7 Agenten neben deinen bestehenden hinzu
+- Die Engine fügt ihre 7 Agenten neben deinen bestehenden hinzu
 - Namenskollisionen werden erkannt (z.B. wenn du bereits eine `debug.md` hast)
-- **Loesung:** Benenne deinen Agenten um oder ueberspringe die Engine-Version
+- **Loesung:** Benenne deinen Agenten um oder überspringe die Engine-Version
 
 ### Bestehende .claude/commands/
 
@@ -208,7 +208,7 @@ Falls du bereits Slash Commands hast:
 
 - Die Engine verwendet ein `workflow/` Prefix (z.B. `/workflow/plan-product`)
 - Kollisionen treten nur auf, wenn du ebenfalls das `workflow/` Prefix verwendest
-- **Loesung:** Benenne deine Commands um oder ueberspringe konfliktierende Engine-Commands
+- **Loesung:** Benenne deine Commands um oder überspringe konfliktierende Engine-Commands
 
 ### Bestehende CLAUDE.md
 
@@ -216,17 +216,17 @@ Die `CLAUDE.md` der Engine enthaelt Agent Hierarchy, Workflow-Beschreibung und C
 
 - **Ersetzen:** Verwende die Engine-Version (deine wird gesichert)
 - **Mergen:** Fuege die Engine-Sektionen zu deiner bestehenden Datei hinzu
-- **Ueberspringen:** Behalte deine Version, aber Agenten sind fuer Claude moeglicherweise nicht korrekt dokumentiert
+- **Ueberspringen:** Behalte deine Version, aber Agenten sind für Claude moeglicherweise nicht korrekt dokumentiert
 
 ### Bestehende settings.local.json
 
-Die CLI merged Permissions additiv -- deine bestehenden Berechtigungen bleiben erhalten, und die benoetigten Engine-Permissions werden hinzugefuegt. Keine Berechtigungen werden entfernt.
+Die CLI merged Permissions additiv -- deine bestehenden Berechtigungen bleiben erhalten, und die benoetigten Engine-Permissions werden hinzugefügt. Keine Berechtigungen werden entfernt.
 
 ### Bestehendes workflow/ Verzeichnis
 
-Falls du ein `workflow/` Verzeichnis fuer andere Zwecke hast:
+Falls du ein `workflow/` Verzeichnis für andere Zwecke hast:
 
-- Die CLI warnt ueber diesen Konflikt
+- Die CLI warnt über diesen Konflikt
 - **Loesung:** Benenne dein Verzeichnis um oder konfiguriere einen anderen Pfad in `config.yml`
 
 ## Anpassung nach Installation
@@ -243,7 +243,7 @@ context_model:
 
 ### Agenten entfernen
 
-Loesche Agent-Dateien aus `.claude/agents/`. Die verbleibenden Agenten funktionieren weiterhin. Der Orchestrator ueberspringt geloeschte Agenten bei der Delegation.
+Loesche Agent-Dateien aus `.claude/agents/`. Die verbleibenden Agenten funktionieren weiterhin. Der Orchestrator überspringt geloeschte Agenten bei der Delegation.
 
 ### CLI-Features deaktivieren
 
@@ -292,16 +292,16 @@ rm -rf workflow/
 - Pruefe, ob `CLAUDE.md` die Agenten referenziert
 - Starte Claude Code neu (`claude` Befehl)
 
-### "Command nicht verfuegbar"
+### "Command nicht verfügbar"
 
 - Pruefe, ob `.claude/commands/workflow/` die Command-Dateien enthaelt
-- Verifiziere die Dateiberechtigungen (muessen lesbar sein)
+- Verifiziere die Dateiberechtigungen (müssen lesbar sein)
 - Pruefe `.claude/settings.local.json` auf korrekte Permissions
 
 ### "Standards laden nicht"
 
 - Verifiziere, dass `workflow/standards/index.yml` existiert und valides YAML ist
-- Fuehre `/workflow/index-standards` aus, um den Index neu aufzubauen
+- Führe `/workflow/index-standards` aus, um den Index neu aufzubauen
 - Pruefe, ob die Skills in `.claude/skills/workflow/` vorhanden sind
 
 ### "DSGVO-Warnungen" nach Installation
@@ -310,7 +310,7 @@ rm -rf workflow/
 node cli/dist/index.js check --gdpr --fix /pfad/zu/deinem/projekt
 ```
 
-Dies fuegt fehlende Gitignore-Patterns automatisch hinzu und stellt sicher, dass sensible Dateien nicht ins Repository gelangen.
+Dies fügt fehlende Gitignore-Patterns automatisch hinzu und stellt sicher, dass sensible Dateien nicht ins Repository gelangen.
 
 ## Siehe auch
 

@@ -1,6 +1,6 @@
 # CLI-Referenz
 
-Das Claude Workflow Engine CLI (`workflow`) stellt Safety-Tools fuer Installation, Health-Monitoring, Konflikterkennung und DSGVO-Compliance bereit. Es laeuft als Node.js-Applikation und arbeitet vollstaendig lokal.
+Das Claude Workflow Engine CLI (`workflow`) stellt Safety-Tools für Installation, Health-Monitoring, Konflikterkennung und DSGVO-Compliance bereit. Es laeuft als Node.js-Applikation und arbeitet vollstaendig lokal.
 
 ## Installation
 
@@ -10,7 +10,7 @@ npm install
 npm run build
 ```
 
-Nach dem Build ist das CLI unter `cli/dist/index.js` verfuegbar:
+Nach dem Build ist das CLI unter `cli/dist/index.js` verfügbar:
 
 ```bash
 node cli/dist/index.js --help
@@ -55,7 +55,7 @@ workflow <command> [options] [path]
 |---------|-------|
 | `install` | Engine in ein Projekt installieren |
 | `status` | Installationsstatus anzeigen |
-| `health` | Health Checks ausfuehren |
+| `health` | Health Checks ausführen |
 | `check` | Konflikte, Permissions und DSGVO pruefen |
 | `resolve` | Erkannte Konflikte loesen |
 | `rollback` | Backup wiederherstellen |
@@ -141,8 +141,8 @@ workflow install --global --force /path/to/project
 2. Erstellt die Verzeichnisstruktur (`.claude/`, `workflow/`)
 3. Kopiert Agents, Commands, Skills, Standards und Konfiguration
 4. Merged Settings in `.claude/settings.local.json`
-5. Aktualisiert `.gitignore` fuer sensible Dateien
-6. Speichert den Installationszustand fuer Health Checks und Rollback
+5. Aktualisiert `.gitignore` für sensible Dateien
+6. Speichert den Installationszustand für Health Checks und Rollback
 
 ---
 
@@ -392,7 +392,7 @@ DSGVO/GDPR Check
   [PASS] Data residency: eu-central-1
 ```
 
-Das `--fix`-Flag fuegt fehlende Gitignore-Patterns automatisch hinzu.
+Das `--fix`-Flag fügt fehlende Gitignore-Patterns automatisch hinzu.
 
 ---
 
@@ -436,7 +436,7 @@ Claude Workflow Engine Resolve
 
 - Erstellt Backups von konfliktbehafteten Dateien vor dem Ueberschreiben
 - Merged Settings anstatt sie zu ersetzen
-- Meldet Command-Konflikte die manuell geloest werden muessen
+- Meldet Command-Konflikte die manuell geloest werden müssen
 
 ---
 
@@ -489,7 +489,7 @@ workflow v0.2.0
 
 ## workflow help
 
-Zeigt die Hilfe-Uebersicht an.
+Zeigt die Hilfe-Übersicht an.
 
 ```bash
 workflow help
