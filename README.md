@@ -270,6 +270,28 @@ Drei zusaetzliche Commands fuer das Standards-Management:
 
 ---
 
+## Visual Website Cloner
+
+Extrahiere die visuelle Identitaet (Farben, Fonts, Spacing, CSS Variables) von beliebigen Websites:
+
+```bash
+# 1. Service-URLs konfigurieren (einmalig)
+/workflow/clone-setup
+
+# 2. Website visuell klonen
+/workflow/visual-clone
+```
+
+**Voraussetzungen:** Self-hosted [Firecrawl](https://github.com/mendableai/firecrawl) + optional [SearXNG](https://github.com/searxng/searxng)
+
+**Output-Formate:** CSS Variables, Tailwind Config, Design Tokens JSON
+
+**Token-Optimierung:** API-Responses werden in [TOON-Format](https://github.com/toon-format/toon) konvertiert (~40% weniger Tokens).
+
+Ausfuehrlicher Guide: [How-To: Visual Clone nutzen](docs/how-to/visual-clone-nutzen.md)
+
+---
+
 ## CLI Usage
 
 ```bash
@@ -330,6 +352,7 @@ Die vollstaendige Dokumentation ist auf Deutsch verfuegbar:
 | [CLI-Referenz](docs/cli.md) | Safety Tools und Commands |
 | [Konfiguration](docs/konfiguration.md) | config.yml und Einstellungen |
 | [Integration](docs/integration.md) | In bestehende Projekte integrieren |
+| [Visual Clone](docs/how-to/visual-clone-nutzen.md) | Website-Design extrahieren |
 
 ---
 
