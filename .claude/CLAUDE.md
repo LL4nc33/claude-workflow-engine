@@ -45,6 +45,7 @@ All agent definitions live in `.claude/agents/`:
 "I need to UNDERSTAND something"   → ask
 "I need to DESIGN something"       → architect
 "I need to DEPLOY something"       → devops
+"I need to RELEASE something"      → devops
 "I need to SECURE something"       → security
 "I need to DOCUMENT something"     → researcher
 "I need MULTIPLE things done"      → orchestrator
@@ -83,6 +84,7 @@ For full control, use individual phase commands:
 | `/workflow:nano-reset` | NaNo-Daten zuruecksetzen (mit Confirmation) | NaNo data |
 | `/workflow:review-candidates` | Interaktives Review von NaNo Evolution-Candidates | NaNo patterns |
 | `/workflow:learning-report` | Umfassender NaNo-Analyse-Report | NaNo observations |
+| `/workflow:release` | Version bump, Changelog, Git-Tag (SemVer) | `VERSION` file |
 
 Configuration is stored in `visual-clone.local.md` / `nano.local.md` (gitignored, GDPR-compliant). API responses are converted to [TOON format](https://github.com/toon-format/toon) for ~40% token savings.
 
@@ -106,6 +108,8 @@ Configuration is stored in `visual-clone.local.md` / `nano.local.md` (gitignored
 
 ## Key Configuration Files
 
+- `VERSION` - Single Source of Truth for project version (SemVer)
+- `CHANGELOG.md` - Release history (Keep-a-Changelog format, auto-generated)
 - `workflow/config.yml` - Main configuration
 - `workflow/orchestration.yml` - Task delegation and workflow config
 - `workflow/standards/index.yml` - Standards registry
@@ -179,6 +183,7 @@ When a user request matches one of these patterns, automatically delegate to the
 | "Erklaere/zeige/wie funktioniert X" | ask | "Erklaere den Login-Flow" |
 | "Ueberpruefe/review/audit X auf Sicherheit" | security | "Audit die API-Endpoints" |
 | "Deploye/setup/konfiguriere Infrastruktur X" | devops | "Setup Docker fuer das Projekt" |
+| "Release/version bump/tag erstellen" | devops | "Mach ein Patch-Release" |
 | "Analysiere/dokumentiere/recherchiere X" | researcher | "Dokumentiere die API-Struktur" |
 | "Entwerfe/architektur/design X" | architect | "Entwerfe das Datenmodell" |
 | Multi-step task mit >3 Subtasks | orchestrator | "Baue komplettes Feature X" |

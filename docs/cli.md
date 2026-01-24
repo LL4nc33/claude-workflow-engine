@@ -28,6 +28,7 @@ Commands:
   check       Run conflict/permission/GDPR checks
   resolve     Resolve detected conflicts
   rollback    Rollback to previous backup
+  release     Bump version and create release
   version     Show version
   help        Show help
 
@@ -59,6 +60,7 @@ workflow <command> [options] [path]
 | `check` | Konflikte, Permissions und DSGVO pruefen |
 | `resolve` | Erkannte Konflikte lösen |
 | `rollback` | Backup wiederherstellen |
+| `release` | Version bumpen und Release erstellen |
 | `version` | Version anzeigen |
 | `help` | Hilfe anzeigen |
 
@@ -471,6 +473,83 @@ Claude Workflow Engine Rollback
 
 ---
 
+## workflow release
+
+Bumpt die Projektversion, aktualisiert alle Dateien, generiert einen CHANGELOG-Eintrag und erstellt optional einen Git-Tag.
+
+```bash
+workflow release [patch|minor|major] [options]
+```
+
+**Bump-Typen:**
+
+| Typ | Beschreibung | Beispiel |
+|-----|--------------|----------|
+| `patch` | Patch-Version erhoehen (Standard) | 0.2.7 -> 0.2.8 |
+| `minor` | Minor-Version erhoehen | 0.2.7 -> 0.3.0 |
+| `major` | Major-Version erhoehen | 0.2.7 -> 1.0.0 |
+
+**Optionen:**
+
+| Flag | Beschreibung |
+|------|--------------|
+| `--dry-run` | Aenderungen nur anzeigen, nichts schreiben |
+| `--no-commit` | Kein Git-Commit erstellen |
+| `--no-tag` | Keinen Git-Tag erstellen |
+| `--verbose`, `-v` | Detaillierte Ausgabe |
+
+**Beispiele:**
+
+```bash
+# Vorschau eines Patch-Bumps
+workflow release patch --dry-run
+```
+
+Ausgabe:
+
+```
+Claude Workflow Engine Release
+  0.2.7 -> 0.2.8 (patch)
+  [DRY-RUN MODE]
+
+Updating files...
+[DRY-RUN] Would update: VERSION (1 occurrence(s))
+[DRY-RUN] Would update: cli/package.json (1 occurrence(s))
+[DRY-RUN] Would update: .claude-plugin/plugin.json (1 occurrence(s))
+...
+
+[DRY-RUN] Would commit: "release: v0.2.8"
+[DRY-RUN] Would tag: v0.2.8
+```
+
+```bash
+# Minor-Release erstellen
+workflow release minor
+```
+
+```bash
+# Patch-Bump ohne Tag
+workflow release patch --no-tag
+```
+
+**Was der Command tut:**
+
+1. Liest aktuelle Version aus der `VERSION`-Datei (Single Source of Truth)
+2. Berechnet die neue Version basierend auf SemVer
+3. Aktualisiert alle Dateien im Projekt die die Version referenzieren
+4. Generiert einen CHANGELOG.md-Eintrag aus Conventional Commits
+5. Erstellt Git-Commit und -Tag (optional)
+
+**Aktualisierte Dateien:**
+
+- `VERSION`, `cli/package.json`, `.claude-plugin/plugin.json`
+- `workflow/config.yml`, `workflow/orchestration.yml`
+- `README.md`, `README_EN.md`
+- Alle Dokumentationsdateien unter `docs/`
+- Hook-Scripts, Skills, Templates
+
+---
+
 ## workflow version
 
 Zeigt die aktuelle Version des CLI an.
@@ -507,6 +586,7 @@ Commands:
   check       Run conflict/permission/GDPR checks
   resolve     Resolve detected conflicts
   rollback    Rollback to previous backup
+  release     Bump version and create release
   version     Show version
   help        Show help
 

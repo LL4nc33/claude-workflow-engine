@@ -77,6 +77,7 @@ Commands:
   check       Run conflict/permission/GDPR checks
   resolve     Resolve detected conflicts
   rollback    Rollback to previous backup
+  release     Bump version and create release
   version     Show version
   help        Show help
 

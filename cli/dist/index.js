@@ -11,6 +11,7 @@
 //   workflow check [--conflicts] [--permissions] [--gdpr] [--fix] [path]
 //   workflow resolve [--auto-fix] [path]
 //   workflow rollback [path]
+//   workflow release [patch|minor|major] [--dry-run] [--no-commit] [--no-tag]
 //   workflow version
 //   workflow help
 // =============================================================================
@@ -53,10 +54,13 @@ const health_1 = require("./commands/health");
 const status_1 = require("./commands/status");
 const check_1 = require("./commands/check");
 const resolve_1 = require("./commands/resolve");
+const release_1 = require("./commands/release");
 const state_manager_1 = require("./lib/state-manager");
 const logger_1 = require("./lib/logger");
 const path = __importStar(require("path"));
-const VERSION = '0.2.0';
+const fs_1 = require("fs");
+const pkg = JSON.parse((0, fs_1.readFileSync)(path.join(__dirname, '..', 'package.json'), 'utf8'));
+const VERSION = pkg.version;
 async function main() {
     const args = process.argv.slice(2);
     const command = args[0];
@@ -88,6 +92,9 @@ async function main() {
                 break;
             case 'rollback':
                 await rollbackCommand(commandArgs);
+                break;
+            case 'release':
+                await (0, release_1.releaseCommand)(commandArgs);
                 break;
             default:
                 console.error(`Unknown command: ${command}`);
@@ -151,6 +158,7 @@ function showHelp() {
   \x1b[32mcheck\x1b[0m       Run conflict/permission/GDPR checks
   \x1b[32mresolve\x1b[0m     Resolve detected conflicts
   \x1b[32mrollback\x1b[0m    Rollback to previous backup
+  \x1b[32mrelease\x1b[0m     Bump version and create release
   \x1b[32mversion\x1b[0m     Show version
   \x1b[32mhelp\x1b[0m        Show this help
 

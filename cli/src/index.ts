@@ -10,6 +10,7 @@
 //   workflow check [--conflicts] [--permissions] [--gdpr] [--fix] [path]
 //   workflow resolve [--auto-fix] [path]
 //   workflow rollback [path]
+//   workflow release [patch|minor|major] [--dry-run] [--no-commit] [--no-tag]
 //   workflow version
 //   workflow help
 // =============================================================================
@@ -19,11 +20,14 @@ import { healthCommand } from './commands/health';
 import { statusCommand } from './commands/status';
 import { checkCommand } from './commands/check';
 import { resolveCommand } from './commands/resolve';
+import { releaseCommand } from './commands/release';
 import { StateManager } from './lib/state-manager';
 import { Logger } from './lib/logger';
 import * as path from 'path';
+import { readFileSync } from 'fs';
 
-const VERSION = '0.2.0';
+const pkg = JSON.parse(readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+const VERSION = pkg.version;
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
@@ -64,6 +68,10 @@ async function main(): Promise<void> {
 
       case 'rollback':
         await rollbackCommand(commandArgs);
+        break;
+
+      case 'release':
+        await releaseCommand(commandArgs);
         break;
 
       default:
@@ -135,6 +143,7 @@ function showHelp(): void {
   \x1b[32mcheck\x1b[0m       Run conflict/permission/GDPR checks
   \x1b[32mresolve\x1b[0m     Resolve detected conflicts
   \x1b[32mrollback\x1b[0m    Rollback to previous backup
+  \x1b[32mrelease\x1b[0m     Bump version and create release
   \x1b[32mversion\x1b[0m     Show version
   \x1b[32mhelp\x1b[0m        Show this help
 

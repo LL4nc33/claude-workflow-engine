@@ -28,6 +28,7 @@ Commands:
   check       Run conflict/permission/GDPR checks
   resolve     Resolve detected conflicts
   rollback    Rollback to previous backup
+  release     Bump version and create release
   version     Show version
   help        Show help
 
@@ -59,6 +60,7 @@ workflow <command> [options] [path]
 | `check` | Check for conflicts, permissions, and GDPR |
 | `resolve` | Resolve detected conflicts |
 | `rollback` | Restore from backup |
+| `release` | Bump version and create release |
 | `version` | Show version |
 | `help` | Show help |
 
@@ -507,6 +509,7 @@ Commands:
   check       Run conflict/permission/GDPR checks
   resolve     Resolve detected conflicts
   rollback    Rollback to previous backup
+  release     Bump version and create release
   version     Show version
   help        Show help
 

@@ -269,6 +269,14 @@ task_groups:
     standards: [devops/ci-cd, devops/containerization]
     override_when: {}
 
+  # Release tasks -> devops agent
+  release:
+    primary_agent: devops
+    review_agent: null
+    standards: [devops/ci-cd]
+    override_when: {}
+    notes: "Uses scripts/release.sh and VERSION file as Single Source of Truth"
+
   # Architecture tasks -> architect agent
   architecture:
     primary_agent: architect
