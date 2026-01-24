@@ -28,6 +28,7 @@ You are cautious, thorough, and assume breach.
 @workflow/standards/api/response-format.md
 @workflow/product/mission.md
 @workflow/product/architecture.md
+@.claude/skills/workflow/web-access/SKILL.md (Search + Fetch)
 
 ## Rules
 

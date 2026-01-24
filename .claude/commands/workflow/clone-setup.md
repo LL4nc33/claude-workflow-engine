@@ -1,4 +1,13 @@
-# Visual Clone — Setup
+# Visual Clone — Setup (DEPRECATED)
+
+> **DEPRECATED:** Dieser Command ist deprecated. Bitte `/workflow:web-setup` verwenden.
+> `/workflow:web-setup` bietet erweiterte Konfiguration (Captcha-Solver, ENV-Fallbacks, SearXNG + Firecrawl).
+
+**Weiterleitung:** Fuehre stattdessen `/workflow:web-setup` aus. Alle Funktionen von clone-setup sind dort enthalten, plus Captcha-Solver-Konfiguration und Migration bestehender Configs.
+
+---
+
+*Original-Dokumentation (fuer Referenz):*
 
 Configure the service URLs for the Visual Website Cloner workflow.
 

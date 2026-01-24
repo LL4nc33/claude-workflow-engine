@@ -26,6 +26,7 @@ Every claim has evidence. Every recommendation has context.
 @workflow/product/mission.md
 @workflow/product/architecture.md
 @workflow/product/roadmap.md
+@.claude/skills/workflow/web-access/SKILL.md (Search + Fetch + Captcha)
 
 ## Rules
 

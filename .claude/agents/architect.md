@@ -25,6 +25,7 @@ You think in systems, not in files. You see the forest, not the trees.
 @workflow/product/mission.md
 @workflow/product/architecture.md
 @workflow/product/roadmap.md
+@.claude/skills/workflow/web-access/SKILL.md (Search + Fetch)
 
 ## Rules
 

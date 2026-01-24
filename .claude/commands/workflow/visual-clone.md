@@ -11,9 +11,10 @@ Extract the visual identity (colors, fonts, spacing, components) from any websit
 
 ## Prerequisites
 
-- Service URLs configured via `/workflow:clone-setup` (stored in `visual-clone.local.md`)
+- Service URLs configured via `/workflow:web-setup` (stored in `web-services.local.md`)
 - Firecrawl instance (self-hosted)
 - SearXNG instance (self-hosted, optional for multi-page discovery)
+- Captcha-Solver (optional, for protected sites)
 
 ---
 
@@ -21,16 +22,27 @@ Extract the visual identity (colors, fonts, spacing, components) from any websit
 
 ### Step 0: Load Configuration
 
-Read `visual-clone.local.md` from the project root to get service URLs.
+Read `web-services.local.md` from the project root to get service URLs.
 
-If the file doesn't exist, inform the user:
-> "Bitte zuerst `/workflow:clone-setup` ausführen um die Service-URLs zu konfigurieren."
+If the file doesn't exist, check for `visual-clone.local.md` as fallback (backward-compatible).
+
+If neither file exists, inform the user:
+> "Bitte zuerst `/workflow:web-setup` ausfuehren um die Service-URLs zu konfigurieren."
 
 Then stop the workflow.
 
-If it exists, parse the YAML frontmatter and store:
+If config found, parse the YAML frontmatter and store:
 - `$FIRECRAWL_URL` — Firecrawl instance URL
 - `$SEARXNG_URL` — SearXNG instance URL (may be empty)
+- `$CAPTCHA_API_KEY` — Captcha-Solver API-Key (optional, from web-services.local.md only)
+
+If reading from `visual-clone.local.md` fallback, show hint:
+> "Hinweis: Bitte `/workflow:web-setup` statt `/workflow:clone-setup` nutzen fuer erweiterte Konfiguration (Captcha, ENV-Fallbacks)."
+
+**ENV-Fallbacks** (wenn keine Config-Datei existiert):
+- `$FIRECRAWL_URL` — Firecrawl-Instanz URL
+- `$SEARXNG_URL` — SearXNG-Instanz URL
+- `$SOLVECAPTCHA_API_KEY` — Captcha-Solver API-Key
 
 ---
 
@@ -110,6 +122,43 @@ Present to user:
 - Screenshot (if available, as base64 image)
 
 If the scrape fails or returns empty content, inform the user and offer to retry with different settings.
+
+#### Captcha-Fallback
+
+After the initial scrape, check for Captcha protection using the Web-Access-Layer functions
+(see `.claude/skills/workflow/web-access/SKILL.md`).
+
+Statt eigener Captcha-Logik nutzt visual-clone den `web_fetch` Wrapper, der Captcha automatisch handelt:
+
+```bash
+# web_fetch mit rawHtml + screenshot + Captcha-Auto-Solve
+RESPONSE=$(web_fetch "$TARGET_URL" "rawHtml,markdown,screenshot,links" "$WAIT_TIME")
+
+# Falls web_fetch WARN ausgibt (Captcha ohne Solver):
+# -> User informieren + /workflow:web-setup vorschlagen
+```
+
+Alternativ bei bereits geladenem rawHtml — manuelle Detection:
+
+```bash
+if _captcha_detected "$RAW_HTML" "$MARKDOWN_CONTENT"; then
+  if [ -n "$CAPTCHA_KEY" ]; then
+    _solve_and_retry "$RAW_HTML" "$TARGET_URL"
+    # Re-fetch nach erfolgreichem Solve
+    RESPONSE=$(web_fetch "$TARGET_URL" "rawHtml,markdown,screenshot,links" "$WAIT_TIME")
+    RAW_HTML=$(echo "$RESPONSE" | jq -r '.data.rawHtml')
+    SCREENSHOT=$(echo "$RESPONSE" | jq -r '.data.screenshot')
+  else
+    echo "Captcha erkannt aber kein Solver konfiguriert."
+    echo "Tipp: /workflow:web-setup ausfuehren um Captcha-Solving zu aktivieren."
+  fi
+fi
+```
+
+**Verhalten:**
+- `web_fetch` erkennt Captcha automatisch und loest es (wenn Key konfiguriert)
+- Ohne Solver: WARN-Message, original Content wird zurueckgegeben
+- Graceful degradation — Workflow bricht nicht ab
 
 ---
 

@@ -75,8 +75,9 @@ For full control, use individual phase commands:
 
 | Command | Purpose | Prerequisites |
 |---------|---------|---------------|
-| `/workflow:clone-setup` | Configure Firecrawl + SearXNG service URLs | Self-hosted instances |
-| `/workflow:visual-clone` | Extract visual identity (colors, fonts, CSS) from websites + optional Design Token Standards generation | `/workflow:clone-setup` |
+| `/workflow:web-setup` | Configure Web-Access-Layer (Firecrawl + SearXNG + Captcha-Solver) | Self-hosted instances |
+| `/workflow:clone-setup` | ~~DEPRECATED~~ → Nutze `/workflow:web-setup` | - |
+| `/workflow:visual-clone` | Extract visual identity (colors, fonts, CSS) from websites + optional Design Token Standards generation | `/workflow:web-setup` |
 | `/workflow:homunculus-status` | NaNo Learning Status - Actionable Insights und Quick-Actions | `nano.local.md` |
 | `/workflow:nano-toggle` | NaNo ein/ausschalten + First-Run Setup | - |
 | `/workflow:nano-session` | Aktuelle Session-Observations anzeigen | NaNo aktiv |
@@ -86,7 +87,7 @@ For full control, use individual phase commands:
 | `/workflow:learning-report` | Umfassender NaNo-Analyse-Report | NaNo observations |
 | `/workflow:release` | Version bump, Changelog, Git-Tag (SemVer) | `VERSION` file |
 
-Configuration is stored in `visual-clone.local.md` / `nano.local.md` (gitignored, GDPR-compliant). API responses are converted to [TOON format](https://github.com/toon-format/toon) for ~40% token savings.
+Configuration is stored in `web-services.local.md` / `nano.local.md` (gitignored, GDPR-compliant). API responses are converted to [TOON format](https://github.com/toon-format/toon) for ~40% token savings.
 
 ## Context Model (3 Layers)
 
@@ -113,6 +114,7 @@ Configuration is stored in `visual-clone.local.md` / `nano.local.md` (gitignored
 - `workflow/config.yml` - Main configuration
 - `workflow/orchestration.yml` - Task delegation and workflow config
 - `workflow/standards/index.yml` - Standards registry
+- `web-services.local.md` - Web-Access-Layer Config (Firecrawl, SearXNG, Captcha)
 - `.claude/settings.local.json` - Claude Code permissions
 
 ## Platform Architecture (6 Layers)
@@ -149,6 +151,20 @@ When configured, the following MCP servers extend agent capabilities:
 | **Greptile** | list_merge_requests, get_merge_request, search_greptile_comments, list_merge_request_comments | orchestrator, security |
 
 MCP tools are optional - agents fall back to standard tools if servers are unavailable.
+
+## Web-Access-Layer
+
+Universeller Web-Zugang für alle Agents über selbst-gehostete Services:
+
+| Service | Zweck | Agents |
+|---------|-------|--------|
+| **SearXNG** | GDPR-konforme Suche (kein Tracking) | researcher, debug, architect, devops, security, ask |
+| **Firecrawl** | JS-fähiger Scraper (SPA-Rendering, Screenshots) | researcher, debug, architect, devops, security |
+| **SolveCaptcha** | Captcha-Lösung bei geschützten Seiten | researcher, debug |
+
+Setup via `/workflow:web-setup`, Config in `web-services.local.md`. Skill-Dokumentation: `.claude/skills/workflow/web-access/SKILL.md`.
+
+ENV-Fallbacks für CI/CD: `$FIRECRAWL_URL`, `$SEARXNG_URL`, `$SOLVECAPTCHA_API_KEY`.
 
 ## Hook Behavior
 

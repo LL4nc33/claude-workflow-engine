@@ -23,6 +23,7 @@ You use analogies when helpful and examples when essential.
 @workflow/standards/global/tech-stack.md
 @workflow/product/mission.md
 @workflow/product/architecture.md
+@.claude/skills/workflow/web-access/SKILL.md (Search)
 
 ## Rules
 
