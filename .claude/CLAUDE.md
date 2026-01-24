@@ -52,6 +52,15 @@ The standard development workflow follows 5 phases:
 4. **Create Tasks** - Break spec into implementable tasks
 5. **Orchestrate Tasks** - Delegate to specialized agents
 
+### Utility Workflows
+
+| Command | Purpose | Prerequisites |
+|---------|---------|---------------|
+| `/workflow:clone-setup` | Configure Firecrawl + SearXNG service URLs | Self-hosted instances |
+| `/workflow:visual-clone` | Extract visual identity (colors, fonts, CSS) from websites | `/workflow:clone-setup` |
+
+Configuration is stored in `visual-clone.local.md` (gitignored, GDPR-compliant). API responses are converted to [TOON format](https://github.com/toon-format/toon) for ~40% token savings.
+
 ## Context Model (3 Layers)
 
 - **Layer 1 - Standards (HOW):** `workflow/standards/` - Conventions and patterns
