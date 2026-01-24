@@ -1,10 +1,10 @@
 # =============================================================================
 # Claude Workflow Engine Configuration - oidanice-agents
-# Version: 0.2.0
+# Version: 0.2.5
 # GDPR-compliant setup for Austrian/EU usage
 # =============================================================================
 
-version: 0.2.0
+version: 0.2.5
 default_profile: default
 
 # -----------------------------------------------------------------------------
@@ -138,7 +138,7 @@ orchestration:
 
 plugin:
   name: claude-workflow-engine
-  version: 0.2.0
+  version: 0.2.5
   manifest: .claude-plugin/plugin.json
   layers:
     - layer: 1

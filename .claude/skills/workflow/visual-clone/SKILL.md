@@ -327,6 +327,212 @@ module.exports = {
 }
 ```
 
+## Token Cache Format
+
+The token cache (`.design-tokens-cache.local.md`) accumulates extracted tokens across multiple visual-clone runs for intelligent multi-source merging.
+
+### Cache File Structure
+
+```markdown
+---
+sources:
+  - url: https://stripe.com
+    scraped: 2026-01-24
+    tokens: 42
+  - url: https://linear.app
+    scraped: 2026-01-25
+    tokens: 38
+---
+
+## Source: https://stripe.com (2026-01-24)
+
+### Colors
+| Token | Value | Context |
+|-------|-------|---------|
+| primary | #635bff | CTA buttons, links |
+| secondary | #0a2540 | Headlines, dark sections |
+| background | #ffffff | Page background |
+| surface | #f6f9fc | Card backgrounds |
+| text | #425466 | Body text |
+| accent | #00d4aa | Success states |
+
+### Typography
+| Token | Value |
+|-------|-------|
+| font-family-primary | 'Inter', -apple-system, sans-serif |
+| font-size-xs | 0.75rem |
+| font-size-sm | 0.875rem |
+| font-size-base | 1rem |
+| font-size-lg | 1.125rem |
+| font-size-xl | 1.25rem |
+| font-size-2xl | 1.5rem |
+| font-size-3xl | 1.875rem |
+| font-weight-normal | 400 |
+| font-weight-medium | 500 |
+| font-weight-bold | 700 |
+
+### Spacing
+| Token | Value |
+|-------|-------|
+| space-xs | 0.25rem |
+| space-sm | 0.5rem |
+| space-md | 1rem |
+| space-lg | 1.5rem |
+| space-xl | 2rem |
+| space-2xl | 3rem |
+
+### Borders
+| Token | Value |
+|-------|-------|
+| radius-sm | 4px |
+| radius-md | 8px |
+| radius-lg | 12px |
+| radius-full | 9999px |
+
+### Shadows
+| Token | Value |
+|-------|-------|
+| shadow-sm | 0 1px 2px rgba(0,0,0,0.05) |
+| shadow-md | 0 4px 6px rgba(0,0,0,0.1) |
+| shadow-lg | 0 10px 15px rgba(0,0,0,0.1) |
+```
+
+### Source Metadata Schema
+
+YAML frontmatter fields:
+- `sources[].url` — Origin website URL
+- `sources[].scraped` — Date of extraction (YYYY-MM-DD)
+- `sources[].tokens` — Number of tokens extracted from this source
+
+### Categorized Token Tables
+
+Each source section contains Markdown tables for:
+- **Colors**: Token / Value / Context (semantic role explanation)
+- **Typography**: Token / Value
+- **Spacing**: Token / Value
+- **Borders**: Token / Value
+- **Shadows**: Token / Value
+- **Breakpoints** (optional): Token / Value
+- **Transitions** (optional): Token / Value
+
+---
+
+## Standards Generation
+
+### Merge Algorithm
+
+When multiple sources exist in the cache or an existing `design-tokens.md` standard is present:
+
+1. **Frequenz-Analyse**: Values appearing more frequently across sources are preferred
+2. **Semantischer Kontext**: CSS property names inform token roles (background-color → background, color → text)
+3. **Konsistenz**: Sources with more systematic scales (4px/8px multiplier) are preferred for spacing/radius
+4. **Komplementäre Werte**: Tokens unique to one source are included as additions (not conflicts)
+5. **Recency**: On tie-break (same frequency, same quality), the newer extraction wins
+
+### Per-Token Merge Strategy
+
+| Situation | Action |
+|-----------|--------|
+| Same token, same value | Keep as-is |
+| Same token, different value | AI picks best, provides reasoning |
+| New token (one source only) | Include as addition |
+| Conflicting scales | Normalize to most consistent system |
+
+### Category Confirmation Flow
+
+Present each category to the user in order:
+
+1. 🎨 **Colors** — Semantic roles + hex/rgba values + merge reasoning
+2. 📝 **Typography** — Font families + size scale (T-Shirt: xs→3xl)
+3. 📐 **Spacing** — Spacing system + detected base multiplier
+4. 🔲 **Borders** — Radius scale
+5. 🌫️ **Shadows** — Shadow elevation levels
+6. 📱 **Breakpoints** (if found) — Responsive breakpoints
+7. ✨ **Transitions** (if found) — Animation durations + easings
+
+For each: show table → wait for "ok" or corrections → incorporate feedback.
+
+### Design Tokens Standard Template
+
+The generated `workflow/standards/frontend/design-tokens.md` follows this structure:
+
+```markdown
+# Design Token Standards
+
+> Generiert aus: [source URLs] am [date]
+
+## Token Categories
+
+| Category | Prefix | Example |
+|----------|--------|---------|
+| Colors | `--color-` | `--color-primary` |
+| Typography | `--font-` | `--font-family-primary` |
+| Spacing | `--space-` | `--space-md` |
+| Borders | `--radius-` | `--radius-md` |
+| Shadows | `--shadow-` | `--shadow-md` |
+
+## Color System
+
+### Naming Rules
+- Semantic: primary / secondary / accent / background / surface / text / text-muted
+- Feedback: success / warning / error / info
+- Scales: `--color-primary-50` bis `--color-primary-900`
+
+### Values
+:root {
+  --color-primary: [value];
+  --color-secondary: [value];
+  /* ... */
+}
+
+## Typography System
+
+### Scale: T-Shirt Sizes (xs → 3xl)
+| Size | Value | Usage |
+|------|-------|-------|
+| xs | 0.75rem | Captions, labels |
+| sm | 0.875rem | Small text, metadata |
+| base | 1rem | Body text |
+| lg | 1.125rem | Subheadings |
+| xl | 1.25rem | Section titles |
+| 2xl | 1.5rem | Page headings |
+| 3xl | 1.875rem | Hero text |
+
+## Spacing System
+
+### Base: [4px|8px] Multiplier
+| Size | Value | Usage |
+|------|-------|-------|
+| xs | 0.25rem | Tight gaps |
+| sm | 0.5rem | Compact spacing |
+| md | 1rem | Standard spacing |
+| lg | 1.5rem | Section gaps |
+| xl | 2rem | Large sections |
+
+## Borders & Radius
+| Size | Value |
+|------|-------|
+| sm | 4px |
+| md | 8px |
+| lg | 12px |
+| full | 9999px |
+
+## Shadows
+| Level | Value |
+|-------|-------|
+| sm | 0 1px 2px rgba(0,0,0,0.05) |
+| md | 0 4px 6px rgba(0,0,0,0.1) |
+| lg | 0 10px 15px rgba(0,0,0,0.1) |
+
+## Usage Rules
+- CSS Custom Properties verwenden, keine Hardcoded-Werte
+- Tokens semantisch referenzieren (--color-primary statt #635bff)
+- Dark Mode: Werte in [data-theme="dark"] überschreiben
+- Neue Farben müssen bestehende Rolle füllen oder neue definieren
+```
+
+---
+
 ## Pixel-Perfect Tips
 
 ### Font Rendering
@@ -370,3 +576,5 @@ Dieser Skill wird automatisch angewendet wenn:
 - User "Design-System erstellen" basierend auf existierender Seite will
 - User "visuell nachbauen" oder "UI reverse-engineeren" erwähnt
 - User nach "CSS Variables" oder "Tailwind Config" von einer Website fragt
+- User "Design Tokens Standards" oder "Frontend-Standards aus Website" generieren will
+- User bestehende Design-Tokens mit neuer Website mergen möchte

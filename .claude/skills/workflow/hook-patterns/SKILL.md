@@ -11,19 +11,21 @@ description: Hook-System Dokumentation und Patterns. Verwende bei hook, automati
 
 **Datei:** `hooks/scripts/session-start.sh`
 **Event:** `SessionStart`
-**Timeout:** 10 Sekunden
+**Timeout:** 30 Sekunden (ADR-003: einmalig pro Session, darf laenger dauern)
 
 **Funktion:**
 - Prueft ob `workflow/standards/index.yml` existiert und aktuell ist
 - Prueft ob `workflow/product/mission.md` vorhanden ist
 - Erkennt aktive Spezifikationen (in-progress Status)
+- Zaehlt verfuegbare Standards
+- Bereinigt abgelaufene Cache-Eintraege (TTL: 1h)
 - Gibt Workflow-Kontext als `additionalContext` zurueck
 
 **Output-Format:**
 ```json
 {
   "hookSpecificOutput": {
-    "additionalContext": "Claude Workflow Engine v0.2.0 (6-Layer Plugin) | Produkt-Mission vorhanden. | Aktive Spezifikation: feature-xyz."
+    "additionalContext": "Claude Workflow Engine v0.2.5 (6-Layer Plugin) | Produkt-Mission vorhanden. | Aktive Spezifikation: feature-xyz."
   }
 }
 ```
@@ -33,7 +35,7 @@ description: Hook-System Dokumentation und Patterns. Verwende bei hook, automati
 **Datei:** `hooks/scripts/pre-write-validate.sh`
 **Event:** `PreToolUse`
 **Matcher:** Write, Edit Tools
-**Timeout:** 5 Sekunden
+**Timeout:** 15 Sekunden (ADR-003: Security-Check darf nicht zu hastig sein)
 
 **Funktion:**
 - Prueft ob das Schreibziel gegen Secrets-Patterns matcht
@@ -80,13 +82,13 @@ Die Hook-Definitionen stehen in `hooks/hooks.json`:
     {
       "event": "SessionStart",
       "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-start.sh",
-      "timeout": 10000
+      "timeout": 30000
     },
     {
       "event": "PreToolUse",
       "matcher": {"tool_name": ["Write", "Edit"]},
       "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/pre-write-validate.sh",
-      "timeout": 5000
+      "timeout": 15000
     },
     {
       "event": "PostToolUse",
@@ -148,8 +150,13 @@ chmod +x hooks/scripts/my-hook.sh
 |----------|--------------|
 | `get_project_root` | Projekt-Root ermitteln |
 | `get_active_spec` | Aktive Spezifikation finden |
-| `json_escape` | String für JSON escapen |
+| `json_escape` | String fuer JSON escapen |
 | `is_secrets_path` | Pruefen ob Pfad ein Secret ist |
+| `init_cache` | Cache-Verzeichnis erstellen |
+| `is_cache_fresh` | Cache-Freshness pruefen (mtime-basiert) |
+| `read_cache` | Cached Content lesen |
+| `write_cache` | Content in Cache schreiben |
+| `clean_cache` | Abgelaufene Cache-Eintraege loeschen (TTL) |
 
 ## Debugging-Tipps
 
@@ -165,9 +172,10 @@ chmod +x hooks/scripts/my-hook.sh
 
 3. **Fehler finden:**
    - Pruefe ob Scripts executable sind (`ls -la hooks/scripts/`)
-   - Pruefe Timeout (max 5-10 Sekunden)
+   - Pruefe Timeout (SessionStart: 30s, PreToolUse: 15s, PostToolUse: 5s)
    - Pruefe JSON-Output-Format (muss valides JSON sein)
-   - Teste mit `bash -x hooks/scripts/my-hook.sh` für Trace-Output
+   - Teste mit `bash -x hooks/scripts/my-hook.sh` fuer Trace-Output
+   - Siehe `workflow/ERROR-RECOVERY.md` fuer haeufige Probleme
 
 4. **WSL2-Kompatibilitaet:**
    - Verwende `#!/usr/bin/env bash` (nicht `#!/bin/bash`)

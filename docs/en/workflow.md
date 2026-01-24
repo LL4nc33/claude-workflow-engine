@@ -1,9 +1,32 @@
 # Workflow Guide
 
-Claude Workflow Engine uses a 5-phase workflow that takes you from a product idea to an implemented feature. Each phase builds on the previous one and produces specific artifacts.
+Claude Workflow Engine (v0.2.5) offers three development paths:
+
+## Quick Start
+
+### 1. Auto-Delegation (recommended)
+
+Simply describe what you want in chat — the engine recognizes intent and delegates automatically:
 
 ```
-/plan-product --> /shape-spec --> /write-spec --> /create-tasks --> /orchestrate-tasks
+"Implement user auth"              → debug agent
+"Explain the login flow"           → ask agent
+"Audit the API endpoints"          → security agent
+"Setup Docker for the project"     → devops agent
+```
+
+### 2. Smart Workflow (1 command)
+
+```
+/workflow:smart-workflow
+```
+
+Auto-detects your current phase and guides you through all 5 phases with minimal questions.
+
+### 3. Explicit 5-Phase (full control)
+
+```
+/workflow:plan-product --> /workflow:shape-spec --> /workflow:write-spec --> /workflow:create-tasks --> /workflow:orchestrate-tasks
 ```
 
 ## Overview

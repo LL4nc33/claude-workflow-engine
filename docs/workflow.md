@@ -1,9 +1,32 @@
 # Workflow Guide
 
-Die Claude Workflow Engine verwendet einen 5-Phasen-Workflow, der dich von der Produktidee bis zum implementierten Feature führt. Jede Phase baut auf der vorherigen auf und erzeugt spezifische Artefakte.
+Die Claude Workflow Engine (v0.2.5) bietet drei Wege zur Entwicklung:
+
+## Schnellstart
+
+### 1. Auto-Delegation (empfohlen)
+
+Einfach im Chat beschreiben was du willst — die Engine erkennt den Intent und delegiert automatisch:
 
 ```
-/plan-product --> /shape-spec --> /write-spec --> /create-tasks --> /orchestrate-tasks
+"Implementiere User-Auth"          → debug-Agent
+"Erklaere den Login-Flow"          → ask-Agent
+"Audit die API-Endpoints"          → security-Agent
+"Setup Docker fuer das Projekt"    → devops-Agent
+```
+
+### 2. Smart-Workflow (1 Command)
+
+```
+/workflow:smart-workflow
+```
+
+Erkennt automatisch in welcher Phase du bist und fuehrt dich mit minimalen Rueckfragen durch alle 5 Phasen.
+
+### 3. Explizite 5-Phasen (volle Kontrolle)
+
+```
+/workflow:plan-product --> /workflow:shape-spec --> /workflow:write-spec --> /workflow:create-tasks --> /workflow:orchestrate-tasks
 ```
 
 ## Übersicht
@@ -376,13 +399,16 @@ Du musst nicht jede Phase jedes Mal ausführen:
 
 ## Tipps
 
-- Führe die Phasen beim ersten Mal der Reihe nach aus, um den gesamten Flow zu verstehen
+- **Fuer Einsteiger:** Nutze `/workflow:smart-workflow` — es fuehrt dich durch alles
+- **Fuer den Alltag:** Einfach im Chat beschreiben was du willst (Auto-Delegation)
+- **Fuer volle Kontrolle:** Die 5 expliziten Commands nutzen
 - Phase 2 (shape-spec) ist am wertvollsten zur Vermeidung von Scope Creep
 - Verwende den `phase-by-phase`-Modus bis du dem Workflow vertraust
-- Standards werden als Volltext in Delegations-Prompts injiziert (Agents können keine Datei-Referenzen lesen)
+- Standards werden selektiv injiziert (nur relevante, basierend auf Tag-Matching)
+- JSON-Daten in Delegations-Prompts werden automatisch zu TOON konvertiert (~40% Token-Ersparnis)
 - Die progress.md dient als Audit Trail -- pruefe sie wenn etwas schiefgeht
-- Jede Phase ist idempotent: erneutes Ausführen überschreibt vorherige Ergebnisse
-- Bei großen Features lohnt es sich, die Task-Aufteilung manuell zu prüfen bevor du orchestrierst
+- Bei Fehlern: Siehe `workflow/ERROR-RECOVERY.md` fuer Loesungsstrategien
+- Sage "manuell" oder "ohne Delegation" um Auto-Delegation zu deaktivieren
 
 ## Siehe auch
 

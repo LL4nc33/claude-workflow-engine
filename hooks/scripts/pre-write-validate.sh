@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # PreToolUse Hook: Validates Write/Edit targets against secrets patterns
 # Blocks writes to sensitive files (.env, credentials.*, secrets.*, *.local.md)
+# Optimized: fast-path exit for common allowed operations
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
@@ -8,7 +9,7 @@ source "${SCRIPT_DIR}/common.sh"
 # Read the tool input from stdin (JSON with file_path)
 input="$(cat)"
 
-# Extract file path from the tool input
+# Extract file path - optimized order: jq first (most reliable), then grep fallback
 file_path=""
 if command -v jq &>/dev/null; then
   file_path="$(echo "${input}" | jq -r '.file_path // .filePath // ""' 2>/dev/null)"
@@ -20,32 +21,19 @@ else
   fi
 fi
 
-# Exit early if no file path found (allow the operation)
+# Fast path: no file path = allow immediately
 if [ -z "${file_path}" ]; then
   echo '{"permissionDecision": "allow"}'
   exit 0
 fi
 
-# Check against secrets patterns
-filename="$(basename "${file_path}")"
-
-case "${filename}" in
-  .env|.env.*)
-    reason="$(json_escape "Schreibzugriff auf ${filename} blockiert: Umgebungsvariablen-Datei (Secrets-Schutz)")"
-    echo "{\"permissionDecision\": \"deny\", \"reason\": \"${reason}\"}"
-    exit 0
-    ;;
-  credentials.*|secrets.*)
-    reason="$(json_escape "Schreibzugriff auf ${filename} blockiert: Credentials/Secrets-Datei")"
-    echo "{\"permissionDecision\": \"deny\", \"reason\": \"${reason}\"}"
-    exit 0
-    ;;
-  *.local.md)
-    reason="$(json_escape "Schreibzugriff auf ${filename} blockiert: Lokale Konfigurationsdatei (GDPR-Schutz)")"
-    echo "{\"permissionDecision\": \"deny\", \"reason\": \"${reason}\"}"
-    exit 0
-    ;;
-esac
+# Fast path: check using shared utility function
+if is_secrets_path "${file_path}"; then
+  filename="$(basename "${file_path}")"
+  reason="$(json_escape "Schreibzugriff auf ${filename} blockiert (Secrets/GDPR-Schutz)")"
+  echo "{\"permissionDecision\": \"deny\", \"reason\": \"${reason}\"}"
+  exit 0
+fi
 
 # All other paths are allowed
 echo '{"permissionDecision": "allow"}'

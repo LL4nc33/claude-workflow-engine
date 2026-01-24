@@ -25,7 +25,7 @@ The main configuration controls which features are active, how the context model
 ### Full Reference
 
 ```yaml
-version: 0.2.0
+version: 0.2.5
 default_profile: default
 
 # --- Claude Code Integration ---
@@ -1011,7 +1011,7 @@ The plugin manifest bundles all 6 layers of the engine into a Claude Code plugin
 ```json
 {
   "name": "claude-workflow-engine",
-  "version": "0.2.0",
+  "version": "0.2.5",
   "description": "Multi-Agent Workflow System",
   "author": "LL4nc33",
   "license": "MIT",

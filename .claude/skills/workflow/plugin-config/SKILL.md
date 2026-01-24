@@ -40,7 +40,7 @@ Die Claude Workflow Engine nutzt alle 6 Erweiterungsschichten von Claude Code:
 ```json
 {
   "name": "claude-workflow-engine",
-  "version": "0.2.0",
+  "version": "0.2.5",
   "description": "Multi-Agent Workflow System",
   "author": "LL4nc33",
   "license": "MIT",

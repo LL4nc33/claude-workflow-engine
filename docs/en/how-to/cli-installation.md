@@ -51,7 +51,7 @@ npm run build
 Expected output:
 
 ```
-> workflow-cli@0.2.0 build
+> workflow-cli@0.2.5 build
 > tsc
 
 Successfully compiled to cli/dist/
@@ -196,7 +196,7 @@ Core Files
   [PASS] .gitignore
 
 Installation State
-  [PASS] Installed: v0.2.0 (2026-01-23T14:30:00Z)
+  [PASS] Installed: v0.2.5 (2026-01-23T14:30:00Z)
 
 File Integrity
   [PASS] 32 files intact
@@ -250,7 +250,7 @@ Expected output:
 ```
 Claude Workflow Engine Status
 
-  Version:   0.2.0
+  Version:   0.2.5
   Mode:      template
   Scope:     local
   Profile:   default
@@ -337,7 +337,7 @@ workflow version
 Output:
 
 ```
-workflow v0.2.0
+workflow v0.2.5
 ```
 
 ---

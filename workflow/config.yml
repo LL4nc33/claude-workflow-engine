@@ -1,10 +1,10 @@
 # =============================================================================
 # Claude Workflow Engine Configuration - oidanice-agents
-# Version: 0.2.0
+# Version: 0.2.5
 # GDPR-compliant setup for Austrian/EU usage
 # =============================================================================
 
-version: 0.2.0
+version: 0.2.5
 default_profile: default
 
 # -----------------------------------------------------------------------------
@@ -23,6 +23,10 @@ use_claude_code_subagents: true
 # This means Claude automatically applies relevant standards based on task context
 # rather than injecting all standards into every prompt
 standards_as_claude_code_skills: true
+
+# Token optimization: selective standards injection uses tag-based matching
+# from index.yml to only inject relevant standards per task delegation
+selective_standards_injection: true
 
 # Disable non-Claude-Code agent outputs (Cursor, Codex, Gemini)
 workflow_engine_commands: false
@@ -138,7 +142,7 @@ orchestration:
 
 plugin:
   name: claude-workflow-engine
-  version: 0.2.0
+  version: 0.2.5
   manifest: .claude-plugin/plugin.json
   layers:
     - layer: 1

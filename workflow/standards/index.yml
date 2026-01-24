@@ -69,3 +69,6 @@ frontend:
   components:
     description: UI component structure, naming, accessibility, state management patterns
     tags: [component, ui, react, accessibility, a11y, state]
+  design-tokens:
+    description: Design token naming, color system, typography scale, spacing conventions
+    tags: [design-tokens, css-variables, colors, typography, spacing, theming, visual-clone]

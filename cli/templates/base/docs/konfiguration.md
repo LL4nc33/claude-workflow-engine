@@ -25,7 +25,7 @@ Die Hauptkonfiguration steuert, welche Features aktiv sind, wie das Context Mode
 ### Vollstaendige Referenz
 
 ```yaml
-version: 0.2.0
+version: 0.2.5
 default_profile: default
 
 # --- Claude Code Integration ---
@@ -1011,7 +1011,7 @@ Das Plugin-Manifest buendelt alle 6 Schichten der Engine in ein Claude-Code-Plug
 ```json
 {
   "name": "claude-workflow-engine",
-  "version": "0.2.0",
+  "version": "0.2.5",
   "description": "Multi-Agent Workflow System",
   "author": "LL4nc33",
   "license": "MIT",

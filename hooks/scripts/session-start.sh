@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # SessionStart Hook: Provides workflow context at session start
-# Checks standards index freshness and returns context information
+# Optimized for fast execution with background checks
+# Target: <50ms perceived latency for initial response
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
@@ -10,48 +11,57 @@ ROOT="$(get_project_root)"
 warnings=""
 context_parts=""
 
-# Check if standards index exists
+# Clean stale cache entries from previous sessions
+clean_cache 3600
+
+# Fast path: Check index existence first (no find traversal)
 if [ -f "${ROOT}/workflow/standards/index.yml" ]; then
   index_time=$(stat -c %Y "${ROOT}/workflow/standards/index.yml" 2>/dev/null || stat -f %m "${ROOT}/workflow/standards/index.yml" 2>/dev/null)
 
-  # Find newest standard file
-  newest_standard=""
-  newest_time=0
-  while IFS= read -r -d '' file; do
-    file_time=$(stat -c %Y "${file}" 2>/dev/null || stat -f %m "${file}" 2>/dev/null)
-    if [ "${file_time}" -gt "${newest_time}" ]; then
-      newest_time="${file_time}"
-      newest_standard="${file}"
-    fi
-  done < <(find "${ROOT}/workflow/standards" -name "*.md" -print0 2>/dev/null)
-
-  if [ "${newest_time}" -gt "${index_time}" ]; then
-    warnings="${warnings}Standards-Index ist veraltet (neuere Datei: $(basename "${newest_standard}")). Fuehre /workflow/index-standards aus. "
-  fi
+  # Optimized: only check domains directories (not recursive find)
+  stale=false
+  for domain_dir in "${ROOT}/workflow/standards"/*/; do
+    [ -d "${domain_dir}" ] || continue
+    for md_file in "${domain_dir}"*.md; do
+      [ -f "${md_file}" ] || continue
+      file_time=$(stat -c %Y "${md_file}" 2>/dev/null || stat -f %m "${md_file}" 2>/dev/null)
+      if [ "${file_time}" -gt "${index_time}" ]; then
+        stale=true
+        warnings="${warnings}Standards-Index veraltet ($(basename "${md_file}")). Fuehre /workflow:index-standards aus. "
+        break 2
+      fi
+    done
+  done
 else
-  warnings="${warnings}Standards-Index (workflow/standards/index.yml) nicht gefunden. "
+  warnings="${warnings}Standards-Index nicht gefunden. "
 fi
 
-# Check if mission exists
+# Check mission (simple file existence - fast)
 if [ -f "${ROOT}/workflow/product/mission.md" ]; then
-  context_parts="${context_parts}Produkt-Mission vorhanden. "
+  context_parts="${context_parts}Mission vorhanden. "
 else
-  warnings="${warnings}Keine mission.md in workflow/product/ gefunden. Starte mit /workflow/plan-product. "
+  warnings="${warnings}Keine mission.md. Starte mit /workflow:plan-product. "
 fi
 
-# Check for active spec
+# Check for active spec (optimized: early exit on first match)
 active_spec="$(get_active_spec)"
 if [ -n "${active_spec}" ]; then
-  context_parts="${context_parts}Aktive Spezifikation: ${active_spec}. "
+  context_parts="${context_parts}Aktive Spec: ${active_spec}. "
 fi
 
-# Build context message
-context_msg="Claude Workflow Engine v0.2.0 (6-Layer Plugin)"
+# Count available standards for context info
+standards_count=$(find "${ROOT}/workflow/standards" -name "*.md" -not -name "README*" 2>/dev/null | wc -l)
+if [ "${standards_count}" -gt 0 ]; then
+  context_parts="${context_parts}${standards_count} Standards verfuegbar. "
+fi
+
+# Build compact context message
+context_msg="Workflow Engine v0.2.5"
 if [ -n "${context_parts}" ]; then
   context_msg="${context_msg} | ${context_parts}"
 fi
 if [ -n "${warnings}" ]; then
-  context_msg="${context_msg} | Warnungen: ${warnings}"
+  context_msg="${context_msg} | WARN: ${warnings}"
 fi
 
 escaped_context="$(json_escape "${context_msg}")"

@@ -157,6 +157,52 @@ Die Konvertierung passiert via `npx @toon-format/cli` — keine manuelle Aktion 
 
 ---
 
+## Standards generieren
+
+Nach der Extraktion bietet der Workflow optional an, die gewonnenen Tokens als Frontend-Standards zu speichern.
+
+### Beispiel-Dialog
+
+```
+Claude: Möchtest du aus den extrahierten Tokens Frontend-Standards generieren?
+Du:     Ja
+
+Claude: 🎨 Colors — Vorschlag:
+        primary: #635bff, secondary: #0a2540, background: #fff, ...
+Du:     ok
+
+Claude: 📝 Typography — Vorschlag:
+        font-family: 'Inter', sizes: xs=0.75rem ... 3xl=1.875rem
+Du:     ok
+
+Claude: 📐 Spacing — 8px-basiert:
+        xs=0.25rem, sm=0.5rem, md=1rem, lg=1.5rem, xl=2rem
+Du:     ok
+
+Claude: ✅ Standards geschrieben: workflow/standards/frontend/design-tokens.md
+        Index aktualisiert.
+```
+
+### Multi-Source Merge
+
+Wenn du den Workflow erneut für eine zweite Website ausführst, erkennt die AI bestehende Token-Daten und bietet einen intelligenten Merge an:
+
+```
+Claude: 🎨 Colors — Merge-Vorschlag:
+        primary: #5e6ad2 (neu, von linear.app — häufiger verwendet)
+        secondary: #0a2540 (behalten von stripe.com)
+        NEU: accent: #00d4aa (nur in linear.app gefunden)
+Du:     ok
+```
+
+Die AI wählt die besten Werte basierend auf Häufigkeit, semantischem Kontext und Konsistenz.
+
+### Token-Cache
+
+Extrahierte Tokens werden in `.design-tokens-cache.local.md` (gitignored) zwischengespeichert. Nach der Standards-Generierung kannst du den Cache behalten (für zukünftige Merges) oder löschen.
+
+---
+
 ## Weiterarbeiten
 
 Nach dem Extrahieren kannst du:

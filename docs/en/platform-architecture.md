@@ -145,7 +145,7 @@ The plugin manifest bundles all layers:
 ```json
 {
   "name": "claude-workflow-engine",
-  "version": "0.2.0",
+  "version": "0.2.5",
   "commands": "./.claude/commands",
   "agents": "./.claude/agents",
   "skills": "./.claude/skills",

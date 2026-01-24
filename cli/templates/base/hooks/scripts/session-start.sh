@@ -46,7 +46,7 @@ if [ -n "${active_spec}" ]; then
 fi
 
 # Build context message
-context_msg="Claude Workflow Engine v0.2.0 (6-Layer Plugin)"
+context_msg="Claude Workflow Engine v0.2.5 (6-Layer Plugin)"
 if [ -n "${context_parts}" ]; then
   context_msg="${context_msg} | ${context_parts}"
 fi
