@@ -165,6 +165,7 @@ MIT License — see [LICENSE](LICENSE)
     <a href="https://github.com/RooCodeInc/Roo-Code">Roo Code</a>
     <br>
     Built with
-    <a href="https://github.com/anthropics/claude-code">Claude Code</a>
+    <a href="https://github.com/anthropics/claude-code">Claude Code</a> +
+    <a href="https://github.com/LL4nc33/claude-workflow-engine">Claude Workflow Engine</a>
   </sub>
 </p>
