@@ -61,6 +61,66 @@ is_secrets_path() {
   return 1
 }
 
+# Check if a path is a code file outside allowed directories
+# Allowed: workflow/*, .claude/*, CHANGELOG.md, VERSION, hooks/*
+# Returns 0 if it IS a code file outside allowed paths (should warn)
+is_code_outside_allowed() {
+  local path="$1"
+  local filename
+  filename="$(basename "${path}")"
+
+  # First check: is it in an allowed path?
+  # Normalize path for comparison
+  case "${path}" in
+    */workflow/*|workflow/*|*/\.claude/*|\.claude/*|*/.claude/*|.claude/*)
+      return 1  # Allowed - no warning
+      ;;
+    */hooks/*|hooks/*)
+      return 1  # Allowed - no warning
+      ;;
+  esac
+
+  # Check for explicitly allowed root files
+  case "${filename}" in
+    CHANGELOG.md|VERSION|README.md|LICENSE|.gitignore|.gitattributes)
+      return 1  # Allowed - no warning
+      ;;
+  esac
+
+  # Now check if it's a code file extension
+  case "${filename}" in
+    *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs)
+      return 0  # Code file outside allowed paths - warn
+      ;;
+    *.py|*.pyi|*.pyx)
+      return 0  # Python code - warn
+      ;;
+    *.go|*.rs|*.rb|*.java|*.kt|*.scala)
+      return 0  # Other languages - warn
+      ;;
+    *.c|*.cpp|*.cc|*.h|*.hpp)
+      return 0  # C/C++ - warn
+      ;;
+    *.cs|*.fs|*.vb)
+      return 0  # .NET languages - warn
+      ;;
+    *.php|*.swift|*.m|*.mm)
+      return 0  # Other popular languages - warn
+      ;;
+    *.sh|*.bash|*.zsh)
+      return 0  # Shell scripts - warn
+      ;;
+    *.sql|*.graphql|*.gql)
+      return 0  # Query languages - warn
+      ;;
+    *.vue|*.svelte|*.astro)
+      return 0  # Frontend frameworks - warn
+      ;;
+  esac
+
+  return 1  # Not a code file or in allowed path - no warning
+}
+
 # Cache management utilities for session-level caching
 # Cache directory lives in /tmp (session-scoped, auto-cleaned on reboot)
 CACHE_DIR="/tmp/claude-workflow-cache-$$"

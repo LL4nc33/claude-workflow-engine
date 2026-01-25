@@ -43,18 +43,34 @@ All agent definitions live in `.claude/agents/`:
 ### Agent Selection Quick-Guide
 
 ```
-"I need to BUILD something"        → builder
-"I need to UNDERSTAND something"   → explainer
-"I need to DESIGN something"       → architect
-"I need to DEPLOY something"       → devops
-"I need to RELEASE something"      → devops
-"I need to SECURE something"       → security
-"I need to DOCUMENT something"     → researcher
-"I need to TEST/VALIDATE quality"  → quality
-"I need IDEAS/BRAINSTORMING"       → innovator
-"I need PROCESS IMPROVEMENT"       → guide
+"I need to BUILD something"        → /builder oder builder
+"I need to UNDERSTAND something"   → /explainer oder explainer
+"I need to DESIGN something"       → /architect oder architect
+"I need to DEPLOY something"       → /devops oder devops
+"I need to RELEASE something"      → /devops oder devops
+"I need to SECURE something"       → /security oder security
+"I need to DOCUMENT something"     → /researcher oder researcher
+"I need to TEST/VALIDATE quality"  → /quality oder quality
+"I need IDEAS/BRAINSTORMING"       → /innovator oder innovator
+"I need PROCESS IMPROVEMENT"       → /guide oder guide
 "I need MULTIPLE things done"      → Main Chat (coordinates agents)
 ```
+
+### Direct Agent Commands
+
+Alle Agents sind direkt via Slash-Command aufrufbar:
+
+| Command | Agent | Beispiel |
+|---------|-------|----------|
+| `/builder <task>` | builder | `/builder fix den Login-Bug` |
+| `/architect <task>` | architect | `/architect entwerfe das Datenmodell` |
+| `/devops <task>` | devops | `/devops setup Docker` |
+| `/security <task>` | security | `/security audit die API` |
+| `/researcher <task>` | researcher | `/researcher dokumentiere die API` |
+| `/explainer <frage>` | explainer | `/explainer wie funktioniert X` |
+| `/quality <task>` | quality | `/quality pruefe Coverage` |
+| `/innovator <thema>` | innovator | `/innovator brainstorme Alternativen` |
+| `/guide <thema>` | guide | `/guide analysiere Patterns` |
 
 ## Workflow
 
@@ -84,6 +100,7 @@ For full control, use individual phase commands:
 | `/workflow:quick` | Fast 3-step workflow for MVPs (Plan→Spec→Build) | `q` |
 | `/workflow:help` | Contextual help based on current state | `h` |
 | `/workflow:undo` | Revert recent workflow changes (git-based) | - |
+| `/workflow:devlog` | Auto-document current session (debugging, fixes) | - |
 
 ### Utility Workflows
 
@@ -119,7 +136,24 @@ Main Chat (Orchestrator)          Agents (Isolated Context)
 
 **Why:** Agents have isolated context windows. When an agent finishes, only a result summary (~200 tokens) returns to main chat - not the full work context (~4000 tokens). This keeps main chat lean.
 
+### Self-Check vor jeder Aktion
+
+VOR jedem Write/Edit FRAGE DICH:
+- Ist das eine workflow/*.md oder .claude/**/*.md Datei? → OK
+- Ist das CHANGELOG.md oder VERSION? → OK
+- Ist das etwas anderes? → STOPP! Delegiere an builder/devops
+
 **STRICT DELEGATION RULE:** Even simple questions get delegated. No exceptions for "quick" answers.
+
+**FALSCH:**
+- Main Chat schreibt src/auth/login.ts direkt
+- Main Chat analysiert 500 Zeilen Code selbst
+- Main Chat "macht das schnell selbst"
+
+**RICHTIG:**
+- Main Chat delegiert: `/builder implementiere Login`
+- Main Chat delegiert: `/explainer erklaere den Auth-Flow`
+- Main Chat fragt User bei Unklarheit
 
 | Intent | Agent | Examples |
 |--------|-------|----------|
@@ -145,6 +179,13 @@ Main Chat (Orchestrator)          Agents (Isolated Context)
 - Small configs (< 200 lines) → Main chat OK
 - Large files / multiple files → Delegate to agent (explainer/researcher/Explore)
 - Code exploration → Always delegate (isolated context)
+
+### Todo-List Pflicht
+
+Bei Tasks mit mehr als 2 Schritten MUSS eine Todo-List gefuehrt werden:
+- TodoWrite fuer jeden identifizierten Schritt
+- TodoWrite(in_progress) BEVOR Arbeit beginnt
+- TodoWrite(completed) NACHDEM Arbeit fertig
 
 ## Context Model (3 Layers)
 

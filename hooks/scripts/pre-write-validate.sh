@@ -35,5 +35,13 @@ if is_secrets_path "${file_path}"; then
   exit 0
 fi
 
+# Warning: Code files outside workflow/ or .claude/ should use builder agent
+if is_code_outside_allowed "${file_path}"; then
+  filename="$(basename "${file_path}")"
+  message="$(json_escape "Code-Files sollten via builder Agent geschrieben werden. Bist du sicher dass Main Chat das machen soll? (${filename})")"
+  echo "{\"permissionDecision\": \"allow\", \"outputMessage\": \"${message}\"}"
+  exit 0
+fi
+
 # All other paths are allowed
 echo '{"permissionDecision": "allow"}'
