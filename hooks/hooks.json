@@ -20,6 +20,21 @@
       },
       "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/post-write-log.sh",
       "timeout": 5000
+    },
+    {
+      "event": "PostToolUse",
+      "matcher": {
+        "tool_name": ["Task"]
+      },
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/nano-observer.sh",
+      "args": ["delegation"],
+      "timeout": 3000
+    },
+    {
+      "event": "Stop",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/nano-observer.sh",
+      "args": ["analyze"],
+      "timeout": 10000
     }
   ]
 }

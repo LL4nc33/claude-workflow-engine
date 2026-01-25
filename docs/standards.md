@@ -16,7 +16,7 @@ Layer 3: Specs (WHAT NEXT)   -> workflow/specs/
 
 ## Domänen und Standards
 
-Claude Workflow Engine liefert 11 Standards in 7 Domänen:
+Claude Workflow Engine liefert 17 Standards in 7 Domänen:
 
 | Domaene | Standards | Zweck |
 |---------|-----------|-------|

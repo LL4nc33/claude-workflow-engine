@@ -22,10 +22,30 @@ devops:
     description: Infrastructure as Code patterns, Terraform, Kubernetes conventions
     tags: [terraform, kubernetes, iac, cloud, aws, hetzner]
 
+cli:
+  command-structure:
+    description: CLI command skeleton, async function pattern, args parsing, Logger init
+    tags: [cli, command, args, async, pattern]
+  exit-codes:
+    description: Process exit codes (0=success, 1=error, 2=warnings, 3=not-installed)
+    tags: [cli, exit-code, error, process]
+  logger-usage:
+    description: Structured Logger methods, semantic severity levels, output formatting
+    tags: [cli, logger, output, severity, formatting]
+  type-definitions:
+    description: Central types.ts structure, naming conventions, interface patterns
+    tags: [cli, types, interface, typescript, naming]
+  validation-pattern:
+    description: CheckResult format, Validator class pattern, Report aggregation, AutoFix
+    tags: [cli, validation, check, preflight, health, autofix]
+
 agents:
   agent-conventions:
     description: Agent definition standards, permission models, skill formats
     tags: [agent, skill, permission, orchestration]
+  plugin-extension:
+    description: Rules for adding Agents, Skills, Commands to the Engine with sync checklist
+    tags: [agent, skill, command, plugin, extension, frontmatter]
 
 api:
   response-format:
@@ -49,3 +69,6 @@ frontend:
   components:
     description: UI component structure, naming, accessibility, state management patterns
     tags: [component, ui, react, accessibility, a11y, state]
+  design-tokens:
+    description: Design token naming, color system, typography scale, spacing conventions
+    tags: [design-tokens, css-variables, colors, typography, spacing, theming, visual-clone]

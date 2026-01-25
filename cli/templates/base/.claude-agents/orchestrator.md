@@ -192,6 +192,11 @@ All standards now exist in `workflow/standards/`:
 **Method:** Read the actual file content and paste it into the delegation prompt.
 Delegated agents cannot read file references - they need the content inline.
 
+**TOON-Optimization:** When delegation prompts contain JSON data (e.g., API responses,
+configuration excerpts, or structured task outputs from completed tasks), convert to
+TOON format before injection to save ~40% tokens. Do NOT convert standards content
+(already Markdown) or code that agents need to write/edit.
+
 ## Quality Gates
 
 Enforce these checks at phase transitions:

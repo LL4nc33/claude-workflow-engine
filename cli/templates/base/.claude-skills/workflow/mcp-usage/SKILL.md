@@ -15,8 +15,8 @@ Serena bietet semantische Code-Navigation und -Manipulation über den Language S
 |------|----------|-------------------|
 | `get_symbols_overview` | Symbole in einer Datei auflisten | Dateistruktur verstehen |
 | `find_symbol` | Symbol per Name-Pfad finden | Klasse/Methode lokalisieren |
-| `find_referencing_symbols` | Referenzen auf ein Symbol finden | Abhängigkeiten tracken |
-| `replace_symbol_body` | Symbol-Body ersetzen | Präzise Code-Änderungen |
+| `find_referencing_symbols` | Referenzen auf ein Symbol finden | Abhaengigkeiten tracken |
+| `replace_symbol_body` | Symbol-Body ersetzen | Praezise Code-Aenderungen |
 | `search_for_pattern` | Regex-Suche in der Codebase | Pattern-Erkennung |
 | `insert_after_symbol` | Code nach einem Symbol einfuegen | Neue Methoden hinzufuegen |
 | `insert_before_symbol` | Code vor einem Symbol einfuegen | Imports hinzufuegen |

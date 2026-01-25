@@ -55,7 +55,7 @@ The workflow guides you from initial idea to completed implementation. Each phas
 
 ### Standards System
 
-- **11 Standards** across **7 domains** (Global, DevOps, Agents, API, Database, Frontend, Testing)
+- **17 Standards** across **7 domains** (Global, DevOps, Agents, API, Database, Frontend, Testing)
 - **Automatic injection** as Claude Code Skills - relevant standards are loaded based on context
 - **Tag-based matching** - standards are automatically applied based on the task at hand
 - **Extensible** - add custom standards for project-specific conventions

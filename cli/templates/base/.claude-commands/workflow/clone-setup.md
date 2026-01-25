@@ -1,7 +1,7 @@
 # Visual Clone — Setup (DEPRECATED)
 
-> **DEPRECATED:** Dieser Command wurde durch `/workflow:web-setup` ersetzt.
-> Bitte verwende `/workflow:web-setup` fuer die Konfiguration der Web-Services.
+> **DEPRECATED:** Dieser Command ist deprecated. Bitte `/workflow:web-setup` verwenden.
+> `/workflow:web-setup` bietet erweiterte Konfiguration (Captcha-Solver, ENV-Fallbacks, SearXNG + Firecrawl).
 
 **Weiterleitung:** Fuehre stattdessen `/workflow:web-setup` aus. Alle Funktionen von clone-setup sind dort enthalten, plus Captcha-Solver-Konfiguration und Migration bestehender Configs.
 
@@ -124,4 +124,4 @@ Confirm to user:
 - **Docker-Compose:** Firecrawl und SearXNG lassen sich mit Docker Compose schnell aufsetzen
 - **LAN-Zugriff:** Wenn der Service auf einem anderen Rechner läuft, die LAN-IP verwenden (nicht localhost)
 - **HTTPS:** Für öffentlich erreichbare Instanzen immer HTTPS verwenden
-- **Neustart:** Bei URL-Änderung einfach `/workflow:clone-setup` erneut ausführen
+- **Neustart:** Bei URL-Änderung `/workflow:web-setup` ausführen

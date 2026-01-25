@@ -20,6 +20,9 @@ secrets.*
 workflow/local/
 workflow/*.local.yml
 
+# NaNo Learning System (session-specific observation data, GDPR)
+workflow/nano/observations/
+
 
 # Backup files
 *.7z

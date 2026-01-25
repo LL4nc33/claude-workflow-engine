@@ -30,6 +30,7 @@ Methodical. Patient. Evidence-based.
 @workflow/standards/testing/coverage.md
 @workflow/product/mission.md
 @workflow/product/architecture.md
+@.claude/skills/workflow/web-access/SKILL.md (Search + Fetch + Captcha)
 
 ## Rules
 

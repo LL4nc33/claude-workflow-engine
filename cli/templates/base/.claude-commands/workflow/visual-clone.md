@@ -14,6 +14,7 @@ Extract the visual identity (colors, fonts, spacing, components) from any websit
 - Service URLs configured via `/workflow:web-setup` (stored in `web-services.local.md`)
 - Firecrawl instance (self-hosted)
 - SearXNG instance (self-hosted, optional for multi-page discovery)
+- Captcha-Solver (optional, for protected sites)
 
 ---
 
@@ -23,14 +24,25 @@ Extract the visual identity (colors, fonts, spacing, components) from any websit
 
 Read `web-services.local.md` from the project root to get service URLs.
 
-If the file doesn't exist, inform the user:
+If the file doesn't exist, check for `visual-clone.local.md` as fallback (backward-compatible).
+
+If neither file exists, inform the user:
 > "Bitte zuerst `/workflow:web-setup` ausfuehren um die Service-URLs zu konfigurieren."
 
 Then stop the workflow.
 
-If it exists, parse the YAML frontmatter and store:
+If config found, parse the YAML frontmatter and store:
 - `$FIRECRAWL_URL` — Firecrawl instance URL
 - `$SEARXNG_URL` — SearXNG instance URL (may be empty)
+- `$CAPTCHA_API_KEY` — Captcha-Solver API-Key (optional, from web-services.local.md only)
+
+If reading from `visual-clone.local.md` fallback, show hint:
+> "Hinweis: Bitte `/workflow:web-setup` statt `/workflow:clone-setup` nutzen fuer erweiterte Konfiguration (Captcha, ENV-Fallbacks)."
+
+**ENV-Fallbacks** (wenn keine Config-Datei existiert):
+- `$FIRECRAWL_URL` — Firecrawl-Instanz URL
+- `$SEARXNG_URL` — SearXNG-Instanz URL
+- `$SOLVECAPTCHA_API_KEY` — Captcha-Solver API-Key
 
 ---
 
@@ -110,6 +122,43 @@ Present to user:
 - Screenshot (if available, as base64 image)
 
 If the scrape fails or returns empty content, inform the user and offer to retry with different settings.
+
+#### Captcha-Fallback
+
+After the initial scrape, check for Captcha protection using the Web-Access-Layer functions
+(see `.claude/skills/workflow/web-access/SKILL.md`).
+
+Statt eigener Captcha-Logik nutzt visual-clone den `web_fetch` Wrapper, der Captcha automatisch handelt:
+
+```bash
+# web_fetch mit rawHtml + screenshot + Captcha-Auto-Solve
+RESPONSE=$(web_fetch "$TARGET_URL" "rawHtml,markdown,screenshot,links" "$WAIT_TIME")
+
+# Falls web_fetch WARN ausgibt (Captcha ohne Solver):
+# -> User informieren + /workflow:web-setup vorschlagen
+```
+
+Alternativ bei bereits geladenem rawHtml — manuelle Detection:
+
+```bash
+if _captcha_detected "$RAW_HTML" "$MARKDOWN_CONTENT"; then
+  if [ -n "$CAPTCHA_KEY" ]; then
+    _solve_and_retry "$RAW_HTML" "$TARGET_URL"
+    # Re-fetch nach erfolgreichem Solve
+    RESPONSE=$(web_fetch "$TARGET_URL" "rawHtml,markdown,screenshot,links" "$WAIT_TIME")
+    RAW_HTML=$(echo "$RESPONSE" | jq -r '.data.rawHtml')
+    SCREENSHOT=$(echo "$RESPONSE" | jq -r '.data.screenshot')
+  else
+    echo "Captcha erkannt aber kein Solver konfiguriert."
+    echo "Tipp: /workflow:web-setup ausfuehren um Captcha-Solving zu aktivieren."
+  fi
+fi
+```
+
+**Verhalten:**
+- `web_fetch` erkennt Captcha automatisch und loest es (wenn Key konfiguriert)
+- Ohne Solver: WARN-Message, original Content wird zurueckgegeben
+- Graceful degradation — Workflow bricht nicht ab
 
 ---
 
@@ -217,7 +266,171 @@ After generating, present a summary:
 
 ---
 
-### Step 7: Pixel-Perfect Verification
+### Step 7: Generate Design Token Standards (Optional)
+
+After output generation, offer standards creation.
+
+Use AskUserQuestion with:
+- Question: "Möchtest du aus den extrahierten Tokens Frontend-Standards generieren?"
+- Header: "Standards"
+- Options:
+  - "Ja" — Standards-Datei aus extrahierten Tokens erstellen
+  - "Ja, mit bestehendem Standard mergen" — Bestehende design-tokens.md als Basis verwenden
+  - "Nein" — Direkt zur Verifizierung
+
+If "Nein", skip to Step 8.
+
+#### Step 7a: Token-Cache aktualisieren
+
+Append extracted tokens to `.design-tokens-cache.local.md` in the project root.
+
+Format:
+```markdown
+---
+sources:
+  - url: $TARGET_URL
+    scraped: YYYY-MM-DD
+    tokens: <count>
+---
+
+## Source: $TARGET_URL (YYYY-MM-DD)
+
+### Colors
+| Token | Value | Context |
+|-------|-------|---------|
+| primary | #635bff | Most frequent brand color |
+| secondary | #0a2540 | Headings, dark sections |
+| ... | ... | ... |
+
+### Typography
+| Token | Value |
+|-------|-------|
+| font-family-primary | 'Inter', sans-serif |
+| font-size-base | 1rem |
+| ... | ... |
+
+### Spacing
+| Token | Value |
+|-------|-------|
+| space-sm | 0.5rem |
+| space-md | 1rem |
+| ... | ... |
+
+### Borders
+| Token | Value |
+|-------|-------|
+| radius-md | 8px |
+| ... | ... |
+
+### Shadows
+| Token | Value |
+|-------|-------|
+| shadow-md | 0 4px 6px rgba(0,0,0,0.1) |
+| ... | ... |
+```
+
+#### Step 7b: Intelligent Merge (if multi-source or existing standards)
+
+If `.design-tokens-cache.local.md` contains multiple sources OR `workflow/standards/frontend/design-tokens.md` exists:
+
+Load all available token data and apply the merge algorithm:
+
+1. **Frequenz-Analyse**: Prefer values that appear more frequently across sources
+2. **Semantischer Kontext**: CSS property names inform token roles (e.g., background-color → background token)
+3. **Konsistenz**: If one source has a more systematic scale (4px/8px multiplier), prefer that system
+4. **Komplementäre Werte**: Tokens unique to one source are included as additions
+5. **Recency**: On tie-break, the newer extraction wins
+
+Merge strategy per token:
+- Same token, same value → keep as-is
+- Same token, different value → AI picks best with reasoning
+- New token in one source only → include as addition
+- Conflicting scales → normalize to most consistent system
+
+#### Step 7c: Category-by-category confirmation
+
+For each category, present the AI's recommendation to the user and wait for confirmation.
+
+**Order:** Colors → Typography → Spacing → Borders/Radius → Shadows → (Breakpoints, Transitions if found)
+
+For each category, use AskUserQuestion-style presentation:
+- Show the category name with emoji (🎨 Colors, 📝 Typography, 📐 Spacing, 🔲 Borders, 🌫️ Shadows)
+- Show the recommended tokens as a formatted table
+- If merging: show source attribution and merge reasoning for conflicting values
+- Wait for user to confirm "ok" or provide corrections
+
+If the user provides corrections, incorporate them into the final values.
+
+#### Step 7d: Write Standards
+
+After all categories are confirmed, write the standards file.
+
+Write to `workflow/standards/frontend/design-tokens.md`:
+
+```markdown
+# Design Token Standards
+
+> Generiert aus: [source URLs] am [date]
+
+## Token Categories
+
+| Category | Prefix | Example |
+|----------|--------|---------|
+| Colors | `--color-` | `--color-primary` |
+| Typography | `--font-` | `--font-family-primary` |
+| Spacing | `--space-` | `--space-md` |
+| Borders | `--radius-` | `--radius-md` |
+| Shadows | `--shadow-` | `--shadow-md` |
+
+## Color System
+
+### Naming Rules
+- Semantic: primary / secondary / accent / background / surface / text / text-muted
+- Feedback: success / warning / error / info
+- Scales: `--color-primary-50` bis `--color-primary-900`
+
+### Values
+[CSS :root block with extracted values]
+
+## Typography System
+
+### Scale: T-Shirt Sizes (xs → 3xl)
+[Values from extraction]
+
+## Spacing System
+
+### Base: [4px|8px] Multiplier
+[Values from extraction]
+
+## Borders & Radius
+[Values from extraction]
+
+## Shadows
+[Values from extraction]
+
+## Usage Rules
+- CSS Custom Properties verwenden, keine Hardcoded-Werte
+- Tokens semantisch referenzieren
+- Dark Mode: Werte in `[data-theme="dark"]` überschreiben
+- Neue Farben müssen bestehende Rolle füllen oder neue definieren
+```
+
+Then update `workflow/standards/index.yml` — add the `design-tokens` entry under `frontend:` if not already present.
+
+Confirm: "Standards geschrieben und im Index registriert."
+
+#### Step 7e: Cache Cleanup
+
+Use AskUserQuestion with:
+- Question: "Token-Cache behalten für zukünftige Merges?"
+- Header: "Cache"
+- Options:
+  - "Ja, behalten" — Cache bleibt für spätere Multi-Source-Merges
+  - "Nein, löschen" — `.design-tokens-cache.local.md` wird entfernt
+
+---
+
+### Step 8: Pixel-Perfect Verification
 
 Provide verification guidance and next steps.
 

@@ -84,7 +84,7 @@ workflow/
   config.yml           # Hauptkonfiguration
   orchestration.yml    # Task-Delegation Config
   product/             # Mission, Roadmap, Architecture
-  standards/           # 11 Standards in 7 Domains
+  standards/           # 17 Standards in 8 Domains
   specs/               # Feature Specs (pro Feature erstellt)
 
 cli/                   # Safety Tools (optional)

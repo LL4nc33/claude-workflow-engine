@@ -125,6 +125,18 @@ Maintain a progress tracker in the spec folder. Create/update `progress.md`:
 **Started:** {date}
 **Last Updated:** {timestamp}
 
+## Overview
+
+```
+Phase 1: Data       ████████████ 100% ✓
+Phase 2: Models     ████████████ 100% ✓
+Phase 3: API        ██████▓▓▓▓▓▓  50% ← current
+Phase 4: Frontend   ░░░░░░░░░░░░   0%
+Phase 5: Testing    ░░░░░░░░░░░░   0%
+
+Progress: 4/10 tasks | ETA: ~{remaining phases} phases
+```
+
 ## Status
 
 | Task | Title | Agent | Status | Notes |
@@ -147,6 +159,27 @@ Maintain a progress tracker in the spec folder. Create/update `progress.md`:
 
 - {timestamp}: [Issue description and resolution]
 ```
+
+### Progress Bar Generation
+
+When updating `progress.md`, calculate progress bars using this logic:
+
+```
+Completed tasks / Total tasks = percentage
+████ = filled blocks (percentage / 8.33, rounded)
+▓▓▓▓ = partial block (for in-progress phase only)
+░░░░ = empty blocks (remaining)
+
+Status indicators:
+✓ = phase complete
+← current = active phase
+(nothing) = pending phase
+```
+
+Example calculation for 50% progress:
+- 50 / 8.33 = 6 filled blocks
+- Add ▓▓ for "in progress" visual
+- Fill remaining with ░
 
 ### Step 5: Handle Failures
 

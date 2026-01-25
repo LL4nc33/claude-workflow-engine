@@ -269,6 +269,14 @@ task_groups:
     standards: [devops/ci-cd, devops/containerization]
     override_when: {}
 
+  # Release tasks -> devops agent
+  release:
+    primary_agent: devops
+    review_agent: null
+    standards: [devops/ci-cd]
+    override_when: {}
+    notes: "Uses scripts/release.sh and VERSION file as Single Source of Truth"
+
   # Architecture tasks -> architect agent
   architecture:
     primary_agent: architect
@@ -357,9 +365,50 @@ standards_injection:
   # The orchestrator reads standards content and embeds it inline.
   # This avoids loading all 11 standards for every delegation.
   optimization:
-    max_standards_per_task: 5
+    max_standards_per_task: 4
     prefer_skill_reference: false  # Skills don't work in subagent context
     cache_standard_content: true   # Orchestrator caches file reads within session
+
+    # Selective injection: match standards by task tags from index.yml
+    # Only injects standards whose tags overlap with the task context
+    selective_matching:
+      enabled: true
+      # Minimum tag overlap score (0.0-1.0) to include a standard
+      min_relevance_score: 0.3
+      # Always include global/tech-stack regardless of score
+      always_include: [global/tech-stack]
+      # Exclude standards that exceed this token count (approximate)
+      max_tokens_per_standard: 3000
+
+    # Session-level caching to avoid re-reading unchanged files
+    session_cache:
+      enabled: true
+      # Invalidate cache when file mtime changes
+      invalidation: file_mtime
+      # Maximum cached standards (LRU eviction)
+      max_entries: 20
+
+    # Compact injection format: strip comments and empty lines from standards
+    compact_format:
+      enabled: true
+      strip_comments: true
+      strip_empty_lines: true
+      # Use TOON-like compression for repeated patterns
+      deduplicate_examples: true
+
+    # TOON format conversion for JSON content in delegation prompts
+    # Converts structured JSON data to TOON notation (~40% token savings)
+    # Does NOT apply to: standards (already Markdown), code to write/edit
+    toon_conversion:
+      enabled: true
+      # Minimum JSON size (approximate tokens) before conversion triggers
+      min_json_tokens: 200
+      # Convert completed task outputs (often JSON/structured) to TOON
+      convert_completed_outputs: true
+      # Convert API response excerpts embedded in context
+      convert_api_responses: true
+      # CLI tool for conversion in shell workflows
+      cli_command: "npx @toon-format/cli"
 
 # -----------------------------------------------------------------------------
 # Quality Gates (4-Gate Architecture)
@@ -479,6 +528,378 @@ quality_gates:
       delegate_to: orchestrator
 
 # -----------------------------------------------------------------------------
+# Agent-First Principle (Context Isolation)
+# CRITICAL: All code work MUST be delegated to agents.
+# Main chat orchestrates only - agents execute.
+# This maximizes context efficiency through isolation.
+# -----------------------------------------------------------------------------
+
+agent_first:
+  enabled: true
+  description: |
+    The main conversation should NEVER directly write/edit code.
+    Instead, delegate ALL implementation work to specialized agents.
+
+    Why: Agents have isolated context windows. When an agent finishes,
+    only the result summary returns to main chat - not the full work context.
+    This keeps main chat lean for orchestration decisions.
+
+  rules:
+    # Main chat responsibilities (orchestration only)
+    main_chat:
+      allowed:
+        - User communication and clarification
+        - Phase detection and workflow decisions
+        - Agent selection and task delegation
+        - Progress summaries and status updates
+        - Quality gate enforcement decisions
+      forbidden:
+        - Direct file writes (Edit/Write tools)
+        - Code implementation
+        - Detailed code analysis (delegate to ask/researcher)
+        - Bug fixing (delegate to debug)
+
+    # Force delegation for these actions - COMPREHENSIVE LIST
+    always_delegate:
+      # === CODE WORK (debug) ===
+      - pattern: "implement|write code|create file|edit file|fix bug|refactor"
+        delegate_to: debug
+        reason: "All code changes must be isolated"
+      - pattern: "add feature|build|develop|code"
+        delegate_to: debug
+        reason: "Implementation work"
+      - pattern: "test|write test|unit test|integration test"
+        delegate_to: debug
+        reason: "Test writing is code work"
+
+      # === EXPLANATIONS (ask) ===
+      - pattern: "explain|how does|walkthrough|what is|why does"
+        delegate_to: ask
+        reason: "Explanations benefit from focused analysis"
+      - pattern: "understand|learn|teach me|show me"
+        delegate_to: ask
+        reason: "Learning queries"
+
+      # === RESEARCH (researcher) ===
+      - pattern: "analyze|document|research|compare|evaluate"
+        delegate_to: researcher
+        reason: "Analysis requires deep reading"
+      - pattern: "find pattern|discover|extract|summarize codebase"
+        delegate_to: researcher
+        reason: "Codebase exploration"
+      - pattern: "generate docs|write documentation|readme"
+        delegate_to: researcher
+        reason: "Documentation generation"
+
+      # === SECURITY (security) ===
+      - pattern: "review security|audit|vulnerability|pentest|owasp"
+        delegate_to: security
+        reason: "Security work requires specialized tools"
+      - pattern: "check secrets|scan dependencies|cve|gdpr"
+        delegate_to: security
+        reason: "Compliance and scanning"
+
+      # === DEVOPS (devops) ===
+      - pattern: "deploy|docker|ci|pipeline|infrastructure|k8s|terraform"
+        delegate_to: devops
+        reason: "Infrastructure changes"
+      - pattern: "github action|workflow|release|version bump"
+        delegate_to: devops
+        reason: "CI/CD and release management"
+      - pattern: "container|helm|monitoring|logging"
+        delegate_to: devops
+        reason: "Operations work"
+
+      # === ARCHITECTURE (architect) ===
+      - pattern: "design|architecture|adr|system design|api design"
+        delegate_to: architect
+        reason: "Design decisions need focused thought"
+      - pattern: "review api|review design|tech decision|trade-off"
+        delegate_to: architect
+        reason: "Architectural review"
+      - pattern: "dependency analysis|module structure|component design"
+        delegate_to: architect
+        reason: "Structural analysis"
+
+      # === MULTI-STEP (orchestrator) ===
+      - pattern: "build complete|implement full|end-to-end|multiple steps"
+        delegate_to: orchestrator
+        reason: "Complex tasks need coordination"
+
+      # === FILE READING (context optimization) ===
+      - pattern: "read all|scan codebase|find in code|search files"
+        delegate_to: researcher  # or Explore agent
+        reason: "Large read operations should be isolated"
+      - pattern: "explore|investigate|look through|check all"
+        delegate_to: researcher
+        reason: "Exploration benefits from isolation"
+
+    # Exceptions where main chat MAY edit directly
+    exceptions:
+      - "workflow/*.md"      # Workflow artifacts (specs, progress)
+      - "workflow/*.yml"     # Workflow config
+      - ".claude/**/*.md"    # Agent/command definitions
+      - "CHANGELOG.md"       # Release notes
+      - "VERSION"            # Version file
+
+  # Context savings estimation
+  context_benefits:
+    typical_task_context: 4000  # tokens used by agent during work
+    returned_summary: 200       # tokens in result summary
+    savings_per_delegation: 95  # percent context saved
+
+# -----------------------------------------------------------------------------
+# Predictive Features (Smart Suggestions)
+# System learns from patterns and proactively suggests next steps.
+# All predictions are advisory - user always has final decision.
+# -----------------------------------------------------------------------------
+
+predictive:
+  enabled: true
+  confidence_threshold: 0.7  # Only suggest when confidence >= 70%
+
+  # Phase transition suggestions
+  phase_transitions:
+    - trigger: "spec.md modified 3+ times in session"
+      suggest: "Spec scheint stabil. Bereit fuer /workflow:create-tasks?"
+      confidence: 0.85
+
+    - trigger: "all tasks in progress.md marked done"
+      suggest: "Alle Tasks erledigt! Naechste Schritte: Review oder /workflow:release"
+      confidence: 0.95
+
+    - trigger: "shape.md created but no spec.md after 10 minutes"
+      suggest: "Shape fertig? Weiter mit /workflow:write-spec"
+      confidence: 0.75
+
+    - trigger: "tasks.md exists but no progress.md"
+      suggest: "Tasks bereit. Starte mit /workflow:orchestrate-tasks"
+      confidence: 0.9
+
+  # Smart standards suggestions based on task keywords
+  standards_suggestions:
+    - keywords: ["auth", "login", "session", "jwt", "oauth", "password"]
+      standards: ["security/*", "api/error-handling"]
+      suggest: "Security-relevanter Task erkannt. Security-Standards werden injiziert."
+
+    - keywords: ["api", "endpoint", "rest", "graphql", "route"]
+      standards: ["api/response-format", "api/error-handling"]
+      suggest: "API-Task erkannt. API-Standards werden injiziert."
+
+    - keywords: ["database", "migration", "schema", "model", "query"]
+      standards: ["database/migrations", "global/naming"]
+      suggest: "Database-Task erkannt. Database-Standards werden injiziert."
+
+    - keywords: ["component", "ui", "style", "css", "layout", "form"]
+      standards: ["frontend/components"]
+      suggest: "Frontend-Task erkannt. Component-Standards werden injiziert."
+
+    - keywords: ["test", "spec", "coverage", "mock", "assert"]
+      standards: ["testing/coverage"]
+      suggest: "Testing-Task erkannt. Testing-Standards werden injiziert."
+
+    - keywords: ["docker", "ci", "pipeline", "deploy", "k8s", "terraform"]
+      standards: ["devops/*"]
+      suggest: "DevOps-Task erkannt. Infrastructure-Standards werden injiziert."
+
+  # NaNo-driven suggestions (when patterns exist)
+  nano_integration:
+    enabled: true
+    min_observations: 5  # Need at least 5 observations before suggesting
+
+    suggestions:
+      - pattern: "agent X chosen 80%+ for task_type Y"
+        suggest: "Basierend auf bisherigen Patterns: {agent} ist optimal fuer {task_type}"
+
+      - pattern: "user often skips phase 2 (shape)"
+        suggest: "Du ueberspringst oft Shape. Vielleicht /workflow:quick nutzen?"
+
+      - pattern: "debug tasks often need retry"
+        suggest: "Debug-Tasks brauchen oft mehrere Versuche. Mehr Context hinzufuegen?"
+
+      - pattern: "security reviews find issues frequently"
+        suggest: "Security-Reviews finden oft Issues. Frueher reviewen?"
+
+# -----------------------------------------------------------------------------
+# Auto-Scope-Detection (Keyword-based)
+# Automatically detects affected files and standards from task description.
+# Fast keyword matching on filenames, directories, and patterns.
+# -----------------------------------------------------------------------------
+
+auto_scope:
+  enabled: true
+  method: keyword  # keyword | ast | hybrid
+
+  # Keyword-to-directory mappings
+  directory_patterns:
+    # Authentication & Security
+    - keywords: ["auth", "login", "logout", "session", "jwt", "oauth", "password", "token"]
+      directories: ["src/auth/", "src/middleware/", "lib/auth/", "app/auth/"]
+      files: ["*auth*", "*login*", "*session*", "*token*"]
+      standards: ["security/*", "api/error-handling"]
+
+    # API & Routes
+    - keywords: ["api", "endpoint", "route", "controller", "handler", "rest", "graphql"]
+      directories: ["src/api/", "src/routes/", "src/controllers/", "app/api/", "pages/api/"]
+      files: ["*route*", "*controller*", "*handler*", "*api*"]
+      standards: ["api/response-format", "api/error-handling"]
+
+    # Database & Models
+    - keywords: ["database", "db", "migration", "schema", "model", "entity", "query", "sql"]
+      directories: ["src/models/", "src/entities/", "src/db/", "prisma/", "drizzle/", "migrations/"]
+      files: ["*model*", "*entity*", "*schema*", "*migration*"]
+      standards: ["database/migrations", "global/naming"]
+
+    # Frontend & UI
+    - keywords: ["component", "ui", "view", "page", "layout", "form", "button", "modal"]
+      directories: ["src/components/", "src/ui/", "src/views/", "src/pages/", "app/", "components/"]
+      files: ["*component*", "*view*", "*page*", "*.tsx", "*.vue", "*.svelte"]
+      standards: ["frontend/components"]
+
+    # Styles & Design
+    - keywords: ["style", "css", "scss", "tailwind", "theme", "color", "font", "design"]
+      directories: ["src/styles/", "styles/", "src/theme/"]
+      files: ["*.css", "*.scss", "*.sass", "*style*", "*theme*", "tailwind.config.*"]
+      standards: ["frontend/components"]
+
+    # Testing
+    - keywords: ["test", "spec", "jest", "vitest", "cypress", "playwright", "mock", "fixture"]
+      directories: ["tests/", "test/", "__tests__/", "src/**/*.test.*", "src/**/*.spec.*"]
+      files: ["*.test.*", "*.spec.*", "*mock*", "*fixture*"]
+      standards: ["testing/coverage"]
+
+    # DevOps & Infrastructure
+    - keywords: ["docker", "container", "k8s", "kubernetes", "helm", "terraform", "ci", "cd", "pipeline", "deploy"]
+      directories: [".github/", "infra/", "terraform/", "k8s/", "helm/", "docker/"]
+      files: ["Dockerfile*", "docker-compose*", "*.tf", "*.yml", "*.yaml"]
+      standards: ["devops/*"]
+
+    # Configuration
+    - keywords: ["config", "settings", "env", "environment", "options"]
+      directories: ["src/config/", "config/"]
+      files: ["*config*", "*.env*", "*settings*"]
+      standards: ["global/tech-stack"]
+
+    # Utils & Helpers
+    - keywords: ["util", "helper", "lib", "common", "shared", "utils"]
+      directories: ["src/utils/", "src/lib/", "src/helpers/", "src/common/", "lib/"]
+      files: ["*util*", "*helper*", "*common*"]
+      standards: ["global/naming"]
+
+  # How to use detected scope
+  scope_usage:
+    # Include in delegation prompt
+    include_in_prompt: true
+    # Show to user for confirmation
+    show_confirmation: false  # Set true for verbose mode
+    # Max files to include in scope
+    max_files: 10
+    # Max directories to scan
+    max_directories: 5
+
+  # Fallback when no keywords match
+  fallback:
+    # Ask user for scope clarification
+    ask_user: true
+    # Default directories if nothing matches
+    default_directories: ["src/"]
+    # Default standards
+    default_standards: ["global/tech-stack", "global/naming"]
+
+  # Contextual hints in prompts
+  contextual_hints:
+    enabled: true
+    max_hints_per_prompt: 2
+
+    hint_templates:
+      first_run: "Tipp: /workflow:quick fuer schnellen Einstieg, /workflow:smart-workflow fuer volle Power"
+      spec_writing: "Tipp: Fokus auf Akzeptanzkriterien - was muss testbar sein?"
+      task_creation: "Tipp: Kleine Tasks (1-2 Stunden) delegieren besser als grosse"
+      orchestration: "Tipp: Phase-by-phase Modus fuer bessere Kontrolle"
+      stuck: "Tipp: /workflow:help zeigt kontextbasierte Optionen"
+
+# -----------------------------------------------------------------------------
+# Favorites & Shortcuts
+# Tracks frequently used commands and offers shortcuts.
+# User data stored in .claude/preferences.local.md (gitignored).
+# -----------------------------------------------------------------------------
+
+favorites:
+  enabled: true
+  storage: ".claude/preferences.local.md"  # gitignored, GDPR-compliant
+
+  # Auto-track command usage
+  auto_track:
+    enabled: true
+    min_uses_for_favorite: 3  # Command becomes "favorite" after 3 uses
+
+  # Default shortcuts (can be customized by user)
+  default_shortcuts:
+    sw: "/workflow:smart-workflow"
+    q: "/workflow:quick"
+    h: "/workflow:help"
+    st: "/workflow:homunculus-status"
+    rel: "/workflow:release"
+
+  # Show favorites hint after N commands
+  show_hint_after: 5
+
+  # Favorite command suggestions
+  suggestions:
+    enabled: true
+    show_in_help: true
+    max_suggestions: 3
+
+  # Template for preferences.local.md
+  preferences_template: |
+    # User Preferences (Local)
+
+    ## Shortcuts
+    # Format: shortcut: /command
+    sw: /workflow:smart-workflow
+    q: /workflow:quick
+    h: /workflow:help
+
+    ## Favorites
+    # Auto-tracked frequently used commands
+    # (updated automatically)
+
+    ## Preferences
+    # verbose_mode: false
+    # auto_advance: true
+    # default_execution_mode: phase-by-phase
+
+# -----------------------------------------------------------------------------
+# Live Feedback During Delegation
+# Real-time progress updates while agents work.
+# -----------------------------------------------------------------------------
+
+live_feedback:
+  enabled: true
+
+  # Update frequency
+  update_interval: "per_subtask"  # per_subtask | per_file | per_minute
+
+  # Feedback format
+  format:
+    task_start: "🔄 Delegating to {agent}..."
+    task_progress: "   ├─ {subtask} [{status}]"
+    task_complete: "   └─ ✓ {task} completed ({duration})"
+    phase_complete: "✅ Phase {n} complete ({tasks_done}/{tasks_total})"
+
+  # What to show
+  show:
+    agent_name: true
+    current_file: true
+    subtask_status: true
+    estimated_remaining: false  # Don't show time estimates
+
+  # Streaming mode (requires Claude Code streaming support)
+  streaming:
+    enabled: false  # Set true when streaming is available
+    buffer_size: 100  # characters before flush
+
+# -----------------------------------------------------------------------------
 # Execution Configuration
 # Controls runtime behavior of the orchestration engine.
 # -----------------------------------------------------------------------------
@@ -518,7 +939,13 @@ execution:
     # Summarize completed task outputs instead of including full content
     summarize_completed: true
     # Max tokens for delegation prompt (approximate)
-    max_delegation_tokens: 8000
+    max_delegation_tokens: 6000
+    # Compact completed task summaries to N sentences max
+    summary_max_sentences: 3
+    # Skip spec sections not relevant to current task
+    selective_spec_excerpt: true
+    # Only include acceptance criteria for current task (not full spec)
+    minimal_acceptance_criteria: true
 
 # -----------------------------------------------------------------------------
 # Fallback Strategies
@@ -692,32 +1119,27 @@ output:
 
 templates:
   # Delegation prompt structure (used by orchestrator)
+  # Optimized for minimal token usage while preserving essential context
   delegation_prompt: |
-    You are working on the "{feature-name}" feature for this project.
+    Feature: "{feature-name}" | Task {task_id}: {task_title}
 
-    ## Your Task
-    {task_id}: {task_title}
+    ## Task
     {task_description}
 
     ## Context
     {relevant_spec_excerpt}
 
-    ### What's Already Done
-    {completed_dependencies_summary}
+    **Completed:** {completed_dependencies_summary}
 
-    ## Standards to Follow
+    ## Standards
     {injected_standards_content}
 
     ## Acceptance Criteria
     {acceptance_criteria_checkboxes}
 
-    ## Files to Create/Modify
-    {file_paths}
-
-    ## Constraints
-    - Follow the project's existing patterns
-    - Don't modify files outside your task scope
-    - If you're unsure about something, flag it rather than guessing
+    ## Scope
+    Files: {file_paths}
+    Constraints: Follow existing patterns. Stay within task scope. Flag uncertainties.
 
   # Progress report format
   progress_report: |

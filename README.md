@@ -100,7 +100,7 @@ Der Workflow passt sich deiner Arbeitsweise an: Schnell für MVPs, vollständig 
 
 ### Standards System
 
-- **11 Standards** in **7 Domänen** (Global, DevOps, Agents, API, Database, Frontend, Testing)
+- **17 Standards** in **7 Domänen** (Global, DevOps, Agents, API, Database, Frontend, Testing)
 - **Automatische Injection** als Claude Code Skills - relevante Standards werden kontextbasiert geladen
 - **Tag-basiertes Matching** - Standards werden anhand der Aufgabe automatisch angewendet
 - **Erweiterbar** - eigene Standards für projektspezifische Konventionen
@@ -292,7 +292,7 @@ claude-workflow-engine/
 |   |-- config.yml                # Hauptkonfiguration (v0.2.7)
 |   |-- orchestration.yml         # Orchestrierungs-Einstellungen
 |   |-- product/                  # Layer 2: Mission, Roadmap, Architektur
-|   |-- standards/                # Layer 1: 11 Standards in 7 Domaenen
+|   |-- standards/                # Layer 1: 17 Standards in 8 Domaenen
 |   |   +-- index.yml             # Standards-Registry mit Tags
 |   +-- specs/                    # Layer 3: Feature-Spezifikationen
 |

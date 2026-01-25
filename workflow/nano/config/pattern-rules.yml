@@ -1,0 +1,60 @@
+# =============================================================================
+# NaNo Pattern Detection Rules
+# Defines criteria for recognizing recurring development patterns.
+# Version: 0.1.0
+# =============================================================================
+
+patterns:
+  # Track how often agent delegations succeed on first try
+  delegation_efficiency:
+    trigger: task_completion
+    measure: retry_count_reduction
+    threshold: 3  # Min occurrences before pattern is recognized
+    min_improvement: 0.3  # 30% improvement required
+    fields:
+      - agent
+      - task_group
+      - retry_count
+      - outcome  # success|failure|timeout
+
+  # Track quality gate failure reasons for systemic issues
+  quality_gate_insights:
+    trigger: gate_failure
+    measure: failure_reason_frequency
+    threshold: 2  # 2 identical failures = pattern
+    fields:
+      - gate_name
+      - failing_checks
+      - agent_responsible
+      - remediation_type
+
+  # Track which standards actually improve outcomes
+  standards_effectiveness:
+    trigger: standards_injection
+    measure: task_success_correlation
+    threshold: 5  # Need 5+ data points
+    fields:
+      - standards_injected
+      - task_group
+      - outcome
+      - retry_needed
+
+# Aggregation settings
+aggregation:
+  # Only aggregate observations from the last 24h
+  session_window: 24h
+  # Minimum confidence to promote a pattern
+  confidence_threshold: 0.7
+  # Convert aggregated data to TOON format
+  toon_conversion: true
+  # Max observations kept per session file
+  max_observations_per_session: 100
+
+# Evolution thresholds
+evolution:
+  # How many pattern occurrences before generating a candidate
+  candidate_threshold: 5
+  # Minimum confidence score for a candidate
+  min_confidence: 0.7
+  # Auto-generate candidates (still requires manual approval)
+  auto_generate: true

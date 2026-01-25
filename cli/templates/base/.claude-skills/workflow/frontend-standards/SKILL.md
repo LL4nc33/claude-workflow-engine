@@ -46,6 +46,13 @@ Apply frontend standards from workflow/standards/frontend/ when:
 - Server: React Query / SWR pattern
 - URL: Router params for shareable state
 
+### Design Tokens
+- Use CSS Custom Properties with semantic prefixes (`--color-`, `--font-`, `--space-`, `--radius-`, `--shadow-`)
+- No hardcoded color/spacing values — always reference tokens
+- T-Shirt size scale for typography and spacing (xs → 3xl)
+- Dark Mode via `[data-theme="dark"]` overrides, not separate token sets
+- New colors must fill an existing semantic role or define a new one
+
 ## Application Triggers
 
 This skill automatically applies when:
@@ -53,6 +60,9 @@ This skill automatically applies when:
 - UI/UX discussions occur
 - Accessibility requirements are mentioned
 - Frontend build or bundler config is touched
+- Design tokens, CSS variables, or theming are discussed
+- Color systems, typography scales, or spacing conventions are defined
 
 ## Reference Files
 - @workflow/standards/frontend/components.md
+- @workflow/standards/frontend/design-tokens.md

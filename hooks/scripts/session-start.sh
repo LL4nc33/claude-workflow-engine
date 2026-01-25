@@ -36,10 +36,18 @@ else
   warnings="${warnings}Standards-Index nicht gefunden. "
 fi
 
+# First-Run Detection: Check if workflow is set up at all
+first_run=false
+if [ ! -d "${ROOT}/workflow" ] || [ ! -f "${ROOT}/workflow/config.yml" ]; then
+  first_run=true
+  context_parts="${context_parts}FIRST-RUN: Neues Projekt erkannt. "
+  warnings="${warnings}Starte mit /workflow:smart-workflow oder /workflow:quick fuer schnellen Einstieg. "
+fi
+
 # Check mission (simple file existence - fast)
 if [ -f "${ROOT}/workflow/product/mission.md" ]; then
   context_parts="${context_parts}Mission vorhanden. "
-else
+elif [ "${first_run}" = "false" ]; then
   warnings="${warnings}Keine mission.md. Starte mit /workflow:plan-product. "
 fi
 
@@ -88,8 +96,18 @@ if [ "${learning_status}" != "disabled" ]; then
   fi
 fi
 
+# Run Engine-Sync check in background (non-blocking)
+# This catches any doc/template inconsistencies from the last session
+if [ -x "${SCRIPT_DIR}/engine-sync.sh" ]; then
+  sync_result=$("${SCRIPT_DIR}/engine-sync.sh" check 2>&1 | grep -c "WARN" || true)
+  if [ "${sync_result}" -gt 0 ]; then
+    warnings="${warnings}Doc/Template inconsistencies detected. Run engine-sync.sh full to fix. "
+  fi
+fi
+
 # Build compact context message
-context_msg="Workflow Engine v0.2.7"
+version=$(cat "${ROOT}/VERSION" 2>/dev/null | tr -d '\n' || echo "0.2.8")
+context_msg="Workflow Engine v${version}"
 if [ -n "${context_parts}" ]; then
   context_msg="${context_msg} | ${context_parts}"
 fi
