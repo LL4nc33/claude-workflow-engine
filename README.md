@@ -161,7 +161,10 @@ MIT License — see [LICENSE](LICENSE)
   <sub>
     Inspired by
     <a href="https://github.com/buildermethods/agent-os">Agent OS</a> ·
-    <a href="https://github.com/RooCodeInc/Roo-Code">Roo Code</a> ·
+    <a href="https://github.com/humanplane/homunculus">Homunculus</a> ·
+    <a href="https://github.com/RooCodeInc/Roo-Code">Roo Code</a>
+    <br>
+    Built with
     <a href="https://github.com/anthropics/claude-code">Claude Code</a>
   </sub>
 </p>
