@@ -75,6 +75,10 @@ graph LR
 
 ## Architecture
 
+<table>
+<tr>
+<td width="50%">
+
 ```mermaid
 graph TB
     L6[Plugin Packaging] --> L5[Hooks]
@@ -84,6 +88,9 @@ graph TB
     L2 --> L1[CLAUDE.md]
 ```
 
+</td>
+<td width="50%">
+
 | Layer | Component | Count |
 |-------|-----------|-------|
 | 6 | Plugin Packaging | 1 bundle |
@@ -92,6 +99,10 @@ graph TB
 | 3 | Skills | 13 context skills |
 | 2 | Commands | 23 slash commands |
 | 1 | CLAUDE.md | Project instructions |
+
+</td>
+</tr>
+</table>
 
 ---
 
