@@ -154,12 +154,22 @@ get_agent_standards() {
 handle_delegation() {
   # Read tool input from stdin (Claude hook protocol)
   local tool_input=""
+
+  # Check if stdin has data (non-blocking)
+  # -t 0 checks if stdin is a terminal (interactive)
+  # We also add a timeout to prevent hanging
   if [ -t 0 ]; then
-    # No stdin available, skip (avoid duplicate observations)
+    # Stdin is a terminal - no piped data, skip
     return 0
   fi
 
-  tool_input=$(cat)
+  # Read with timeout to prevent hanging
+  tool_input=$(timeout 1 cat 2>/dev/null) || true
+
+  # Skip if no input received
+  if [ -z "${tool_input}" ]; then
+    return 0
+  fi
 
   # Extract hook event type
   local hook_event
