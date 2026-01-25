@@ -147,5 +147,10 @@ MIT License — see [LICENSE](LICENSE)
 ---
 
 <p align="center">
-  <sub>Inspired by <a href="https://github.com/11rl/agent-os">agent-os</a></sub>
+  <sub>
+    Inspired by
+    <a href="https://github.com/buildermethods/agent-os">Agent OS</a> ·
+    <a href="https://github.com/RooCodeInc/Roo-Code">Roo Code</a> ·
+    <a href="https://github.com/anthropics/claude-code">Claude Code</a>
+  </sub>
 </p>
