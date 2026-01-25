@@ -37,10 +37,12 @@ workflow install . --dry-run
   .claude/
     agents/
       architect.md
-      ask.md
-      debug.md
+      explainer.md
+      builder.md
       devops.md
-      orchestrator.md
+      guide.md
+      innovator.md
+      quality.md
       researcher.md
       security.md
     settings.local.json
@@ -82,7 +84,7 @@ workflow install .
 
 ```
 Installation complete.
-  Created: .claude/ (7 agents, settings, CLAUDE.md)
+  Created: .claude/ (9 agents, settings, CLAUDE.md)
   Created: workflow/ (config, standards, product/, specs/)
   Run 'workflow health .' to verify the installation.
 ```
@@ -95,7 +97,7 @@ workflow health .
 
 ```
 Health Check Results:
-  [OK] .claude/agents/ - 7 agent files present
+  [OK] .claude/agents/ - 9 agent files present
   [OK] .claude/CLAUDE.md - Project instructions present
   [OK] workflow/config.yml - Valid configuration
   [OK] workflow/standards/index.yml - 11 standards registered
@@ -369,34 +371,34 @@ RunningTimer:
 # Tasks: Timer Feature
 
 ## Task 1: Datenbank-Schema
-Agent: debug
+Agent: builder
 - TimeEntry Model in Prisma
 - Migration erstellen
 - Unique Constraint: max 1 aktiver Timer pro User
 
 ## Task 2: Timer Service
-Agent: debug
+Agent: builder
 - start(userId, projectId): Timer starten
 - stop(userId): Timer stoppen, TimeEntry erstellen
 - current(userId): Laufenden Timer abfragen
 - Validierung: Kein doppelter Timer
 
 ## Task 3: Timer Router
-Agent: debug
+Agent: builder
 - POST /api/timer/start
 - POST /api/timer/stop
 - GET /api/timer/current
 - Auth Middleware
 
 ## Task 4: Frontend Timer-Komponente
-Agent: debug
+Agent: builder
 - Timer-Display mit Echtzeit-Counter
 - Start/Stop Button
 - Projekt-Auswahl Dropdown
 - WebSocket oder Polling für Timer-Sync
 
 ## Task 5: Tests
-Agent: debug
+Agent: builder
 - Unit Tests für Timer Service
 - Integration Tests für API
 - E2E Test: Timer starten, warten, stoppen
@@ -406,7 +408,7 @@ Agent: debug
 > /workflow/orchestrate-tasks
 ```
 
-Der Orchestrator fuehrt die Tasks der Reihe nach aus und delegiert an den Debug-Agent.
+Main Chat fuehrt die Tasks der Reihe nach aus und delegiert an den Builder-Agent.
 
 ---
 
@@ -491,7 +493,7 @@ Nach diesem Durchlauf hast du:
 ```
 timetrack-app/
   .claude/
-    agents/ (7 Agenten)
+    agents/ (9 Agenten)
     CLAUDE.md
     settings.local.json
   .github/

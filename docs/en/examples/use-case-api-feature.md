@@ -206,21 +206,21 @@ Claude breaks the spec into implementable tasks:
 # Tasks: API Tasks Endpoint
 
 ## Task 1: Database Migration
-Agent: debug
+Agent: builder
 Standards: database/migrations
 - Extend Prisma schema (Task model)
 - Create and run migration
 - Seed data for development
 
 ## Task 2: Zod Validation Schemas
-Agent: debug
+Agent: builder
 Standards: api/error-handling
 - CreateTaskSchema
 - UpdateTaskSchema
 - QueryTaskSchema (filter + pagination)
 
 ## Task 3: Task Service Layer
-Agent: debug
+Agent: builder
 Standards: global/naming
 - TaskService class
 - CRUD methods with Prisma
@@ -228,7 +228,7 @@ Standards: global/naming
 - Filter composition
 
 ## Task 4: Task Router + Controller
-Agent: debug
+Agent: builder
 Standards: api/response-format, api/error-handling
 - Express router with all endpoints
 - Auth middleware integration
@@ -236,7 +236,7 @@ Standards: api/response-format, api/error-handling
 - Error handling
 
 ## Task 5: Integration Tests
-Agent: debug
+Agent: builder
 Standards: testing/coverage
 - Happy-path tests for all endpoints
 - Error-case tests (401, 403, 404)
@@ -259,11 +259,11 @@ Standards: api/response-format, global/naming
 > /workflow/orchestrate-tasks
 ```
 
-The orchestrator delegates the tasks to the specialized agents. The order is determined by dependencies.
+Main Chat delegates the tasks to the specialized agents. The order is determined by dependencies.
 
 **Walkthrough:**
 
-**Task 1 - Migration (debug agent):**
+**Task 1 - Migration (builder agent):**
 
 ```prisma
 // prisma/schema.prisma
@@ -297,7 +297,7 @@ enum TaskPriority {
 }
 ```
 
-**Task 2 - Validation Schemas (debug agent):**
+**Task 2 - Validation Schemas (builder agent):**
 
 ```typescript
 // src/schemas/task.schema.ts
@@ -325,7 +325,7 @@ export const QueryTaskSchema = z.object({
 });
 ```
 
-**Task 4 - Router (debug agent):**
+**Task 4 - Router (builder agent):**
 
 ```typescript
 // src/routes/task.router.ts
@@ -397,7 +397,7 @@ router.delete("/:id", async (req, res, next) => {
 export default router;
 ```
 
-**Task 5 - Tests (debug agent):**
+**Task 5 - Tests (builder agent):**
 
 ```typescript
 // tests/integration/tasks.test.ts
@@ -522,11 +522,11 @@ If you only need a simple endpoint without complex requirements, you can shorten
 
 ### Multiple Features in Parallel
 
-For larger releases you can create multiple specs in parallel (Phases 2-3), then orchestrate the tasks together. The orchestrator detects dependencies between features and orders the execution accordingly.
+For larger releases you can create multiple specs in parallel (Phases 2-3), then orchestrate the tasks together. Main Chat detects dependencies between features and orders the execution accordingly.
 
 ### Without Frontend
 
-If you only need the API without a frontend, the frontend task in Phase 4 is omitted. The orchestrator delegates exclusively to the debug agent for backend work and the architect agent for the review.
+If you only need the API without a frontend, the frontend task in Phase 4 is omitted. Main Chat delegates exclusively to the builder agent for backend work and the architect agent for the review.
 
 ### With Security Review
 

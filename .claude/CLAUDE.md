@@ -3,25 +3,25 @@
 ## System Overview
 
 This project implements a specialized multi-agent system for AI-assisted software development.
-7 specialized agents collaborate through well-defined interfaces, standards injection,
+9 specialized agents collaborate through well-defined interfaces, standards injection,
 and spec-driven workflows.
 
 ## Agent Hierarchy
 
 ```
-                    +------------------+
-                    |   orchestrator   |  (Task Delegation)
-                    +--------+---------+
-                             |
-         +-------------------+-------------------+
-         |         |         |         |         |
-    +----+---+ +---+----+ +-+------+ +-+------+ +---+-----+
-    |architect| |  debug | |devops  | |security| |researcher|
-    +---------+ +--------+ +--------+ +--------+ +----------+
-         |
-    +----+---+
-    |  ask   |  (Explanations)
-    +---------+
+                         +-------------+
+                         |  Main Chat  |  (Orchestration)
+                         +------+------+
+                                |
+    +-------+-------+-------+---+---+-------+-------+-------+
+    |       |       |       |       |       |       |       |
++---+---+ +-+--+ +--+--+ +--+---+ +-+--+ +--+---+ +--+--+ +-+---+
+|architect|builder|devops|explainer|guide|innovator|quality|researcher|
++---------+------+------+---------+-----+---------+-------+----------+
+                                                              |
+                                                         +----+----+
+                                                         | security |
+                                                         +----------+
 ```
 
 ## Agents Directory
@@ -31,24 +31,29 @@ All agent definitions live in `.claude/agents/`:
 | Agent | Purpose | Access | Use When... |
 |-------|---------|--------|-------------|
 | [architect](.claude/agents/architect.md) | System Design, ADRs, API Review | READ-ONLY | Designing systems, reviewing APIs, making tech decisions |
-| [ask](.claude/agents/ask.md) | Explanations, Code Walkthroughs | READ-ONLY | Understanding code, learning concepts, getting explanations |
-| [debug](.claude/agents/debug.md) | Bug Investigation, Implementation | FULL | Writing code, fixing bugs, implementing features, writing tests |
+| [builder](.claude/agents/builder.md) | Bug Investigation, Implementation | FULL | Writing code, fixing bugs, implementing features, writing tests |
 | [devops](.claude/agents/devops.md) | CI/CD, Docker, Kubernetes, IaC | FULL | Setting up pipelines, containers, infrastructure |
-| [orchestrator](.claude/agents/orchestrator.md) | Task Delegation, Coordination | TASK-DELEGATION | Complex multi-step tasks requiring multiple agents |
+| [explainer](.claude/agents/explainer.md) | Explanations, Code Walkthroughs | READ-ONLY | Understanding code, learning concepts, getting explanations |
+| [guide](.claude/agents/guide.md) | NaNo Evolution, Pattern-to-Standards | READ-ONLY | Process improvement, pattern analysis, workflow optimization |
+| [innovator](.claude/agents/innovator.md) | Brainstorming, Creative Solutions | READ-ONLY | Generating ideas, exploring alternatives, "what if" scenarios |
+| [quality](.claude/agents/quality.md) | Testing, Coverage, Quality Gates | READ-ONLY | Test validation, coverage analysis, quality metrics |
 | [researcher](.claude/agents/researcher.md) | Analysis, Documentation, Reports | READ-ONLY | Analyzing codebases, generating docs, comparing approaches |
 | [security](.claude/agents/security.md) | OWASP Audits, Vulnerability Assessment | RESTRICTED | Security audits, CVE scanning, auth reviews |
 
 ### Agent Selection Quick-Guide
 
 ```
-"I need to BUILD something"        → debug
-"I need to UNDERSTAND something"   → ask
+"I need to BUILD something"        → builder
+"I need to UNDERSTAND something"   → explainer
 "I need to DESIGN something"       → architect
 "I need to DEPLOY something"       → devops
 "I need to RELEASE something"      → devops
 "I need to SECURE something"       → security
 "I need to DOCUMENT something"     → researcher
-"I need MULTIPLE things done"      → orchestrator
+"I need to TEST/VALIDATE quality"  → quality
+"I need IDEAS/BRAINSTORMING"       → innovator
+"I need PROCESS IMPROVEMENT"       → guide
+"I need MULTIPLE things done"      → Main Chat (coordinates agents)
 ```
 
 ## Workflow
@@ -114,24 +119,31 @@ Main Chat (Orchestrator)          Agents (Isolated Context)
 
 **Why:** Agents have isolated context windows. When an agent finishes, only a result summary (~200 tokens) returns to main chat - not the full work context (~4000 tokens). This keeps main chat lean.
 
-**Always delegate:**
+**STRICT DELEGATION RULE:** Even simple questions get delegated. No exceptions for "quick" answers.
 
 | Intent | Agent | Examples |
 |--------|-------|----------|
-| Code work | debug | implement, fix, refactor, write test |
-| Explanations | ask | explain, how does, what is, teach me |
+| Code work | builder | implement, fix, refactor, write test |
+| **ANY question** | **explainer** | "was ist X?", "wie funktioniert Y?", "warum Z?" |
 | Research | researcher | analyze, document, find pattern, compare |
 | Security | security | audit, vulnerability, scan, gdpr check |
 | DevOps | devops | deploy, docker, ci/cd, release, k8s |
 | Architecture | architect | design, adr, api review, trade-off |
-| Multi-step | orchestrator | build complete feature, end-to-end |
+| Quality/Testing | quality | coverage, metrics, quality gates, test health |
+| Ideas/Brainstorm | innovator | explore options, "what if", creative solutions |
+| Process Evolution | guide | pattern analysis, workflow improvement, standards extraction |
+| Multi-step | Main Chat | build complete feature, end-to-end (coordinates agents) |
 | Exploration | researcher/Explore | scan codebase, find in code, investigate |
 
-**Exceptions** (main chat MAY edit): `workflow/*.md`, `.claude/**/*.md`, `CHANGELOG.md`, `VERSION`
+**Main chat responses (NO delegation) ONLY for:**
+- Yes/No confirmations ("ja", "ok", "nein")
+- Workflow file edits (`workflow/*.md`, `.claude/**/*.md`, `CHANGELOG.md`, `VERSION`)
+- Clarifying questions back to user
+- Progress summaries after agent returns
 
 **Read Operations:**
 - Small configs (< 200 lines) → Main chat OK
-- Large files / multiple files → Delegate to agent (ask/researcher/Explore)
+- Large files / multiple files → Delegate to agent (explainer/researcher/Explore)
 - Code exploration → Always delegate (isolated context)
 
 ## Context Model (3 Layers)
@@ -173,7 +185,7 @@ Main Chat (Orchestrator)          Agents (Isolated Context)
 |  Event-based automation (SessionStart, Pre/PostToolUse)          |
 +------------------------------------------------------------------+
 |  Layer 4: Agents (.claude/agents/*.md)                           |
-|  7 specialized subagents with defined roles and MCP tools        |
+|  9 specialized subagents with defined roles and MCP tools        |
 +------------------------------------------------------------------+
 |  Layer 3: Skills (.claude/skills/workflow/)                       |
 |  Context-based knowledge (Standards, MCP-Usage, Hooks, Config)   |
@@ -192,8 +204,8 @@ When configured, the following MCP servers extend agent capabilities:
 
 | Server | Tools | Used By |
 |--------|-------|---------|
-| **Serena** | find_symbol, get_symbols_overview, find_referencing_symbols, replace_symbol_body, search_for_pattern | architect, researcher, debug, ask |
-| **Greptile** | list_merge_requests, get_merge_request, search_greptile_comments, list_merge_request_comments | orchestrator, security |
+| **Serena** | find_symbol, get_symbols_overview, find_referencing_symbols, replace_symbol_body, search_for_pattern | architect, researcher, builder, explainer, guide, quality |
+| **Greptile** | list_merge_requests, get_merge_request, search_greptile_comments, list_merge_request_comments | quality, security |
 
 MCP tools are optional - agents fall back to standard tools if servers are unavailable.
 
@@ -203,9 +215,9 @@ Universeller Web-Zugang für alle Agents über selbst-gehostete Services:
 
 | Service | Zweck | Agents |
 |---------|-------|--------|
-| **SearXNG** | GDPR-konforme Suche (kein Tracking) | researcher, debug, architect, devops, security, ask |
-| **Firecrawl** | JS-fähiger Scraper (SPA-Rendering, Screenshots) | researcher, debug, architect, devops, security |
-| **SolveCaptcha** | Captcha-Lösung bei geschützten Seiten | researcher, debug |
+| **SearXNG** | GDPR-konforme Suche (kein Tracking) | researcher, builder, architect, devops, security, explainer, innovator |
+| **Firecrawl** | JS-fähiger Scraper (SPA-Rendering, Screenshots) | researcher, builder, architect, devops, security, innovator |
+| **SolveCaptcha** | Captcha-Lösung bei geschützten Seiten | researcher, builder |
 
 Setup via `/workflow:web-setup`, Config in `web-services.local.md`. Skill-Dokumentation: `.claude/skills/workflow/web-access/SKILL.md`.
 
@@ -240,14 +252,17 @@ When a user request matches one of these patterns, automatically delegate to the
 
 | User Intent Pattern | Agent | Example |
 |--------------------| ------|---------|
-| "Implementiere/baue/erstelle/fixe/behebe X" | debug | "Implementiere User-Auth" |
-| "Erklaere/zeige/wie funktioniert X" | ask | "Erklaere den Login-Flow" |
+| "Implementiere/baue/erstelle/fixe/behebe X" | builder | "Implementiere User-Auth" |
+| "Erklaere/zeige/wie funktioniert X" | explainer | "Erklaere den Login-Flow" |
 | "Ueberpruefe/review/audit X auf Sicherheit" | security | "Audit die API-Endpoints" |
 | "Deploye/setup/konfiguriere Infrastruktur X" | devops | "Setup Docker fuer das Projekt" |
 | "Release/version bump/tag erstellen" | devops | "Mach ein Patch-Release" |
 | "Analysiere/dokumentiere/recherchiere X" | researcher | "Dokumentiere die API-Struktur" |
 | "Entwerfe/architektur/design X" | architect | "Entwerfe das Datenmodell" |
-| Multi-step task mit >3 Subtasks | orchestrator | "Baue komplettes Feature X" |
+| "Pruefe Coverage/Quality/Tests X" | quality | "Wie ist die Test-Coverage?" |
+| "Brainstorme/Ideen fuer X" | innovator | "Was waeren Alternativen fuer X?" |
+| "Verbessere Workflow/Pattern X" | guide | "Analysiere die Delegation-Patterns" |
+| Multi-step task mit >3 Subtasks | Main Chat | "Baue komplettes Feature X" (koordiniert Agents) |
 
 ### Context-Preservation-Strategy
 
@@ -259,7 +274,7 @@ When a user request matches one of these patterns, automatically delegate to the
 ### Delegation Decision Rules
 
 - **Single-domain task** → Direct agent delegation
-- **Cross-domain task** → orchestrator for decomposition
+- **Cross-domain task** → Main Chat decomposes and coordinates multiple agents
 - **Ambiguous intent** → Ask user for clarification (max 2 questions)
 - **Explicit command** → Always honor explicit `/workflow:*` commands over auto-delegation
 

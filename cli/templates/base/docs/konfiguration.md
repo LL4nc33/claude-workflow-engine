@@ -83,15 +83,21 @@ agents:
     - name: architect
       access: read-only
       purpose: System Design, ADRs, Architektur-Review
-    - name: ask
+    - name: explainer
       access: read-only
       purpose: Erklärungen, Lern-Anfragen, Dokumentations-Queries
-    - name: debug
+    - name: builder
       access: full
       purpose: Bug-Investigation mit vollem Dateisystem-Zugriff
-    - name: orchestrator
-      access: task-delegation
-      purpose: Task-Delegation via Task Tool
+    - name: guide
+      access: read-only
+      purpose: NaNo Evolution, Pattern-to-Standards
+    - name: innovator
+      access: read-only
+      purpose: Brainstorming, Creative Solutions
+    - name: quality
+      access: read-only
+      purpose: Testing, Coverage, Quality Gates
     - name: researcher
       access: read-only
       purpose: Codebase-Analyse und Dokumentationsgenerierung
@@ -219,7 +225,7 @@ Jede Phase erfordert den Abschluss ihrer Prerequisite-Phase. Die Phasen sind str
 
 ### Agent Registry
 
-Vollstaendige Capability-Definition für jeden der 7 Agents:
+Vollstaendige Capability-Definition für jeden Agent:
 
 ```yaml
 agents:
@@ -235,7 +241,7 @@ agents:
         - Trade-off-Analyse
       standards_domains: [global, agents]
 
-    ask:
+    explainer:
       access: read-only
       tools: [Read, Grep, Glob]
       strengths:
@@ -244,7 +250,7 @@ agents:
         - Pattern-Identifikation und Erklaerung
       standards_domains: [global]
 
-    debug:
+    builder:
       access: full
       tools: [Read, Write, Edit, Bash, Grep, Glob]
       strengths:
@@ -287,16 +293,32 @@ agents:
         - Technologie-Vergleich und Evaluation
       standards_domains: [global, agents]
 
-    orchestrator:
-      access: task-delegation
-      tools: [Task, Read, Grep, Glob]
+    guide:
+      access: read-only
+      tools: [Read, Grep, Glob]
       strengths:
-        - Task-Dekomposition und Dependency-Resolution
-        - Agent-Auswahl und Delegation
-        - Progress-Tracking und Status-Reporting
-        - Quality-Gate-Enforcement
-        - Failure-Handling und Escalation
+        - NaNo Evolution und Pattern-Analyse
+        - Workflow-Verbesserung
+        - Standards-Extraktion
       standards_domains: [agents, global]
+
+    innovator:
+      access: read-only
+      tools: [Read, Grep, Glob, WebSearch, WebFetch]
+      strengths:
+        - Brainstorming und kreative Loesungen
+        - "What-if"-Szenarien
+        - Alternative Ansaetze
+      standards_domains: [global]
+
+    quality:
+      access: read-only
+      tools: [Read, Grep, Glob]
+      strengths:
+        - Test-Coverage-Analyse
+        - Quality Metrics
+        - Test-Validierung
+      standards_domains: [testing, global]
 ```
 
 ### Task-to-Agent Mapping
@@ -306,24 +328,24 @@ Ordnet abstrakte Task-Typen konkreten Agents zu mit Override-Bedingungen:
 ```yaml
 task_groups:
   backend:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, api/response-format, api/error-handling]
     override_when:
       security_sensitive: security    # Auth-Endpoints, Kryptographie etc.
 
   frontend:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, frontend/components]
 
   testing:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: null
     standards: [global/tech-stack, testing/coverage]
 
   database:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, database/migrations]
     override_when:
@@ -334,7 +356,7 @@ task_groups:
     review_agent: architect
     standards: [global/tech-stack, global/naming, api/error-handling]
     override_when:
-      implementation_needed: debug        # Wenn Fix Code-Aenderungen erfordert
+      implementation_needed: builder        # Wenn Fix Code-Aenderungen erfordert
 
   infrastructure:
     primary_agent: devops
@@ -365,7 +387,7 @@ task_groups:
       infra_review: devops
 
   explanation:
-    primary_agent: ask
+    primary_agent: explainer
     review_agent: null
     standards: [global/tech-stack]
 
@@ -526,7 +548,7 @@ gate_4_final_acceptance:
   pass_condition: all_reviewers_approve
   on_failure:
     action: create_remediation_tasks
-    delegate_to: orchestrator
+    # Main Chat coordinates remediation
 ```
 
 ### Execution Config
@@ -576,22 +598,22 @@ fallbacks:
       reason: "Researcher kann analysieren aber keine ADRs produzieren"
       limitation: "Keine architektonische Autoritaet - Ergebnisse sind beratend"
     security:
-      fallback_to: debug
+      fallback_to: builder
       reason: "Debug hat vollen Zugriff für security-relevantes Code-Review"
       limitation: "Kein Zugriff auf trivy/grype/semgrep Scanning-Tools"
     devops:
-      fallback_to: debug
+      fallback_to: builder
       reason: "Debug hat vollen Dateisystem-Zugriff für Infrastruktur-Code"
       limitation: "Moegliche Luecken bei infrastrukturspezifischem Domain-Wissen"
     researcher:
-      fallback_to: ask
+      fallback_to: explainer
       reason: "Ask kann im Read-Only-Modus erklaeren und analysieren"
       limitation: "Kein WebSearch/WebFetch für externe Recherche"
-    ask:
+    explainer:
       fallback_to: researcher
       reason: "Researcher hat aehnliche Read + Explain Capabilities"
       limitation: "Antworten koennten formeller/report-orientierter sein"
-    debug:
+    builder:
       fallback_to: null
       reason: "Kein Fallback - Debug ist der primaere Implementor"
       escalation: user
@@ -770,17 +792,21 @@ Die Berechtigungsdatei für Claude Code. Die Engine benoetigt folgende Tool-Bere
   "permissions": {
     "allow": [
       "Agent(architect)",
-      "Agent(ask)",
-      "Agent(debug)",
+      "Agent(explainer)",
+      "Agent(builder)",
       "Agent(devops)",
-      "Agent(orchestrator)",
+      "Agent(guide)",
+      "Agent(innovator)",
+      "Agent(quality)",
       "Agent(researcher)",
       "Agent(security)",
       "Skill(researcher)",
-      "Skill(orchestrator)",
+      "Skill(guide)",
+      "Skill(innovator)",
+      "Skill(quality)",
       "Skill(architect)",
-      "Skill(ask)",
-      "Skill(debug)",
+      "Skill(explainer)",
+      "Skill(builder)",
       "Skill(devops)",
       "Skill(security)",
       "Bash(git clone:*)",
@@ -856,7 +882,7 @@ phases:
 tasks:
   task-1:
     title: "Datenbank-Schema erstellen"
-    agent: debug
+    agent: builder
     group: database
     standards: [database/migrations, global/naming]
     depends_on: []
@@ -978,7 +1004,7 @@ standards_injection:
 
 task_groups:
   mein-task-typ:
-    primary_agent: debug
+    primary_agent: builder
     standards: [neue-domaene/mein-standard]
 ```
 
@@ -1087,8 +1113,8 @@ MCP-Server erweitern die Agent-Fähigkeiten um semantische Code-Analyse und PR-M
 
 | Server | Funktion | Genutzt von |
 |--------|----------|-------------|
-| **Serena** | Language-Server-basierte Code-Navigation | architect, researcher, debug, ask |
-| **Greptile** | PR-Management und Code-Review | orchestrator, security |
+| **Serena** | Language-Server-basierte Code-Navigation | architect, researcher, builder, explainer |
+| **Greptile** | PR-Management und Code-Review | quality, security |
 
 ### Konfiguration in config.yml
 

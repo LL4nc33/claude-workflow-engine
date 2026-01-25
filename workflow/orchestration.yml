@@ -1,12 +1,12 @@
 # =============================================================================
 # Claude Workflow Engine Orchestration Configuration
-# Optimized for 7-agent system with 4 quality gates, fallback strategies,
+# Optimized for 9-agent system with 4 quality gates, fallback strategies,
 # and observability hooks.
-# Version: 0.2.7
+# Version: 0.2.8
 # =============================================================================
 
 project_name: "Claude Workflow Engine"
-version: "0.2.7"
+version: "0.2.8"
 
 # -----------------------------------------------------------------------------
 # Workflow Phases (5-Phase Command Chain)
@@ -65,8 +65,8 @@ workflow:
         - orchestration.yml
       prerequisites:
         - write-spec
-      responsible_agent: orchestrator
-      review_agent: architect
+      responsible_agent: architect  # Main Chat coordinates, architect creates task breakdown
+      review_agent: quality
       quality_gate: gate_2_pre_execution
 
     - name: orchestrate-tasks
@@ -78,14 +78,15 @@ workflow:
         - delegation.log
       prerequisites:
         - create-tasks
-      responsible_agent: orchestrator
-      review_agent: null
+      responsible_agent: null  # Main Chat handles orchestration directly
+      review_agent: quality
       quality_gate: gate_3_post_phase
 
 # -----------------------------------------------------------------------------
 # Agent Registry
-# Complete mapping of all 7 agents with capabilities, tools, and constraints.
+# Complete mapping of all 9 agents with capabilities, tools, and constraints.
 # Tools must match the agent .md frontmatter definitions exactly.
+# Note: Orchestration is handled by Main Chat, not a dedicated agent.
 # -----------------------------------------------------------------------------
 
 agents:
@@ -107,21 +108,7 @@ agents:
         - workflow/product/architecture.md
         - workflow/product/roadmap.md
 
-    ask:
-      access: read-only
-      tools: [Read, Grep, Glob]
-      strengths:
-        - Code explanations and walkthroughs
-        - Concept clarification
-        - Pattern identification and explanation
-        - Learning-oriented responses
-      standards_domains: [global]
-      context_sources:
-        - workflow/standards/global/tech-stack.md
-        - workflow/product/mission.md
-        - workflow/product/architecture.md
-
-    debug:
+    builder:
       access: full
       tools: [Read, Write, Edit, Bash, Grep, Glob]
       strengths:
@@ -138,25 +125,6 @@ agents:
         - workflow/standards/database/migrations.md
         - workflow/standards/frontend/components.md
         - workflow/standards/testing/coverage.md
-        - workflow/product/mission.md
-        - workflow/product/architecture.md
-
-    security:
-      access: restricted
-      tools: [Read, Grep, Glob, "Bash(trivy:*)", "Bash(grype:*)", "Bash(semgrep:*)", "Bash(nmap:*)", "Bash(curl:*)"]
-      strengths:
-        - OWASP Top 10 vulnerability assessment
-        - Authentication and authorization review
-        - Input validation and sanitization
-        - Secrets management and credential detection
-        - Dependency CVE scanning
-        - GDPR/EU compliance verification
-      standards_domains: [global, api]
-      context_sources:
-        - workflow/standards/global/tech-stack.md
-        - workflow/standards/global/naming.md
-        - workflow/standards/api/error-handling.md
-        - workflow/standards/api/response-format.md
         - workflow/product/mission.md
         - workflow/product/architecture.md
 
@@ -180,6 +148,67 @@ agents:
         - workflow/product/mission.md
         - workflow/product/architecture.md
 
+    explainer:
+      access: read-only
+      tools: [Read, Grep, Glob]
+      strengths:
+        - Code explanations and walkthroughs
+        - Concept clarification
+        - Pattern identification and explanation
+        - Learning-oriented responses
+      standards_domains: [global]
+      context_sources:
+        - workflow/standards/global/tech-stack.md
+        - workflow/product/mission.md
+        - workflow/product/architecture.md
+
+    guide:
+      access: read-only
+      tools: [Read, Grep, Glob]
+      strengths:
+        - Pattern recognition from historical data
+        - Standards extraction from successful practices
+        - Workflow optimization and efficiency
+        - Anti-pattern detection and remediation
+        - Continuous improvement facilitation
+      standards_domains: [agents, global]
+      context_sources:
+        - workflow/standards/agents/agent-conventions.md
+        - workflow/standards/global/tech-stack.md
+        - workflow/product/mission.md
+        - workflow/product/roadmap.md
+
+    innovator:
+      access: read-only
+      tools: [Read, Grep, Glob, WebSearch, WebFetch]
+      strengths:
+        - Divergent thinking and brainstorming
+        - Alternative solution generation
+        - What-if scenario exploration
+        - Cross-domain inspiration
+        - Feature ideation and concepting
+      standards_domains: [global]
+      context_sources:
+        - workflow/product/mission.md
+        - workflow/product/roadmap.md
+        - workflow/standards/global/tech-stack.md
+
+    quality:
+      access: read-only
+      tools: [Read, Grep, Glob, "Bash(jest:*)", "Bash(npm test*)", "Bash(npx nyc*)"]
+      strengths:
+        - Test coverage analysis and trending
+        - Code complexity metrics
+        - Flaky test detection and remediation
+        - Quality gate enforcement
+        - Technical debt assessment
+      standards_domains: [testing, global]
+      context_sources:
+        - workflow/standards/testing/coverage.md
+        - workflow/standards/global/tech-stack.md
+        - workflow/standards/global/naming.md
+        - workflow/product/mission.md
+
     researcher:
       access: read-only
       tools: [Read, Grep, Glob, WebSearch, WebFetch]
@@ -197,52 +226,55 @@ agents:
         - workflow/product/architecture.md
         - workflow/product/roadmap.md
 
-    orchestrator:
-      access: task-delegation
-      tools: [Task, Read, Grep, Glob]
+    security:
+      access: restricted
+      tools: [Read, Grep, Glob, "Bash(trivy:*)", "Bash(grype:*)", "Bash(semgrep:*)", "Bash(nmap:*)", "Bash(curl:*)"]
       strengths:
-        - Task decomposition and dependency resolution
-        - Agent selection and delegation
-        - Progress tracking and status reporting
-        - Quality gate enforcement
-        - Failure handling and escalation
-        - Parallel execution coordination
-      standards_domains: [agents, global]
+        - OWASP Top 10 vulnerability assessment
+        - Authentication and authorization review
+        - Input validation and sanitization
+        - Secrets management and credential detection
+        - Dependency CVE scanning
+        - GDPR/EU compliance verification
+      standards_domains: [global, api]
       context_sources:
-        - workflow/standards/agents/agent-conventions.md
         - workflow/standards/global/tech-stack.md
+        - workflow/standards/global/naming.md
+        - workflow/standards/api/error-handling.md
+        - workflow/standards/api/response-format.md
         - workflow/product/mission.md
         - workflow/product/architecture.md
 
 # -----------------------------------------------------------------------------
 # Task-to-Agent Mapping
 # Primary assignment + review agent + override conditions.
-# The orchestrator uses this to determine delegation targets.
+# Main Chat uses this to determine delegation targets.
 # -----------------------------------------------------------------------------
 
 task_groups:
-  # Implementation tasks -> debug agent
+  # Implementation tasks -> builder agent
   backend:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, api/response-format, api/error-handling]
     override_when:
       security_sensitive: security  # Auth endpoints, crypto, etc.
 
   frontend:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, frontend/components]
     override_when: {}
 
   testing:
-    primary_agent: debug
-    review_agent: null
+    primary_agent: builder
+    review_agent: quality
     standards: [global/tech-stack, testing/coverage]
-    override_when: {}
+    override_when:
+      coverage_analysis: quality  # Quality agent for coverage validation
 
   database:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, database/migrations]
     override_when:
@@ -254,7 +286,7 @@ task_groups:
     review_agent: architect
     standards: [global/tech-stack, global/naming, api/error-handling]
     override_when:
-      implementation_needed: debug  # If fix requires code changes
+      implementation_needed: builder  # If fix requires code changes
 
   # Infrastructure tasks -> devops agent
   infrastructure:
@@ -300,17 +332,31 @@ task_groups:
       security_review: security
       infra_review: devops
 
-  # Explanation tasks -> ask agent
+  # Explanation tasks -> explainer agent
   explanation:
-    primary_agent: ask
+    primary_agent: explainer
     review_agent: null
     standards: [global/tech-stack]
     override_when:
-      implementation_needed: debug
+      implementation_needed: builder
 
-  # Coordination tasks -> orchestrator
-  coordination:
-    primary_agent: orchestrator
+  # Quality tasks -> quality agent
+  quality_assurance:
+    primary_agent: quality
+    review_agent: null
+    standards: [testing/coverage, global/tech-stack]
+    override_when: {}
+
+  # Ideation tasks -> innovator agent
+  ideation:
+    primary_agent: innovator
+    review_agent: architect
+    standards: [global/tech-stack]
+    override_when: {}
+
+  # Process evolution tasks -> guide agent
+  process_evolution:
+    primary_agent: guide
     review_agent: null
     standards: [agents/agent-conventions, global/tech-stack]
     override_when: {}
@@ -525,7 +571,7 @@ quality_gates:
     pass_condition: all_reviewers_approve
     on_failure:
       action: create_remediation_tasks
-      delegate_to: orchestrator
+      # Note: Remediation coordinated by Main Chat (no dedicated orchestrator agent)
 
 # -----------------------------------------------------------------------------
 # Agent-First Principle (Context Isolation)
@@ -556,28 +602,28 @@ agent_first:
       forbidden:
         - Direct file writes (Edit/Write tools)
         - Code implementation
-        - Detailed code analysis (delegate to ask/researcher)
-        - Bug fixing (delegate to debug)
+        - Detailed code analysis (delegate to explainer/researcher)
+        - Bug fixing (delegate to builder)
 
     # Force delegation for these actions - COMPREHENSIVE LIST
     always_delegate:
-      # === CODE WORK (debug) ===
+      # === CODE WORK (builder) ===
       - pattern: "implement|write code|create file|edit file|fix bug|refactor"
-        delegate_to: debug
+        delegate_to: builder
         reason: "All code changes must be isolated"
       - pattern: "add feature|build|develop|code"
-        delegate_to: debug
+        delegate_to: builder
         reason: "Implementation work"
       - pattern: "test|write test|unit test|integration test"
-        delegate_to: debug
+        delegate_to: builder
         reason: "Test writing is code work"
 
-      # === EXPLANATIONS (ask) ===
+      # === EXPLANATIONS (explainer) ===
       - pattern: "explain|how does|walkthrough|what is|why does"
-        delegate_to: ask
+        delegate_to: explainer
         reason: "Explanations benefit from focused analysis"
       - pattern: "understand|learn|teach me|show me"
-        delegate_to: ask
+        delegate_to: explainer
         reason: "Learning queries"
 
       # === RESEARCH (researcher) ===
@@ -621,10 +667,22 @@ agent_first:
         delegate_to: architect
         reason: "Structural analysis"
 
-      # === MULTI-STEP (orchestrator) ===
-      - pattern: "build complete|implement full|end-to-end|multiple steps"
-        delegate_to: orchestrator
-        reason: "Complex tasks need coordination"
+      # === QUALITY (quality) ===
+      - pattern: "coverage|quality gate|test health|metrics|flaky"
+        delegate_to: quality
+        reason: "Quality validation and metrics"
+
+      # === IDEATION (innovator) ===
+      - pattern: "brainstorm|ideas|what if|alternatives|creative"
+        delegate_to: innovator
+        reason: "Creative exploration and ideation"
+
+      # === PROCESS (guide) ===
+      - pattern: "improve workflow|pattern analysis|process optimization"
+        delegate_to: guide
+        reason: "Process evolution and learning"
+
+      # Note: Multi-step tasks are handled by Main Chat directly, not delegated
 
       # === FILE READING (context optimization) ===
       - pattern: "read all|scan codebase|find in code|search files"
@@ -714,8 +772,8 @@ predictive:
       - pattern: "user often skips phase 2 (shape)"
         suggest: "Du ueberspringst oft Shape. Vielleicht /workflow:quick nutzen?"
 
-      - pattern: "debug tasks often need retry"
-        suggest: "Debug-Tasks brauchen oft mehrere Versuche. Mehr Context hinzufuegen?"
+      - pattern: "builder tasks often need retry"
+        suggest: "Builder-Tasks brauchen oft mehrere Versuche. Mehr Context hinzufuegen?"
 
       - pattern: "security reviews find issues frequently"
         suggest: "Security-Reviews finden oft Issues. Frueher reviewen?"
@@ -960,30 +1018,38 @@ fallbacks:
       fallback_to: researcher
       reason: "Researcher can analyze but not produce ADRs"
       limitation: "No architectural authority - findings are advisory"
-    security:
-      fallback_to: debug
-      reason: "Debug has full access for security-relevant code review"
-      limitation: "No access to trivy/grype/semgrep scanning tools"
+    builder:
+      fallback_to: null
+      reason: "No fallback - builder is the primary implementor"
+      escalation: user
     devops:
-      fallback_to: debug
-      reason: "Debug has full filesystem access for infrastructure code"
+      fallback_to: builder
+      reason: "Builder has full filesystem access for infrastructure code"
       limitation: "May lack infrastructure-specific domain knowledge"
-    researcher:
-      fallback_to: ask
-      reason: "Ask can explain and analyze in read-only mode"
-      limitation: "No WebSearch/WebFetch for external research"
-    ask:
+    explainer:
       fallback_to: researcher
       reason: "Researcher has similar read + explain capabilities"
       limitation: "Responses may be more formal/report-oriented"
-    debug:
-      fallback_to: null
-      reason: "No fallback - debug is the primary implementor"
-      escalation: user
-    orchestrator:
-      fallback_to: null
-      reason: "No fallback - orchestrator is unique coordinator"
-      escalation: user
+    guide:
+      fallback_to: researcher
+      reason: "Researcher can analyze patterns in read-only mode"
+      limitation: "No NaNo-specific evolution context"
+    innovator:
+      fallback_to: researcher
+      reason: "Researcher can explore alternatives via web research"
+      limitation: "May be less creative, more structured"
+    quality:
+      fallback_to: builder
+      reason: "Builder can run tests and check coverage"
+      limitation: "May lack quality-specific analysis depth"
+    researcher:
+      fallback_to: explainer
+      reason: "Explainer can explain and analyze in read-only mode"
+      limitation: "No WebSearch/WebFetch for external research"
+    security:
+      fallback_to: builder
+      reason: "Builder has full access for security-relevant code review"
+      limitation: "No access to trivy/grype/semgrep scanning tools"
 
   # Task failure after max_retries
   task_failure:
@@ -1005,7 +1071,7 @@ fallbacks:
     steps:
       - identify_failing_checks
       - create_remediation_tasks
-      - delegate_remediation
+      - delegate_remediation  # Main Chat coordinates remediation
       - re_run_gate
     max_remediation_cycles: 2
     then: escalate_to_user
@@ -1039,10 +1105,10 @@ escalation:
       escalate_if: architect_flags_blocking_concern
       resolution: user_decision
 
-    # When debug implementation diverges from architect spec
-    debug_vs_architect:
+    # When builder implementation diverges from architect spec
+    builder_vs_architect:
       priority: architect  # Spec authority wins
-      action: debug_must_justify_divergence
+      action: builder_must_justify_divergence
       resolution: architect_reviews_justification
 
     # When devops and security conflict on infrastructure

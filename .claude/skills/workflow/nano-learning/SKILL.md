@@ -79,7 +79,7 @@ started: 2025-01-24T14:30:22+01:00
 level: medium
 count: 3
 observations:
-  2025-01-24T14:30:45+01:00 | delegation | agent=debug,task_group=implementation
+  2025-01-24T14:30:45+01:00 | delegation | agent=builder,task_group=implementation
   2025-01-24T14:31:12+01:00 | delegation | agent=architect,task_group=architecture
   2025-01-24T14:35:00+01:00 | quality | gate=gate_1,result=pass
 ```

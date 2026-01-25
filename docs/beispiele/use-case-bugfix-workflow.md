@@ -1,4 +1,4 @@
-# Use Case: Systematisches Debugging mit dem Debug-Agent
+# Use Case: Systematisches Debugging mit dem Builder-Agent
 
 Ein praxisnahes Beispiel für die Fehlersuche bei sporadischen 500er-Fehlern in einer Produktionsumgebung -- ohne den vollen 5-Phasen-Workflow.
 
@@ -13,13 +13,13 @@ Deine Express.js API gibt seit gestern sporadisch HTTP 500 Fehler zurueck. Betro
 - Monitoring zeigt keine Speicher- oder CPU-Anomalien
 - Andere Endpoints sind nicht betroffen
 
-**Frage:** Brauchst du den vollen 5-Phasen-Workflow oder reicht der Debug-Agent direkt?
+**Frage:** Brauchst du den vollen 5-Phasen-Workflow oder reicht der Builder-Agent direkt?
 
 ---
 
-## Entscheidung: Voller Workflow oder Debug-Agent direkt?
+## Entscheidung: Voller Workflow oder Builder-Agent direkt?
 
-### Direkt den Debug-Agent nutzen wenn:
+### Direkt den Builder-Agent nutzen wenn:
 
 - Das Problem klar lokalisierbar ist (ein Endpoint, ein Service)
 - Es sich um einen Bug handelt, nicht um ein neues Feature
@@ -33,15 +33,15 @@ Deine Express.js API gibt seit gestern sporadisch HTTP 500 Fehler zurueck. Betro
 - Neue Standards oder Patterns eingeführt werden müssen
 - Das Problem wiederkehrend ist und eine architekturelle Lösung braucht
 
-In unserem Fall: **Debug-Agent direkt.** Der Bug ist lokalisiert, wir brauchen Investigation und einen gezielten Fix.
+In unserem Fall: **Builder-Agent direkt.** Der Bug ist lokalisiert, wir brauchen Investigation und einen gezielten Fix.
 
 ---
 
-## Durchlauf mit dem Debug-Agent
+## Durchlauf mit dem Builder-Agent
 
 ### Phase 1: Reflektieren
 
-Der Debug-Agent startet mit der Situationsanalyse:
+Der Builder-Agent startet mit der Situationsanalyse:
 
 ```markdown
 ## Situationsanalyse
@@ -53,7 +53,7 @@ Der Debug-Agent startet mit der Situationsanalyse:
 - Betroffener Bereich: Nur dieser eine Endpoint
 ```
 
-**Erste Fragen des Debug-Agents:**
+**Erste Fragen des Builder-Agents:**
 
 ```
 - Was wurde gestern um 14:30 deployt? (git log --since="yesterday 14:00")

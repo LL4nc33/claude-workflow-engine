@@ -122,12 +122,12 @@ handle_delegation() {
   # Determine task group from agent type
   local task_group="unknown"
   case "${agent_type}" in
-    debug) task_group="implementation" ;;
+    builder) task_group="implementation" ;;
     architect) task_group="architecture" ;;
     security) task_group="security" ;;
     devops) task_group="infrastructure" ;;
     researcher) task_group="research" ;;
-    ask) task_group="explanation" ;;
+    explainer) task_group="explanation" ;;
     orchestrator) task_group="coordination" ;;
     Explore) task_group="exploration" ;;
     *) task_group="other" ;;

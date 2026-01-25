@@ -139,11 +139,11 @@ Two methods:
 | Agent | `web_search` | `web_fetch` | Captcha (auto) |
 |-------|:---:|:---:|:---:|
 | researcher | x | x | x |
-| debug | x | x | x |
+| builder | x | x | x |
 | architect | x | x | - |
 | devops | x | x | - |
 | security | x | x | - |
-| ask | x | - | - |
+| explainer | x | - | - |
 
 ---
 

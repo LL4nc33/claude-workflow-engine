@@ -1,14 +1,14 @@
 # Agenten
 
-Claude Workflow Engine umfasst 7 spezialisierte Agenten, jeder mit definierter Rolle, Zugangsstufe und Toolset. Agenten sind als Markdown-Dateien in `.claude/agents/` definiert und stehen automatisch als Claude Code Subagenten zur Verfuegung.
+Claude Workflow Engine umfasst 9 spezialisierte Agenten, jeder mit definierter Rolle, Zugangsstufe und Toolset. Agenten sind als Markdown-Dateien in `.claude/agents/` definiert und stehen automatisch als Claude Code Subagenten zur Verfuegung.
 
 ## Übersicht
 
 | Agent | Zugang | Zweck | Tools | MCP-Tools |
 |-------|--------|-------|-------|-----------|
 | [architect](#architect) | READ-ONLY | System Design, ADRs, API Review | Read, Grep, Glob, WebSearch, WebFetch | Serena: find_symbol, get_symbols_overview, find_referencing_symbols |
-| [ask](#ask) | READ-ONLY | Erklärungen, Lernen | Read, Grep, Glob | Serena: get_symbols_overview, find_symbol |
-| [debug](#debug) | FULL | Bug Investigation, Implementation | Read, Write, Edit, Bash, Grep, Glob | Serena: find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview |
+| [explainer](#explainer) | READ-ONLY | Erklärungen, Lernen | Read, Grep, Glob | Serena: get_symbols_overview, find_symbol |
+| [builder](#builder) | FULL | Bug Investigation, Implementation | Read, Write, Edit, Bash, Grep, Glob | Serena: find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview |
 | [devops](#devops) | FULL | CI/CD, Docker, K8s, IaC | Read, Write, Edit, Bash, Grep, Glob | - |
 | [orchestrator](#orchestrator) | TASK-DELEGATION | Koordination, Delegation | Task, Read, Grep, Glob | Greptile: list_merge_requests, get_merge_request |
 | [researcher](#researcher) | READ-ONLY | Analyse, Dokumentation | Read, Grep, Glob, WebSearch, WebFetch | Serena: search_for_pattern, find_symbol, get_symbols_overview |
@@ -18,8 +18,8 @@ Claude Workflow Engine umfasst 7 spezialisierte Agenten, jeder mit definierter R
 
 | Stufe | Bedeutung | Agenten |
 |-------|-----------|---------|
-| **READ-ONLY** | Kann Dateien lesen und durchsuchen, aber nichts verändern | architect, ask, researcher |
-| **FULL** | Kann lesen, schreiben, editieren und Befehle ausführen | debug, devops |
+| **READ-ONLY** | Kann Dateien lesen und durchsuchen, aber nichts verändern | architect, explainer, researcher |
+| **FULL** | Kann lesen, schreiben, editieren und Befehle ausführen | builder, devops |
 | **TASK-DELEGATION** | Kann Dateien lesen und Aufgaben an andere Agenten via Task-Tool delegieren | orchestrator |
 | **RESTRICTED** | Read-Only plus ein eingeschraenktes Set an Bash-Befehlen (nur Security-Scanning-Tools) | security |
 
@@ -64,13 +64,13 @@ Die Zugangsstufen definieren, was ein Agent technisch darf. Sie sind in der Fron
 - "Erstelle ein ADR für den Wechsel zu Event-driven Architecture"
 - "Analysiere die Abhängigkeiten des Auth-Moduls"
 
-**Kollaboriert mit:** security (Architektur-Review), debug (stellt Guidance bereit), devops (Infrastruktur-Design), researcher (Pattern-Dokumentation)
+**Kollaboriert mit:** security (Architektur-Review), builder (stellt Guidance bereit), devops (Infrastruktur-Design), researcher (Pattern-Dokumentation)
 
 ---
 
-## Ask
+## Explainer
 
-**Datei:** `.claude/agents/ask.md`
+**Datei:** `.claude/agents/explainer.md`
 
 **Rolle:** Geduldiger technischer Educator. Erklaert komplexe Dinge einfach, ohne herablassend zu sein. Nutzt Analogien wenn hilfreich und Beispiele wenn noetig.
 
@@ -104,13 +104,13 @@ Die Zugangsstufen definieren, was ein Agent technisch darf. Sie sind in der Fron
 - "Warum wurde Redis statt Memcached gewaehlt?"
 - "Erklaere mir den Datenfluss beim Login"
 
-**Kollaboriert mit:** architect (für "Warum"-Fragen), researcher (für Deep Dives), debug (wenn Fragen zu Implementierungsaufgaben werden)
+**Kollaboriert mit:** architect (für "Warum"-Fragen), researcher (für Deep Dives), builder (wenn Fragen zu Implementierungsaufgaben werden)
 
 ---
 
 ## Debug
 
-**Datei:** `.claude/agents/debug.md`
+**Datei:** `.claude/agents/builder.md`
 
 **Rolle:** Methodischer Debugging-Spezialist und Implementation-Expert. Voller Dateisystem-Zugriff für Code-Modifikation. Der "Leichenbestatter" -- findet heraus, warum Code gestorben ist.
 
@@ -205,7 +205,7 @@ Die Zugangsstufen definieren, was ein Agent technisch darf. Sie sind in der Fron
 - "Richte Terraform für die Datenbank-Infrastruktur ein"
 - "Der Container startet nicht -- hilf mir beim Debugging"
 
-**Kollaboriert mit:** security (Deployment-Hardening), debug (Environment-spezifische Issues), architect (Infrastruktur-Design)
+**Kollaboriert mit:** security (Deployment-Hardening), builder (Environment-spezifische Issues), architect (Infrastruktur-Design)
 
 ---
 
@@ -362,7 +362,7 @@ curl -I https://target.example.com     # Header-Inspektion
 - "Validiert unsere API den Input korrekt?"
 - "Sind wir GDPR-konform bei der Datenverarbeitung?"
 
-**Kollaboriert mit:** architect (Security Design), devops (Secure Deployment), debug (Implementation-Fixes), researcher (Compliance-Dokumentation)
+**Kollaboriert mit:** architect (Security Design), devops (Secure Deployment), builder (Implementation-Fixes), researcher (Compliance-Dokumentation)
 
 ---
 
@@ -376,31 +376,31 @@ curl -I https://target.example.com     # Header-Inspektion
       +-------------------+-------------------+
       |         |         |         |         |
  +----+---+ +---+----+ +-+------+ +-+------+ +---+-----+
- |architect| |  debug | |devops  | |security| |researcher|
+ |architect| |  builder | |devops  | |security| |researcher|
  +---------+ +--------+ +--------+ +--------+ +----------+
       |
  +----+---+
- |  ask   |  (Erklärungen)
+ | explainer | (Erklärungen)
  +---------+
 ```
 
-Der Orchestrator delegiert an alle anderen Agenten. Der Architect stellt Guidance für debug und devops bereit. Security reviewt Architektur- und Deployment-Entscheidungen. Der Ask-Agent behandelt Nutzerfragen die keine Implementation erfordern.
+Main Chat koordiniert und delegiert an alle Agenten. Der Architect stellt Guidance für builder und devops bereit. Security reviewt Architektur- und Deployment-Entscheidungen. Der Explainer behandelt Nutzerfragen die keine Implementation erfordern.
 
 **Task-zu-Agent-Mapping:**
 
 | Task-Typ | Default-Agent | Override wenn |
 |-----------|---------------|---------------|
-| backend | debug | -- |
-| frontend | debug | -- |
-| testing | debug | -- |
-| database | debug | -- |
-| security | security | Implementation noetig --> debug |
+| backend | builder | -- |
+| frontend | builder | -- |
+| testing | builder | -- |
+| database | builder | -- |
+| security | security | Implementation noetig --> builder |
 | infrastructure | devops | -- |
 | ci_cd | devops | -- |
 | architecture | architect | -- |
 | documentation | researcher | -- |
 | review | architect | Security Review --> security |
-| explanation | ask | Implementation noetig --> debug |
+| explanation | explainer | Implementation noetig --> builder |
 
 ---
 
@@ -410,8 +410,8 @@ Agenten können optional MCP-Server (Model Context Protocol) nutzen, um erweiter
 
 | MCP-Server | Funktion | Genutzt von |
 |------------|----------|-------------|
-| **Serena** | Semantische Code-Navigation (Symbol-Suche, Referenz-Tracking, Code-Manipulation) | architect, ask, debug, researcher |
-| **Greptile** | PR-Management und Code-Review-Integration | orchestrator, security |
+| **Serena** | Semantische Code-Navigation (Symbol-Suche, Referenz-Tracking, Code-Manipulation) | architect, explainer, builder, researcher |
+| **Greptile** | PR-Management und Code-Review-Integration | quality, security |
 
 **Fallback-Verhalten:**
 - `find_symbol` -> `Grep` + `Glob`

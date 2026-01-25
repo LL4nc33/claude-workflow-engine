@@ -8,11 +8,11 @@
 
 | Group | Tasks | Effort | Agent |
 |-------|-------|--------|-------|
-| Infrastructure | 2 | S | debug |
-| Core Docs (DE) | 8 | L | debug |
-| Neue Inhalte (DE) | 4 | L | debug |
-| Englische Version | 2 | M | debug |
-| Verification | 1 | S | debug |
+| Infrastructure | 2 | S | builder |
+| Core Docs (DE) | 8 | L | builder |
+| Neue Inhalte (DE) | 4 | L | builder |
+| Englische Version | 2 | M | builder |
+| Verification | 1 | S | builder |
 
 ## Dependency Graph
 
@@ -58,7 +58,7 @@ graph TD
 #### Task 1.1: Verzeichnisstruktur erstellen [TODO]
 
 - **Description:** Neue Ordnerstruktur für die Dokumentation anlegen: docs/how-to/, docs/beispiele/, docs/en/, docs/en/how-to/, docs/en/examples/
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** S
 - **Acceptance Criteria:**
@@ -78,7 +78,7 @@ graph TD
 #### Task 1.2: Credits Research [TODO]
 
 - **Description:** Die 4 Inspirationsprojekte recherchieren und kurze Beschreibungen formulieren, was genau wir von jedem übernommen haben. URLs verifizieren.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** S
 - **Acceptance Criteria:**
@@ -95,7 +95,7 @@ graph TD
 #### Task 2.1: README.md (Deutsch) [TODO]
 
 - **Description:** README.md komplett neu schreiben auf Deutsch. Professionell-technisch mit Tutorial-Elementen. Enthält: Teaser, Features, Schnellstart, Architektur, Projektstruktur, korrekte Credits.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1, 1.2
 - **Effort:** M
 - **Standards:** global/naming
@@ -113,7 +113,7 @@ graph TD
 #### Task 2.2: erste-schritte.md [TODO]
 
 - **Description:** Getting Started Guide auf Deutsch im Tutorial-Stil. Schritt-für-Schritt Anleitung von der Installation bis zum ersten erfolgreichen Workflow-Durchlauf.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -129,7 +129,7 @@ graph TD
 #### Task 2.3: agenten.md [TODO]
 
 - **Description:** Agenten-Referenz auf Deutsch. Alle 7 Agenten mit Rolle, Zugang, Tools, Spezialisierungen, Wann-nutzen Beispielen.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -145,7 +145,7 @@ graph TD
 #### Task 2.4: workflow.md [TODO]
 
 - **Description:** Workflow Guide auf Deutsch. Alle 5 Phasen detailliert mit Beispiel-Interaktionen und erwarteter Ausgabe.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -160,7 +160,7 @@ graph TD
 #### Task 2.5: standards.md [TODO]
 
 - **Description:** Standards-System Dokumentation auf Deutsch. 3-Schichten-Modell, Domaenen, Nutzungsarten, Standards schreiben.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -175,7 +175,7 @@ graph TD
 #### Task 2.6: cli.md [TODO]
 
 - **Description:** CLI-Referenz auf Deutsch. Alle Commands mit Optionen, Beispielen und erwarteter Ausgabe.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -190,7 +190,7 @@ graph TD
 #### Task 2.7: konfiguration.md [TODO]
 
 - **Description:** Konfigurationsreferenz auf Deutsch. Alle Config-Dateien mit vollstaendiger Referenz und Anpassungs-Beispielen.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -206,7 +206,7 @@ graph TD
 #### Task 2.8: integration.md [TODO]
 
 - **Description:** Integrations-Guide auf Deutsch. CLI-basierte und manuelle Installation in bestehende Projekte, Konfliktloesung, Deinstallation.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -226,7 +226,7 @@ graph TD
 #### Task 3.1: How-To Guides [TODO]
 
 - **Description:** 4 Schritt-für-Schritt Anleitungen erstellen: Neues Feature entwickeln, eigenen Agent erstellen, Standards erweitern, CLI Installation.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 2.1, 2.2, 2.3, 2.4, 2.6
 - **Effort:** L
 - **Acceptance Criteria:**
@@ -245,7 +245,7 @@ graph TD
 #### Task 3.2: Use-Case Beispiele [TODO]
 
 - **Description:** 5 vollstaendige Praxis-Szenarien mit komplettem Workflow-Durchlauf.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 2.1, 2.2, 2.4, 2.6
 - **Effort:** L
 - **Acceptance Criteria:**
@@ -266,7 +266,7 @@ graph TD
 #### Task 3.3: Tipps & Best Practices [TODO]
 
 - **Description:** Gesammelte Best Practices, Cheat Sheets und Optimierungstipps.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 3.1, 3.2
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -282,7 +282,7 @@ graph TD
 #### Task 3.4: FAQ & Troubleshooting [TODO]
 
 - **Description:** Mindestens 15 haeufige Fragen mit ausfuehrlichen Antworten, kategorisiert nach Themenbereich.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 2.2, 2.6, 2.7
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -301,7 +301,7 @@ graph TD
 #### Task 4.1: Englische Docs [TODO]
 
 - **Description:** Alle deutschen Docs ins Englische übersetzen und unter docs/en/ ablegen.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 2.1, 3.1, 3.2, 3.3, 3.4
 - **Effort:** L
 - **Acceptance Criteria:**
@@ -334,7 +334,7 @@ graph TD
 #### Task 4.2: README_EN.md [TODO]
 
 - **Description:** Englische Version der README erstellen.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 4.1
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -352,7 +352,7 @@ graph TD
 #### Task 5.1: Link-Verification & Cleanup [TODO]
 
 - **Description:** Alle internen Links pruefen, alte englische Docs entfernen, Konsistenz sicherstellen.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 4.1, 4.2
 - **Effort:** S
 - **Acceptance Criteria:**

@@ -250,18 +250,18 @@ Claude: Ich analysiere die Spec "User Authentication"...
         Vorgeschlagene Aufteilung: 10 Tasks in 5 Phasen.
 
         Phase 1 - Data Layer:
-          Task 1.1: DB-Schema und Migration (S, debug)
-          Task 1.2: TypeScript Types und Interfaces (S, debug)
+          Task 1.1: DB-Schema und Migration (S, builder)
+          Task 1.2: TypeScript Types und Interfaces (S, builder)
         Phase 2 - Backend:
-          Task 2.1: Auth Service mit bcrypt (M, debug)
-          Task 2.2: JWT Token Management (M, debug)
-          Task 2.3: OAuth2 Google Integration (M, debug)
-          Task 2.4: Auth Middleware (S, debug)
+          Task 2.1: Auth Service mit bcrypt (M, builder)
+          Task 2.2: JWT Token Management (M, builder)
+          Task 2.3: OAuth2 Google Integration (M, builder)
+          Task 2.4: Auth Middleware (S, builder)
         Phase 3 - API:
-          Task 3.1: Auth Endpoints (M, debug)
+          Task 3.1: Auth Endpoints (M, builder)
         Phase 4 - Quality:
-          Task 4.1: Unit Tests (M, debug)
-          Task 4.2: Integration Tests (M, debug)
+          Task 4.1: Unit Tests (M, builder)
+          Task 4.2: Integration Tests (M, builder)
           Task 4.3: Security Review (S, security)
         Phase 5 - Docs:
           Task 5.1: API-Dokumentation (S, researcher)
@@ -283,7 +283,7 @@ workflow/specs/2026-01-23-1430-user-auth/
 ```markdown
 ## Task 2.1: Auth Service
 
-**Agent:** debug
+**Agent:** builder
 **Größe:** M (2-4 Dateien)
 **Abhängigkeiten:** Task 1.1, Task 1.2
 
@@ -318,7 +318,7 @@ Quality Gate 2 (Pre-Execution): PASS
 
 **Voraussetzung:** `tasks.md` und `orchestration.yml` existieren im Spec-Ordner.
 
-Der Orchestrator delegiert Tasks phasenweise an die zuständigen Agents und trackt den Fortschritt.
+Main Chat delegiert Tasks phasenweise an die zustaendigen Agents und trackt den Fortschritt.
 
 ### Ausführung
 
@@ -335,25 +335,25 @@ Claude: Spec gefunden: 2026-01-23-1430-user-auth/
 Du:     phase-by-phase
 
 Claude: Starte Phase 1 - Data Layer...
-        > Task 1.1: DB-Schema wird an debug-Agent delegiert...
+        > Task 1.1: DB-Schema wird an builder-Agent delegiert...
           Standards injiziert: global/tech-stack, global/naming, database/migrations
         > Task 1.1: PASS - Migration erstellt, Schema valide
-        > Task 1.2: TypeScript Types wird an debug-Agent delegiert...
+        > Task 1.2: TypeScript Types wird an builder-Agent delegiert...
         > Task 1.2: PASS - Interfaces generiert, konsistent mit Schema
         Phase 1 abgeschlossen. Quality Gate: PASS
         Weiter mit Phase 2?
 Du:     Ja.
 
 Claude: Starte Phase 2 - Backend...
-        > Task 2.1: Auth Service wird an debug-Agent delegiert...
+        > Task 2.1: Auth Service wird an builder-Agent delegiert...
           Standards injiziert: global/tech-stack, global/naming,
                                api/response-format, api/error-handling
         > Task 2.1: PASS - AuthService implementiert, 5 Error Codes definiert
-        > Task 2.2: JWT Token Management wird an debug-Agent delegiert...
+        > Task 2.2: JWT Token Management wird an builder-Agent delegiert...
         > Task 2.2: PASS - Token-Generierung und -Validierung implementiert
-        > Task 2.3: OAuth2 Integration wird an debug-Agent delegiert...
+        > Task 2.3: OAuth2 Integration wird an builder-Agent delegiert...
         > Task 2.3: PASS - Google OAuth2 Flow implementiert
-        > Task 2.4: Auth Middleware wird an debug-Agent delegiert...
+        > Task 2.4: Auth Middleware wird an builder-Agent delegiert...
         > Task 2.4: PASS - Middleware schützt Routen, prüft Token-Validität
         Phase 2 abgeschlossen. Quality Gate: PASS
         Weiter mit Phase 3?
@@ -374,15 +374,15 @@ Du:     Ja.
 
 | Task | Title | Agent | Status | Duration |
 |------|-------|-------|--------|----------|
-| 1.1 | DB-Schema | debug | PASS | 45s |
-| 1.2 | TypeScript Types | debug | PASS | 30s |
-| 2.1 | Auth Service | debug | PASS | 120s |
-| 2.2 | JWT Management | debug | PASS | 90s |
-| 2.3 | OAuth2 Google | debug | PASS | 150s |
-| 2.4 | Auth Middleware | debug | PASS | 60s |
-| 3.1 | Auth Endpoints | debug | PASS | 100s |
-| 4.1 | Unit Tests | debug | PASS | 180s |
-| 4.2 | Integration Tests | debug | PASS | 200s |
+| 1.1 | DB-Schema | builder | PASS | 45s |
+| 1.2 | TypeScript Types | builder | PASS | 30s |
+| 2.1 | Auth Service | builder | PASS | 120s |
+| 2.2 | JWT Management | builder | PASS | 90s |
+| 2.3 | OAuth2 Google | builder | PASS | 150s |
+| 2.4 | Auth Middleware | builder | PASS | 60s |
+| 3.1 | Auth Endpoints | builder | PASS | 100s |
+| 4.1 | Unit Tests | builder | PASS | 180s |
+| 4.2 | Integration Tests | builder | PASS | 200s |
 | 4.3 | Security Review | security | PASS | 90s |
 | 5.1 | API-Dokumentation | researcher | PASS | 60s |
 

@@ -40,7 +40,7 @@ N observations | level: <level> | threshold: <T>/<max> until pattern
 ```
 
 For each observation, format the data human-readable:
-- `delegation | agent=debug,task_group=implementation` → `debug → implementation`
+- `delegation | agent=builder,task_group=implementation` → `builder → implementation`
 - `delegation | agent=architect,task_group=architecture,desc=...` → `architect → architecture (desc...)`
 - `quality | gate=lint,outcome=pass` → `quality: lint ✓`
 - `quality | gate=test,outcome=fail` → `quality: test ✗`
@@ -51,7 +51,7 @@ For each observation, format the data human-readable:
 Calculate and show:
 - How many more observations until the pattern threshold is reached
 - Which agent/task_group combinations are close to becoming patterns
-- Example: "debug → implementation: 2/3 bis Pattern-Erkennung"
+- Example: "builder → implementation: 2/3 bis Pattern-Erkennung"
 
 ### Step 5: Offer Actions
 

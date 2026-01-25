@@ -16,7 +16,7 @@ All Claude Code users who want more structure in their AI-assisted development w
 
 A complete framework that combines specialized agents, structured workflows, and automatic standards injection into a single engine:
 
-- **7 specialized agents** with defined roles and permissions instead of one generalist
+- **9 specialized agents** with defined roles and permissions instead of one generalist
 - **5-phase workflow** guiding development from product vision to implementation
 - **Standards-as-Skills** automatically injecting coding conventions into context
 - **CLI tools** for safe installation, health monitoring, and compliance checks

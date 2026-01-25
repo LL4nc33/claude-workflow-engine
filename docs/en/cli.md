@@ -99,7 +99,7 @@ Output:
 
 ```
 [DRY-RUN] Would create: .claude/agents/architect.md
-[DRY-RUN] Would create: .claude/agents/debug.md
+[DRY-RUN] Would create: .claude/agents/builder.md
 [DRY-RUN] Would create: workflow/config.yml
 [DRY-RUN] Would create: workflow/standards/index.yml
 ...
@@ -201,7 +201,7 @@ Claude Workflow Engine Status
   Files tracked: 32
     .claude/CLAUDE.md
     .claude/agents/architect.md
-    .claude/agents/debug.md
+    .claude/agents/builder.md
     ...
 
   History events: 3

@@ -8,10 +8,10 @@
 
 | Group | Tasks | Effort | Agent | Status |
 |-------|-------|--------|-------|--------|
-| Infrastructure | 2 | S | debug | Done |
-| Unit Tests — Libs | 6 | M | debug | Done |
-| Integration Tests | 2 | M | debug | Done |
-| Verification | 1 | S | debug | Done |
+| Infrastructure | 2 | S | builder | Done |
+| Unit Tests — Libs | 6 | M | builder | Done |
+| Integration Tests | 2 | M | builder | Done |
+| Verification | 1 | S | builder | Done |
 
 ## Dependency Graph
 
@@ -41,7 +41,7 @@ graph TD
 #### Task 1.1: Test Helpers [DONE]
 
 - **Description:** Create shared test utilities (temp dirs, mock logger, project setup)
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** S
 - **Standards:** testing/coverage
@@ -57,7 +57,7 @@ graph TD
 #### Task 1.2: Build Configuration [DONE]
 
 - **Description:** Update package.json scripts and verify tsconfig includes tests
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** S
 - **Acceptance Criteria:**
@@ -74,7 +74,7 @@ graph TD
 #### Task 2.1: fs-utils Tests [DONE]
 
 - **Description:** Test all 14 exported filesystem utility functions
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1, 1.2
 - **Effort:** M
 - **Standards:** testing/coverage (AAA-Pattern)
@@ -88,7 +88,7 @@ graph TD
 #### Task 2.2: state-manager Tests [DONE]
 
 - **Description:** Test StateManager class (init, state, integrity, backups, rollback)
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Standards:** testing/coverage
@@ -103,7 +103,7 @@ graph TD
 #### Task 2.3: conflict-detector Tests [DONE]
 
 - **Description:** Test ConflictDetector class (file conflicts, command conflicts, permissions)
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Standards:** testing/coverage
@@ -118,7 +118,7 @@ graph TD
 #### Task 2.4: gdpr-validator Tests [DONE]
 
 - **Description:** Test GDPRValidator class (gitignore, PII scan, local config, auto-fix)
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Standards:** testing/coverage
@@ -134,7 +134,7 @@ graph TD
 #### Task 2.5: settings-merger Tests [DONE]
 
 - **Description:** Test SettingsMerger class (generate, merge, validate per profile)
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Standards:** testing/coverage
@@ -150,7 +150,7 @@ graph TD
 #### Task 2.6: preflight Tests [DONE]
 
 - **Description:** Test PreFlightChecker class (environment, platform, target path)
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1
 - **Effort:** M
 - **Standards:** testing/coverage
@@ -170,7 +170,7 @@ graph TD
 #### Task 3.1: Install Command Integration [DONE]
 
 - **Description:** End-to-end install workflow in isolated temp directories
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 2.1, 2.2, 2.6
 - **Effort:** M
 - **Standards:** testing/coverage
@@ -187,7 +187,7 @@ graph TD
 #### Task 3.2: Commands Integration (health, status, check, resolve) [DONE]
 
 - **Description:** Integration tests for remaining 4 commands
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 2.3, 2.4, 2.5
 - **Effort:** M
 - **Standards:** testing/coverage
@@ -207,7 +207,7 @@ graph TD
 #### Task 4.1: Build & Run All Tests [DONE]
 
 - **Description:** Compile and verify all tests pass
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 3.1, 3.2
 - **Effort:** S
 - **Acceptance Criteria:**

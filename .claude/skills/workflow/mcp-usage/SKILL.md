@@ -71,12 +71,14 @@ search_greptile_comments(query="authentication vulnerability")
 | Agent | Serena-Tools | Greptile-Tools |
 |-------|-------------|----------------|
 | **architect** | find_symbol, get_symbols_overview, find_referencing_symbols | - |
-| **researcher** | search_for_pattern, find_symbol, get_symbols_overview | - |
-| **debug** | find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview | - |
-| **ask** | get_symbols_overview, find_symbol | - |
-| **security** | - | search_greptile_comments, list_merge_request_comments |
-| **orchestrator** | - | list_merge_requests, get_merge_request |
+| **builder** | find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview | - |
 | **devops** | - | - |
+| **explainer** | get_symbols_overview, find_symbol | - |
+| **guide** | search_for_pattern, get_symbols_overview | - |
+| **innovator** | - | - |
+| **quality** | find_symbol, get_symbols_overview | search_greptile_comments |
+| **researcher** | search_for_pattern, find_symbol, get_symbols_overview | - |
+| **security** | - | search_greptile_comments, list_merge_request_comments |
 
 ## Wann MCP-Tools statt Standard-Tools?
 

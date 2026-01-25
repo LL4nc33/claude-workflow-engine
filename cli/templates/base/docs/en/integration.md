@@ -178,7 +178,7 @@ secrets.*
 
 | Path | Purpose | Size |
 |------|---------|------|
-| `.claude/agents/` | 7 agent definition files | ~15 KB |
+| `.claude/agents/` | 9 agent definition files | ~15 KB |
 | `.claude/commands/workflow/` | 8 slash command files | ~30 KB |
 | `.claude/skills/workflow/` | 10 skill directories (7 standards + 3 plugin) | ~15 KB |
 | `.claude/CLAUDE.md` | Project context for Claude | ~4 KB |
@@ -198,8 +198,8 @@ secrets.*
 
 If you already have agents:
 
-- The engine adds its 7 agents alongside your existing ones
-- Name collisions are detected (e.g., if you already have a `debug.md`)
+- The engine adds its 9 agents alongside your existing ones
+- Name collisions are detected (e.g., if you already have a `builder.md`)
 - **Resolution:** Rename your agent or skip the engine version
 
 ### Existing .claude/commands/
@@ -243,7 +243,7 @@ context_model:
 
 ### Removing Agents
 
-Delete agent files from `.claude/agents/`. The remaining agents continue to work. The orchestrator skips deleted agents during delegation.
+Delete agent files from `.claude/agents/`. The remaining agents continue to work. Main Chat skips deleted agents during delegation.
 
 ### Disabling CLI Features
 
@@ -269,9 +269,9 @@ This restores files from the backup created during installation.
 
 ```bash
 # Remove engine agents
-rm -f .claude/agents/architect.md .claude/agents/ask.md .claude/agents/debug.md \
-      .claude/agents/devops.md .claude/agents/orchestrator.md \
-      .claude/agents/researcher.md .claude/agents/security.md
+rm -f .claude/agents/architect.md .claude/agents/builder.md .claude/agents/devops.md \
+      .claude/agents/explainer.md .claude/agents/guide.md .claude/agents/innovator.md \
+      .claude/agents/quality.md .claude/agents/researcher.md .claude/agents/security.md
 
 # Remove engine commands and skills
 rm -rf .claude/commands/workflow/

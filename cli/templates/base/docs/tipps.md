@@ -9,20 +9,20 @@ Praxiserprobte Empfehlungen für den effektiven Einsatz des Claude Workflow Engi
 | Situation | Empfohlener Agent | Grund |
 |-----------|-------------------|-------|
 | System-Architektur planen | `architect` | READ-ONLY Analyse, ADRs, Design-Entscheidungen |
-| Bug in Production | `debug` | Voller Zugriff, hypothesengetriebene Investigation |
-| Neues Feature implementieren | `debug` (via `orchestrator`) | Orchestrator delegiert, debug implementiert |
+| Bug in Production | `builder` | Voller Zugriff, hypothesengetriebene Investigation |
+| Neues Feature implementieren | `builder` (via Main Chat) | Main Chat koordiniert, builder implementiert |
 | CI/CD Pipeline aufsetzen | `devops` | Spezialisiert auf Docker, K8s, IaC |
 | Code auf Vulnerabilities pruefen | `security` | OWASP-Audits, RESTRICTED Access |
-| Codebase verstehen/erklaeren | `ask` | READ-ONLY, didaktische Erklärungen |
+| Codebase verstehen/erklaeren | `explainer` | READ-ONLY, didaktische Erklärungen |
 | Technologie evaluieren | `researcher` | Analyse, Vergleiche, Reports |
-| Mehrere Tasks koordinieren | `orchestrator` | Task-Delegation, Parallelisierung |
-| Bestehenden Code refactoren | `debug` | Voller Zugriff, minimale Aenderungen |
+| Mehrere Tasks koordinieren | Main Chat | Task-Delegation, Parallelisierung |
+| Bestehenden Code refactoren | `builder` | Voller Zugriff, minimale Aenderungen |
 | API Design Review | `architect` | API-Konventionen, Response-Formate |
 | DSGVO-Compliance pruefen | `security` | Datenschutz-Audit, Vulnerability Assessment |
-| Performance-Problem analysieren | `debug` | Profiling, Log-Analyse, Zustandsinspektion |
+| Performance-Problem analysieren | `builder` | Profiling, Log-Analyse, Zustandsinspektion |
 | Documentation schreiben | `researcher` | READ-ONLY Analyse, strukturierte Reports |
 
-**Faustregel:** Wenn du unsicher bist, nutze den `orchestrator` -- er delegiert an den richtigen Agent.
+**Faustregel:** Wenn du unsicher bist, frage Main Chat -- er delegiert an den richtigen Agent.
 
 ---
 
@@ -39,7 +39,7 @@ plan-product -> shape-spec -> write-spec -> create-tasks -> orchestrate-tasks
 | Product existiert bereits | `plan-product` | `shape-spec` |
 | Spec ist klar im Kopf | `shape-spec` | `write-spec` |
 | Nur 1-2 kleine Tasks | `create-tasks` | Direkte Agent-Delegation |
-| Bugfix | Alles | `debug` direkt |
+| Bugfix | Alles | `builder` direkt |
 | Prototyping | Standards-Injection | `write-spec` (minimal) |
 | Bekanntes Pattern | `shape-spec` ausfuehrlich | Einzeiler-Shape genuegt |
 
@@ -47,8 +47,8 @@ plan-product -> shape-spec -> write-spec -> create-tasks -> orchestrate-tasks
 
 **Schneller Bugfix:**
 ```bash
-# Direkt zum debug Agent, kein Workflow noetig
-claude agents/debug "Fix den TypeError in api/handler.ts Zeile 42"
+# Direkt zum builder Agent, kein Workflow noetig
+claude agents/builder "Fix den TypeError in api/handler.ts Zeile 42"
 ```
 
 **Feature mit bekanntem Pattern:**
@@ -161,13 +161,13 @@ context_optimization:
 # orchestration.yml - Parallele Ausfuehrung
 tasks:
   - id: api-endpoints
-    agent: debug
+    agent: builder
     parallel_group: "implementation"
   - id: database-migration
-    agent: debug
+    agent: builder
     parallel_group: "implementation"  # Laeuft parallel mit api-endpoints
   - id: integration-tests
-    agent: debug
+    agent: builder
     depends_on: [api-endpoints, database-migration]  # Wartet auf beide
 ```
 
@@ -225,7 +225,7 @@ quality_gates:
 # Wenn der primaere Agent fehlschlaegt
 task:
   agent: devops
-  fallback_agent: debug
+  fallback_agent: builder
   retry_count: 2
   escalation: orchestrator
 ```

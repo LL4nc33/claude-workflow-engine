@@ -83,24 +83,30 @@ agents:
     - name: architect
       access: read-only
       purpose: System Design, ADRs, Architecture Review
-    - name: ask
-      access: read-only
-      purpose: Explanations, learning queries, documentation queries
-    - name: debug
+    - name: builder
       access: full
       purpose: Bug investigation with full file system access
-    - name: orchestrator
-      access: task-delegation
-      purpose: Task delegation via Task tool
+    - name: devops
+      access: full
+      purpose: CI/CD, Docker, Kubernetes, IaC
+    - name: explainer
+      access: read-only
+      purpose: Explanations, learning queries, documentation queries
+    - name: guide
+      access: read-only
+      purpose: NaNo Evolution, Pattern-to-Standards
+    - name: innovator
+      access: read-only
+      purpose: Brainstorming, creative solutions
+    - name: quality
+      access: read-only
+      purpose: Testing, coverage, quality gates
     - name: researcher
       access: read-only
       purpose: Codebase analysis and documentation generation
     - name: security
-      access: read-only
+      access: restricted
       purpose: OWASP audits, vulnerability assessment
-    - name: devops
-      access: full
-      purpose: CI/CD, Docker, Kubernetes, IaC
 
 # --- GDPR / EU Compliance ---
 
@@ -200,7 +206,7 @@ workflow:
       output_path: workflow/specs/{timestamp}-{feature-slug}/
       outputs: [tasks.md, orchestration.yml]
       prerequisites: [write-spec]
-      responsible_agent: orchestrator
+      responsible_agent: main_chat
       review_agent: architect
       quality_gate: gate_2_pre_execution
 
@@ -210,7 +216,7 @@ workflow:
       output_path: workflow/specs/{timestamp}-{feature-slug}/
       outputs: [progress.md, delegation.log]
       prerequisites: [create-tasks]
-      responsible_agent: orchestrator
+      responsible_agent: main_chat
       review_agent: null
       quality_gate: gate_3_post_phase
 ```
@@ -219,7 +225,7 @@ Each phase requires completion of its prerequisite phase. Phases are strictly se
 
 ### Agent Registry
 
-Complete capability definition for each of the 7 agents:
+Complete capability definition for each of the 9 agents:
 
 ```yaml
 agents:
@@ -235,7 +241,7 @@ agents:
         - Trade-off Analysis
       standards_domains: [global, agents]
 
-    ask:
+    explainer:
       access: read-only
       tools: [Read, Grep, Glob]
       strengths:
@@ -244,7 +250,7 @@ agents:
         - Pattern Identification and Explanation
       standards_domains: [global]
 
-    debug:
+    builder:
       access: full
       tools: [Read, Write, Edit, Bash, Grep, Glob]
       strengths:
@@ -287,16 +293,32 @@ agents:
         - Technology Comparison and Evaluation
       standards_domains: [global, agents]
 
-    orchestrator:
-      access: task-delegation
-      tools: [Task, Read, Grep, Glob]
+    guide:
+      access: read-only
+      tools: [Read, Grep, Glob]
       strengths:
-        - Task Decomposition and Dependency Resolution
-        - Agent Selection and Delegation
-        - Progress Tracking and Status Reporting
-        - Quality Gate Enforcement
-        - Failure Handling and Escalation
+        - NaNo Evolution and Pattern-to-Standards
+        - Workflow Process Improvement
+        - Pattern Analysis and Standards Extraction
       standards_domains: [agents, global]
+
+    innovator:
+      access: read-only
+      tools: [Read, Grep, Glob]
+      strengths:
+        - Brainstorming and Creative Solutions
+        - Exploring Alternatives
+        - "What-if" Scenarios
+      standards_domains: [global]
+
+    quality:
+      access: read-only
+      tools: [Read, Grep, Glob]
+      strengths:
+        - Testing and Coverage Analysis
+        - Quality Gates and Metrics
+        - Test Validation and Health
+      standards_domains: [global, testing]
 ```
 
 ### Task-to-Agent Mapping
@@ -306,24 +328,24 @@ Maps abstract task types to concrete agents with override conditions:
 ```yaml
 task_groups:
   backend:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, api/response-format, api/error-handling]
     override_when:
       security_sensitive: security    # Auth endpoints, cryptography, etc.
 
   frontend:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, frontend/components]
 
   testing:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: null
     standards: [global/tech-stack, testing/coverage]
 
   database:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, database/migrations]
     override_when:
@@ -334,7 +356,7 @@ task_groups:
     review_agent: architect
     standards: [global/tech-stack, global/naming, api/error-handling]
     override_when:
-      implementation_needed: debug        # When fix requires code changes
+      implementation_needed: builder        # When fix requires code changes
 
   infrastructure:
     primary_agent: devops
@@ -365,12 +387,12 @@ task_groups:
       infra_review: devops
 
   explanation:
-    primary_agent: ask
+    primary_agent: explainer
     review_agent: null
     standards: [global/tech-stack]
 
   coordination:
-    primary_agent: orchestrator
+    primary_agent: guide
     review_agent: null
     standards: [agents/agent-conventions, global/tech-stack]
 
@@ -526,7 +548,7 @@ gate_4_final_acceptance:
   pass_condition: all_reviewers_approve
   on_failure:
     action: create_remediation_tasks
-    delegate_to: orchestrator
+    delegate_to: main_chat
 ```
 
 ### Execution Config
@@ -576,28 +598,24 @@ fallbacks:
       reason: "Researcher can analyze but cannot produce ADRs"
       limitation: "No architectural authority - results are advisory"
     security:
-      fallback_to: debug
-      reason: "Debug has full access for security-relevant code review"
+      fallback_to: builder
+      reason: "Builder has full access for security-relevant code review"
       limitation: "No access to trivy/grype/semgrep scanning tools"
     devops:
-      fallback_to: debug
-      reason: "Debug has full file system access for infrastructure code"
+      fallback_to: builder
+      reason: "Builder has full file system access for infrastructure code"
       limitation: "Possible gaps in infrastructure-specific domain knowledge"
     researcher:
-      fallback_to: ask
-      reason: "Ask can explain and analyze in read-only mode"
+      fallback_to: explainer
+      reason: "Explainer can explain and analyze in read-only mode"
       limitation: "No WebSearch/WebFetch for external research"
-    ask:
+    explainer:
       fallback_to: researcher
       reason: "Researcher has similar read + explain capabilities"
       limitation: "Responses may be more formal/report-oriented"
-    debug:
+    builder:
       fallback_to: null
-      reason: "No fallback - Debug is the primary implementor"
-      escalation: user
-    orchestrator:
-      fallback_to: null
-      reason: "No fallback - Orchestrator is the unique coordinator"
+      reason: "No fallback - Builder is the primary implementor"
       escalation: user
 
   # Task failed after max_retries
@@ -647,10 +665,10 @@ escalation:
       escalate_if: architect_flags_blocking_concern
       resolution: user_decision
 
-    # When debug implementation diverges from architect spec
-    debug_vs_architect:
+    # When builder implementation diverges from architect spec
+    builder_vs_architect:
       priority: architect                 # Spec authority wins
-      action: debug_must_justify_divergence
+      action: builder_must_justify_divergence
       resolution: architect_reviews_justification
 
     # When devops and security collide on infrastructure
@@ -770,18 +788,22 @@ The permissions file for Claude Code. The engine requires the following tool per
   "permissions": {
     "allow": [
       "Agent(architect)",
-      "Agent(ask)",
-      "Agent(debug)",
+      "Agent(builder)",
       "Agent(devops)",
-      "Agent(orchestrator)",
+      "Agent(explainer)",
+      "Agent(guide)",
+      "Agent(innovator)",
+      "Agent(quality)",
       "Agent(researcher)",
       "Agent(security)",
-      "Skill(researcher)",
-      "Skill(orchestrator)",
       "Skill(architect)",
-      "Skill(ask)",
-      "Skill(debug)",
+      "Skill(builder)",
       "Skill(devops)",
+      "Skill(explainer)",
+      "Skill(guide)",
+      "Skill(innovator)",
+      "Skill(quality)",
+      "Skill(researcher)",
       "Skill(security)",
       "Bash(git clone:*)",
       "Bash(git status:*)",
@@ -856,7 +878,7 @@ phases:
 tasks:
   task-1:
     title: "Create database schema"
-    agent: debug
+    agent: builder
     group: database
     standards: [database/migrations, global/naming]
     depends_on: []
@@ -978,7 +1000,7 @@ standards_injection:
 
 task_groups:
   my-task-type:
-    primary_agent: debug
+    primary_agent: builder
     standards: [new-domain/my-standard]
 ```
 
@@ -1087,8 +1109,8 @@ MCP servers extend agent capabilities with semantic code analysis and PR managem
 
 | Server | Function | Used By |
 |--------|----------|---------|
-| **Serena** | Language Server-based code navigation | architect, researcher, debug, ask |
-| **Greptile** | PR management and code review | orchestrator, security |
+| **Serena** | Language Server-based code navigation | architect, researcher, builder, explainer |
+| **Greptile** | PR management and code review | quality, security |
 
 ### Configuration in config.yml
 

@@ -134,6 +134,8 @@ Use these tools when:
 ## Collaboration
 
 - Feeds findings to **architect** for architectural decisions
-- Provides context to **orchestrator** for task planning
+- Provides context to **Main Chat** for task planning
 - Supports **security** with vulnerability research
 - Informs **devops** about infrastructure best practices
+- Supplies data to **guide** for pattern analysis
+- Collaborates with **innovator** on prior art research

@@ -1,7 +1,7 @@
 # Tech Stack
 
 ## Agent System
-- Claude Code with specialized agents (7 agents)
+- Claude Code with specialized agents (9 agents)
 - Claude Workflow Engine for standards and spec-driven workflows
 - Claude Code Skills for context-efficient standard matching
 

@@ -100,12 +100,14 @@ Erwartete Ausgabe:
 
 ```
 [DRY-RUN] Would create: .claude/agents/architect.md
-[DRY-RUN] Would create: .claude/agents/debug.md
+[DRY-RUN] Would create: .claude/agents/builder.md
 [DRY-RUN] Would create: .claude/agents/devops.md
-[DRY-RUN] Would create: .claude/agents/orchestrator.md
+[DRY-RUN] Would create: .claude/agents/guide.md
+[DRY-RUN] Would create: .claude/agents/innovator.md
+[DRY-RUN] Would create: .claude/agents/quality.md
 [DRY-RUN] Would create: .claude/agents/researcher.md
 [DRY-RUN] Would create: .claude/agents/security.md
-[DRY-RUN] Would create: .claude/agents/ask.md
+[DRY-RUN] Would create: .claude/agents/explainer.md
 [DRY-RUN] Would create: workflow/config.yml
 [DRY-RUN] Would create: workflow/standards/index.yml
 [DRY-RUN] Would create: workflow/standards/global/tech-stack.md

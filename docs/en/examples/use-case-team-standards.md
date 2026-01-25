@@ -495,7 +495,7 @@ When you now create a task, the relevant standards are automatically injected:
 
 ```markdown
 ## Task: New API Endpoint POST /api/orders
-Agent: debug
+Agent: builder
 Standards:
   - api/response-format    # Follow response envelope
   - api/error-handling     # Error codes per convention
@@ -503,7 +503,7 @@ Standards:
   - team/git-workflow      # Name branch per convention
 ```
 
-The debug agent receives these standards as context and implements accordingly:
+The builder agent receives these standards as context and implements accordingly:
 
 - Error responses in the defined format
 - Error codes following the DOMAIN_ACTION_REASON pattern

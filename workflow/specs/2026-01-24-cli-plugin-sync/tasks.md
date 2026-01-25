@@ -8,11 +8,11 @@
 
 | Group | Tasks | Effort | Agent |
 |-------|-------|--------|-------|
-| Template-Dateien | 6 | M | debug |
-| CLI-Code (install.ts) | 2 | M | debug |
-| CLI-Code (health.ts) | 1 | S | debug |
-| CLI Meta & Tests | 2 | S | debug |
-| Template-Docs | 1 | M | debug |
+| Template-Dateien | 6 | M | builder |
+| CLI-Code (install.ts) | 2 | M | builder |
+| CLI-Code (health.ts) | 1 | S | builder |
+| CLI Meta & Tests | 2 | S | builder |
+| Template-Docs | 1 | M | builder |
 
 **Total: 12 Tasks in 5 Gruppen**
 
@@ -40,7 +40,7 @@ graph TD
 #### Task 1.1: Plugin-Manifest Template erstellen
 
 - **Description:** `.claude-plugin/plugin.json` als Template in `cli/templates/base/` hinzufügen
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** S
 - **Acceptance Criteria:**
@@ -53,7 +53,7 @@ graph TD
 #### Task 1.2: Hook-Templates erstellen
 
 - **Description:** Alle Hook-Dateien als Templates in `cli/templates/base/hooks/` hinzufügen
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** S
 - **Acceptance Criteria:**
@@ -74,13 +74,13 @@ graph TD
 #### Task 1.3: Agent-Templates aktualisieren
 
 - **Description:** 6 Agent-Templates mit MCP-Tool-Referenzen und Usage-Sections aktualisieren (devops bleibt unverändert)
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** M
 - **Acceptance Criteria:**
   - [ ] architect.md hat Serena MCP-Tools im Frontmatter + MCP Usage Section
-  - [ ] ask.md hat Serena MCP-Tools
-  - [ ] debug.md hat Serena MCP-Tools
+  - [ ] explainer.md hat Serena MCP-Tools
+  - [ ] builder.md hat Serena MCP-Tools
   - [ ] researcher.md hat Serena MCP-Tools
   - [ ] orchestrator.md hat Greptile MCP-Tools
   - [ ] security.md hat Greptile MCP-Tools
@@ -88,8 +88,8 @@ graph TD
   - [ ] Template-Agents identisch mit Root `.claude/agents/`
 - **Files to modify:**
   - `cli/templates/base/.claude-agents/architect.md`
-  - `cli/templates/base/.claude-agents/ask.md`
-  - `cli/templates/base/.claude-agents/debug.md`
+  - `cli/templates/base/.claude-agents/explainer.md`
+  - `cli/templates/base/.claude-agents/builder.md`
   - `cli/templates/base/.claude-agents/researcher.md`
   - `cli/templates/base/.claude-agents/orchestrator.md`
   - `cli/templates/base/.claude-agents/security.md`
@@ -97,7 +97,7 @@ graph TD
 #### Task 1.4: Neue Skill-Templates erstellen
 
 - **Description:** 3 neue Plugin-Skills als Templates hinzufügen
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** S
 - **Acceptance Criteria:**
@@ -113,7 +113,7 @@ graph TD
 #### Task 1.5: CLAUDE.md Template aktualisieren
 
 - **Description:** Template-CLAUDE.md um 6-Layer-Architektur, MCP-Tools, Hooks und Recommended MCP Servers erweitern
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** S
 - **Acceptance Criteria:**
@@ -128,7 +128,7 @@ graph TD
 #### Task 1.6: config.yml Template aktualisieren
 
 - **Description:** config.yml auf v0.2.0 bumpen und `plugin:` sowie `mcp:` Sektionen hinzufügen
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** S
 - **Acceptance Criteria:**
@@ -146,7 +146,7 @@ graph TD
 #### Task 2.1: Neue Verzeichnisse in install.ts
 
 - **Description:** `.claude-plugin`, `hooks`, `hooks/scripts` zu den erstellten Verzeichnissen hinzufügen. Auch in dryRunInstall.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 1.1, 1.2
 - **Effort:** S
 - **Acceptance Criteria:**
@@ -158,7 +158,7 @@ graph TD
 #### Task 2.2: chmod +x und pathMappings in install.ts
 
 - **Description:** Nach dem Kopieren der Hook-Scripts `chmod +x` ausführen. pathMappings ggf. erweitern falls nötig (hooks/ und .claude-plugin/ haben keine Dot-Prefix-Probleme, sollten direkt kopiert werden).
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 2.1
 - **Effort:** M
 - **Standards:** WSL2-Kompatibilitaet beachten
@@ -177,7 +177,7 @@ graph TD
 #### Task 3.1: Neue Health-Checks
 
 - **Description:** Health-Check um Plugin-Manifest, Hooks und Skills-Anzahl erweitern
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 2.2
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -197,7 +197,7 @@ graph TD
 #### Task 4.1: package.json Version Bump
 
 - **Description:** CLI package.json Version auf 0.2.0 aktualisieren
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 3.1
 - **Effort:** S
 - **Acceptance Criteria:**
@@ -208,7 +208,7 @@ graph TD
 #### Task 4.2: Tests aktualisieren
 
 - **Description:** Bestehende Tests auf v0.2.0 aktualisieren, neue Testfälle für Hooks und Plugin hinzufügen
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** 4.1
 - **Effort:** M
 - **Acceptance Criteria:**
@@ -229,7 +229,7 @@ graph TD
 #### Task 5.1: Docs im Template synchronisieren
 
 - **Description:** Template-Docs auf aktuelle DE + EN Struktur aktualisieren. Die alten englischen Dateien (agents.md, configuration.md, getting-started.md) ersetzen durch die aktuelle Struktur mit DE-Hauptdateien und EN-Unterordner.
-- **Agent:** debug
+- **Agent:** builder
 - **Dependencies:** None
 - **Effort:** L
 - **Acceptance Criteria:**

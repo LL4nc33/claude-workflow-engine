@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-ready-purple.svg)](https://claude.com/claude-code)
 
-A multi-agent workflow system for Claude Code: 7 specialized agents, a 5-phase development workflow, and a standards system that ensures consistency across projects.
+A multi-agent workflow system for Claude Code: 9 specialized agents, a 5-phase development workflow, and a standards system that ensures consistency across projects.
 
 ---
 
@@ -27,19 +27,21 @@ A multi-agent workflow system for Claude Code: 7 specialized agents, a 5-phase d
 
 ## Features
 
-### 7 Specialized Agents
+### 9 Specialized Agents
 
 | Agent | Role | Access | When to Use |
 |-------|------|--------|-------------|
 | **Architect** | System Design, ADRs, API Review | READ-ONLY | "How should I architect X?" |
-| **Ask** | Explanations, Tutorials, Code Walkthroughs | READ-ONLY | "How does Y work?" |
-| **Debug** | Bug Investigation, Implementation | FULL | "Find and fix this bug" |
+| **Builder** | Bug Investigation, Implementation | FULL | "Find and fix this bug" |
 | **DevOps** | CI/CD, Docker, Kubernetes, IaC | FULL | "Set up CI/CD for me" |
-| **Orchestrator** | Task Delegation, Coordination | TASK-DELEGATION | "Distribute these 10 tasks" |
+| **Explainer** | Explanations, Tutorials, Code Walkthroughs | READ-ONLY | "How does Y work?" |
+| **Guide** | NaNo Evolution, Pattern-to-Standards | READ-ONLY | "Analyze workflow patterns" |
+| **Innovator** | Brainstorming, Creative Solutions | READ-ONLY | "What are alternatives for X?" |
+| **Quality** | Testing, Coverage, Quality Gates | READ-ONLY | "Check test coverage" |
 | **Researcher** | Codebase Analysis, Documentation | READ-ONLY | "What does this code do?" |
-| **Security** | OWASP Audits, Vulnerability Assessment | READ-ONLY | "Is this secure?" |
+| **Security** | OWASP Audits, Vulnerability Assessment | RESTRICTED | "Is this secure?" |
 
-Each agent has clearly defined access rights and specializations. The Orchestrator delegates tasks to the most suitable agent.
+Each agent has clearly defined access rights and specializations. Main Chat coordinates multi-agent tasks.
 
 ### 5-Phase Development Workflow
 
@@ -136,7 +138,7 @@ Each phase creates files in the `workflow/` directory that serve as context for 
 |  Event-based automation (SessionStart, Pre/PostToolUse)          |
 +------------------------------------------------------------------+
 |  Layer 4: Agents (.claude/agents/*.md)                           |
-|  7 specialized subagents with MCP tool integration               |
+|  9 specialized subagents with MCP tool integration               |
 +------------------------------------------------------------------+
 |  Layer 3: Skills (.claude/skills/workflow/)                       |
 |  Context-based knowledge (Standards, MCP, Hooks, Config)         |
@@ -153,8 +155,8 @@ Each phase creates files in the `workflow/` directory that serve as context for 
 
 | Server | Function | Used By |
 |--------|----------|---------|
-| **Serena** | Semantic code analysis (symbol navigation, refactoring) | architect, researcher, debug, ask |
-| **Greptile** | PR management and code review integration | orchestrator, security |
+| **Serena** | Semantic code analysis (symbol navigation, refactoring) | architect, researcher, builder, explainer, guide, quality |
+| **Greptile** | PR management and code review integration | quality, security |
 
 MCP servers are optional - agents automatically fall back to standard tools when servers are unavailable.
 
@@ -185,22 +187,22 @@ MCP servers are optional - agents automatically fall back to standard tools when
 ### Agent Hierarchy
 
 ```
-                    +------------------+
-                    |   Orchestrator   |  (Task Delegation)
-                    +--------+---------+
-                             |
-         +-------------------+-------------------+
-         |         |         |         |         |
-    +----+---+ +---+----+ +-+------+ +-+------+ +---+-----+
-    |Architect| |  Debug | |DevOps  | |Security| |Researcher|
-    +---------+ +--------+ +--------+ +--------+ +----------+
-         |
-    +----+---+
-    |  Ask   |  (Explanations)
-    +---------+
+                         +-------------+
+                         |  Main Chat  |  (Orchestration)
+                         +------+------+
+                                |
+    +-------+-------+-------+---+---+-------+-------+-------+
+    |       |       |       |       |       |       |       |
++---+---+ +-+--+ +--+--+ +--+---+ +-+--+ +--+---+ +--+--+ +-+---+
+|architect|builder|devops|explainer|guide|innovator|quality|researcher|
++---------+------+------+---------+-----+---------+-------+----------+
+                                                              |
+                                                         +----+----+
+                                                         | security |
+                                                         +----------+
 ```
 
-The Orchestrator analyzes tasks and delegates them to the appropriate specialized agent. Agents with READ-ONLY access can analyze code but not modify it, while FULL-access agents can also implement changes.
+Main Chat coordinates multi-agent tasks. Agents with READ-ONLY access can analyze code but not modify it, while FULL-access agents can also implement changes.
 
 ---
 
@@ -213,12 +215,14 @@ claude-workflow-engine/
 |   +-- plugin.json               # Plugin manifest (v0.2.7)
 |
 |-- .claude/                      # Claude Code configuration
-|   |-- agents/                   # Layer 4: 7 agent definitions
+|   |-- agents/                   # Layer 4: 9 agent definitions
 |   |   |-- architect.md          # +Serena MCP tools
-|   |   |-- ask.md                # +Serena MCP tools
-|   |   |-- debug.md              # +Serena MCP tools
+|   |   |-- builder.md            # +Serena MCP tools
 |   |   |-- devops.md
-|   |   |-- orchestrator.md       # +Greptile MCP tools
+|   |   |-- explainer.md          # +Serena MCP tools
+|   |   |-- guide.md              # +Serena MCP tools
+|   |   |-- innovator.md
+|   |   |-- quality.md            # +Serena MCP tools
 |   |   |-- researcher.md         # +Serena MCP tools
 |   |   +-- security.md           # +Greptile MCP tools
 |   |-- commands/workflow/         # Layer 2: 8 workflow slash commands
@@ -236,10 +240,10 @@ claude-workflow-engine/
 |       +-- post-write-log.sh     # PostToolUse: Change logging
 |
 |-- workflow/                      # Knowledge layers (3-layer model)
-|   |-- config.yml                # Main configuration (v0.2.7)
+|   |-- config.yml                # Main configuration
 |   |-- orchestration.yml         # Orchestration settings
 |   |-- product/                  # Layer 2: Mission, Roadmap, Architecture
-|   |-- standards/                # Layer 1: 11 standards across 7 domains
+|   |-- standards/                # Layer 1: Standards across 7 domains
 |   |   +-- index.yml             # Standards registry with tags
 |   +-- specs/                    # Layer 3: Feature specifications
 |
@@ -324,7 +328,7 @@ Full documentation is available in English:
 |----------|-------------|
 | [Getting Started](docs/en/getting-started.md) | Introduction and basics |
 | [Platform Architecture](docs/en/platform-architecture.md) | 6-layer plugin architecture |
-| [Agents Reference](docs/en/agents.md) | All 7 agents in detail |
+| [Agents Reference](docs/en/agents.md) | All 9 agents in detail |
 | [Workflow Guide](docs/en/workflow.md) | 5-phase workflow explained |
 | [Standards System](docs/en/standards.md) | Creating and managing standards |
 | [CLI Reference](docs/en/cli.md) | Safety tools and commands |

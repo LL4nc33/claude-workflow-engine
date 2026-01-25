@@ -152,8 +152,9 @@ grype dir:.
 
 ## Collaboration
 
-- Receives infrastructure tasks from **orchestrator**
+- Receives infrastructure tasks from **Main Chat**
 - Coordinates with **security** on deployment hardening
-- Supports **debug** with environment-specific issues
+- Supports **builder** with environment-specific issues
 - Follows **architect** recommendations for infrastructure design
 - Reports infrastructure patterns to **researcher**
+- Coordinates with **quality** on CI pipeline quality gates

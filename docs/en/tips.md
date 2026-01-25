@@ -9,20 +9,23 @@ Proven recommendations for the effective use of the Claude Workflow Engine Multi
 | Situation | Recommended Agent | Reason |
 |-----------|-------------------|--------|
 | Plan system architecture | `architect` | READ-ONLY analysis, ADRs, design decisions |
-| Production bug | `debug` | Full access, hypothesis-driven investigation |
-| Implement new feature | `debug` (via `orchestrator`) | Orchestrator delegates, debug implements |
+| Production bug | `builder` | Full access, hypothesis-driven investigation |
+| Implement new feature | `builder` (via Main Chat) | Main Chat coordinates, builder implements |
 | Set up CI/CD pipeline | `devops` | Specialized in Docker, K8s, IaC |
 | Check code for vulnerabilities | `security` | OWASP audits, RESTRICTED access |
-| Understand/explain codebase | `ask` | READ-ONLY, didactic explanations |
+| Understand/explain codebase | `explainer` | READ-ONLY, didactic explanations |
 | Evaluate technology | `researcher` | Analysis, comparisons, reports |
-| Coordinate multiple tasks | `orchestrator` | Task delegation, parallelization |
-| Refactor existing code | `debug` | Full access, minimal changes |
+| Coordinate multiple tasks | Main Chat | Coordinates multiple agents |
+| Refactor existing code | `builder` | Full access, minimal changes |
 | API design review | `architect` | API conventions, response formats |
 | GDPR compliance check | `security` | Data protection audit, vulnerability assessment |
-| Analyze performance issue | `debug` | Profiling, log analysis, state inspection |
+| Analyze performance issue | `builder` | Profiling, log analysis, state inspection |
 | Write documentation | `researcher` | READ-ONLY analysis, structured reports |
+| Check test coverage | `quality` | Metrics, quality gates, test health |
+| Brainstorm ideas | `innovator` | Creative solutions, "what if" scenarios |
+| Improve workflow patterns | `guide` | NaNo analysis, pattern-to-standard evolution |
 
-**Rule of thumb:** When in doubt, use the `orchestrator` -- it delegates to the appropriate agent.
+**Rule of thumb:** When in doubt, just describe what you want -- Main Chat automatically delegates to the right agent.
 
 ---
 
@@ -39,7 +42,7 @@ plan-product -> shape-spec -> write-spec -> create-tasks -> orchestrate-tasks
 | Product already exists | `plan-product` | `shape-spec` |
 | Spec is clear in your head | `shape-spec` | `write-spec` |
 | Only 1-2 small tasks | `create-tasks` | Direct agent delegation |
-| Bugfix | Everything | `debug` directly |
+| Bugfix | Everything | `builder` directly |
 | Prototyping | Standards injection | `write-spec` (minimal) |
 | Known pattern | Detailed `shape-spec` | One-liner shape is sufficient |
 
@@ -47,8 +50,8 @@ plan-product -> shape-spec -> write-spec -> create-tasks -> orchestrate-tasks
 
 **Quick bugfix:**
 ```bash
-# Go directly to the debug agent, no workflow needed
-claude agents/debug "Fix the TypeError in api/handler.ts line 42"
+# Go directly to the builder agent, no workflow needed
+claude agents/builder "Fix the TypeError in api/handler.ts line 42"
 ```
 
 **Feature with known pattern:**
@@ -161,13 +164,13 @@ context_optimization:
 # orchestration.yml - Parallel execution
 tasks:
   - id: api-endpoints
-    agent: debug
+    agent: builder
     parallel_group: "implementation"
   - id: database-migration
-    agent: debug
+    agent: builder
     parallel_group: "implementation"  # Runs in parallel with api-endpoints
   - id: integration-tests
-    agent: debug
+    agent: builder
     depends_on: [api-endpoints, database-migration]  # Waits for both
 ```
 
@@ -225,7 +228,7 @@ quality_gates:
 # When the primary agent fails
 task:
   agent: devops
-  fallback_agent: debug
+  fallback_agent: builder
   retry_count: 2
   escalation: orchestrator
 ```

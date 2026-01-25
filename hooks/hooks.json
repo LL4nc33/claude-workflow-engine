@@ -2,7 +2,7 @@
   "hooks": [
     {
       "event": "SessionStart",
-      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-start.sh",
+      "command": ".claude/hooks/scripts/session-start.sh",
       "timeout": 30000
     },
     {
@@ -10,7 +10,7 @@
       "matcher": {
         "tool_name": ["Write", "Edit"]
       },
-      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/pre-write-validate.sh",
+      "command": ".claude/hooks/scripts/pre-write-validate.sh",
       "timeout": 15000
     },
     {
@@ -18,7 +18,7 @@
       "matcher": {
         "tool_name": ["Write", "Edit"]
       },
-      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/post-write-log.sh",
+      "command": ".claude/hooks/scripts/post-write-log.sh",
       "timeout": 5000
     },
     {
@@ -26,13 +26,13 @@
       "matcher": {
         "tool_name": ["Task"]
       },
-      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/nano-observer.sh",
+      "command": ".claude/hooks/scripts/nano-observer.sh",
       "args": ["delegation"],
       "timeout": 3000
     },
     {
       "event": "Stop",
-      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/nano-observer.sh",
+      "command": ".claude/hooks/scripts/nano-observer.sh",
       "args": ["analyze"],
       "timeout": 10000
     }

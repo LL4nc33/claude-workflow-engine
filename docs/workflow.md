@@ -9,10 +9,12 @@ Die Claude Workflow Engine (v0.2.7) bietet drei Wege zur Entwicklung:
 Einfach im Chat beschreiben was du willst — die Engine erkennt den Intent und delegiert automatisch:
 
 ```
-"Implementiere User-Auth"          → debug-Agent
-"Erklaere den Login-Flow"          → ask-Agent
+"Implementiere User-Auth"          → builder-Agent
+"Erklaere den Login-Flow"          → explainer-Agent
 "Audit die API-Endpoints"          → security-Agent
 "Setup Docker fuer das Projekt"    → devops-Agent
+"Pruefe die Test-Coverage"         → quality-Agent
+"Brainstorme Alternativen"         → innovator-Agent
 ```
 
 ### 2. Smart-Workflow (1 Command)
@@ -251,12 +253,12 @@ spec.md erstellt in workflow/specs/2026-01-23-1430-sensor-dashboard/
 
 | Task-Typ | Zugewiesener Agent |
 |----------|-------------------|
-| backend, frontend, testing, database | debug |
+| backend, frontend, testing, database | builder |
 | security | security |
 | infrastructure, ci_cd | devops |
 | architecture, review | architect |
 | documentation | researcher |
-| explanation | ask |
+| explanation | explainer |
 
 **Beispiel-Interaktion:**
 
@@ -269,17 +271,17 @@ Claude: Ich analysiere die Spec "Sensor Dashboard"...
 Du:     ja
 
 Claude: Phase 1 - Foundation:
-          Task 1.1: DB-Schema (S, debug)
-          Task 1.2: TypeScript Types (S, debug)
+          Task 1.1: DB-Schema (S, builder)
+          Task 1.2: TypeScript Types (S, builder)
         Phase 2 - Backend:
-          Task 2.1: WebSocket Handler (M, debug)
-          Task 2.2: API Endpoint (M, debug)
+          Task 2.1: WebSocket Handler (M, builder)
+          Task 2.2: API Endpoint (M, builder)
         Phase 3 - Frontend:
-          Task 3.1: Chart-Komponente (M, debug)
-          Task 3.2: State Management (M, debug)
+          Task 3.1: Chart-Komponente (M, builder)
+          Task 3.2: State Management (M, builder)
         Phase 4 - Quality:
-          Task 4.1: Unit Tests (M, debug)
-          Task 4.2: Integration Tests (M, debug)
+          Task 4.1: Unit Tests (M, builder)
+          Task 4.2: Integration Tests (M, builder)
           Task 4.3: Security Review (S, security)
         Phase 5 - Docs:
           Task 5.1: API-Dokumentation (S, researcher)
@@ -357,9 +359,9 @@ Claude: Spec gefunden: 2026-01-23-1430-sensor-dashboard/
 Du:     phase-by-phase
 
 Claude: Starte Phase 1 - Foundation...
-        > Task 1.1: DB-Schema wird an debug-Agent delegiert...
+        > Task 1.1: DB-Schema wird an builder-Agent delegiert...
         > Task 1.1: PASS - Schema erstellt, Migration lauffaehig
-        > Task 1.2: TypeScript Types wird an debug-Agent delegiert...
+        > Task 1.2: TypeScript Types wird an builder-Agent delegiert...
         > Task 1.2: PASS - Types generiert, konsistent mit Schema
         Phase 1 abgeschlossen. Quality Gate: PASS
         Weiter mit Phase 2? (ja / stopp / details)
@@ -382,10 +384,10 @@ Du:     ja
 
 | Task | Agent | Status | Dauer |
 |------|-------|--------|-------|
-| 1.1 Schema | debug | PASS | 45s |
-| 1.2 Types | debug | PASS | 30s |
-| 2.1 WebSocket | debug | IN_PROGRESS | - |
-| 2.2 API | debug | PENDING | - |
+| 1.1 Schema | builder | PASS | 45s |
+| 1.2 Types | builder | PASS | 30s |
+| 2.1 WebSocket | builder | IN_PROGRESS | - |
+| 2.2 API | builder | PENDING | - |
 ```
 
 ## Phasen überspringen

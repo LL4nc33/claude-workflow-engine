@@ -29,12 +29,78 @@ CAPTCHA_POLL=$(_wc captcha_polling ""); : ${CAPTCHA_POLL:=10}
 
 ---
 
+## Availability Check
+
+Pruefe ob Services konfiguriert sind bevor du sie nutzt. Return-Codes:
+- `0` = Service verfuegbar
+- `1` = Service nicht erreichbar (Netzwerkfehler)
+- `2` = Service nicht konfiguriert (Fallback auf eingebaute Tools empfohlen)
+
+```bash
+web_check() { # web_check [service] -> 0=ok, 1=unreachable, 2=not configured
+  local SVC="${1:-all}"
+  local EXIT=0
+
+  _check_svc() {
+    local NAME="$1" URL="$2" TOOL="$3"
+    if [ -z "$URL" ]; then
+      echo "WARN: $NAME nicht konfiguriert. Fallback: $TOOL" >&2
+      return 2
+    fi
+    if ! curl -sf --max-time 5 "$URL" >/dev/null 2>&1; then
+      echo "WARN: $NAME nicht erreichbar: $URL" >&2
+      return 1
+    fi
+    echo "OK: $NAME verfuegbar" >&2
+    return 0
+  }
+
+  case "$SVC" in
+    search|searxng)
+      _check_svc "SearXNG" "$SEARXNG_URL" "WebSearch Tool"
+      return $?
+      ;;
+    fetch|firecrawl)
+      _check_svc "Firecrawl" "$FIRECRAWL_URL" "WebFetch Tool"
+      return $?
+      ;;
+    captcha)
+      [ -z "$CAPTCHA_KEY" ] && echo "WARN: Captcha-Solver nicht konfiguriert" >&2 && return 2
+      echo "OK: Captcha-Key vorhanden" >&2
+      return 0
+      ;;
+    all|*)
+      _check_svc "SearXNG" "$SEARXNG_URL" "WebSearch Tool" || EXIT=$?
+      _check_svc "Firecrawl" "$FIRECRAWL_URL" "WebFetch Tool" || [ $? -gt $EXIT ] && EXIT=$?
+      [ -n "$CAPTCHA_KEY" ] && echo "OK: Captcha-Key vorhanden" >&2 || echo "INFO: Captcha-Solver nicht konfiguriert (optional)" >&2
+      return $EXIT
+      ;;
+  esac
+}
+```
+
+**Nutzung:**
+```bash
+web_check           # Alle Services pruefen
+web_check search    # Nur SearXNG
+web_check fetch     # Nur Firecrawl
+web_check captcha   # Nur Captcha-Solver
+```
+
+---
+
 ## Funktionen
 
 ### `web_search` — SearXNG-Suche
 
 ```bash
 web_search() { # web_search "query" [category]
+  # Verfuegbarkeitspruefung
+  if [ -z "$SEARXNG_URL" ]; then
+    echo "ERROR: SearXNG nicht konfiguriert. Nutze stattdessen das eingebaute WebSearch Tool." >&2
+    return 2
+  fi
+
   local Q=$(echo "$1" | jq -sRr @uri)
   local CAT="${2:-general}" # general|it|science|images|news
   curl -sf "${SEARXNG_URL}/search?q=${Q}&format=json&categories=${CAT}" \
@@ -42,7 +108,7 @@ web_search() { # web_search "query" [category]
 }
 ```
 
-**Agents:** researcher, debug, architect, devops, security, ask
+**Agents:** researcher, builder, architect, devops, security, explainer
 
 ---
 
@@ -52,6 +118,12 @@ Der zentrale Wrapper — fetcht eine URL, erkennt Captchas automatisch und loest
 
 ```bash
 web_fetch() { # web_fetch "url" [formats] [wait_ms]
+  # Verfuegbarkeitspruefung
+  if [ -z "$FIRECRAWL_URL" ]; then
+    echo "ERROR: Firecrawl nicht konfiguriert. Nutze stattdessen das eingebaute WebFetch Tool." >&2
+    return 2
+  fi
+
   local URL="$1"
   local FORMATS="${2:-markdown}"  # markdown|rawHtml|screenshot|links (kommasepariert)
   local WAIT="${3:-2000}"
@@ -100,7 +172,7 @@ web_md() { web_fetch "$1" "markdown" "${2:-2000}" | jq -r '.data.markdown'; }
 web_full() { web_fetch "$1" "markdown,links,rawHtml" "${2:-3000}"; }
 ```
 
-**Agents:** researcher, debug, architect, devops, security
+**Agents:** researcher, builder, architect, devops, security
 
 ---
 
@@ -159,7 +231,7 @@ _solve_and_retry() { # _solve_and_retry "$html" "$url" -> 0 on success
 }
 ```
 
-**Agents:** researcher, debug (automatisch via `web_fetch`)
+**Agents:** researcher, builder (automatisch via `web_fetch`)
 
 ---
 
@@ -169,6 +241,16 @@ Kombinierter High-Level-Wrapper:
 
 ```bash
 web_search_fetch() { # web_search_fetch "query" [category]
+  # Verfuegbarkeitspruefung beider Services
+  if [ -z "$SEARXNG_URL" ]; then
+    echo "ERROR: SearXNG nicht konfiguriert. Nutze stattdessen das eingebaute WebSearch Tool." >&2
+    return 2
+  fi
+  if [ -z "$FIRECRAWL_URL" ]; then
+    echo "ERROR: Firecrawl nicht konfiguriert. Nutze stattdessen das eingebaute WebFetch Tool." >&2
+    return 2
+  fi
+
   local RESULTS=$(web_search "$1" "${2:-general}")
   local URL=$(echo "$RESULTS" | jq -r '.[0].url // empty')
 
@@ -189,11 +271,11 @@ web_search_fetch() { # web_search_fetch "query" [category]
 | Agent | `web_search` | `web_fetch`/`web_md` | Captcha (auto) |
 |-------|:---:|:---:|:---:|
 | researcher | x | x | x |
-| debug | x | x | x |
+| builder | x | x | x |
 | architect | x | x | - |
 | devops | x | x | - |
 | security | x | x | - |
-| ask | x | - | - |
+| explainer | x | - | - |
 
 Agents ohne Captcha-Zugang erhalten bei Captcha-Detection eine Warnung statt Auto-Solve.
 
@@ -249,8 +331,19 @@ web_fetch "$URL" "markdown,links" | jq '{
 
 ## Fehlerbehandlung
 
+### Return-Codes
+
+| Code | Bedeutung | Agent-Aktion |
+|:----:|-----------|--------------|
+| `0` | Erfolg | Ergebnis verarbeiten |
+| `1` | Fehler beim Abruf (Netzwerk, HTTP, Parsing) | Retry oder alternativen Ansatz waehlen |
+| `2` | Service nicht konfiguriert | Fallback auf eingebaute Tools (WebSearch, WebFetch) |
+
+### Fehlersituationen
+
 | Situation | Verhalten |
 |-----------|-----------|
+| Service nicht konfiguriert | ERROR-Message mit Hinweis auf Fallback-Tool, return 2 |
 | Service nicht erreichbar | `curl -sf` gibt leeren Output → ERROR-Message, return 1 |
 | Captcha + kein Key | WARN-Message, gibt original (captcha-blocked) Content zurueck |
 | Captcha + Balance leer | ERROR, stoppt Captcha-Solving, gibt Warnung |

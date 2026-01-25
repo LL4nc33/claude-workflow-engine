@@ -87,7 +87,7 @@ Das Frontmatter definiert die technischen Eigenschaften des Agents.
 | READ-ONLY + Web | Read, Grep, Glob, WebSearch, WebFetch | Research, Evaluation |
 | FULL | Read, Write, Edit, Bash, Grep, Glob | Implementation, Fixes |
 | RESTRICTED | Read, Grep, Glob, Bash (eingeschränkt) | Security Scanning |
-| TASK-DELEGATION | Task, Read, Grep, Glob | Koordination |
+| TASK-DELEGATION | Task, Read, Grep, Glob | Koordination (nur fuer Main Chat) |
 
 ### Beispiel-Frontmatter
 
@@ -203,10 +203,10 @@ Definiere wie der Agent mit anderen zusammenarbeitet:
 ```markdown
 ## Collaboration
 
-- Receives review requests from **orchestrator**
+- Receives review requests from **Main Chat**
 - Escalates architecture concerns to **architect**
 - Flags security issues to **security** agent
-- Delegates implementation fixes to **debug**
+- Delegates implementation fixes to **builder**
 ```
 
 ---
@@ -309,12 +309,12 @@ Rufe den Agent direkt auf um sein Verhalten zu prüfen:
 
 Erwartete Reaktion: Der Agent analysiert die Datei und liefert ein strukturiertes Review im definierten Format.
 
-### Delegation via Orchestrator
+### Delegation via Main Chat
 
-Teste die Delegation durch den Orchestrator:
+Teste die Delegation durch Main Chat:
 
 ```
-> @orchestrator Delegiere einen Code Review von src/services/ an den reviewer Agent.
+> Delegiere einen Code Review von src/services/ an den reviewer Agent.
 ```
 
 ### Checkliste
@@ -419,10 +419,10 @@ You never nitpick formatting if a formatter is configured.
 
 ## Collaboration
 
-- Receives review requests from **orchestrator**
+- Receives review requests from **Main Chat**
 - Escalates architecture concerns to **architect**
 - Flags security issues to **security** agent
-- Delegates implementation fixes to **debug**
+- Delegates implementation fixes to **builder**
 ```
 
 ---

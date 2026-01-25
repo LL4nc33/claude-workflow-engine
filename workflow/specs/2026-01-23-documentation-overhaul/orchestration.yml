@@ -7,7 +7,7 @@ spec_folder: workflow/specs/2026-01-23-documentation-overhaul/
 
 task_groups:
   - name: infrastructure
-    agent: debug
+    agent: builder
     standards:
       - global/naming
     tasks:
@@ -19,7 +19,7 @@ task_groups:
         depends_on: []
 
   - name: core-docs-de
-    agent: debug
+    agent: builder
     standards:
       - global/naming
     tasks:
@@ -49,7 +49,7 @@ task_groups:
         depends_on: ["1.1"]
 
   - name: neue-inhalte-de
-    agent: debug
+    agent: builder
     standards:
       - global/naming
     tasks:
@@ -67,7 +67,7 @@ task_groups:
         depends_on: ["2.2", "2.6", "2.7"]
 
   - name: englische-version
-    agent: debug
+    agent: builder
     standards:
       - global/naming
     tasks:
@@ -79,7 +79,7 @@ task_groups:
         depends_on: ["4.1"]
 
   - name: verification
-    agent: debug
+    agent: builder
     standards:
       - global/naming
     tasks:
@@ -102,15 +102,15 @@ execution_phases:
     parallel: ["5.1"]
 
 agent_mapping:
-  debug: debug
+  builder: builder
 
 quality_gates:
   after_core_docs:
-    - agent: debug
+    - agent: builder
       check: all_docs_have_valid_structure
   after_neue_inhalte:
-    - agent: debug
+    - agent: builder
       check: code_examples_valid, links_consistent
   after_english:
-    - agent: debug
+    - agent: builder
       check: all_links_valid, no_orphaned_files

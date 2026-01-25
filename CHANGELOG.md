@@ -80,7 +80,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Initial release: Claude Workflow Engine
-- 7 spezialisierte Agents (architect, ask, debug, devops, orchestrator, researcher, security)
+- 9 spezialisierte Agents (architect, builder, devops, explainer, guide, innovator, quality, researcher, security)
 - 5-Phase Workflow (Plan, Shape, Write, Create Tasks, Orchestrate)
 - Standards-System mit 3-Layer Context Model
 - CLI mit install, status, health, check, resolve, rollback Commands

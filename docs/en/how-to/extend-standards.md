@@ -121,7 +121,7 @@ Structured JSON logging:
 
 - `console.log` in production code
 - Returning stack traces to the client
-- Password fields in debug logs
+- Password fields in builder logs
 - Log level per environment instead of per configuration
 ```
 
@@ -316,7 +316,7 @@ Expected output: The full content of `workflow/standards/api/logging.md` is load
 Create a test task and verify the standard is included:
 
 ```
-> @orchestrator Delegate a backend task to debug: "Implement a
+> Delegate a backend task to builder: "Implement a
   health-check endpoint with structured logging."
 ```
 

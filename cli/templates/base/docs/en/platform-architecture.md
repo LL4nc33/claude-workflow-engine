@@ -17,7 +17,7 @@ The Claude Workflow Engine uses all 6 extension layers of Claude Code as a compl
 |  Event-based automation                                          |
 +------------------------------------------------------------------+
 |  Layer 4: Agents                                                 |
-|  .claude/agents/*.md (7 agents)                                  |
+|  .claude/agents/*.md (9 agents)                                  |
 |  Specialized subagents with MCP tool integration                 |
 +------------------------------------------------------------------+
 |  Layer 3: Skills                                                 |
@@ -94,15 +94,15 @@ Each standard in `workflow/standards/` is automatically provided as a skill.
 
 **Path:** `.claude/agents/*.md`
 
-7 specialized agents with defined roles and access rights:
+9 specialized agents with defined roles and access rights:
 
 | Agent | Access | MCP Tools |
 |-------|--------|-----------|
 | architect | READ-ONLY | Serena: find_symbol, get_symbols_overview, find_referencing_symbols |
-| ask | READ-ONLY | Serena: get_symbols_overview, find_symbol |
-| debug | FULL | Serena: find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview |
+| explainer | READ-ONLY | Serena: get_symbols_overview, find_symbol |
+| builder | FULL | Serena: find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview |
 | devops | FULL | - (no MCP dependency) |
-| orchestrator | TASK-DELEGATION | Greptile: list_merge_requests, get_merge_request |
+| quality | READ-ONLY | Greptile: list_merge_requests, get_merge_request |
 | researcher | READ-ONLY | Serena: search_for_pattern, find_symbol, get_symbols_overview |
 | security | RESTRICTED | Greptile: search_greptile_comments, list_merge_request_comments |
 
@@ -165,7 +165,7 @@ Serena provides Language Server-based code navigation:
 2. Configure MCP server in Claude Code
 3. Agents automatically use available tools
 
-**Used by:** architect, researcher, debug, ask
+**Used by:** architect, researcher, builder, explainer
 
 ### Greptile (PR & Code Review)
 
@@ -175,7 +175,7 @@ Greptile provides PR management and review integration:
 2. Configure MCP server with API key
 3. Agents automatically use available tools
 
-**Used by:** orchestrator, security
+**Used by:** quality, security
 
 ### Fallback Behavior
 
@@ -225,6 +225,6 @@ Layer 1 ──describes──> All layers
 ## See Also
 
 - [Getting Started](getting-started.md) - Introduction and installation
-- [Agents Reference](agents.md) - All 7 agents in detail
+- [Agents Reference](agents.md) - All 9 agents in detail
 - [Workflow Guide](workflow.md) - 5-phase workflow
 - [Configuration](configuration.md) - config.yml and settings

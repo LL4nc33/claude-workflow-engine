@@ -18,7 +18,7 @@ Die Claude Workflow Engine nutzt alle 6 Erweiterungsschichten von Claude Code:
 |  Event-basierte Automatisierung (SessionStart, Pre/PostToolUse)  |
 +------------------------------------------------------------------+
 |  Layer 4: Agents (.claude/agents/*.md)                           |
-|  7 spezialisierte Subagenten mit definierten Rollen              |
+|  9 spezialisierte Subagenten mit definierten Rollen              |
 +------------------------------------------------------------------+
 |  Layer 3: Skills (.claude/skills/workflow/)                       |
 |  Kontextbasiertes Wissen (Standards, MCP-Usage, Hooks, Config)   |

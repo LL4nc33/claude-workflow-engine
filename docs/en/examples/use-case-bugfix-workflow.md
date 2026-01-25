@@ -13,13 +13,13 @@ Your Express.js API has been returning sporadic HTTP 500 errors since yesterday.
 - Monitoring shows no memory or CPU anomalies
 - Other endpoints are not affected
 
-**Question:** Do you need the full 5-phase workflow or can you use the debug agent directly?
+**Question:** Do you need the full 5-phase workflow or can you use the builder agent directly?
 
 ---
 
 ## Decision: Full Workflow or Debug Agent Directly?
 
-### Use the debug agent directly when:
+### Use the builder agent directly when:
 
 - The problem is clearly localized (one endpoint, one service)
 - It is a bug, not a new feature
@@ -41,7 +41,7 @@ In our case: **Debug agent directly.** The bug is localized, we need investigati
 
 ### Phase 1: Reflect
 
-The debug agent starts with the situation analysis:
+The builder agent starts with the situation analysis:
 
 ```markdown
 ## Situation Analysis
@@ -53,7 +53,7 @@ The debug agent starts with the situation analysis:
 - Affected area: Only this one endpoint
 ```
 
-**Initial questions from the debug agent:**
+**Initial questions from the builder agent:**
 
 ```
 - What was deployed yesterday at 14:30? (git log --since="yesterday 14:00")

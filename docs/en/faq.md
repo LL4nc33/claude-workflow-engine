@@ -190,24 +190,24 @@ Then register the agent in `workflow/config.yml` under `agents.available` and in
 This is a deliberate design principle: **Separation of Concerns**.
 
 - The architect **designs** (specs, ADRs, reviews) -- but does not implement
-- The debug agent **implements** -- but does not make architectural decisions
-- The orchestrator **delegates** -- but does not execute tasks itself
+- The builder agent **implements** -- but does not make architectural decisions
+- Main Chat **coordinates** -- delegates tasks to specialized agents
 
-If the architect could write, architectural reviews and simultaneous code changes could lead to uncontrolled states. The separation ensures that every change goes through the intended channel (debug agent with standards injection).
+If the architect could write, architectural reviews and simultaneous code changes could lead to uncontrolled states. The separation ensures that every change goes through the intended channel (builder agent with standards injection).
 
 ---
 
 ### 11. How do agents communicate with each other?
 
-Agents do **not** communicate directly with each other. Communication runs exclusively through the orchestrator:
+Agents do **not** communicate directly with each other. Communication runs exclusively through Main Chat:
 
 ```
-Orchestrator --[Task Tool]--> Debug Agent
-Orchestrator --[Task Tool]--> Security Agent
-Orchestrator <--[Result]--- Debug Agent
+Main Chat --[Task Tool]--> Builder Agent
+Main Chat --[Task Tool]--> Security Agent
+Main Chat <--[Result]--- Builder Agent
 ```
 
-The orchestrator:
+Main Chat:
 1. Reads the task definition and associated standards
 2. Formulates a delegation prompt (with standards injection)
 3. Delegates via the `Task` tool to the responsible agent
@@ -255,7 +255,7 @@ Both must be consistent. The tools in the agent file determine what Claude Code 
 | **Lifespan** | Long-lived, cross-project | One-time per feature |
 | **Path** | `workflow/standards/` | `workflow/specs/{feature}/` |
 | **Example** | "API responses always have a `data` envelope" | "User auth needs login, register, password reset" |
-| **Who uses them** | All agents (via injection) | Orchestrator and responsible agent |
+| **Who uses them** | All agents (via injection) | Main Chat and responsible agent |
 
 Standards define the quality rules. Specs define what is concretely implemented. A feature spec references relevant standards, but standards never reference individual specs.
 
@@ -368,7 +368,7 @@ workflow install --dry-run
 Output:
 ```
 [DRY-RUN] Would create: .claude/agents/architect.md
-[DRY-RUN] Would create: .claude/agents/debug.md
+[DRY-RUN] Would create: .claude/agents/builder.md
 [DRY-RUN] Would create: workflow/config.yml
 [DRY-RUN] Would create: workflow/standards/global/tech-stack.md
 [DRY-RUN] Would modify: CLAUDE.md (append workflow section)
@@ -476,7 +476,7 @@ Note: `workflow rollback` only removes the engine files, not your specs or produ
 **Symptom:**
 ```
 [CONFLICT] workflow/config.yml already exists with different content
-[CONFLICT] .claude/agents/debug.md has local modifications
+[CONFLICT] .claude/agents/builder.md has local modifications
 ```
 
 **Solution:**
@@ -541,7 +541,7 @@ Conflicts typically occur when:
 - [Getting Started](getting-started.md) -- Quick start guide
 - [CLI Reference](cli.md) -- All CLI commands in detail
 - [Workflow Guide](workflow.md) -- The 5 phases in detail
-- [Agents](agents.md) -- All 7 agents with capabilities and configuration
+- [Agents](agents.md) -- All 9 agents with capabilities and configuration
 - [Standards](standards.md) -- Standards system and domain overview
 - [Configuration](configuration.md) -- config.yml and orchestration.yml reference
 - How-Tos:

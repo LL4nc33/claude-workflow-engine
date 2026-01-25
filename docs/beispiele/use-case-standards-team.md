@@ -495,7 +495,7 @@ Wenn du jetzt einen Task erstellst, werden die relevanten Standards automatisch 
 
 ```markdown
 ## Task: Neuer API Endpoint POST /api/orders
-Agent: debug
+Agent: builder
 Standards:
   - api/response-format    # Response-Envelope beachten
   - api/error-handling     # Error-Codes nach Konvention

@@ -131,4 +131,4 @@ Show max 2 hints per interaction:
 When enough observations exist (min 5 sessions):
 - Suggest optimal agent based on historical choices
 - Recommend workflow simplification if user often skips phases
-- Alert when debug tasks frequently need retries
+- Alert when builder tasks frequently need retries

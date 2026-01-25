@@ -190,24 +190,24 @@ Registriere den Agent anschließend in `workflow/config.yml` unter `agents.avail
 Das ist ein bewusstes Design-Prinzip: **Separation of Concerns**.
 
 - Der Architect **entwirft** (Specs, ADRs, Reviews) -- aber implementiert nicht
-- Der Debug-Agent **implementiert** -- aber trifft keine architektonischen Entscheidungen
-- Der Orchestrator **delegiert** -- aber fuehrt selbst keine Tasks aus
+- Der Builder-Agent **implementiert** -- aber trifft keine architektonischen Entscheidungen
+- Main Chat **koordiniert** -- delegiert Tasks an spezialisierte Agents
 
-Wenn der Architect schreiben dürfte, koennten architektonische Reviews und gleichzeitige Code-Änderungen zu unkontrollierten Zustaenden führen. Die Trennung sorgt dafür, dass jede Aenderung durch den vorgesehenen Kanal (Debug-Agent mit Standards-Injection) läuft.
+Wenn der Architect schreiben duerfte, koennten architektonische Reviews und gleichzeitige Code-Aenderungen zu unkontrollierten Zustaenden fuehren. Die Trennung sorgt dafuer, dass jede Aenderung durch den vorgesehenen Kanal (Builder-Agent mit Standards-Injection) laeuft.
 
 ---
 
 ### 11. Wie kommunizieren die Agents untereinander?
 
-Agents kommunizieren **nicht direkt** miteinander. Die Kommunikation läuft ausschließlich über den Orchestrator:
+Agents kommunizieren **nicht direkt** miteinander. Die Kommunikation laeuft ausschliesslich ueber Main Chat:
 
 ```
-Orchestrator --[Task-Tool]--> Debug-Agent
-Orchestrator --[Task-Tool]--> Security-Agent
-Orchestrator <--[Ergebnis]--- Debug-Agent
+Main Chat --[Task-Tool]--> Builder-Agent
+Main Chat --[Task-Tool]--> Security-Agent
+Main Chat <--[Ergebnis]--- Builder-Agent
 ```
 
-Der Orchestrator:
+Main Chat:
 1. Liest die Task-Definition und zugehoerige Standards
 2. Formuliert einen Delegation-Prompt (mit Standards-Injection)
 3. Delegiert via `Task`-Tool an den zustaendigen Agent
@@ -255,7 +255,7 @@ Beide müssen konsistent sein. Die Tools in der Agent-Datei bestimmen, was Claud
 | **Lebensdauer** | Langlebig, projektübergreifend | Einmalig pro Feature |
 | **Pfad** | `workflow/standards/` | `workflow/specs/{feature}/` |
 | **Beispiel** | "API-Responses haben immer ein `data`-Envelope" | "User-Auth braucht Login, Register, Password-Reset" |
-| **Wer nutzt sie** | Alle Agents (via Injection) | Orchestrator und zustaendiger Agent |
+| **Wer nutzt sie** | Alle Agents (via Injection) | Main Chat und zustaendiger Agent |
 
 Standards definieren die Qualitaetsregeln. Specs definieren was konkret umgesetzt wird. Ein Feature-Spec referenziert relevante Standards, aber Standards referenzieren nie einzelne Specs.
 
@@ -368,7 +368,7 @@ workflow install --dry-run
 Ausgabe:
 ```
 [DRY-RUN] Would create: .claude/agents/architect.md
-[DRY-RUN] Would create: .claude/agents/debug.md
+[DRY-RUN] Would create: .claude/agents/builder.md
 [DRY-RUN] Would create: workflow/config.yml
 [DRY-RUN] Would create: workflow/standards/global/tech-stack.md
 [DRY-RUN] Would modify: CLAUDE.md (append workflow section)
@@ -476,7 +476,7 @@ Beachte: `workflow rollback` entfernt nur die Engine-Dateien, nicht deine Specs 
 **Symptom:**
 ```
 [CONFLICT] workflow/config.yml already exists with different content
-[CONFLICT] .claude/agents/debug.md has local modifications
+[CONFLICT] .claude/agents/builder.md has local modifications
 ```
 
 **Loesung:**
@@ -541,7 +541,7 @@ Konflikte entstehen typischerweise wenn:
 - [Erste Schritte](erste-schritte.md) -- Schnellstart-Anleitung
 - [CLI-Referenz](cli.md) -- Alle CLI-Befehle im Detail
 - [Workflow Guide](workflow.md) -- Die 5 Phasen im Detail
-- [Agenten](agenten.md) -- Alle 7 Agents mit Faehigkeiten und Konfiguration
+- [Agenten](agenten.md) -- Alle 9 Agents mit Faehigkeiten und Konfiguration
 - [Standards](standards.md) -- Standards-System und Domain-Uebersicht
 - [Konfiguration](konfiguration.md) -- config.yml und orchestration.yml Referenz
 - How-Tos:

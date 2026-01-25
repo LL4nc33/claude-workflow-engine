@@ -118,10 +118,12 @@ workflow install . --dry-run
     notes.md              [EXISTING - preserved from conflict resolution]
     agents/
       architect.md        [NEW]
-      ask.md              [NEW]
-      debug.md            [NEW]
+      explainer.md              [NEW]
+      builder.md            [NEW]
       devops.md           [NEW]
-      orchestrator.md     [NEW]
+      guide.md            [NEW]
+      innovator.md        [NEW]
+      quality.md          [NEW]
       researcher.md       [NEW]
       security.md         [NEW]
     settings.local.json   [NEW]
@@ -166,7 +168,7 @@ workflow install .
 Installing Claude Workflow Engine...
 
   [1/4] Creating agent definitions...
-    Created: .claude/agents/ (7 agents)
+    Created: .claude/agents/ (9 agents)
     Created: .claude/CLAUDE.md
     Created: .claude/settings.local.json
 
@@ -206,7 +208,7 @@ workflow health .
 ```
 Health Check Results:
 
-  [OK] .claude/agents/ - 7 agent files present and valid
+  [OK] .claude/agents/ - 9 agent files present and valid
   [OK] .claude/CLAUDE.md - Project instructions present
   [OK] workflow/config.yml - Valid YAML, schema correct
   [OK] workflow/standards/index.yml - 11 standards registered
@@ -240,7 +242,7 @@ Claude Workflow Engine Status:
 
   Standards: 11 registered, 0 customized
   Specs: 0 features specified
-  Agents: 7 available
+  Agents: 9 available
 
   Next Step: Run /workflow/plan-product to define your product vision.
 ```

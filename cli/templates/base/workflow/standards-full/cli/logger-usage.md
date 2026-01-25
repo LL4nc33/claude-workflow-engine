@@ -11,7 +11,7 @@ The Logger class provides structured CLI output. Use methods semantically:
 | `step()` | [>>>>] | Action performed (file created, setting applied) |
 | `done()` | [DONE] | Command completed successfully |
 | `skip()` | [SKIP] | Item intentionally skipped |
-| `debug()` | [DBG] | Verbose-only detail (requires `--verbose`) |
+| `builder()` | [DBG] | Verbose-only detail (requires `--verbose`) |
 
 ## Structure methods
 
@@ -25,6 +25,6 @@ The Logger class provides structured CLI output. Use methods semantically:
 ## Rules
 
 - Never use `console.log` directly - always use Logger
-- `debug()` output only visible with `--verbose`
+- `builder()` output only visible with `--verbose`
 - `summary()` counts must match actual check results
 - `error()` takes 2 args: message + suggestion

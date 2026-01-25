@@ -178,7 +178,7 @@ secrets.*
 
 | Pfad | Zweck | Groesse |
 |------|-------|---------|
-| `.claude/agents/` | 7 Agent-Definitionsdateien | ~15 KB |
+| `.claude/agents/` | 9 Agent-Definitionsdateien | ~15 KB |
 | `.claude/commands/workflow/` | 23 Slash-Command-Dateien | ~50 KB |
 | `.claude/skills/workflow/` | 13 Skill-Verzeichnisse (7 Standards + 6 Plugin) | ~20 KB |
 | `.claude/CLAUDE.md` | Projektkontext für Claude | ~4 KB |
@@ -198,8 +198,8 @@ secrets.*
 
 Falls du bereits Agenten hast:
 
-- Die Engine fuegt ihre 7 Agenten neben deinen bestehenden hinzu
-- Namenskollisionen werden erkannt (z.B. wenn du bereits eine `debug.md` hast)
+- Die Engine fuegt ihre 9 Agenten neben deinen bestehenden hinzu
+- Namenskollisionen werden erkannt (z.B. wenn du bereits eine `builder.md` hast)
 - **Lösung:** Benenne deinen Agenten um oder überspringe die Engine-Version
 
 ### Bestehende .claude/commands/
@@ -243,7 +243,7 @@ context_model:
 
 ### Agenten entfernen
 
-Loesche Agent-Dateien aus `.claude/agents/`. Die verbleibenden Agenten funktionieren weiterhin. Der Orchestrator überspringt geloeschte Agenten bei der Delegation.
+Loesche Agent-Dateien aus `.claude/agents/`. Die verbleibenden Agenten funktionieren weiterhin. Main Chat ueberspringt geloeschte Agenten bei der Delegation.
 
 ### CLI-Features deaktivieren
 
@@ -269,8 +269,9 @@ Dies stellt die Dateien aus dem Backup wieder her, das während der Installation
 
 ```bash
 # Engine-Agenten entfernen
-rm -f .claude/agents/architect.md .claude/agents/ask.md .claude/agents/debug.md \
-      .claude/agents/devops.md .claude/agents/orchestrator.md \
+rm -f .claude/agents/architect.md .claude/agents/builder.md \
+      .claude/agents/devops.md .claude/agents/explainer.md .claude/agents/guide.md \
+      .claude/agents/innovator.md .claude/agents/quality.md \
       .claude/agents/researcher.md .claude/agents/security.md
 
 # Engine-Commands und Skills entfernen

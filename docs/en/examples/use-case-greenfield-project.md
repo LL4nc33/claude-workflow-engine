@@ -37,10 +37,12 @@ workflow install . --dry-run
   .claude/
     agents/
       architect.md
-      ask.md
-      debug.md
+      explainer.md
+      builder.md
       devops.md
-      orchestrator.md
+      guide.md
+      innovator.md
+      quality.md
       researcher.md
       security.md
     settings.local.json
@@ -82,7 +84,7 @@ workflow install .
 
 ```
 Installation complete.
-  Created: .claude/ (7 agents, settings, CLAUDE.md)
+  Created: .claude/ (9 agents, settings, CLAUDE.md)
   Created: workflow/ (config, standards, product/, specs/)
   Run 'workflow health .' to verify the installation.
 ```
@@ -95,7 +97,7 @@ workflow health .
 
 ```
 Health Check Results:
-  [OK] .claude/agents/ - 7 agent files present
+  [OK] .claude/agents/ - 9 agent files present
   [OK] .claude/CLAUDE.md - Project instructions present
   [OK] workflow/config.yml - Valid configuration
   [OK] workflow/standards/index.yml - 11 standards registered
@@ -369,34 +371,34 @@ RunningTimer:
 # Tasks: Timer Feature
 
 ## Task 1: Database Schema
-Agent: debug
+Agent: builder
 - TimeEntry model in Prisma
 - Create migration
 - Unique constraint: max 1 active timer per user
 
 ## Task 2: Timer Service
-Agent: debug
+Agent: builder
 - start(userId, projectId): Start timer
 - stop(userId): Stop timer, create TimeEntry
 - current(userId): Query running timer
 - Validation: No duplicate timer
 
 ## Task 3: Timer Router
-Agent: debug
+Agent: builder
 - POST /api/timer/start
 - POST /api/timer/stop
 - GET /api/timer/current
 - Auth middleware
 
 ## Task 4: Frontend Timer Component
-Agent: debug
+Agent: builder
 - Timer display with real-time counter
 - Start/stop button
 - Project selection dropdown
 - WebSocket or polling for timer sync
 
 ## Task 5: Tests
-Agent: debug
+Agent: builder
 - Unit tests for timer service
 - Integration tests for API
 - E2E test: Start timer, wait, stop
@@ -406,7 +408,7 @@ Agent: debug
 > /workflow/orchestrate-tasks
 ```
 
-The orchestrator executes the tasks in sequence and delegates to the debug agent.
+Main Chat executes the tasks in sequence and delegates to the builder agent.
 
 ---
 
@@ -491,7 +493,7 @@ After this walkthrough you have:
 ```
 timetrack-app/
   .claude/
-    agents/ (7 agents)
+    agents/ (9 agents)
     CLAUDE.md
     settings.local.json
   .github/

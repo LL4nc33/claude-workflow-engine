@@ -368,7 +368,7 @@ workflow install --dry-run
 Ausgabe:
 ```
 [DRY-RUN] Would create: .claude/agents/architect.md
-[DRY-RUN] Would create: .claude/agents/debug.md
+[DRY-RUN] Would create: .claude/agents/builder.md
 [DRY-RUN] Would create: workflow/config.yml
 [DRY-RUN] Would create: workflow/standards/global/tech-stack.md
 [DRY-RUN] Would modify: CLAUDE.md (append workflow section)
@@ -476,7 +476,7 @@ Beachte: `workflow rollback` entfernt nur die Engine-Dateien, nicht deine Specs 
 **Symptom:**
 ```
 [CONFLICT] workflow/config.yml already exists with different content
-[CONFLICT] .claude/agents/debug.md has local modifications
+[CONFLICT] .claude/agents/builder.md has local modifications
 ```
 
 **Loesung:**
@@ -541,7 +541,7 @@ Konflikte entstehen typischerweise wenn:
 - [Erste Schritte](erste-schritte.md) -- Schnellstart-Anleitung
 - [CLI-Referenz](cli.md) -- Alle CLI-Befehle im Detail
 - [Workflow Guide](workflow.md) -- Die 5 Phasen im Detail
-- [Agenten](agenten.md) -- Alle 7 Agents mit Fähigkeiten und Konfiguration
+- [Agenten](agenten.md) -- Alle 9 Agents mit Faehigkeiten und Konfiguration
 - [Standards](standards.md) -- Standards-System und Domain-Übersicht
 - [Konfiguration](konfiguration.md) -- config.yml und orchestration.yml Referenz
 - How-Tos:

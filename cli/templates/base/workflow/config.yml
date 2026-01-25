@@ -16,7 +16,7 @@ default_profile: default
 # Standards: /discover-standards, /index-standards, /inject-standards
 claude_code_commands: true
 
-# Allow delegation to specialized subagents (architect, debug, security, etc.)
+# Allow delegation to specialized subagents (architect, builder, security, etc.)
 use_claude_code_subagents: true
 
 # Convert standards to Claude Code Skills for context-efficient auto-matching
@@ -72,24 +72,30 @@ agents:
     - name: architect
       access: read-only
       purpose: System design, ADRs, architectural review
-    - name: ask
-      access: read-only
-      purpose: Explanations, learning, documentation queries
-    - name: debug
+    - name: builder
       access: full
       purpose: Bug investigation with full filesystem access
-    - name: orchestrator
-      access: task-delegation
-      purpose: Task delegation using the Task tool
+    - name: devops
+      access: full
+      purpose: CI/CD, Docker, Kubernetes, IaC
+    - name: explainer
+      access: read-only
+      purpose: Explanations, learning, documentation queries
+    - name: guide
+      access: read-only
+      purpose: NaNo evolution, pattern-to-standards, process improvement
+    - name: innovator
+      access: read-only
+      purpose: Brainstorming, creative solutions, what-if exploration
+    - name: quality
+      access: read-only
+      purpose: Testing, coverage analysis, quality gates
     - name: researcher
       access: read-only
       purpose: Codebase analysis and documentation generation
     - name: security
       access: read-only
       purpose: OWASP audits, vulnerability assessment
-    - name: devops
-      access: full
-      purpose: CI/CD, Docker, Kubernetes, IaC
 
 # -----------------------------------------------------------------------------
 # GDPR / EU Compliance
@@ -178,7 +184,7 @@ mcp:
         - find_referencing_symbols
         - replace_symbol_body
         - search_for_pattern
-      used_by: [architect, researcher, debug, ask]
+      used_by: [architect, researcher, builder, explainer]
 
     - name: greptile
       description: PR management and code review integration
@@ -200,7 +206,7 @@ project_types:
     name: "Web Application"
     description: "Full-stack web app with frontend and backend"
     standards_domains: [global, frontend, api, database, testing]
-    suggested_agents: [debug, architect, security]
+    suggested_agents: [builder, architect, security]
     tech_stack_defaults:
       frontend: ["React", "Next.js", "Vue", "Svelte"]
       backend: ["Node.js", "Python", "Go"]
@@ -216,7 +222,7 @@ project_types:
     name: "API / Backend Service"
     description: "REST or GraphQL API without frontend"
     standards_domains: [global, api, database, testing, devops]
-    suggested_agents: [debug, architect, security, devops]
+    suggested_agents: [builder, architect, security, devops]
     tech_stack_defaults:
       runtime: ["Node.js", "Python", "Go", "Rust"]
       framework: ["Express", "Fastify", "FastAPI", "Gin"]
@@ -232,7 +238,7 @@ project_types:
     name: "CLI Tool"
     description: "Command-line application"
     standards_domains: [global, testing]
-    suggested_agents: [debug, architect]
+    suggested_agents: [builder, architect]
     tech_stack_defaults:
       language: ["TypeScript", "Python", "Go", "Rust"]
       framework: ["Commander.js", "Yargs", "Click", "Cobra"]
@@ -245,7 +251,7 @@ project_types:
     name: "Library / Package"
     description: "Reusable library for npm/pip/crates"
     standards_domains: [global, testing]
-    suggested_agents: [debug, architect, researcher]
+    suggested_agents: [builder, architect, researcher]
     tech_stack_defaults:
       language: ["TypeScript", "Python", "Rust"]
       build: ["tsup", "esbuild", "setuptools", "cargo"]
@@ -258,7 +264,7 @@ project_types:
     name: "Mobile App"
     description: "iOS/Android app (React Native, Flutter, etc.)"
     standards_domains: [global, frontend, api, testing]
-    suggested_agents: [debug, architect]
+    suggested_agents: [builder, architect]
     tech_stack_defaults:
       framework: ["React Native", "Flutter", "Expo"]
       backend: ["Firebase", "Supabase", "Custom API"]
@@ -272,7 +278,7 @@ project_types:
     name: "Monorepo"
     description: "Multi-package repository (Turborepo, Nx, etc.)"
     standards_domains: [global, api, frontend, database, testing, devops]
-    suggested_agents: [debug, architect, devops, orchestrator]
+    suggested_agents: [builder, architect, devops, orchestrator]
     tech_stack_defaults:
       tooling: ["Turborepo", "Nx", "Lerna", "pnpm workspaces"]
     initial_structure:

@@ -244,10 +244,10 @@ execution_phases:
 agent_mapping:
   # Maps abstract task types to concrete agents in .claude/agents/
   # Must align with workflow/orchestration.yml default_mapping
-  backend: debug
-  frontend: debug
-  testing: debug
-  database: debug
+  backend: builder
+  frontend: builder
+  testing: builder
+  database: builder
   security: security
   infrastructure: devops
   ci_cd: devops
@@ -323,21 +323,21 @@ Next steps:
 
 ## Agent Type Guide
 
-Maps abstract task types to the 7 agents in `.claude/agents/`:
+Maps abstract task types to the 9 agents in `.claude/agents/`:
 
 | Agent Type | Maps To | Typical Tasks |
 |------------|---------|---------------|
-| backend | debug | APIs, models, business logic |
-| frontend | debug | Components, state, UI integration |
-| testing | debug | Unit tests, integration tests |
-| database | debug | Schema, migrations, queries |
+| backend | builder | APIs, models, business logic |
+| frontend | builder | Components, state, UI integration |
+| testing | builder | Unit tests, integration tests |
+| database | builder | Schema, migrations, queries |
 | security | security | Auth review, OWASP audits, input validation |
 | infrastructure | devops | Docker, K8s, Terraform, IaC |
 | ci_cd | devops | CI/CD pipelines, deployment workflows |
 | architecture | architect | ADRs, design decisions, API reviews |
 | documentation | researcher | Analysis reports, pattern documentation |
 | review | architect | Architectural consistency, API review |
-| explanation | ask | Concept clarification, code walkthroughs |
+| explanation | explainer | Concept clarification, code walkthroughs |
 
 ## Tips
 

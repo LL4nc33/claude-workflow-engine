@@ -36,12 +36,14 @@ Layer 3: Specs (WHAT NEXT)
 | Agent        | Access Level    | Tools                          |
 |-------------|-----------------|--------------------------------|
 | architect   | READ-ONLY       | Read, Grep, Glob              |
-| ask         | READ-ONLY       | Read, Grep, Glob              |
-| debug       | FULL            | Read, Write, Edit, Bash, Grep |
-| orchestrator| TASK-DELEGATION | Task, Read, Grep, Glob        |
-| researcher  | READ-ONLY       | Read, Grep, Glob, WebFetch    |
-| security    | READ-ONLY       | Read, Grep, Glob, Bash(audit) |
+| builder     | FULL            | Read, Write, Edit, Bash, Grep |
 | devops      | FULL            | All tools                     |
+| explainer   | READ-ONLY       | Read, Grep, Glob              |
+| guide       | READ-ONLY       | Read, Grep, Glob              |
+| innovator   | READ-ONLY       | Read, Grep, Glob, WebSearch   |
+| quality     | READ-ONLY       | Read, Grep, Glob, Bash(test)  |
+| researcher  | READ-ONLY       | Read, Grep, Glob, WebFetch    |
+| security    | RESTRICTED      | Read, Grep, Glob, Bash(audit) |
 
 ## Integration Flow
 
@@ -49,9 +51,10 @@ Layer 3: Specs (WHAT NEXT)
 1. /shape-spec    → Creates specification (Plan mode)
 2. architect      → Reviews for architectural soundness
 3. security       → Reviews for vulnerabilities
-4. orchestrator   → Delegates tasks to specialists
-5. devops/debug   → Executes implementation
-6. /inject-standards → Ensures compliance during implementation
+4. Main Chat      → Delegates tasks to specialists
+5. devops/builder → Executes implementation
+6. quality        → Validates test coverage and quality gates
+7. /inject-standards → Ensures compliance during implementation
 ```
 
 ## Data Flow and Privacy

@@ -72,10 +72,12 @@ search_greptile_comments(query="authentication vulnerability")
 |-------|-------------|----------------|
 | **architect** | find_symbol, get_symbols_overview, find_referencing_symbols | - |
 | **researcher** | search_for_pattern, find_symbol, get_symbols_overview | - |
-| **debug** | find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview | - |
-| **ask** | get_symbols_overview, find_symbol | - |
+| **builder** | find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview | - |
+| **explainer** | get_symbols_overview, find_symbol | - |
 | **security** | - | search_greptile_comments, list_merge_request_comments |
-| **orchestrator** | - | list_merge_requests, get_merge_request |
+| **guide** | search_for_pattern, get_symbols_overview | - |
+| **innovator** | - | - |
+| **quality** | find_symbol, get_symbols_overview | list_merge_requests, get_merge_request |
 | **devops** | - | - |
 
 ## Wann MCP-Tools statt Standard-Tools?

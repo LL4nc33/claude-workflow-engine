@@ -6,7 +6,7 @@ Claude Workflow Engine ist ein Multi-Agent-System, das Claude Code um strukturie
 
 **Was du bekommst:**
 
-- 7 spezialisierte Agents (Architect, Debug, Security, DevOps, u.a.)
+- 9 spezialisierte Agents (architect, builder, devops, explainer, guide, innovator, quality, researcher, security)
 - Einen 5-Phasen-Workflow von der Idee bis zur Implementierung
 - Standards, die automatisch auf delegierte Tasks angewendet werden
 - CLI Safety Tools für Installation und Health Monitoring
@@ -69,7 +69,7 @@ Nach der Installation hat dein Projekt diese Struktur:
 
 ```
 .claude/
-  agents/              # 7 spezialisierte Agents
+  agents/              # 9 spezialisierte Agents
   commands/workflow/    # 23 Slash Commands
   skills/workflow/      # 13 Skills (7 Standards + 6 Plugin-Skills)
 
@@ -232,7 +232,7 @@ claude> /workflow/create-tasks
 Claude: Ich breche die Spec in Tasks auf. Folgende Agents werden benoetigt:
         - architect: API Design Review
         - devops: Database Migration Setup
-        - debug: Implementation der Auth-Logik
+        - builder: Implementation der Auth-Logik
         - security: OWASP Audit der Auth-Endpoints
 
         Soll ich fortfahren?
@@ -266,7 +266,7 @@ claude> /workflow/orchestrate-tasks
 Claude: Starte Orchestration für 20260123-user-auth.
         Phase 1/3: Design Review (architect agent)
         [...]
-        Phase 2/3: Implementation (debug agent)
+        Phase 2/3: Implementation (builder agent)
         [...]
         Phase 3/3: Security Audit (security agent)
         [...]
@@ -291,7 +291,7 @@ Starte Claude Code und frage:
 claude> Welche Agents sind verfügbar?
 ```
 
-**Erwartete Antwort:** Claude listet alle 7 Agents auf (architect, ask, debug, devops, orchestrator, researcher, security). Wenn nicht, pruefe ob `.claude/agents/` die Agent-Dateien enthaelt und ob `CLAUDE.md` vorhanden ist.
+**Erwartete Antwort:** Claude listet alle 9 Agents auf (architect, builder, devops, explainer, guide, innovator, quality, researcher, security). Wenn nicht, pruefe ob `.claude/agents/` die Agent-Dateien enthaelt und ob `CLAUDE.md` vorhanden ist.
 
 ### Commands pruefen
 
@@ -325,7 +325,7 @@ node dist/index.js health .
 
 ```
 Health Check Results:
-  Agents:     7/7 loaded
+  Agents:     9/9 loaded
   Commands:   8/8 available
   Standards:  11/11 indexed
   Config:     valid

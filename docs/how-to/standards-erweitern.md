@@ -316,7 +316,7 @@ Erwartete Ausgabe: Der vollständige Inhalt von `workflow/standards/api/logging.
 Erstelle einen Test-Task und prüfe ob der Standard ankommt:
 
 ```
-> @orchestrator Delegiere einen Backend-Task an debug: "Implementiere einen
+> Delegiere einen Backend-Task an builder: "Implementiere einen
   Health-Check-Endpoint mit strukturiertem Logging."
 ```
 

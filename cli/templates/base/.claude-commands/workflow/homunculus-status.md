@@ -42,12 +42,12 @@ Status: enabled | Level: medium | Threshold: 3
 
 📈 Insights
   - [Insight basierend auf den Daten]
-  - [z.B. "debug wird 80% fuer implementation gewaehlt - starkes Pattern!"]
+  - [z.B. "builder wird 80% fuer implementation gewaehlt - starkes Pattern!"]
   - [z.B. "Noch 1 Beobachtung bis zum naechsten Pattern (architect→architecture)"]
   - [z.B. "3 neue Sessions seit letzter Analyse - Background-Analyse laeuft"]
 
 🎯 Top Patterns
-  1. debug → implementation (12x)
+  1. builder → implementation (12x)
   2. architect → architecture (5x)
   3. researcher → research (4x)
 

@@ -6,7 +6,7 @@ Claude Workflow Engine is a multi-agent system that extends Claude Code with str
 
 **What you get:**
 
-- 7 specialized agents (Architect, Debug, Security, DevOps, and more)
+- 9 specialized agents (Architect, Builder, Security, DevOps, Quality, and more)
 - A 5-phase workflow from idea to implementation
 - Standards that are automatically applied to delegated tasks
 - CLI safety tools for installation and health monitoring
@@ -69,7 +69,7 @@ After installation, your project has this structure:
 
 ```
 .claude/
-  agents/              # 7 specialized agents
+  agents/              # 9 specialized agents
   commands/workflow/    # 23 slash commands
   skills/workflow/      # 13 skills (7 standards + 6 plugin skills)
 
@@ -232,7 +232,7 @@ claude> /workflow/create-tasks
 Claude: I am breaking the spec into tasks. The following agents are needed:
         - architect: API Design Review
         - devops: Database Migration Setup
-        - debug: Auth logic implementation
+        - builder: Auth logic implementation
         - security: OWASP Audit of auth endpoints
 
         Should I proceed?
@@ -256,7 +256,7 @@ workflow/specs/20260123-user-auth/
 /workflow/orchestrate-tasks
 ```
 
-Tasks are delegated to specialized agents. The orchestrator tracks progress and enforces quality gates.
+Tasks are delegated to specialized agents. Main Chat tracks progress and enforces quality gates.
 
 **Example interaction:**
 
@@ -266,7 +266,7 @@ claude> /workflow/orchestrate-tasks
 Claude: Starting orchestration for 20260123-user-auth.
         Phase 1/3: Design Review (architect agent)
         [...]
-        Phase 2/3: Implementation (debug agent)
+        Phase 2/3: Implementation (builder agent)
         [...]
         Phase 3/3: Security Audit (security agent)
         [...]
@@ -291,7 +291,7 @@ Start Claude Code and ask:
 claude> Which agents are available?
 ```
 
-**Expected response:** Claude lists all 7 agents (architect, ask, debug, devops, orchestrator, researcher, security). If not, check whether `.claude/agents/` contains the agent files and whether `CLAUDE.md` is present.
+**Expected response:** Claude lists all 9 agents (architect, builder, devops, explainer, guide, innovator, quality, researcher, security). If not, check whether `.claude/agents/` contains the agent files and whether `CLAUDE.md` is present.
 
 ### Check Commands
 
@@ -327,7 +327,7 @@ node dist/index.js health .
 
 ```
 Health Check Results:
-  Agents:     7/7 loaded
+  Agents:     9/9 loaded
   Commands:   23/23 available
   Standards:  11/11 indexed
   Config:     valid

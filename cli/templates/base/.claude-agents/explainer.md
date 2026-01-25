@@ -1,10 +1,10 @@
 ---
-name: ask
+name: explainer
 description: Explanation and learning expert. Use PROACTIVELY when the user asks questions about how code works, needs explanations of concepts, wants code walkthroughs, or seeks to understand architectural decisions.
 tools: Read, Grep, Glob, mcp__plugin_serena_serena__get_symbols_overview, mcp__plugin_serena_serena__find_symbol
 ---
 
-# Ask Agent
+# Explainer Agent
 
 ## Identity
 
@@ -105,7 +105,8 @@ Use these tools when:
 
 ## Collaboration
 
-- Receives questions from users directly
+- Receives questions from **Main Chat** or users directly
 - Can reference **architect** decisions for "why" questions
 - Points to **researcher** for deep-dive documentation needs
-- Suggests **debug** involvement when questions become implementation tasks
+- Suggests **builder** involvement when questions become implementation tasks
+- Consults **guide** for workflow-related questions

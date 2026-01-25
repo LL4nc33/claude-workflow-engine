@@ -26,8 +26,15 @@ EVOLUTION_DIR="${NANO_DIR}/evolution"
 CONFIG_FILE="${NANO_DIR}/config/pattern-rules.yml"
 LOCAL_CONFIG="${ROOT}/.claude/nano.local.md"
 
-# Session ID (stable per process tree)
-SESSION_ID="${CLAUDE_SESSION_ID:-$(date +%Y%m%d-%H%M%S)}"
+# Session ID (stable per Claude session)
+# Priority: 1. CLAUDE_SESSION_ID env var, 2. shared file from session-start hook, 3. fallback to timestamp
+if [ -n "${CLAUDE_SESSION_ID:-}" ]; then
+  SESSION_ID="${CLAUDE_SESSION_ID}"
+elif [ -f "/tmp/claude-current-session-id" ]; then
+  SESSION_ID="$(cat /tmp/claude-current-session-id)"
+else
+  SESSION_ID="$(date +%Y%m%d-%H%M%S)"
+fi
 SESSION_FILE="${OBSERVATIONS_DIR}/session-${SESSION_ID}.toon"
 
 # --- Cached Config Values (parsed once) ---
@@ -102,19 +109,28 @@ write_observation() {
 
 # --- Command Handlers ---
 
-# Handle delegation observation (PostToolUse for Task tool)
+# Handle delegation observation (PostToolUse for Task tool OR SubagentStop)
 handle_delegation() {
   # Read tool input from stdin (Claude hook protocol)
   local tool_input=""
   if [ -t 0 ]; then
-    # No stdin available, minimal observation
-    write_observation "delegation" "agent=unknown,task_group=unknown,outcome=observed"
+    # No stdin available, skip (avoid duplicate observations)
     return 0
   fi
 
   tool_input=$(cat)
 
-  # Extract relevant fields from the Task tool input
+  # Extract hook event type
+  local hook_event
+  hook_event=$(echo "${tool_input}" | grep -o '"hook_event_name"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*"hook_event_name"[[:space:]]*:[[:space:]]*"//;s/"//')
+
+  # Only process PostToolUse - SubagentStop lacks agent_type field
+  # This avoids duplicate observations since both hooks fire for Task
+  if [ "${hook_event}" = "SubagentStop" ]; then
+    return 0
+  fi
+
+  # Extract fields from PostToolUse (Task) format
   local agent_type task_desc
   agent_type=$(echo "${tool_input}" | grep -o '"subagent_type"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*"subagent_type"[[:space:]]*:[[:space:]]*"//;s/"//')
   task_desc=$(echo "${tool_input}" | grep -o '"description"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*"description"[[:space:]]*:[[:space:]]*"//;s/"//' | cut -c1-80)
@@ -122,13 +138,15 @@ handle_delegation() {
   # Determine task group from agent type
   local task_group="unknown"
   case "${agent_type}" in
-    debug) task_group="implementation" ;;
     architect) task_group="architecture" ;;
-    security) task_group="security" ;;
+    builder) task_group="implementation" ;;
     devops) task_group="infrastructure" ;;
+    explainer) task_group="explanation" ;;
+    guide) task_group="process_evolution" ;;
+    innovator) task_group="ideation" ;;
+    quality) task_group="quality_assurance" ;;
     researcher) task_group="research" ;;
-    ask) task_group="explanation" ;;
-    orchestrator) task_group="coordination" ;;
+    security) task_group="security" ;;
     Explore) task_group="exploration" ;;
     *) task_group="other" ;;
   esac

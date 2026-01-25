@@ -17,7 +17,7 @@ Die Claude Workflow Engine nutzt alle 6 Erweiterungsschichten von Claude Code al
 |  Event-basierte Automatisierung                                  |
 +------------------------------------------------------------------+
 |  Layer 4: Agents                                                 |
-|  .claude/agents/*.md (7 Agenten)                                 |
+|  .claude/agents/*.md (9 Agenten)                                 |
 |  Spezialisierte Subagenten mit MCP-Tool-Integration              |
 +------------------------------------------------------------------+
 |  Layer 3: Skills                                                 |
@@ -125,15 +125,17 @@ Jeder Standard in `workflow/standards/` wird automatisch als Skill bereitgestell
 
 **Pfad:** `.claude/agents/*.md`
 
-7 spezialisierte Agenten mit definierten Rollen und Zugriffsrechten:
+9 spezialisierte Agenten mit definierten Rollen und Zugriffsrechten:
 
 | Agent | Zugriff | MCP-Tools |
 |-------|---------|-----------|
 | architect | READ-ONLY | Serena: find_symbol, get_symbols_overview, find_referencing_symbols |
-| ask | READ-ONLY | Serena: get_symbols_overview, find_symbol |
-| debug | FULL | Serena: find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview |
+| builder | FULL | Serena: find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview |
 | devops | FULL | - (keine MCP-Abhaengigkeit) |
-| orchestrator | TASK-DELEGATION | Greptile: list_merge_requests, get_merge_request |
+| explainer | READ-ONLY | Serena: get_symbols_overview, find_symbol |
+| guide | READ-ONLY | Serena: search_for_pattern, get_symbols_overview |
+| innovator | READ-ONLY | - (keine MCP-Abhaengigkeit) |
+| quality | READ-ONLY | Serena: find_symbol, get_symbols_overview |
 | researcher | READ-ONLY | Serena: search_for_pattern, find_symbol, get_symbols_overview |
 | security | RESTRICTED | Greptile: search_greptile_comments, list_merge_request_comments |
 
@@ -196,7 +198,7 @@ Serena bietet Language-Server-basierte Code-Navigation:
 2. MCP-Server in Claude Code konfigurieren
 3. Agents nutzen automatisch die verfügbaren Tools
 
-**Genutzt von:** architect, researcher, debug, ask
+**Genutzt von:** architect, researcher, builder, explainer
 
 ### Greptile (PR & Code Review)
 
@@ -206,7 +208,7 @@ Greptile bietet PR-Management und Review-Integration:
 2. MCP-Server mit API-Key konfigurieren
 3. Agents nutzen automatisch die verfügbaren Tools
 
-**Genutzt von:** orchestrator, security
+**Genutzt von:** quality, security
 
 ### Fallback-Verhalten
 
@@ -262,6 +264,6 @@ Bei Hook-Timeouts, Workflow-Fehlern oder anderen Problemen siehe [ERROR-RECOVERY
 ## Siehe auch
 
 - [Erste Schritte](erste-schritte.md) - Einstieg und Installation
-- [Agenten-Referenz](agenten.md) - Alle 7 Agenten im Detail
+- [Agenten-Referenz](agenten.md) - Alle 9 Agenten im Detail
 - [Workflow Guide](workflow.md) - 5-Phasen Workflow
 - [Konfiguration](konfiguration.md) - config.yml und Einstellungen

@@ -42,7 +42,7 @@ web_search() { # web_search "query" [category]
 }
 ```
 
-**Agents:** researcher, debug, architect, devops, security, ask
+**Agents:** researcher, builder, architect, devops, security, explainer
 
 ---
 
@@ -100,7 +100,7 @@ web_md() { web_fetch "$1" "markdown" "${2:-2000}" | jq -r '.data.markdown'; }
 web_full() { web_fetch "$1" "markdown,links,rawHtml" "${2:-3000}"; }
 ```
 
-**Agents:** researcher, debug, architect, devops, security
+**Agents:** researcher, builder, architect, devops, security
 
 ---
 
@@ -159,7 +159,7 @@ _solve_and_retry() { # _solve_and_retry "$html" "$url" -> 0 on success
 }
 ```
 
-**Agents:** researcher, debug (automatisch via `web_fetch`)
+**Agents:** researcher, builder (automatisch via `web_fetch`)
 
 ---
 
@@ -189,11 +189,11 @@ web_search_fetch() { # web_search_fetch "query" [category]
 | Agent | `web_search` | `web_fetch`/`web_md` | Captcha (auto) |
 |-------|:---:|:---:|:---:|
 | researcher | x | x | x |
-| debug | x | x | x |
+| builder | x | x | x |
 | architect | x | x | - |
 | devops | x | x | - |
 | security | x | x | - |
-| ask | x | - | - |
+| explainer | x | - | - |
 
 Agents ohne Captcha-Zugang erhalten bei Captcha-Detection eine Warnung statt Auto-Solve.
 

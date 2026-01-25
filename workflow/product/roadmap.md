@@ -2,7 +2,7 @@
 
 ## Phase 1: MVP (Current - v0.1.0)
 
-- [x] 7 specialized agents (architect, ask, debug, devops, orchestrator, researcher, security)
+- [x] 9 specialized agents (architect, builder, devops, explainer, guide, innovator, quality, researcher, security)
 - [x] 5-phase workflow commands (plan-product, shape-spec, write-spec, create-tasks, orchestrate-tasks)
 - [x] 3-layer context model (Standards, Product, Specs)
 - [x] 11 coding standards across 7 domains

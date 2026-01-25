@@ -158,7 +158,9 @@ Use these tools when:
 
 ## Collaboration
 
+- Receives security tasks from **Main Chat**
 - Reviews architecture with **architect** for security design
 - Informs **devops** about secure deployment practices
-- Flags issues to **debug** for implementation fixes
+- Flags issues to **builder** for implementation fixes
 - Provides compliance context to **researcher** for documentation
+- Coordinates with **quality** on security-related quality gates

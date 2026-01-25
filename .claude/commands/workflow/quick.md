@@ -14,7 +14,7 @@ Für größere Features mit mehreren Agents: `/workflow:smart-workflow`
 ## Important Guidelines
 
 - **Always use AskUserQuestion tool** when asking the user anything
-- **Delegate implementation** — Use Task tool with debug agent for coding
+- **Delegate implementation** — Use Task tool with builder agent for coding
 - **Keep it lean** — Minimal artifacts, maximal output
 - **Skip quality gates** — Quick mode trusts the developer
 
@@ -79,9 +79,9 @@ Options:
 2. "Spec anpassen"
 3. "Abbrechen"
 
-### Step 3: Build (via debug Agent)
+### Step 3: Build (via builder Agent)
 
-**WICHTIG: Delegation an debug Agent!**
+**WICHTIG: Delegation an builder Agent!**
 
 Nutze das Task tool um die Implementation zu delegieren:
 
@@ -134,7 +134,7 @@ Update `quick-spec.md` mit Status: **Completed**
 | Phasen | Plan→Spec→Build | Plan→Shape→Spec→Tasks→Build |
 | Artifacts | 1 (quick-spec.md) | 5+ (shape, spec, tasks, progress...) |
 | Quality Gates | Keine | 4 Gates |
-| Multi-Agent | Nur debug | Alle 7 Agents |
+| Multi-Agent | Nur builder | Alle 9 Agents |
 | Zeit | ~10 min | ~30-60 min |
 | Ideal für | MVPs, kleine Features | Production Features |
 
@@ -173,6 +173,6 @@ Update `quick-spec.md` mit Status: **Completed**
 ## Tips
 
 - **Zu komplex?** Wechsle zu `/workflow:smart-workflow`
-- **Tests nötig?** Nach quick-build: delegiere testing an debug agent
+- **Tests nötig?** Nach quick-build: delegiere testing an builder agent
 - **Security-relevant?** Nutze full workflow mit security gates
 - **Team-Projekt?** Full workflow für bessere Koordination

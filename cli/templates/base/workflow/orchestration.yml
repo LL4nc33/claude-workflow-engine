@@ -1,12 +1,12 @@
 # =============================================================================
 # Claude Workflow Engine Orchestration Configuration
-# Optimized for 7-agent system with 4 quality gates, fallback strategies,
+# Optimized for 9-agent system with 4 quality gates, fallback strategies,
 # and observability hooks.
-# Version: 0.2.7
+# Version: 0.2.8
 # =============================================================================
 
 project_name: "Claude Workflow Engine"
-version: "0.2.7"
+version: "0.2.8"
 
 # -----------------------------------------------------------------------------
 # Workflow Phases (5-Phase Command Chain)
@@ -65,8 +65,8 @@ workflow:
         - orchestration.yml
       prerequisites:
         - write-spec
-      responsible_agent: orchestrator
-      review_agent: architect
+      responsible_agent: architect  # Main Chat coordinates, architect creates task breakdown
+      review_agent: quality
       quality_gate: gate_2_pre_execution
 
     - name: orchestrate-tasks
@@ -78,14 +78,15 @@ workflow:
         - delegation.log
       prerequisites:
         - create-tasks
-      responsible_agent: orchestrator
-      review_agent: null
+      responsible_agent: null  # Main Chat handles orchestration directly
+      review_agent: quality
       quality_gate: gate_3_post_phase
 
 # -----------------------------------------------------------------------------
 # Agent Registry
-# Complete mapping of all 7 agents with capabilities, tools, and constraints.
+# Complete mapping of all 9 agents with capabilities, tools, and constraints.
 # Tools must match the agent .md frontmatter definitions exactly.
+# Note: Orchestration is handled by Main Chat, not a dedicated agent.
 # -----------------------------------------------------------------------------
 
 agents:
@@ -107,7 +108,7 @@ agents:
         - workflow/product/architecture.md
         - workflow/product/roadmap.md
 
-    ask:
+    explainer:
       access: read-only
       tools: [Read, Grep, Glob]
       strengths:
@@ -121,7 +122,7 @@ agents:
         - workflow/product/mission.md
         - workflow/product/architecture.md
 
-    debug:
+    builder:
       access: full
       tools: [Read, Write, Edit, Bash, Grep, Glob]
       strengths:
@@ -221,28 +222,28 @@ agents:
 # -----------------------------------------------------------------------------
 
 task_groups:
-  # Implementation tasks -> debug agent
+  # Implementation tasks -> builder agent
   backend:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, api/response-format, api/error-handling]
     override_when:
       security_sensitive: security  # Auth endpoints, crypto, etc.
 
   frontend:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, frontend/components]
     override_when: {}
 
   testing:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: null
     standards: [global/tech-stack, testing/coverage]
     override_when: {}
 
   database:
-    primary_agent: debug
+    primary_agent: builder
     review_agent: architect
     standards: [global/tech-stack, global/naming, database/migrations]
     override_when:
@@ -254,7 +255,7 @@ task_groups:
     review_agent: architect
     standards: [global/tech-stack, global/naming, api/error-handling]
     override_when:
-      implementation_needed: debug  # If fix requires code changes
+      implementation_needed: builder  # If fix requires code changes
 
   # Infrastructure tasks -> devops agent
   infrastructure:
@@ -300,13 +301,13 @@ task_groups:
       security_review: security
       infra_review: devops
 
-  # Explanation tasks -> ask agent
+  # Explanation tasks -> explainer agent
   explanation:
-    primary_agent: ask
+    primary_agent: explainer
     review_agent: null
     standards: [global/tech-stack]
     override_when:
-      implementation_needed: debug
+      implementation_needed: builder
 
   # Coordination tasks -> orchestrator
   coordination:
@@ -525,7 +526,7 @@ quality_gates:
     pass_condition: all_reviewers_approve
     on_failure:
       action: create_remediation_tasks
-      delegate_to: orchestrator
+      # Note: Remediation coordinated by Main Chat (no dedicated orchestrator agent)
 
 # -----------------------------------------------------------------------------
 # Agent-First Principle (Context Isolation)
@@ -556,28 +557,28 @@ agent_first:
       forbidden:
         - Direct file writes (Edit/Write tools)
         - Code implementation
-        - Detailed code analysis (delegate to ask/researcher)
-        - Bug fixing (delegate to debug)
+        - Detailed code analysis (delegate to explainer/researcher)
+        - Bug fixing (delegate to builder)
 
     # Force delegation for these actions - COMPREHENSIVE LIST
     always_delegate:
-      # === CODE WORK (debug) ===
+      # === CODE WORK (builder) ===
       - pattern: "implement|write code|create file|edit file|fix bug|refactor"
-        delegate_to: debug
+        delegate_to: builder
         reason: "All code changes must be isolated"
       - pattern: "add feature|build|develop|code"
-        delegate_to: debug
+        delegate_to: builder
         reason: "Implementation work"
       - pattern: "test|write test|unit test|integration test"
-        delegate_to: debug
+        delegate_to: builder
         reason: "Test writing is code work"
 
-      # === EXPLANATIONS (ask) ===
+      # === EXPLANATIONS (explainer) ===
       - pattern: "explain|how does|walkthrough|what is|why does"
-        delegate_to: ask
+        delegate_to: explainer
         reason: "Explanations benefit from focused analysis"
       - pattern: "understand|learn|teach me|show me"
-        delegate_to: ask
+        delegate_to: explainer
         reason: "Learning queries"
 
       # === RESEARCH (researcher) ===
@@ -621,10 +622,10 @@ agent_first:
         delegate_to: architect
         reason: "Structural analysis"
 
-      # === MULTI-STEP (orchestrator) ===
+      # === MULTI-STEP (Main Chat coordinates) ===
       - pattern: "build complete|implement full|end-to-end|multiple steps"
-        delegate_to: orchestrator
-        reason: "Complex tasks need coordination"
+        delegate_to: null  # Main Chat handles multi-step coordination
+        reason: "Complex tasks need Main Chat coordination"
 
       # === FILE READING (context optimization) ===
       - pattern: "read all|scan codebase|find in code|search files"
@@ -714,7 +715,7 @@ predictive:
       - pattern: "user often skips phase 2 (shape)"
         suggest: "Du ueberspringst oft Shape. Vielleicht /workflow:quick nutzen?"
 
-      - pattern: "debug tasks often need retry"
+      - pattern: "builder tasks often need retry"
         suggest: "Debug-Tasks brauchen oft mehrere Versuche. Mehr Context hinzufuegen?"
 
       - pattern: "security reviews find issues frequently"
@@ -961,24 +962,24 @@ fallbacks:
       reason: "Researcher can analyze but not produce ADRs"
       limitation: "No architectural authority - findings are advisory"
     security:
-      fallback_to: debug
+      fallback_to: builder
       reason: "Debug has full access for security-relevant code review"
       limitation: "No access to trivy/grype/semgrep scanning tools"
     devops:
-      fallback_to: debug
+      fallback_to: builder
       reason: "Debug has full filesystem access for infrastructure code"
       limitation: "May lack infrastructure-specific domain knowledge"
     researcher:
-      fallback_to: ask
-      reason: "Ask can explain and analyze in read-only mode"
+      fallback_to: explainer
+      reason: "Explainer can explain and analyze in read-only mode"
       limitation: "No WebSearch/WebFetch for external research"
-    ask:
+    explainer:
       fallback_to: researcher
       reason: "Researcher has similar read + explain capabilities"
       limitation: "Responses may be more formal/report-oriented"
-    debug:
+    builder:
       fallback_to: null
-      reason: "No fallback - debug is the primary implementor"
+      reason: "No fallback - builder is the primary implementor"
       escalation: user
     orchestrator:
       fallback_to: null
@@ -1039,7 +1040,7 @@ escalation:
       escalate_if: architect_flags_blocking_concern
       resolution: user_decision
 
-    # When debug implementation diverges from architect spec
+    # When builder implementation diverges from architect spec
     debug_vs_architect:
       priority: architect  # Spec authority wins
       action: debug_must_justify_divergence

@@ -203,10 +203,10 @@ Define how the agent collaborates with others:
 ```markdown
 ## Collaboration
 
-- Receives review requests from **orchestrator**
+- Receives review requests from **Main Chat**
 - Escalates architecture concerns to **architect**
 - Flags security issues to **security** agent
-- Delegates implementation fixes to **debug**
+- Delegates implementation fixes to **builder**
 ```
 
 ---
@@ -309,12 +309,12 @@ Invoke the agent directly to verify its behavior:
 
 Expected reaction: The agent analyzes the file and delivers a structured review in the defined format.
 
-### Delegation via Orchestrator
+### Delegation via Main Chat
 
-Test delegation through the orchestrator:
+Test delegation through Main Chat:
 
 ```
-> @orchestrator Delegate a code review of src/services/ to the reviewer agent.
+> Delegate a code review of src/services/ to the reviewer agent.
 ```
 
 ### Checklist
@@ -419,10 +419,10 @@ You never nitpick formatting if a formatter is configured.
 
 ## Collaboration
 
-- Receives review requests from **orchestrator**
+- Receives review requests from **Main Chat**
 - Escalates architecture concerns to **architect**
 - Flags security issues to **security** agent
-- Delegates implementation fixes to **debug**
+- Delegates implementation fixes to **builder**
 ```
 
 ---

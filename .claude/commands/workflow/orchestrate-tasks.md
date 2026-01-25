@@ -309,21 +309,21 @@ Create or modify these files:
 ## Agent Mapping
 
 The orchestration.yml maps abstract agent types to your actual agents.
-All 7 agents are available in `.claude/agents/`:
+All 9 agents are available in `.claude/agents/`:
 
 | Abstract Type | Default Agent | Strengths | When to Override |
 |---------------|---------------|-----------|-----------------|
-| backend | debug | Code implementation, bug fixes | - |
-| frontend | debug | UI implementation, state | - |
-| testing | debug | Test writing, coverage | - |
-| database | debug | Schema, models, queries | - |
-| security | security | OWASP audits, auth review | Implementation needed -> debug |
+| backend | builder | Code implementation, bug fixes | - |
+| frontend | builder | UI implementation, state | - |
+| testing | builder | Test writing, coverage | - |
+| database | builder | Schema, models, queries | - |
+| security | security | OWASP audits, auth review | Implementation needed -> builder |
 | infrastructure | devops | CI/CD, Docker, K8s, IaC | - |
 | ci_cd | devops | Pipelines, workflows | - |
 | architecture | architect | ADRs, design reviews | - |
 | documentation | researcher | Analysis, reports | - |
 | review | architect | API/design review | Security review -> security |
-| explanation | ask | Walkthroughs, concept help | - |
+| explanation | explainer | Walkthroughs, concept help | - |
 
 ## Quality Gates
 
