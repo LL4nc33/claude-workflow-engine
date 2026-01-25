@@ -71,6 +71,15 @@ For full control, use individual phase commands:
 4. **Create Tasks** - Break spec into implementable tasks
 5. **Orchestrate Tasks** - Delegate to specialized agents
 
+### Convenience Commands
+
+| Command | Purpose | Shortcut |
+|---------|---------|----------|
+| `/workflow:smart-workflow` | Auto-detect phase + guided 5-phase workflow | `sw` |
+| `/workflow:quick` | Fast 3-step workflow for MVPs (Plan→Spec→Build) | `q` |
+| `/workflow:help` | Contextual help based on current state | `h` |
+| `/workflow:undo` | Revert recent workflow changes (git-based) | - |
+
 ### Utility Workflows
 
 | Command | Purpose | Prerequisites |
@@ -88,6 +97,42 @@ For full control, use individual phase commands:
 | `/workflow:release` | Version bump, Changelog, Git-Tag (SemVer) | `VERSION` file |
 
 Configuration is stored in `web-services.local.md` / `nano.local.md` (gitignored, GDPR-compliant). API responses are converted to [TOON format](https://github.com/toon-format/toon) for ~40% token savings.
+
+## Agent-First Principle (Context Isolation)
+
+**CRITICAL:** All code work MUST be delegated to agents. Main chat orchestrates only.
+
+```
+Main Chat (Orchestrator)          Agents (Isolated Context)
+========================          ========================
+- User communication              - Code implementation
+- Phase detection                 - Bug fixing
+- Agent selection                 - Code analysis
+- Progress summaries              - Documentation generation
+- Quality gate decisions          - Security audits
+```
+
+**Why:** Agents have isolated context windows. When an agent finishes, only a result summary (~200 tokens) returns to main chat - not the full work context (~4000 tokens). This keeps main chat lean.
+
+**Always delegate:**
+
+| Intent | Agent | Examples |
+|--------|-------|----------|
+| Code work | debug | implement, fix, refactor, write test |
+| Explanations | ask | explain, how does, what is, teach me |
+| Research | researcher | analyze, document, find pattern, compare |
+| Security | security | audit, vulnerability, scan, gdpr check |
+| DevOps | devops | deploy, docker, ci/cd, release, k8s |
+| Architecture | architect | design, adr, api review, trade-off |
+| Multi-step | orchestrator | build complete feature, end-to-end |
+| Exploration | researcher/Explore | scan codebase, find in code, investigate |
+
+**Exceptions** (main chat MAY edit): `workflow/*.md`, `.claude/**/*.md`, `CHANGELOG.md`, `VERSION`
+
+**Read Operations:**
+- Small configs (< 200 lines) → Main chat OK
+- Large files / multiple files → Delegate to agent (ask/researcher/Explore)
+- Code exploration → Always delegate (isolated context)
 
 ## Context Model (3 Layers)
 
@@ -134,7 +179,7 @@ Configuration is stored in `web-services.local.md` / `nano.local.md` (gitignored
 |  Context-based knowledge (Standards, MCP-Usage, Hooks, Config)   |
 +------------------------------------------------------------------+
 |  Layer 2: Commands (.claude/commands/workflow/)                   |
-|  9 slash commands (5-phase + smart-workflow + utilities)          |
+|  23 slash commands (5-phase + convenience + utilities + NaNo)     |
 +------------------------------------------------------------------+
 |  Layer 1: CLAUDE.md (.claude/CLAUDE.md)                          |
 |  Project instructions and system overview                        |

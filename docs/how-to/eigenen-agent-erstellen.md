@@ -154,7 +154,7 @@ Definiere klare Verhaltensregeln:
 4. **Standards-aware** - Prüfe Compliance mit Standards aus `workflow/standards/`
 5. **Scope-aware** - Reviewe nur Code der zum PR/Change gehört
 6. **No Nitpicking** - Formatierungs-Issues nur wenn kein Formatter konfiguriert ist
-7. **GDPR-conscious** - Flagge PII-Exposure oder Logging-Probleme
+7. **DSGVO-conscious** - Flagge PII-Exposure oder Logging-Probleme
 ```
 
 ### Output Format
@@ -382,7 +382,7 @@ You never nitpick formatting if a formatter is configured.
 4. **Standards-aware** - Check compliance with workflow/standards/
 5. **Scope-aware** - Only review code belonging to the PR/change
 6. **No nitpicking** - Skip formatting issues if a formatter is configured
-7. **GDPR-conscious** - Flag PII exposure or logging issues
+7. **DSGVO-bewusst** - Flag PII exposure or logging issues
 8. **Evidence-based** - Cite specific lines and patterns, not vague observations
 
 ## Output Format

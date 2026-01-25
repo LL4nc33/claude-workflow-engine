@@ -102,7 +102,7 @@ agents:
       access: full
       purpose: CI/CD, Docker, Kubernetes, IaC
 
-# --- GDPR / EU Compliance ---
+# --- DSGVO / EU Compliance ---
 
 gdpr:
   enabled: true
@@ -148,7 +148,7 @@ profiles:
 | `standards_as_claude_code_skills` | `true` | Standards werden automatisch via Skills-System zugeordnet |
 | `context_model.standards.auto_inject` | `false` | Wenn true: alle Standards immer injiziert (Token-intensiv) |
 | `orchestration.default_execution_mode` | `phase-by-phase` | Standard-Ausführungsmodus der Orchestrierung |
-| `gdpr.enabled` | `true` | GDPR-Compliance-Checks aktivieren |
+| `gdpr.enabled` | `true` | DSGVO-Compliance-Checks aktivieren |
 | `gdpr.data_residency` | `eu-central-1` | Ziel-AWS-Region für Infrastruktur |
 
 ---
@@ -263,7 +263,7 @@ agents:
         - Input-Validation und Sanitization
         - Secrets-Management und Credential-Detection
         - Dependency-CVE-Scanning
-        - GDPR/EU-Compliance-Verification
+        - DSGVO/EU-Compliance-Verification
       standards_domains: [global, api]
 
     devops:
@@ -433,7 +433,7 @@ gate_1_pre_implementation:
       checks:
         - no_security_antipatterns        # Keine Security-Antipatterns
         - auth_model_defined              # Auth-Modell definiert
-        - data_flow_gdpr_compliant        # Datenfluss GDPR-konform
+        - data_flow_gdpr_compliant        # Datenfluss DSGVO-konform
         - threat_model_considered         # Threat-Model berücksichtigt
   pass_condition: all_reviewers_approve
   on_failure:
@@ -512,7 +512,7 @@ gate_4_final_acceptance:
         - no_new_vulnerabilities          # Keine neuen Schwachstellen
         - secrets_not_exposed             # Secrets nicht exponiert
         - dependency_cves_addressed       # Dependency-CVEs adressiert
-        - gdpr_compliance_verified        # GDPR-Compliance verifiziert
+        - gdpr_compliance_verified        # DSGVO-Compliance verifiziert
     - agent: architect
       checks:
         - implementation_matches_spec     # Implementation passt zur Spec
@@ -701,7 +701,7 @@ api:
     description: API response envelope structure, pagination, status codes
     tags: [api, response, json, http, rest, status-code]
   error-handling:
-    description: Error hierarchy, error codes, logging levels, GDPR-compliant error responses
+    description: Error hierarchy, error codes, logging levels, DSGVO-konforme Fehlerantworten
     tags: [error, exception, logging, error-code, gdpr]
 
 database:
@@ -751,7 +751,7 @@ Die Projektkontext-Datei, die Claude Code beim Start liest.
 - Context-Model-Beschreibung (3 Layers)
 - Standards-Domaenen-Tabelle
 - Pfade zu den wichtigsten Konfigurationsdateien
-- GDPR/EU-Compliance-Hinweise
+- DSGVO/EU-Compliance-Hinweise
 
 ### Warum es wichtig ist
 
@@ -881,7 +881,7 @@ Diese Dateien sind gitignored und dienen der lokalen Konfiguration:
 | `.workflow-state.json` | CLI-Installationszustand |
 | `.workflow-health-report.json` | Health-Check-Ausgabe |
 
-Alle sensitiven Dateien bleiben lokal. Die Engine macht keine externen API-Aufrufe und synct keine Daten in die Cloud (GDPR-konform).
+Alle sensitiven Dateien bleiben lokal. Die Engine macht keine externen API-Aufrufe und synct keine Daten in die Cloud (DSGVO-konform).
 
 ---
 
@@ -1062,7 +1062,7 @@ Die Hook-Konfiguration definiert Event-basierte Automatisierung:
 |------|-------|----------|
 | SessionStart | Session-Beginn | Prueft Standards-Aktualitaet, gibt Workflow-Kontext zurueck |
 | PreToolUse | Vor Write/Edit | Secrets-Schutz (blockiert .env, credentials.*, secrets.*, *.local.md) |
-| PostToolUse | Nach Write/Edit | Loggt Dateiname + Zeitstempel bei aktiver Orchestrierung (GDPR-konform) |
+| PostToolUse | Nach Write/Edit | Loggt Dateiname + Zeitstempel bei aktiver Orchestrierung (DSGVO-konform) |
 
 ### Hook-Scripts
 
@@ -1111,6 +1111,12 @@ Wenn ein MCP-Server nicht verfügbar ist, fallen Agents automatisch auf Standard
 - `find_symbol` -> `Grep` + `Glob`
 - `replace_symbol_body` -> `Edit`
 - `list_merge_requests` -> `Bash(gh pr list)`
+
+---
+
+## Fehlerbehandlung
+
+Bei Hook-Timeouts, Workflow-Fehlern oder anderen Problemen siehe [ERROR-RECOVERY.md](../workflow/ERROR-RECOVERY.md) fuer Loesungsstrategien.
 
 ---
 

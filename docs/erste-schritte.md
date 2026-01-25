@@ -70,8 +70,8 @@ Nach der Installation hat dein Projekt diese Struktur:
 ```
 .claude/
   agents/              # 7 spezialisierte Agents
-  commands/workflow/    # 8 Slash Commands
-  skills/workflow/      # 10 Skills (7 Standards + 3 Plugin-Skills)
+  commands/workflow/    # 23 Slash Commands
+  skills/workflow/      # 13 Skills (7 Standards + 6 Plugin-Skills)
 
 .claude-plugin/
   plugin.json          # Plugin-Manifest (6-Schichten-Architektur)
@@ -107,14 +107,29 @@ Starte Claude Code in deinem Projektverzeichnis:
 claude
 ```
 
-Jetzt durchläufst du die 5 Phasen des Workflows. Jede Phase baut auf der vorherigen auf.
+**Empfohlen für Einsteiger:** Nutze den Smart-Workflow oder Quick-Mode:
 
----
+### Einfacher Einstieg
 
-### Phase 1: Produkt planen
+```bash
+/workflow:help          # Zeigt kontextuelle Hilfe und nächste Schritte
+# oder einfach: h
+
+/workflow:quick         # 3-Step für MVPs: Plan → Spec → Build
+# oder einfach: q
+
+/workflow:smart-workflow # Voller 5-Phasen-Workflow mit Auto-Detection
+# oder einfach: sw
+```
+
+### Manueller 5-Phasen-Workflow
+
+Falls du jeden Schritt selbst steuern möchtest:
+
+#### Phase 1: Produkt planen
 
 ```
-/workflow/plan-product
+/workflow:plan-product
 ```
 
 Claude stellt dir interaktive Fragen zu deiner Produktvision, Zielgruppe und Constraints.
@@ -299,7 +314,7 @@ claude> Welche Agents sind verfügbar?
 claude> /workflow/
 ```
 
-Claude sollte Autocompletion für die 8 Workflow Commands anbieten:
+Claude sollte Autocompletion fuer die Workflow Commands anbieten (23 insgesamt, hier die wichtigsten):
 
 ```
 /workflow/plan-product
@@ -307,10 +322,12 @@ Claude sollte Autocompletion für die 8 Workflow Commands anbieten:
 /workflow/write-spec
 /workflow/create-tasks
 /workflow/orchestrate-tasks
-/workflow/discover-standards
-/workflow/index-standards
-/workflow/inject-standards
+/workflow/smart-workflow
+/workflow/quick
+/workflow/help
 ```
+
+Weitere Commands: `discover-standards`, `index-standards`, `inject-standards`, `web-setup`, `visual-clone`, `release`, und 7 NaNo-Commands (`nano-toggle`, `nano-session`, etc.).
 
 ### Health Check (mit CLI)
 
@@ -326,10 +343,10 @@ node dist/index.js health .
 ```
 Health Check Results:
   Agents:     7/7 loaded
-  Commands:   8/8 available
+  Commands:   23/23 available
   Standards:  11/11 indexed
   Config:     valid
-  GDPR:       compliant
+  DSGVO:      compliant
 
 Overall: HEALTHY
 ```

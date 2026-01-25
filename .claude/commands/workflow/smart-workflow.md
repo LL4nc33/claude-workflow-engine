@@ -96,3 +96,39 @@ During Phase 5 (orchestration), inject standards based on the `selective_matchin
 - If any phase fails: report what went wrong and offer retry or manual intervention
 - If user wants to skip a phase: allow it with a warning about prerequisites
 - If spec folder already exists: offer to continue existing or create new
+
+## Predictive Features
+
+The workflow supports smart suggestions based on context and learned patterns.
+Check `workflow/orchestration.yml` under `predictive:` for configuration.
+
+### Phase Transition Suggestions
+
+Automatically suggest next steps when:
+- Spec modified 3+ times → "Ready for create-tasks?"
+- All tasks done → "Ready for release?"
+- Shape exists but no spec → "Continue with write-spec?"
+
+### Smart Standards Pre-Loading
+
+Based on task keywords, automatically suggest relevant standards:
+- "auth/login/session" → security standards
+- "api/endpoint/route" → API standards
+- "database/migration" → database standards
+- "component/ui/style" → frontend standards
+- "docker/ci/deploy" → devops standards
+
+### Contextual Hints
+
+Show max 2 hints per interaction:
+- First-run: Quick vs Smart workflow choice
+- Spec writing: Focus on acceptance criteria
+- Task creation: Keep tasks small (1-2 hours)
+- Stuck: Suggest /workflow:help
+
+### NaNo Integration
+
+When enough observations exist (min 5 sessions):
+- Suggest optimal agent based on historical choices
+- Recommend workflow simplification if user often skips phases
+- Alert when debug tasks frequently need retries

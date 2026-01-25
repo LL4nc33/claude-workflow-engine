@@ -1,6 +1,6 @@
 # Claude Workflow Engine
 
-[![Version](https://img.shields.io/badge/version-0.2.7-blue.svg)](https://github.com/LL4nc33/claude-workflow-engine/releases)
+[![Version](https://img.shields.io/badge/version-0.2.8-blue.svg)](https://github.com/LL4nc33/claude-workflow-engine/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-ready-purple.svg)](https://claude.com/claude-code)
 
@@ -8,8 +8,22 @@ Ein Multi-Agent Workflow-System für Claude Code: 7 spezialisierte Agenten, ein 
 
 ---
 
+## Highlights
+
+| Stärke | Vorteil |
+|--------|---------|
+| **Context Isolation** | Agents arbeiten in isolierten Kontexten - Main Chat bleibt schlank |
+| **Zero-Config Start** | `/workflow:smart-workflow` erkennt Phase automatisch |
+| **DSGVO-Konform** | 100% lokal, keine Cloud-Sync, EU-Hosting-ready |
+| **Token-Optimiert** | TOON-Format spart ~40% Tokens bei API-Responses |
+| **Self-Learning** | NaNo beobachtet Patterns und schlägt Verbesserungen vor |
+| **7 Spezialisten** | Jeder Agent hat klare Expertise statt "one size fits all" |
+
+---
+
 ## Inhaltsverzeichnis
 
+- [Highlights](#highlights)
 - [Features](#features)
 - [Schnellstart](#schnellstart)
 - [Architektur](#architektur)
@@ -41,17 +55,48 @@ Ein Multi-Agent Workflow-System für Claude Code: 7 spezialisierte Agenten, ein 
 
 Jeder Agent hat klar definierte Zugriffsrechte und Spezialisierungen. Der Orchestrator delegiert Tasks an den jeweils passenden Agenten.
 
-### 5-Phasen Entwicklungsworkflow
+### Workflow-Optionen (Flexibel je nach Projektgröße)
 
+#### 🚀 Quick-Mode (MVPs & kleine Features)
 ```bash
-/workflow/plan-product        # Phase 1: Produktvision und Mission definieren
-/workflow/shape-spec          # Phase 2: Anforderungen strukturiert erfassen
-/workflow/write-spec          # Phase 3: Technische Spezifikation erstellen
-/workflow/create-tasks        # Phase 4: Tasks automatisch generieren
-/workflow/orchestrate-tasks   # Phase 5: An Spezialisten-Agenten delegieren
+/workflow:quick              # 3-Step: Plan → Spec → Build
 ```
 
-Der Workflow führt dich von der ersten Idee bis zur fertigen Implementierung. Jede Phase baut auf der vorherigen auf und erzeugt strukturierte Artefakte.
+#### ⚡ Smart-Workflow (Auto-Detection)
+```bash
+/workflow:smart-workflow     # Erkennt Phase automatisch, führt durch Workflow
+# Shortcuts: sw, q, h
+```
+
+#### 📋 Expliziter 5-Phasen-Workflow
+```bash
+/workflow:plan-product        # Phase 1: Produktvision und Mission definieren
+/workflow:shape-spec          # Phase 2: Anforderungen strukturiert erfassen
+/workflow:write-spec          # Phase 3: Technische Spezifikation erstellen
+/workflow:create-tasks        # Phase 4: Tasks automatisch generieren
+/workflow:orchestrate-tasks   # Phase 5: An Spezialisten-Agenten delegieren
+```
+
+#### 🛠️ Utilities
+```bash
+/workflow:help               # Kontextuelle Hilfe basierend auf aktuellem Status
+/workflow:undo               # Git-basierte Workflow-Revertierung
+/workflow:release            # Version Bump + Changelog + Git Tag
+/workflow:web-setup          # Web-Access-Layer konfigurieren (Firecrawl, SearXNG)
+/workflow:visual-clone       # Website-Design extrahieren
+```
+
+#### 🧠 NaNo Learning System
+```bash
+/workflow:nano-toggle        # NaNo ein/ausschalten + First-Run Setup
+/workflow:homunculus-status  # Learning Status + Quick-Actions
+/workflow:learning-report    # Umfassender Analyse-Report
+/workflow:review-candidates  # Evolution-Candidates reviewen
+```
+
+NaNo beobachtet Workflow-Patterns und schlaegt Verbesserungen vor. Weitere Commands: `nano-session`, `nano-config`, `nano-reset`.
+
+Der Workflow passt sich deiner Arbeitsweise an: Schnell für MVPs, vollständig für Production-Features.
 
 ### Standards System
 
@@ -60,12 +105,20 @@ Der Workflow führt dich von der ersten Idee bis zur fertigen Implementierung. J
 - **Tag-basiertes Matching** - Standards werden anhand der Aufgabe automatisch angewendet
 - **Erweiterbar** - eigene Standards für projektspezifische Konventionen
 
+### Shortcuts & Auto-Features
+
+- **Shortcuts**: `sw` (`/workflow:smart-workflow`), `q` (`/workflow:quick`), `h` (`/workflow:help`)
+- **Auto-Delegation**: "Implementiere X" → automatisch an debug agent
+- **Auto-Scope-Detection**: Keywords erkennen betroffene Dateien automatisch
+- **Predictive Suggestions**: System schlägt nächste Schritte vor
+- **Contextual Help**: `/workflow:help` zeigt relevante Optionen für aktuellen Status
+
 ### CLI Safety System
 
 - **Pre-flight Checks** vor der Installation
 - **Conflict Detection** für bestehende Setups
 - **Health Monitoring** mit Auto-Fix
-- **Rollback Support** bei Problemen
+- **Rollback Support** bei Problemen (`/workflow:undo`)
 - **GDPR Compliance Check** für EU-Konformität
 
 ---
@@ -142,7 +195,7 @@ Jede Phase erstellt Dateien im `workflow/`-Verzeichnis, die als Kontext für nac
 |  Kontextbasiertes Wissen (Standards, MCP, Hooks, Config)         |
 +------------------------------------------------------------------+
 |  Layer 2: Commands (.claude/commands/workflow/)                   |
-|  8 Slash-Commands für den 5-Phasen-Workflow                     |
+|  23 Slash-Commands (5-Phasen + Convenience + Utilities + NaNo)  |
 +------------------------------------------------------------------+
 |  Layer 1: CLAUDE.md (.claude/CLAUDE.md)                          |
 |  Projekt-Anweisungen und Systemüberblick                        |
@@ -221,7 +274,7 @@ claude-workflow-engine/
 |   |   |-- orchestrator.md       # +Greptile MCP-Tools
 |   |   |-- researcher.md         # +Serena MCP-Tools
 |   |   +-- security.md           # +Greptile MCP-Tools
-|   |-- commands/workflow/         # Layer 2: 8 Workflow Slash Commands
+|   |-- commands/workflow/         # Layer 2: 23 Workflow Slash Commands
 |   +-- skills/workflow/           # Layer 3: Standards + 3 neue Skills
 |       |-- mcp-usage/            # MCP-Tool-Katalog
 |       |-- hook-patterns/        # Hook-Referenz
@@ -275,14 +328,16 @@ Drei zusätzliche Commands für das Standards-Management:
 Extrahiere die visuelle Identität (Farben, Fonts, Spacing, CSS Variables) von beliebigen Websites:
 
 ```bash
-# 1. Service-URLs konfigurieren (einmalig)
-/workflow/clone-setup
+# 1. Web-Access-Layer konfigurieren (einmalig)
+/workflow/web-setup
 
 # 2. Website visuell klonen
 /workflow/visual-clone
 ```
 
 **Voraussetzungen:** Self-hosted [Firecrawl](https://github.com/mendableai/firecrawl) + optional [SearXNG](https://github.com/searxng/searxng)
+
+> **Hinweis:** `/workflow:clone-setup` ist deprecated. Nutze `/workflow:web-setup` stattdessen.
 
 **Output-Formate:** CSS Variables, Tailwind Config, Design Tokens JSON
 

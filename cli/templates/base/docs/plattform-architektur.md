@@ -26,7 +26,7 @@ Die Claude Workflow Engine nutzt alle 6 Erweiterungsschichten von Claude Code al
 +------------------------------------------------------------------+
 |  Layer 2: Commands                                               |
 |  .claude/commands/workflow/*.md                                   |
-|  8 Slash-Commands für den 5-Phasen-Workflow                     |
+|  23 Slash-Commands (5-Phasen + Convenience + Utilities + NaNo)  |
 +------------------------------------------------------------------+
 |  Layer 1: CLAUDE.md                                              |
 |  .claude/CLAUDE.md                                               |
@@ -56,7 +56,7 @@ Die Basis-Schicht. Wird bei jeder Session geladen und gibt Claude Code den Proje
 
 **Pfad:** `.claude/commands/workflow/`
 
-8 Slash-Commands für den strukturierten Workflow:
+23 Slash-Commands fuer den strukturierten Workflow (Kern-Commands fuer 5-Phasen-Workflow):
 
 | Command | Phase | Funktion |
 |---------|-------|----------|

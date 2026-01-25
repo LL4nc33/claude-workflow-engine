@@ -369,7 +369,7 @@ Du:     ja
 **Hook-Verhalten während der Orchestrierung:**
 
 - **PreToolUse Hook:** Jeder Write/Edit-Aufruf wird gegen Secrets-Patterns geprüft. Schreibzugriffe auf `.env`, `credentials.*`, `secrets.*` und `*.local.md` werden automatisch blockiert.
-- **PostToolUse Hook:** Bei aktiver Orchestrierung (Spec mit `in-progress` Status) werden alle Dateiänderungen in `delegation.log` protokolliert (nur Dateiname + Zeitstempel, GDPR-konform).
+- **PostToolUse Hook:** Bei aktiver Orchestrierung (Spec mit `in-progress` Status) werden alle Dateiänderungen in `delegation.log` protokolliert (nur Dateiname + Zeitstempel, DSGVO-konform).
 
 **Output-Datei:** `progress.md` im Spec-Ordner, wird kontinuierlich aktualisiert.
 
@@ -396,6 +396,46 @@ Du musst nicht jede Phase jedes Mal ausführen:
 - **Du weisst genau was du bauen willst?** Starte bei Phase 3 (erstelle manuell eine Spec).
 - **Willst du manuell implementieren?** Höre nach Phase 4 auf und wähle Tasks selbst aus.
 - **Brauchst du nur einen Agent?** Überspringe die Orchestration komplett und delegiere direkt.
+
+## Convenience Commands
+
+Fuer schnellen Einstieg und alltaegliche Nutzung:
+
+| Command | Zweck | Shortcut |
+|---------|-------|----------|
+| `/workflow:smart-workflow` | Auto-Detection + gefuehrter 5-Phasen-Workflow | `sw` |
+| `/workflow:quick` | 3-Step MVP-Workflow (Plan -> Spec -> Build) | `q` |
+| `/workflow:help` | Kontextuelle Hilfe basierend auf aktuellem Status | `h` |
+| `/workflow:undo` | Git-basierte Workflow-Revertierung | - |
+
+---
+
+## NaNo Learning System
+
+Das NaNo (Nano-Homunculus) Learning System beobachtet Workflow-Patterns und lernt aus der Nutzung:
+
+### NaNo-Commands
+
+| Command | Funktion |
+|---------|----------|
+| `/workflow:nano-toggle` | NaNo ein/ausschalten + First-Run Setup |
+| `/workflow:nano-session` | Aktuelle Session-Observations anzeigen |
+| `/workflow:nano-config` | Interaktive NaNo-Konfiguration |
+| `/workflow:nano-reset` | NaNo-Daten zuruecksetzen (mit Confirmation) |
+| `/workflow:homunculus-status` | NaNo Learning Status + Quick-Actions |
+| `/workflow:learning-report` | Umfassender NaNo-Analyse-Report |
+| `/workflow:review-candidates` | Interaktives Review von Evolution-Candidates |
+
+### Wie NaNo funktioniert
+
+1. **Observation**: Hooks erfassen Workflow-Events (Delegationen, Datei-Aenderungen)
+2. **Pattern Detection**: Bei Session-Ende werden Patterns analysiert
+3. **Evolution Candidates**: Haeufige Patterns werden als Verbesserungs-Kandidaten vorgeschlagen
+4. **Review**: Du entscheidest, welche Patterns in Standards/Workflows uebernommen werden
+
+Konfiguration in `nano.local.md` (automatisch gitignored, DSGVO-konform).
+
+---
 
 ## Tipps
 

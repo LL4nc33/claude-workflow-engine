@@ -11,7 +11,7 @@ Extract the visual identity (colors, fonts, spacing, components) from any websit
 
 ## Prerequisites
 
-- Service URLs configured via `/workflow:clone-setup` (stored in `visual-clone.local.md`)
+- Service URLs configured via `/workflow:web-setup` (stored in `web-services.local.md`)
 - Firecrawl instance (self-hosted)
 - SearXNG instance (self-hosted, optional for multi-page discovery)
 
@@ -21,10 +21,10 @@ Extract the visual identity (colors, fonts, spacing, components) from any websit
 
 ### Step 0: Load Configuration
 
-Read `visual-clone.local.md` from the project root to get service URLs.
+Read `web-services.local.md` from the project root to get service URLs.
 
 If the file doesn't exist, inform the user:
-> "Bitte zuerst `/workflow:clone-setup` ausführen um die Service-URLs zu konfigurieren."
+> "Bitte zuerst `/workflow:web-setup` ausfuehren um die Service-URLs zu konfigurieren."
 
 Then stop the workflow.
 

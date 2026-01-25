@@ -1,4 +1,13 @@
-# Visual Clone — Setup
+# Visual Clone — Setup (DEPRECATED)
+
+> **DEPRECATED:** Dieser Command wurde durch `/workflow:web-setup` ersetzt.
+> Bitte verwende `/workflow:web-setup` fuer die Konfiguration der Web-Services.
+
+**Weiterleitung:** Fuehre stattdessen `/workflow:web-setup` aus. Alle Funktionen von clone-setup sind dort enthalten, plus Captcha-Solver-Konfiguration und Migration bestehender Configs.
+
+---
+
+*Original-Dokumentation (fuer Referenz):*
 
 Configure the service URLs for the Visual Website Cloner workflow.
 

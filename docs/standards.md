@@ -38,7 +38,7 @@ workflow/standards/
     naming.md                  # Datei-/Variablen-/API-Benennung
   api/
     response-format.md         # Response-Envelope, Status-Codes
-    error-handling.md          # Error-Codes, Logging, GDPR
+    error-handling.md          # Error-Codes, Logging, DSGVO
   database/
     migrations.md              # Migration-Benennung, Reversibilitaet
   devops/
@@ -122,7 +122,7 @@ api:
     description: API response envelope structure, pagination, status codes
     tags: [api, response, json, http, rest, status-code]
   error-handling:
-    description: Error hierarchy, error codes, logging levels, GDPR-compliant error responses
+    description: Error hierarchy, error codes, logging levels, DSGVO-konforme Fehlerantworten
     tags: [error, exception, logging, error-code, gdpr]
 ```
 

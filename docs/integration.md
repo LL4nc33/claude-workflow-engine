@@ -179,8 +179,8 @@ secrets.*
 | Pfad | Zweck | Groesse |
 |------|-------|---------|
 | `.claude/agents/` | 7 Agent-Definitionsdateien | ~15 KB |
-| `.claude/commands/workflow/` | 8 Slash-Command-Dateien | ~30 KB |
-| `.claude/skills/workflow/` | 10 Skill-Verzeichnisse (7 Standards + 3 Plugin) | ~15 KB |
+| `.claude/commands/workflow/` | 23 Slash-Command-Dateien | ~50 KB |
+| `.claude/skills/workflow/` | 13 Skill-Verzeichnisse (7 Standards + 6 Plugin) | ~20 KB |
 | `.claude/CLAUDE.md` | Projektkontext für Claude | ~4 KB |
 | `.claude-plugin/plugin.json` | Plugin-Manifest | ~0.5 KB |
 | `hooks/` | Hook-Definitionen und Scripts | ~5 KB |

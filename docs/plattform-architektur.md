@@ -26,7 +26,7 @@ Die Claude Workflow Engine nutzt alle 6 Erweiterungsschichten von Claude Code al
 +------------------------------------------------------------------+
 |  Layer 2: Commands                                               |
 |  .claude/commands/workflow/*.md                                   |
-|  8 Slash-Commands für den 5-Phasen-Workflow                     |
+|  23 Slash-Commands (5-Phasen + Convenience + Utilities + NaNo)  |
 +------------------------------------------------------------------+
 |  Layer 1: CLAUDE.md                                              |
 |  .claude/CLAUDE.md                                               |
@@ -48,7 +48,7 @@ Die Basis-Schicht. Wird bei jeder Session geladen und gibt Claude Code den Proje
 - Konfigurationsdateien
 - MCP-Tool-Übersicht
 - Hook-Verhalten
-- GDPR/EU Compliance
+- DSGVO/EU Compliance
 
 ---
 
@@ -56,7 +56,9 @@ Die Basis-Schicht. Wird bei jeder Session geladen und gibt Claude Code den Proje
 
 **Pfad:** `.claude/commands/workflow/`
 
-8 Slash-Commands für den strukturierten Workflow:
+23 Slash-Commands für den strukturierten Workflow:
+
+### 5-Phasen Workflow
 
 | Command | Phase | Funktion |
 |---------|-------|----------|
@@ -68,6 +70,35 @@ Die Basis-Schicht. Wird bei jeder Session geladen und gibt Claude Code den Proje
 | `/workflow/discover-standards` | - | Standards aus Code entdecken |
 | `/workflow/index-standards` | - | Standards-Index aktualisieren |
 | `/workflow/inject-standards` | - | Standards manuell laden |
+
+### Convenience Commands
+
+| Command | Funktion |
+|---------|----------|
+| `/workflow/smart-workflow` | Auto-Detection + gefuehrter Workflow |
+| `/workflow/quick` | 3-Step MVP-Workflow (Plan -> Spec -> Build) |
+| `/workflow/help` | Kontextuelle Hilfe basierend auf Status |
+| `/workflow/undo` | Git-basierte Workflow-Revertierung |
+
+### Utility Commands
+
+| Command | Funktion |
+|---------|----------|
+| `/workflow/web-setup` | Web-Access-Layer konfigurieren (Firecrawl + SearXNG + Captcha) |
+| `/workflow/visual-clone` | Website-Design extrahieren |
+| `/workflow/release` | Version Bump + Changelog + Git Tag |
+
+### NaNo Learning Commands
+
+| Command | Funktion |
+|---------|----------|
+| `/workflow/nano-toggle` | NaNo ein/ausschalten + First-Run Setup |
+| `/workflow/nano-session` | Aktuelle Session-Observations anzeigen |
+| `/workflow/nano-config` | Interaktive NaNo-Konfiguration |
+| `/workflow/nano-reset` | NaNo-Daten zuruecksetzen |
+| `/workflow/homunculus-status` | NaNo Learning Status + Quick-Actions |
+| `/workflow/learning-report` | Umfassender NaNo-Analyse-Report |
+| `/workflow/review-candidates` | Interaktives Review von Evolution-Candidates |
 
 ---
 
@@ -128,7 +159,7 @@ Event-basierte Automatisierung mit Shell-Scripts:
 ### PostToolUse Hook (Write/Edit)
 - **Script:** `hooks/scripts/post-write-log.sh`
 - **Funktion:** Loggt Dateiname + Zeitstempel bei aktiver Orchestrierung
-- **GDPR:** Nur Dateinamen, keine Inhalte; ignoriert `.local.md`
+- **DSGVO:** Nur Dateinamen, keine Inhalte; ignoriert `.local.md`
 
 ### Shared Utilities
 - **Script:** `hooks/scripts/common.sh`
@@ -219,6 +250,12 @@ Layer 1 ──beschreibt──> Alle Schichten
 1. `.claude/agents/my-agent.md` mit Frontmatter erstellen
 2. `workflow/config.yml` aktualisieren (agents.available)
 3. `.claude/CLAUDE.md` aktualisieren (Agents-Tabelle)
+
+---
+
+## Fehlerbehandlung
+
+Bei Hook-Timeouts, Workflow-Fehlern oder anderen Problemen siehe [ERROR-RECOVERY.md](../workflow/ERROR-RECOVERY.md) fuer Loesungsstrategien.
 
 ---
 

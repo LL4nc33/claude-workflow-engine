@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.8] - 2026-01-25
+
+### Added
+
+- Highlights-Sektion in README.md (USPs prominent dargestellt)
+- Web-Access-Layer Dokumentation vervollstaendigt
+- Convenience Commands (quick, help, undo) in Workflow-Docs dokumentiert
+- NaNo Learning Commands in README.md und Workflow-Docs
+- ERROR-RECOVERY.md Verlinkung in Plattform-Architektur
+
+### Changed
+
+- Command-Anzahl von 8 auf 23 in allen Haupt-Docs aktualisiert
+- Skills-Anzahl von 10 auf 13 korrigiert
+- GDPR zu DSGVO in deutschen Dokumenten geaendert
+- clone-setup als DEPRECATED markiert, Verweis auf web-setup
+- visual-clone.local.md Referenzen auf web-services.local.md aktualisiert
+
+### Deprecated
+
+- `/workflow:clone-setup` - ersetzt durch `/workflow:web-setup`
+
 ## [0.2.7] - 2026-01-24
 
 ### Added

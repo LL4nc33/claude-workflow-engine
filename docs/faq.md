@@ -460,7 +460,7 @@ Beachte: `workflow rollback` entfernt nur die Engine-Dateien, nicht deine Specs 
    /shape-spec "User Login mit OAuth2 (Google, GitHub),
      E-Mail/Passwort als Fallback, 2FA optional,
      Session-Management mit JWT, Refresh-Tokens,
-     GDPR-konformes Consent-Handling"
+     DSGVO-konformes Consent-Handling"
    ```
 
 2. **Fehlender Produktkontext:**

@@ -1,10 +1,10 @@
 # =============================================================================
 # Claude Workflow Engine Configuration - oidanice-agents
-# Version: 0.2.7
+# Version: 0.2.8
 # GDPR-compliant setup for Austrian/EU usage
 # =============================================================================
 
-version: 0.2.7
+version: 0.2.8
 default_profile: default
 
 # -----------------------------------------------------------------------------
@@ -142,7 +142,7 @@ orchestration:
 
 plugin:
   name: claude-workflow-engine
-  version: 0.2.7
+  version: 0.2.8
   manifest: .claude-plugin/plugin.json
   layers:
     - layer: 1
@@ -188,6 +188,98 @@ mcp:
         - search_greptile_comments
         - list_merge_request_comments
       used_by: [orchestrator, security]
+
+# -----------------------------------------------------------------------------
+# Project-Type Templates (First-Run)
+# Pre-configured setups for common project types.
+# Selected during first-run or via /workflow:plan-product.
+# -----------------------------------------------------------------------------
+
+project_types:
+  web-app:
+    name: "Web Application"
+    description: "Full-stack web app with frontend and backend"
+    standards_domains: [global, frontend, api, database, testing]
+    suggested_agents: [debug, architect, security]
+    tech_stack_defaults:
+      frontend: ["React", "Next.js", "Vue", "Svelte"]
+      backend: ["Node.js", "Python", "Go"]
+      database: ["PostgreSQL", "MySQL", "MongoDB"]
+    initial_structure:
+      - src/components/
+      - src/pages/
+      - src/api/
+      - src/lib/
+      - tests/
+
+  api:
+    name: "API / Backend Service"
+    description: "REST or GraphQL API without frontend"
+    standards_domains: [global, api, database, testing, devops]
+    suggested_agents: [debug, architect, security, devops]
+    tech_stack_defaults:
+      runtime: ["Node.js", "Python", "Go", "Rust"]
+      framework: ["Express", "Fastify", "FastAPI", "Gin"]
+      database: ["PostgreSQL", "MongoDB", "Redis"]
+    initial_structure:
+      - src/routes/
+      - src/controllers/
+      - src/models/
+      - src/middleware/
+      - tests/
+
+  cli:
+    name: "CLI Tool"
+    description: "Command-line application"
+    standards_domains: [global, testing]
+    suggested_agents: [debug, architect]
+    tech_stack_defaults:
+      language: ["TypeScript", "Python", "Go", "Rust"]
+      framework: ["Commander.js", "Yargs", "Click", "Cobra"]
+    initial_structure:
+      - src/commands/
+      - src/utils/
+      - tests/
+
+  library:
+    name: "Library / Package"
+    description: "Reusable library for npm/pip/crates"
+    standards_domains: [global, testing]
+    suggested_agents: [debug, architect, researcher]
+    tech_stack_defaults:
+      language: ["TypeScript", "Python", "Rust"]
+      build: ["tsup", "esbuild", "setuptools", "cargo"]
+    initial_structure:
+      - src/
+      - tests/
+      - examples/
+
+  mobile:
+    name: "Mobile App"
+    description: "iOS/Android app (React Native, Flutter, etc.)"
+    standards_domains: [global, frontend, api, testing]
+    suggested_agents: [debug, architect]
+    tech_stack_defaults:
+      framework: ["React Native", "Flutter", "Expo"]
+      backend: ["Firebase", "Supabase", "Custom API"]
+    initial_structure:
+      - src/screens/
+      - src/components/
+      - src/navigation/
+      - src/services/
+
+  monorepo:
+    name: "Monorepo"
+    description: "Multi-package repository (Turborepo, Nx, etc.)"
+    standards_domains: [global, api, frontend, database, testing, devops]
+    suggested_agents: [debug, architect, devops, orchestrator]
+    tech_stack_defaults:
+      tooling: ["Turborepo", "Nx", "Lerna", "pnpm workspaces"]
+    initial_structure:
+      - packages/
+      - apps/
+      - libs/
+      - tooling/
 
 # -----------------------------------------------------------------------------
 # Profile Configuration

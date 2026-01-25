@@ -115,7 +115,7 @@ Strukturiertes JSON-Logging:
 - User-IDs nur als anonymisierte Hashes
 - TraceId für Request-Korrelation in jedem Log-Entry
 - ERROR-Level triggert Alert -- sparsam verwenden
-- Log-Retention: 30 Tage (GDPR-konform)
+- Log-Retention: 30 Tage (DSGVO-konform)
 
 ## Anti-Patterns
 
@@ -167,10 +167,10 @@ api:
     description: API response envelope structure, pagination, status codes
     tags: [api, response, json, http, rest, status-code]
   error-handling:
-    description: Error hierarchy, error codes, logging levels, GDPR-compliant error responses
+    description: Error hierarchy, error codes, logging levels, DSGVO-konforme Fehlerantworten
     tags: [error, exception, logging, error-code, gdpr]
   logging:                                                          # NEU
-    description: Structured JSON logging, log levels, GDPR-compliant log format
+    description: Structured JSON logging, log levels, DSGVO-konformes Log-Format
     tags: [logging, log-level, structured, json, tracing, gdpr]
 ```
 

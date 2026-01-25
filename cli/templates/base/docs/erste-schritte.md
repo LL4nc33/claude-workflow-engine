@@ -70,8 +70,8 @@ Nach der Installation hat dein Projekt diese Struktur:
 ```
 .claude/
   agents/              # 7 spezialisierte Agents
-  commands/workflow/    # 8 Slash Commands
-  skills/workflow/      # 10 Skills (7 Standards + 3 Plugin-Skills)
+  commands/workflow/    # 23 Slash Commands
+  skills/workflow/      # 13 Skills (7 Standards + 6 Plugin-Skills)
 
 .claude-plugin/
   plugin.json          # Plugin-Manifest (6-Schichten-Architektur)

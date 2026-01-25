@@ -176,7 +176,7 @@ Die Zugangsstufen definieren, was ein Agent technisch darf. Sie sind in der Fron
 - Deployment-Strategien (Blue-Green, Canary, Rolling)
 - Monitoring, Logging und Alerting
 - Secret Management und Environment-Konfiguration
-- EU-konforme Infrastruktur (GDPR Data Residency)
+- EU-konforme Infrastruktur (DSGVO Data Residency)
 
 **Kontext-Quellen:** ci-cd, containerization, infrastructure, tech-stack, mission, architecture
 
@@ -324,7 +324,7 @@ Die Zugangsstufen definieren, was ein Agent technisch darf. Sie sind in der Fron
 - Secrets Management und Credential-Erkennung
 - Dependency Vulnerability Scanning (CVEs)
 - Security Header und TLS-Konfiguration
-- GDPR/EU-Datenschutz-Compliance
+- DSGVO/EU-Datenschutz-Compliance
 
 **Kontext-Quellen:** tech-stack, naming, error-handling, response-format, mission, architecture
 
@@ -350,7 +350,7 @@ curl -I https://target.example.com     # Header-Inspektion
 
 **Output-Formate:**
 
-- Security Audits (Executive Summary, Findings nach Severity, GDPR Compliance Check)
+- Security Audits (Executive Summary, Findings nach Severity, DSGVO Compliance Check)
 - Dependency Reports (CVE-Tabelle, Upgrade-Empfehlungen)
 - Security Code Reviews (Input Validation, Auth, Data Handling Checklisten)
 
@@ -360,7 +360,7 @@ curl -I https://target.example.com     # Header-Inspektion
 - "Pruefe Dependencies auf bekannte Vulnerabilities"
 - "Reviewe diesen PR auf Security-Bedenken"
 - "Validiert unsere API den Input korrekt?"
-- "Sind wir GDPR-konform bei der Datenverarbeitung?"
+- "Sind wir DSGVO-konform bei der Datenverarbeitung?"
 
 **Kollaboriert mit:** architect (Security Design), devops (Secure Deployment), debug (Implementation-Fixes), researcher (Compliance-Dokumentation)
 

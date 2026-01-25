@@ -58,7 +58,7 @@ Du:     B2B-Kunden die ihre Teams verwalten. Admins erstellen Accounts,
         Mitarbeiter loggen sich ein.
 
 Claude: Was macht deine Lösung einzigartig?
-Du:     Multi-Tenant-fähig mit rollenbasiertem Zugriff, GDPR-konform,
+Du:     Multi-Tenant-fähig mit rollenbasiertem Zugriff, DSGVO-konform,
         und Social Login für schnelles Onboarding.
 
 Claude: Welchen Tech Stack verwendest du?
@@ -119,7 +119,7 @@ Du:     Das User-Model in src/models/user.ts hat bereits ein Schema.
 
 Claude: Basierend auf dem was wir bauen, könnten diese Standards relevant sein:
         1. api/response-format - API Response Envelope
-        2. api/error-handling - Error Codes und GDPR-konforme Responses
+        2. api/error-handling - Error Codes und DSGVO-konforme Responses
         3. database/migrations - Schema-Änderungen
         4. testing/coverage - Test-Anforderungen
         Soll ich diese einbeziehen?
@@ -219,7 +219,7 @@ spec.md erstellt in workflow/specs/2026-01-23-1430-user-auth/
 Nach dem Schreiben der Spec wird automatisch ein Quality Gate ausgeführt:
 
 - **Architect** prüft: Architektonisch sinnvoll? Dependencies identifiziert? Tech Stack aligned?
-- **Security** prüft: Keine Security-Antipatterns? Auth-Modell definiert? GDPR-konform?
+- **Security** prüft: Keine Security-Antipatterns? Auth-Modell definiert? DSGVO-konform?
 
 ```
 Quality Gate 1 (Pre-Implementation): PASS
@@ -400,7 +400,7 @@ Du:     Ja.
 
 Am Ende laufen automatisch die finalen Checks:
 
-- **Security Agent:** Keine neuen Vulnerabilities, Secrets nicht exponiert, GDPR-konform
+- **Security Agent:** Keine neuen Vulnerabilities, Secrets nicht exponiert, DSGVO-konform
 - **Architect Agent:** Implementation passt zur Spec, keine Architectural Drift
 - **User:** Acceptance Criteria erfüllt
 

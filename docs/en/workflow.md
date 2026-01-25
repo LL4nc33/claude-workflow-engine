@@ -392,18 +392,67 @@ You do not have to run every phase every time:
 - **Want to implement manually?** Stop after Phase 4 and pick tasks yourself.
 - **Only need one agent?** Skip orchestration entirely and delegate directly.
 
+## Convenience Commands
+
+For quick start and daily usage:
+
+| Command | Purpose | Shortcut |
+|---------|---------|----------|
+| `/workflow:smart-workflow` | Auto-detection + guided 5-phase workflow | `sw` |
+| `/workflow:quick` | 3-step MVP workflow (Plan -> Spec -> Build) | `q` |
+| `/workflow:help` | Contextual help based on current status | `h` |
+| `/workflow:undo` | Git-based workflow revert | - |
+
+---
+
+## NaNo Learning System
+
+The NaNo (Nano-Homunculus) Learning System observes workflow patterns and learns from usage:
+
+### NaNo Commands
+
+| Command | Function |
+|---------|----------|
+| `/workflow:nano-toggle` | Enable/disable NaNo + first-run setup |
+| `/workflow:nano-session` | Show current session observations |
+| `/workflow:nano-config` | Interactive NaNo configuration |
+| `/workflow:nano-reset` | Reset NaNo data (with confirmation) |
+| `/workflow:homunculus-status` | NaNo learning status + quick actions |
+| `/workflow:learning-report` | Comprehensive NaNo analysis report |
+| `/workflow:review-candidates` | Interactive review of evolution candidates |
+
+### How NaNo Works
+
+1. **Observation**: Hooks capture workflow events (delegations, file changes)
+2. **Pattern Detection**: Patterns are analyzed at session end
+3. **Evolution Candidates**: Frequent patterns are suggested as improvement candidates
+4. **Review**: You decide which patterns to adopt into standards/workflows
+
+Configuration in `nano.local.md` (automatically gitignored, GDPR-compliant).
+
+---
+
+## Token Optimization: TOON Format
+
+JSON data in delegation prompts is automatically converted to [TOON format](https://github.com/toon-format/toon) for ~40% token savings. This happens transparently during orchestration.
+
+---
+
 ## Tips
 
-- Run the phases in order the first time to understand the full flow
+- **For beginners:** Use `/workflow:smart-workflow` -- it guides you through everything
+- **For daily use:** Simply describe what you want in chat (Auto-Delegation)
+- **For full control:** Use the 5 explicit commands
 - Phase 2 (shape-spec) is most valuable for preventing scope creep
 - Use `phase-by-phase` mode until you trust the workflow
-- Standards are injected as full text into delegation prompts (agents cannot read file references)
+- Standards are selectively injected (only relevant ones, based on tag matching)
 - The progress.md serves as an audit trail -- check it when something goes wrong
-- Each phase is idempotent: re-running overwrites previous results
-- For large features, it is worthwhile to manually review the task breakdown before orchestrating
+- For errors: See `workflow/ERROR-RECOVERY.md` for recovery strategies
+- Say "manual" or "without delegation" to disable auto-delegation
 
 ## See Also
 
 - [Agents](agents.md) - Which agent handles which task type
 - [Standards](standards.md) - How standards are injected during orchestration
 - [Configuration](configuration.md) - Customize execution modes and quality gates
+- [Platform Architecture](platform-architecture.md) - 6-layer architecture and hooks

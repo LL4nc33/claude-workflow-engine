@@ -15,7 +15,7 @@ Der Web-Access-Layer bietet allen Agents Zugang zu Web-Suche, Seiten-Scraping un
 /workflow:web-setup
 ```
 
-Fragt interaktiv nach URLs + API-Keys. Config wird in `web-services.local.md` gespeichert (gitignored, GDPR-konform).
+Fragt interaktiv nach URLs + API-Keys. Config wird in `web-services.local.md` gespeichert (gitignored, DSGVO-konform).
 
 ### ENV-Fallbacks (fuer CI/CD)
 

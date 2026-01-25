@@ -70,8 +70,8 @@ After installation, your project has this structure:
 ```
 .claude/
   agents/              # 7 specialized agents
-  commands/workflow/    # 8 slash commands
-  skills/workflow/      # 10 skills (7 standards + 3 plugin skills)
+  commands/workflow/    # 23 slash commands
+  skills/workflow/      # 13 skills (7 standards + 6 plugin skills)
 
 .claude-plugin/
   plugin.json          # Plugin manifest (6-layer architecture)
@@ -299,7 +299,7 @@ claude> Which agents are available?
 claude> /workflow/
 ```
 
-Claude should offer autocompletion for the 8 workflow commands:
+Claude should offer autocompletion for workflow commands (23 total, here are the most important):
 
 ```
 /workflow/plan-product
@@ -307,10 +307,12 @@ Claude should offer autocompletion for the 8 workflow commands:
 /workflow/write-spec
 /workflow/create-tasks
 /workflow/orchestrate-tasks
-/workflow/discover-standards
-/workflow/index-standards
-/workflow/inject-standards
+/workflow/smart-workflow
+/workflow/quick
+/workflow/help
 ```
+
+Additional commands: `discover-standards`, `index-standards`, `inject-standards`, `web-setup`, `visual-clone`, `release`, and 7 NaNo commands (`nano-toggle`, `nano-session`, etc.).
 
 ### Health Check (with CLI)
 
@@ -326,7 +328,7 @@ node dist/index.js health .
 ```
 Health Check Results:
   Agents:     7/7 loaded
-  Commands:   8/8 available
+  Commands:   23/23 available
   Standards:  11/11 indexed
   Config:     valid
   GDPR:       compliant

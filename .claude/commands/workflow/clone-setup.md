@@ -124,4 +124,4 @@ Confirm to user:
 - **Docker-Compose:** Firecrawl und SearXNG lassen sich mit Docker Compose schnell aufsetzen
 - **LAN-Zugriff:** Wenn der Service auf einem anderen Rechner läuft, die LAN-IP verwenden (nicht localhost)
 - **HTTPS:** Für öffentlich erreichbare Instanzen immer HTTPS verwenden
-- **Neustart:** Bei URL-Änderung einfach `/workflow:clone-setup` erneut ausführen
+- **Neustart:** Bei URL-Änderung `/workflow:web-setup` ausführen

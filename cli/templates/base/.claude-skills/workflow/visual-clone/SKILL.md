@@ -18,15 +18,15 @@ Apply this skill when the user wants to:
 
 ## Configuration
 
-> **Setup:** Run `/workflow:clone-setup` to configure service URLs interactively.
-> URLs are stored in `visual-clone.local.md` (gitignored).
+> **Setup:** Run `/workflow:web-setup` to configure service URLs interactively.
+> URLs are stored in `web-services.local.md` (gitignored).
 
 | Service | Placeholder | Purpose |
 |---------|-------------|---------|
 | Firecrawl | `${FIRECRAWL_URL}` | Website scraping with rawHtml, markdown, screenshot |
 | SearXNG | `${SEARXNG_URL}` | URL discovery for multi-page analysis |
 
-Replace `${FIRECRAWL_URL}` and `${SEARXNG_URL}` with values from `visual-clone.local.md`.
+Replace `${FIRECRAWL_URL}` and `${SEARXNG_URL}` with values from `web-services.local.md`.
 
 ### TOON Output (Token-Optimized)
 

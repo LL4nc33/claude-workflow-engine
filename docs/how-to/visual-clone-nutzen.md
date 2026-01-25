@@ -37,12 +37,14 @@ cd searxng-docker && docker compose up -d
 
 ## Schritt 1: Service-URLs konfigurieren
 
-**Command:** `/workflow/clone-setup`
+**Command:** `/workflow/web-setup`
+
+> **Hinweis:** `/workflow:clone-setup` ist deprecated. Nutze `/workflow:web-setup` stattdessen.
 
 Beim ersten Aufruf wirst du interaktiv nach deinen Service-URLs gefragt:
 
 ```
-> /workflow/clone-setup
+> /workflow/web-setup
 
 Claude: Wie lautet die URL deiner Firecrawl-Instanz?
 Du:     http://192.168.178.64:3002
@@ -51,7 +53,7 @@ Claude: Wie lautet die URL deiner SearXNG-Instanz?
 Du:     https://search.example.com
 ```
 
-Die URLs werden in `visual-clone.local.md` gespeichert (automatisch gitignored).
+Die URLs werden in `web-services.local.md` gespeichert (automatisch gitignored).
 
 ### Connectivity-Test
 
@@ -150,7 +152,7 @@ Die Konvertierung passiert via `npx @toon-format/cli` — keine manuelle Aktion 
 
 | Problem | Lösung |
 |---------|---------|
-| Firecrawl nicht erreichbar | `/workflow/clone-setup` erneut ausführen |
+| Firecrawl nicht erreichbar | `/workflow/web-setup` erneut ausfuehren |
 | Leere rawHtml | "SPA"-Modus wählen (wartet auf JS-Rendering) |
 | Keine Fonts gefunden | Google Fonts Links im HTML-Head prüfen |
 | Timeout | `onlyMainContent: true` verwenden |

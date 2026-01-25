@@ -26,7 +26,7 @@ The Claude Workflow Engine uses all 6 extension layers of Claude Code as a compl
 +------------------------------------------------------------------+
 |  Layer 2: Commands                                               |
 |  .claude/commands/workflow/*.md                                   |
-|  8 slash commands for the 5-phase workflow                       |
+|  23 slash commands (5-phase + convenience + utilities + NaNo)    |
 +------------------------------------------------------------------+
 |  Layer 1: CLAUDE.md                                              |
 |  .claude/CLAUDE.md                                               |
@@ -56,7 +56,9 @@ The foundation layer. Loaded every session, gives Claude Code the project contex
 
 **Path:** `.claude/commands/workflow/`
 
-8 slash commands for the structured workflow:
+23 slash commands for the structured workflow:
+
+### 5-Phase Workflow
 
 | Command | Phase | Function |
 |---------|-------|----------|
@@ -68,6 +70,35 @@ The foundation layer. Loaded every session, gives Claude Code the project contex
 | `/workflow/discover-standards` | - | Discover standards from code |
 | `/workflow/index-standards` | - | Update standards index |
 | `/workflow/inject-standards` | - | Manually load standards |
+
+### Convenience Commands
+
+| Command | Function |
+|---------|----------|
+| `/workflow/smart-workflow` | Auto-detection + guided workflow |
+| `/workflow/quick` | 3-step MVP workflow (Plan -> Spec -> Build) |
+| `/workflow/help` | Contextual help based on status |
+| `/workflow/undo` | Git-based workflow revert |
+
+### Utility Commands
+
+| Command | Function |
+|---------|----------|
+| `/workflow/web-setup` | Configure Web-Access-Layer (Firecrawl + SearXNG + Captcha) |
+| `/workflow/visual-clone` | Extract website design |
+| `/workflow/release` | Version bump + changelog + git tag |
+
+### NaNo Learning Commands
+
+| Command | Function |
+|---------|----------|
+| `/workflow/nano-toggle` | Enable/disable NaNo + first-run setup |
+| `/workflow/nano-session` | Show current session observations |
+| `/workflow/nano-config` | Interactive NaNo configuration |
+| `/workflow/nano-reset` | Reset NaNo data |
+| `/workflow/homunculus-status` | NaNo learning status + quick actions |
+| `/workflow/learning-report` | Comprehensive NaNo analysis report |
+| `/workflow/review-candidates` | Interactive review of evolution candidates |
 
 ---
 
