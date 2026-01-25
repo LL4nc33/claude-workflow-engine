@@ -629,12 +629,16 @@ EOF
   # Check standards patterns for underutilized standards
   if [ -f "${PATTERNS_DIR}/standards-usage.md" ]; then
     local total_stds
-    total_stds=$(grep "Standards Tracked" "${PATTERNS_DIR}/standards-usage.md" | awk '{print $NF}')
+    # Parse markdown table format: | Standards Tracked | 2 |
+    total_stds=$(grep "Standards Tracked" "${PATTERNS_DIR}/standards-usage.md" | sed 's/|//g' | awk '{print $NF}')
+    total_stds="${total_stds//[^0-9]/}"  # Keep only digits
 
     if [ "${total_stds:-0}" -gt 5 ]; then
       # Check for standards that might be unused (low count compared to avg)
       local avg_usage
-      avg_usage=$(grep "Total Observations" "${PATTERNS_DIR}/standards-usage.md" | awk '{print int($NF / '"${total_stds}"')}')
+      avg_usage=$(grep "Total Observations" "${PATTERNS_DIR}/standards-usage.md" | sed 's/|//g' | awk '{print $NF}')
+      avg_usage="${avg_usage//[^0-9]/}"  # Keep only digits
+      avg_usage=$((${avg_usage:-0} / ${total_stds:-1}))
 
       if [ "${avg_usage:-0}" -gt 2 ]; then
         local candidate_file="${EVOLUTION_DIR}/candidates/standards-review-$(date +%Y%m%d).yml"
