@@ -111,7 +111,7 @@ if [ "${learning_status}" != "disabled" ]; then
 fi
 
 # Build compact context message
-context_msg="Workflow Engine v0.2.8"
+context_msg="Workflow Engine v0.2.9"
 if [ -n "${context_parts}" ]; then
   context_msg="${context_msg} | ${context_parts}"
 fi

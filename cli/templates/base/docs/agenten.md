@@ -7,10 +7,12 @@ Claude Workflow Engine umfasst 9 spezialisierte Agenten, jeder mit definierter R
 | Agent | Zugang | Zweck | Tools | MCP-Tools |
 |-------|--------|-------|-------|-----------|
 | [architect](#architect) | READ-ONLY | System Design, ADRs, API Review | Read, Grep, Glob, WebSearch, WebFetch | Serena: find_symbol, get_symbols_overview, find_referencing_symbols |
-| [explainer](#explainer) | READ-ONLY | Erklärungen, Lernen | Read, Grep, Glob | Serena: get_symbols_overview, find_symbol |
 | [builder](#builder) | FULL | Bug Investigation, Implementation | Read, Write, Edit, Bash, Grep, Glob | Serena: find_referencing_symbols, replace_symbol_body, find_symbol, get_symbols_overview |
 | [devops](#devops) | FULL | CI/CD, Docker, K8s, IaC | Read, Write, Edit, Bash, Grep, Glob | - |
-| [orchestrator](#orchestrator) | TASK-DELEGATION | Koordination, Delegation | Task, Read, Grep, Glob | Greptile: list_merge_requests, get_merge_request |
+| [explainer](#explainer) | READ-ONLY | Erklaerungen, Lernen | Read, Grep, Glob | Serena: get_symbols_overview, find_symbol |
+| [guide](#guide) | READ-ONLY | NaNo Evolution, Pattern-to-Standards | Read, Grep, Glob | Serena: search_for_pattern, get_symbols_overview |
+| [innovator](#innovator) | READ-ONLY | Brainstorming, Kreative Loesungen | Read, Grep, Glob, WebSearch, WebFetch | Serena: get_symbols_overview |
+| [quality](#quality) | READ-ONLY | Testing, Coverage, Quality Gates | Read, Grep, Glob, Bash (nur Test-Tools) | Serena: find_symbol, get_symbols_overview |
 | [researcher](#researcher) | READ-ONLY | Analyse, Dokumentation | Read, Grep, Glob, WebSearch, WebFetch | Serena: search_for_pattern, find_symbol, get_symbols_overview |
 | [security](#security) | RESTRICTED | OWASP Audits, Vulnerability Scanning | Read, Grep, Glob, Bash (nur Security-Tools) | Greptile: search_greptile_comments, list_merge_request_comments |
 
@@ -18,10 +20,9 @@ Claude Workflow Engine umfasst 9 spezialisierte Agenten, jeder mit definierter R
 
 | Stufe | Bedeutung | Agenten |
 |-------|-----------|---------|
-| **READ-ONLY** | Kann Dateien lesen und durchsuchen, aber nichts verändern | architect, explainer, researcher |
-| **FULL** | Kann lesen, schreiben, editieren und Befehle ausführen | builder, devops |
-| **TASK-DELEGATION** | Kann Dateien lesen und Aufgaben an andere Agenten via Task-Tool delegieren | orchestrator |
-| **RESTRICTED** | Read-Only plus ein eingeschraenktes Set an Bash-Befehlen (nur Security-Scanning-Tools) | security |
+| **READ-ONLY** | Kann Dateien lesen und durchsuchen, aber nichts veraendern | architect, explainer, guide, innovator, researcher |
+| **FULL** | Kann lesen, schreiben, editieren und Befehle ausfuehren | builder, devops |
+| **RESTRICTED** | Read-Only plus ein eingeschraenktes Set an Bash-Befehlen (Security-/Test-Tools) | quality, security |
 
 Die Zugangsstufen definieren, was ein Agent technisch darf. Sie sind in der Frontmatter der jeweiligen Agent-Datei festgelegt und werden vom System erzwungen.
 
@@ -209,57 +210,129 @@ Die Zugangsstufen definieren, was ein Agent technisch darf. Sie sind in der Fron
 
 ---
 
-## Orchestrator
+## Guide
 
-**Datei:** `.claude/agents/orchestrator.md`
+**Datei:** `.claude/agents/guide.md`
 
-**Rolle:** Koordinationszentrale des Multi-Agent-Systems. Delegiert Arbeit, trackt Fortschritt, erzwingt Quality Gates. Implementiert nie direkt -- sieht das ganze Brett und bewegt die Figuren.
+**Rolle:** NaNo-Evolution-Experte und Prozessverbesserungs-Spezialist. Analysiert Workflow-Patterns, identifiziert Verbesserungskandidaten und hilft das System basierend auf echten Nutzungsdaten weiterzuentwickeln.
 
-**Zugang:** TASK-DELEGATION
+**Zugang:** READ-ONLY
 
-**Tools:** Task, Read, Grep, Glob
+**Tools:** Read, Grep, Glob
 
-**MCP-Tools (optional):** Greptile: `list_merge_requests`, `get_merge_request`
+**MCP-Tools (optional):** Serena: `search_for_pattern`, `get_symbols_overview`
 
 **Spezialisierungen:**
 
-- Task Decomposition und Dependency Resolution
-- Agent-Auswahl und Delegation
-- Progress Tracking und Status-Reporting
-- Quality Gate Enforcement
-- Failure Handling und Eskalation
-- Parallele Ausfuehrungskoordination
+- NaNo Pattern-Analyse und Evolution-Candidates
+- Workflow-Effizienz-Verbesserung
+- Pattern-to-Standards Extraktion
+- Prozess-Engpass-Identifikation
+- Agent-Kollaborations-Optimierung
+- Learning-System-Kalibrierung
 
-**Kontext-Quellen:** agent-conventions, tech-stack, mission, architecture
+**Kontext-Quellen:** nano-learning, agent-conventions, tech-stack
 
-**Delegationsprotokoll:**
+**Analyse-Protokoll:**
 
-1. Task-Liste analysieren und Dependencies identifizieren
-2. Execution Plan bauen (Phasen unabhaengiger Tasks)
-3. Jeden Task delegieren mit: Beschreibung, Standards (inline), Spec-Kontext, Acceptance Criteria
-4. Completion gegen Acceptance Criteria verifizieren
-5. Failures handhaben (max. 2 Retries, dann Eskalation an User)
-6. Fortschritt in `progress.md` tracken
-
-**Execution-Modi:**
-
-| Modus | Verhalten |
-|-------|-----------|
-| automatic | Alle Phasen ausführen, nur bei Failures pausieren |
-| phase-by-phase | Nach jeder Phase beim User bestätigen (Default) |
-| task-by-task | Nach jedem Task beim User bestätigen |
-| selective | User waehlt spezifische Tasks zur Ausfuehrung |
-
-**Standards-Injection:** Der Orchestrator liest Standards-Dateien und fügt deren vollständigen Inhalt in Delegations-Prompts ein. Subagenten können keine Datei-Referenzen auflösen -- sie brauchen den Content inline.
+1. NaNo-Observations und Patterns analysieren
+2. Wiederkehrende erfolgreiche Verhaltensweisen identifizieren
+3. Evolution-Candidates fuer Standards vorschlagen
+4. Prozessverbesserungen empfehlen
+5. Gegen bestehende Standards validieren
 
 **Wann nutzen:**
 
-- Nach `/workflow/create-tasks` um die Task-Liste auszufuehren
-- Wenn du mehrere unabhaengige Tasks zu verteilen hast
-- Wenn koordinierte Multi-Agent-Arbeit gebraucht wird
-- "Führe die Tasks für das Auth-Feature aus"
+- "Analysiere die letzten Delegation-Patterns"
+- "Welche Patterns entstehen aus unserem Workflow?"
+- "Pruefe Evolution-Candidates fuer Promotion"
+- "Wie koennen wir den Spec-to-Task-Prozess verbessern?"
 
-**Kollaboriert mit:** Alle anderen Agenten (delegiert an sie). Delegiert nie an sich selbst (keine rekursive Orchestration).
+**Kollaboriert mit:** researcher (Datenanalyse), architect (Standards-Design), quality (Metriken)
+
+---
+
+## Innovator
+
+**Datei:** `.claude/agents/innovator.md`
+
+**Rolle:** Kreativer Technologe und Ideation-Spezialist. Denkt ausserhalb der Box, generiert alternative Loesungen und erkundet "Was waere wenn"-Szenarien ohne Implementierungszwaenge.
+
+**Zugang:** READ-ONLY
+
+**Tools:** Read, Grep, Glob, WebSearch, WebFetch
+
+**MCP-Tools (optional):** Serena: `get_symbols_overview`
+
+**Spezialisierungen:**
+
+- Divergentes Denken und Brainstorming
+- Alternative Loesungsgenerierung
+- "Was waere wenn"-Szenario-Exploration
+- Cross-Domain Pattern-Erkennung
+- Feature-Ideation und Konzeptentwicklung
+- Trade-off-Exploration ohne Implementierungs-Bias
+
+**Kontext-Quellen:** mission, architecture, tech-stack
+
+**Ideations-Protokoll:**
+
+1. Problemraum verstehen ohne zu Loesungen zu springen
+2. Mehrere diverse Ansaetze generieren (mindestens 3)
+3. Unkonventionelle Alternativen erkunden
+4. Cross-Domain-Loesungen in Betracht ziehen
+5. Optionen mit Trade-offs praesentieren (ohne Empfehlung)
+
+**Wann nutzen:**
+
+- "Welche alternativen Ansaetze gibt es fuer X?"
+- "Brainstorme Feature-Ideen fuer Y"
+- "Was waere wenn wir Z komplett anders machen?"
+- "Erkunde unkonventionelle Loesungen fuer dieses Problem"
+
+**Kollaboriert mit:** architect (Machbarkeits-Review), researcher (Prior Art), builder (Implementierungs-Realitaetscheck)
+
+---
+
+## Quality
+
+**Datei:** `.claude/agents/quality.md`
+
+**Rolle:** Quality-Assurance und Testing-Experte. Fokussiert auf Test-Coverage, Code-Health-Metriken, Quality Gates und stellt sicher dass die Codebase Qualitaetsstandards erfuellt.
+
+**Zugang:** RESTRICTED (nur Test-Tools)
+
+**Tools:** Read, Grep, Glob, Bash (jest, npm test, npx nyc, npx eslint)
+
+**MCP-Tools (optional):** Serena: `find_symbol`, `get_symbols_overview`
+
+**Spezialisierungen:**
+
+- Test-Coverage-Analyse und Luecken-Identifikation
+- Code-Health-Metriken (Komplexitaet, Duplikation, Debt)
+- Quality-Gate-Enforcement
+- Flaky-Test-Erkennung und Remediation
+- Test-Strategie und Test-Pyramiden-Balance
+- CI/CD-Quality-Integration
+
+**Kontext-Quellen:** testing, tech-stack, coverage
+
+**Quality-Protokoll:**
+
+1. Aktuelle Test-Coverage und Luecken analysieren
+2. Code-Health-Metriken messen
+3. Quality-Gate-Verletzungen identifizieren
+4. Gezielte Verbesserungen empfehlen
+5. Gegen Qualitaetsstandards validieren
+
+**Wann nutzen:**
+
+- "Wie ist die Test-Coverage fuer Modul X?"
+- "Gibt es Flaky Tests in der Suite?"
+- "Pruefe Code-Health-Metriken fuer diesen PR"
+- "Erfuellen wir die Quality Gates fuer Release?"
+
+**Kollaboriert mit:** builder (Test-Implementierung), devops (CI-Integration), security (Security-Testing)
 
 ---
 

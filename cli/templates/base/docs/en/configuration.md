@@ -89,9 +89,15 @@ agents:
     - name: builder
       access: full
       purpose: Bug investigation with full file system access
-    - name: orchestrator
-      access: task-delegation
-      purpose: Task delegation via Task tool
+    - name: guide
+      access: read-only
+      purpose: NaNo Evolution, Pattern-to-Standards, Process Improvement
+    - name: innovator
+      access: read-only
+      purpose: Brainstorming, Creative Solutions, "What if" Scenarios
+    - name: quality
+      access: read-only
+      purpose: Testing, Coverage, Quality Gates, Code Health
     - name: researcher
       access: read-only
       purpose: Codebase analysis and documentation generation
@@ -770,18 +776,22 @@ The permissions file for Claude Code. The engine requires the following tool per
   "permissions": {
     "allow": [
       "Agent(architect)",
-      "Agent(explainer)",
       "Agent(builder)",
       "Agent(devops)",
-      "Agent(orchestrator)",
+      "Agent(explainer)",
+      "Agent(guide)",
+      "Agent(innovator)",
+      "Agent(quality)",
       "Agent(researcher)",
       "Agent(security)",
-      "Skill(researcher)",
-      "Skill(orchestrator)",
       "Skill(architect)",
-      "Skill(explainer)",
       "Skill(builder)",
       "Skill(devops)",
+      "Skill(explainer)",
+      "Skill(guide)",
+      "Skill(innovator)",
+      "Skill(quality)",
+      "Skill(researcher)",
       "Skill(security)",
       "Bash(git clone:*)",
       "Bash(git status:*)",
