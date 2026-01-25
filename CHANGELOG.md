@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.9] - 2026-01-25
+
+### Added
+
+- 9 spezialisierte Agents (vorher 7): guide, innovator, quality neu hinzugefuegt
+- NaNo Quality Gate Tracking vollstaendig funktionsfaehig (`nano-observer.sh quality`)
+- NaNo Standards Tracking bei Agent-Delegationen
+- SessionStart Hook zeigt pending Evolution Candidates
+
+### Changed
+
+- Agent-Umbenennung: ask → explainer, debug → builder
+- orchestrator-Agent entfernt (Main Chat uebernimmt Orchestrierung)
+- README Credits erweitert: Agent OS, Homunculus, Roo Code
+- Architecture-Section im README mit Side-by-Side Layout
+
+### Fixed
+
+- NaNo Config-Parsing funktioniert jetzt mit simplem `key: value` Format
+- NaNo Status-Command gibt keine doppelte Ausgabe mehr aus
+- Hook-Scripts: `grep` Exit-Codes werden korrekt behandelt mit `set -e`
+
 ## [0.2.8] - 2026-01-25
 
 ### Added

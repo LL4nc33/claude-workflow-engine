@@ -18,14 +18,15 @@ Erkannte Muster bei Agent-Delegation und Task-Zuordnung.
 - **debug**: 10 delegations
 - **researcher**: 8 delegations
 - **ask**: 4 delegations
+- **builder**: 2 delegations
 - **security**: 1 delegations
-- **builder**: 1 delegations
+- **quality**: 1 delegations
 - **architect**: 1 delegations
 
 ## Metrics
 
 | Metric | Value |
 |--------|-------|
-| Total Observations | 25 |
+| Total Observations | 27 |
 | Patterns Detected | 4 |
-| Last Updated | 2026-01-25T17:25:03+01:00 |
+| Last Updated | 2026-01-25T19:57:53+01:00 |

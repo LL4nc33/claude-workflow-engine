@@ -9,6 +9,7 @@
 #   nano-observer.sh analyze      # Stop event - session analysis
 #   nano-observer.sh cleanup      # Manual cleanup of old observations
 #   nano-observer.sh status       # Print learning status
+#   nano-observer.sh quality      # Record quality gate result (manual call)
 # =============================================================================
 
 set -euo pipefail
@@ -25,6 +26,7 @@ PATTERNS_DIR="${NANO_DIR}/patterns"
 EVOLUTION_DIR="${NANO_DIR}/evolution"
 CONFIG_FILE="${NANO_DIR}/config/pattern-rules.yml"
 LOCAL_CONFIG="${ROOT}/.claude/nano.local.md"
+AGENTS_DIR="${ROOT}/.claude/agents"
 
 # Session ID (stable per Claude session)
 # Priority: 1. CLAUDE_SESSION_ID env var, 2. shared file from session-start hook, 3. fallback to timestamp
@@ -52,12 +54,11 @@ _parse_config() {
     CFG_THRESHOLD="3"
     return
   fi
-  local frontmatter
-  frontmatter=$(sed -n '/^---$/,/^---$/p' "${LOCAL_CONFIG}" 2>/dev/null || true)
-  CFG_LEVEL=$(echo "${frontmatter}" | grep "^observation_level:" | awk '{print $2}')
-  CFG_MAX_OBS=$(echo "${frontmatter}" | grep "^max_session_observations:" | awk '{print $2}')
-  CFG_CLEANUP_DAYS=$(echo "${frontmatter}" | grep "^cleanup_after_days:" | awk '{print $2}')
-  CFG_THRESHOLD=$(echo "${frontmatter}" | grep "^pattern_detection_threshold:" | awk '{print $2}')
+  # Parse simple key: value format (not YAML frontmatter)
+  CFG_LEVEL=$(grep "^observation_level:" "${LOCAL_CONFIG}" 2>/dev/null | awk '{print $2}' || true)
+  CFG_MAX_OBS=$(grep "^max_session_observations:" "${LOCAL_CONFIG}" 2>/dev/null | awk '{print $2}' || true)
+  CFG_CLEANUP_DAYS=$(grep "^cleanup_after_days:" "${LOCAL_CONFIG}" 2>/dev/null | awk '{print $2}' || true)
+  CFG_THRESHOLD=$(grep "^pattern_detection_threshold:" "${LOCAL_CONFIG}" 2>/dev/null | awk '{print $2}' || true)
   CFG_LEVEL="${CFG_LEVEL:-medium}"
   CFG_MAX_OBS="${CFG_MAX_OBS:-1000}"
   CFG_CLEANUP_DAYS="${CFG_CLEANUP_DAYS:-30}"
@@ -107,6 +108,46 @@ write_observation() {
   ) 200>"${lock_file}"
 }
 
+# Get standards for an agent from its definition file
+# Returns space-separated list of standard names (without path)
+get_agent_standards() {
+  local agent_type="$1"
+  local agent_file="${AGENTS_DIR}/${agent_type}.md"
+
+  if [ ! -f "${agent_file}" ]; then
+    echo ""
+    return
+  fi
+
+  # Extract @workflow/standards/* entries from Context Sources section
+  # Only look in the Context Sources section (between ## Context Sources and next ##)
+  local in_context_section=false
+  local standards=""
+
+  while IFS= read -r line; do
+    if [[ "${line}" =~ ^##[[:space:]]+Context[[:space:]]+Sources ]]; then
+      in_context_section=true
+      continue
+    fi
+    if [[ "${in_context_section}" == "true" && "${line}" =~ ^## ]]; then
+      break
+    fi
+    if [[ "${in_context_section}" == "true" && "${line}" =~ @workflow/standards/ ]]; then
+      # Extract standard name from path like @workflow/standards/global/tech-stack.md
+      local std_path
+      std_path=$(echo "${line}" | grep -o '@workflow/standards/[^[:space:]]*' | sed 's/@workflow\/standards\///' | sed 's/\.md$//')
+      if [ -n "${std_path}" ]; then
+        # Convert path like "global/tech-stack" to "global:tech-stack"
+        local std_name
+        std_name=$(echo "${std_path}" | tr '/' ':')
+        standards="${standards}${std_name} "
+      fi
+    fi
+  done < "${agent_file}"
+
+  echo "${standards}" | sed 's/ $//'
+}
+
 # --- Command Handlers ---
 
 # Handle delegation observation (PostToolUse for Task tool OR SubagentStop)
@@ -151,12 +192,81 @@ handle_delegation() {
     *) task_group="other" ;;
   esac
 
-  # Write observation
+  # Write delegation observation
   if [ "${CFG_LEVEL}" = "comprehensive" ]; then
     write_observation "delegation" "agent=${agent_type:-unknown},task_group=${task_group},desc=${task_desc:-none}"
   else
     write_observation "delegation" "agent=${agent_type:-unknown},task_group=${task_group}"
   fi
+
+  # Track standards usage based on agent's Context Sources
+  # This captures which standards are being injected when agents are delegated to
+  if [ -n "${agent_type}" ] && [ "${agent_type}" != "unknown" ]; then
+    local standards
+    standards=$(get_agent_standards "${agent_type}")
+
+    if [ -n "${standards}" ]; then
+      # Write one observation per standard for proper counting
+      for std in ${standards}; do
+        write_observation "standards" "standard=${std},agent=${agent_type},task_group=${task_group}"
+      done
+    fi
+  fi
+}
+
+# Handle quality gate observation (manual call from workflows)
+# Usage: nano-observer.sh quality <gate_name> <pass|fail> [agent]
+handle_quality() {
+  local gate_name="${2:-unknown}"
+  local status="${3:-unknown}"
+  local agent="${4:-main}"
+
+  # Validate status
+  case "${status}" in
+    pass|fail|skip|warn) ;;
+    *) status="unknown" ;;
+  esac
+
+  write_observation "quality" "gate=${gate_name},status=${status},agent=${agent}"
+
+  # If it's a failure, also track it for evolution candidates
+  if [ "${status}" = "fail" ]; then
+    # Check if this gate has failed multiple times
+    local failure_count
+    failure_count=$(grep "gate=${gate_name},status=fail" "${OBSERVATIONS_DIR}"/session-*.toon 2>/dev/null | wc -l)
+
+    if [ "${failure_count}" -ge 3 ]; then
+      # Generate evolution candidate for recurring quality gate failures
+      local candidate_file="${EVOLUTION_DIR}/candidates/quality-gate-$(date +%Y%m%d)-${gate_name}.yml"
+      mkdir -p "${EVOLUTION_DIR}/candidates"
+      if [ ! -f "${candidate_file}" ]; then
+        cat > "${candidate_file}" << EOF
+# Evolution Candidate: Quality Gate Improvement
+# Generated: $(date -Iseconds)
+# Status: pending_review
+
+type: quality_improvement
+confidence: medium
+source: quality-patterns
+gate: ${gate_name}
+failure_count: ${failure_count}
+suggestion: |
+  The quality gate "${gate_name}" has failed ${failure_count} times.
+  Consider:
+  - Reviewing the gate threshold
+  - Adding pre-checks to catch issues earlier
+  - Improving related standards/documentation
+
+proposed_change:
+  target: workflow/standards/testing/coverage.md
+  section: quality_gates
+  action: review_and_adjust
+EOF
+      fi
+    fi
+  fi
+
+  echo "Quality gate recorded: ${gate_name} = ${status}"
 }
 
 # Analyze session observations and detect patterns (incremental)
@@ -292,35 +402,55 @@ analyze_quality_patterns() {
   local total_obs
   total_obs=$(wc -l < "${temp_file}")
 
-  # Count gate failures
-  local failure_counts
-  failure_counts=$(grep -o "gate=[^,]*" "${temp_file}" | sort | uniq -c | sort -rn)
+  # Count gate occurrences by status
+  local gate_counts
+  gate_counts=$(grep -o "gate=[^,]*" "${temp_file}" | sort | uniq -c | sort -rn)
+
+  local pass_counts
+  pass_counts=$(grep "status=pass" "${temp_file}" | grep -o "gate=[^,]*" | sort | uniq -c | sort -rn 2>/dev/null || echo "")
+
+  local fail_counts
+  fail_counts=$(grep "status=fail" "${temp_file}" | grep -o "gate=[^,]*" | sort | uniq -c | sort -rn 2>/dev/null || echo "")
 
   local pattern_count
-  pattern_count=$(echo "${failure_counts}" | awk -v t="${threshold}" '$1 >= t' | wc -l)
+  pattern_count=$(echo "${gate_counts}" | awk -v t="${threshold}" '$1 >= t' | wc -l)
 
-  if [ "${pattern_count}" -gt 0 ]; then
-    mkdir -p "${PATTERNS_DIR}"
-    cat > "${PATTERNS_DIR}/quality-patterns.md" << EOF
+  mkdir -p "${PATTERNS_DIR}"
+  cat > "${PATTERNS_DIR}/quality-patterns.md" << EOF
 # Quality Patterns
 
 Erkannte Muster bei Quality Gate Ergebnissen.
 
 ## Active Patterns
 
-### Gate Failure Frequency (threshold: ${threshold}+)
+### Gate Usage (threshold: ${threshold}+)
 
-$(echo "${failure_counts}" | awk -v t="${threshold}" '$1 >= t {gsub(/gate=/, "", $2); printf "- **%s**: %s failures\n", $2, $1}')
+$(echo "${gate_counts}" | awk -v t="${threshold}" '$1 >= t {gsub(/gate=/, "", $2); printf "- **%s**: %s checks\n", $2, $1}')
+
+### Pass Rate by Gate
+
+$(if [ -n "${pass_counts}" ]; then
+  echo "${pass_counts}" | awk '{gsub(/gate=/, "", $2); printf "- **%s**: %s passes\n", $2, $1}'
+else
+  echo "No passes recorded yet."
+fi)
+
+### Failure Rate by Gate
+
+$(if [ -n "${fail_counts}" ]; then
+  echo "${fail_counts}" | awk '{gsub(/gate=/, "", $2); printf "- **%s**: %s failures\n", $2, $1}'
+else
+  echo "No failures recorded."
+fi)
 
 ## Metrics
 
 | Metric | Value |
 |--------|-------|
 | Total Observations | ${total_obs} |
-| Patterns Detected | ${pattern_count} |
+| Gates Tracked | ${pattern_count} |
 | Last Updated | $(date -Iseconds) |
 EOF
-  fi
 
   rm -f "${temp_file}"
 }
@@ -348,6 +478,10 @@ analyze_standards_patterns() {
   local usage_counts
   usage_counts=$(grep -o "standard=[^,]*" "${temp_file}" | sort | uniq -c | sort -rn)
 
+  # Count by agent
+  local agent_std_counts
+  agent_std_counts=$(grep -o "standard=[^,]*,agent=[^,]*" "${temp_file}" | sort | uniq -c | sort -rn)
+
   local standards_tracked
   standards_tracked=$(echo "${usage_counts}" | wc -l)
 
@@ -362,6 +496,29 @@ Erkannte Muster bei Standards-Nutzung und deren Effektivitaet.
 ### Standards Usage Frequency
 
 $(echo "${usage_counts}" | awk '{gsub(/standard=/, "", $2); printf "- **%s**: %s uses\n", $2, $1}')
+
+### Standards by Agent
+
+$(echo "${agent_std_counts}" | head -20 | awk '{
+  combo=$2;
+  gsub(/standard=/, "", combo);
+  split(combo, parts, ",agent=");
+  printf "- **%s** -> %s: %s times\n", parts[2], parts[1], $1
+}')
+
+## Insights
+
+$(if [ "${total_obs}" -gt 10 ]; then
+  # Calculate most/least used standards
+  most_used=$(echo "${usage_counts}" | head -1 | awk '{gsub(/standard=/, "", $2); print $2}')
+  least_used=$(echo "${usage_counts}" | tail -1 | awk '{gsub(/standard=/, "", $2); print $2}')
+  echo "- Most used standard: **${most_used}**"
+  echo "- Least used standard: **${least_used}**"
+  echo ""
+  echo "Consider reviewing least-used standards for relevance."
+else
+  echo "Not enough data for insights yet (${total_obs} observations)."
+fi)
 
 ## Metrics
 
@@ -393,19 +550,25 @@ handle_status() {
   local obs_count=0
   local pattern_count=0
   local candidate_count=0
+  local standards_count=0
+  local quality_count=0
+  local delegation_count=0
 
   if [ -d "${OBSERVATIONS_DIR}" ]; then
-    obs_count=$(find "${OBSERVATIONS_DIR}" -name "session-*.toon" -type f 2>/dev/null | wc -l)
+    obs_count=$(find "${OBSERVATIONS_DIR}" -name "session-*.toon" -type f 2>/dev/null | wc -l) || obs_count=0
+    standards_count=$(grep -h "| standards |" "${OBSERVATIONS_DIR}"/session-*.toon 2>/dev/null | wc -l) || standards_count=0
+    quality_count=$(grep -h "| quality |" "${OBSERVATIONS_DIR}"/session-*.toon 2>/dev/null | wc -l) || quality_count=0
+    delegation_count=$(grep -h "| delegation |" "${OBSERVATIONS_DIR}"/session-*.toon 2>/dev/null | wc -l) || delegation_count=0
   fi
 
   if [ -d "${PATTERNS_DIR}" ]; then
     pattern_count=$(grep -l "## Active Patterns" "${PATTERNS_DIR}"/*.md 2>/dev/null | \
       xargs grep -c "^-\|^|" 2>/dev/null | \
-      awk -F: '{sum += $2} END {print sum+0}')
+      awk -F: '{sum += $2} END {print sum+0}') || pattern_count=0
   fi
 
   if [ -d "${EVOLUTION_DIR}/candidates" ]; then
-    candidate_count=$(find "${EVOLUTION_DIR}/candidates" -name "*.yml" -type f 2>/dev/null | wc -l)
+    candidate_count=$(find "${EVOLUTION_DIR}/candidates" -name "*.yml" -type f 2>/dev/null | wc -l) || candidate_count=0
   fi
 
   cat << EOF
@@ -417,6 +580,10 @@ nano:
   candidates: ${candidate_count}
   threshold: ${CFG_THRESHOLD}
   cleanup_days: ${CFG_CLEANUP_DAYS}
+  tracking:
+    delegations: ${delegation_count}
+    standards: ${standards_count}
+    quality_gates: ${quality_count}
 EOF
 }
 
@@ -458,6 +625,41 @@ EOF
       fi
     fi
   fi
+
+  # Check standards patterns for underutilized standards
+  if [ -f "${PATTERNS_DIR}/standards-usage.md" ]; then
+    local total_stds
+    total_stds=$(grep "Standards Tracked" "${PATTERNS_DIR}/standards-usage.md" | awk '{print $NF}')
+
+    if [ "${total_stds:-0}" -gt 5 ]; then
+      # Check for standards that might be unused (low count compared to avg)
+      local avg_usage
+      avg_usage=$(grep "Total Observations" "${PATTERNS_DIR}/standards-usage.md" | awk '{print int($NF / '"${total_stds}"')}')
+
+      if [ "${avg_usage:-0}" -gt 2 ]; then
+        local candidate_file="${EVOLUTION_DIR}/candidates/standards-review-$(date +%Y%m%d).yml"
+        if [ ! -f "${candidate_file}" ]; then
+          mkdir -p "${EVOLUTION_DIR}/candidates"
+          cat > "${candidate_file}" << EOF
+# Evolution Candidate: Standards Review
+# Generated: $(date -Iseconds)
+# Status: pending_review
+
+type: standards_review
+confidence: medium
+source: standards-usage
+suggestion: |
+  With ${total_stds} standards tracked and avg ${avg_usage} uses each,
+  consider reviewing which standards are most/least effective.
+
+proposed_change:
+  target: workflow/standards/
+  action: review_effectiveness
+EOF
+        fi
+      fi
+    fi
+  fi
 }
 
 # --- Main Entry Point ---
@@ -477,6 +679,9 @@ main() {
     delegation)
       handle_delegation
       ;;
+    quality)
+      handle_quality "$@"
+      ;;
     analyze)
       handle_analyze
       check_evolution
@@ -488,7 +693,15 @@ main() {
       handle_status
       ;;
     *)
-      echo "Usage: nano-observer.sh {delegation|analyze|cleanup|status}" >&2
+      echo "Usage: nano-observer.sh {delegation|quality|analyze|cleanup|status}" >&2
+      echo "" >&2
+      echo "Commands:" >&2
+      echo "  delegation     Record agent delegation (called by PostToolUse hook)" >&2
+      echo "  quality NAME STATUS [AGENT]  Record quality gate result" >&2
+      echo "                 STATUS: pass|fail|skip|warn" >&2
+      echo "  analyze        Analyze patterns (called by Stop hook)" >&2
+      echo "  cleanup        Remove old session files" >&2
+      echo "  status         Print learning status summary" >&2
       exit 1
       ;;
   esac

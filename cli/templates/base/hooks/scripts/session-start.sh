@@ -8,6 +8,9 @@ source "${SCRIPT_DIR}/common.sh"
 
 ROOT="$(get_project_root)"
 
+# Store session ID for nano-observer to use
+echo "$(date +%Y%m%d-%H%M%S)" > "/tmp/claude-current-session-id" 2>/dev/null
+
 warnings=""
 context_parts=""
 
@@ -73,7 +76,18 @@ if [ "${learning_status}" != "disabled" ]; then
   if [ -d "${nano_dir}/evolution/candidates" ]; then
     candidate_count=$(find "${nano_dir}/evolution/candidates" -name "*.yml" -type f 2>/dev/null | wc -l)
     if [ "${candidate_count}" -gt 0 ]; then
-      context_parts="${context_parts}${candidate_count} evolution candidates ready! → /workflow:review-candidates. "
+      context_parts="${context_parts}${candidate_count} evolution candidate(s) pending -> /workflow:review-candidates. "
+    fi
+  fi
+
+  # Show delegation statistics if available
+  if [ -f "${nano_dir}/patterns/delegation-patterns.md" ]; then
+    # Extract top 3 agents from delegation patterns
+    top_agents=$(grep -o "agent=[^,]*" "${nano_dir}/patterns/delegation-patterns.md" 2>/dev/null | \
+      sed 's/agent=//' | sort | uniq -c | sort -rn | head -3 | \
+      awk '{printf "%s(%s) ", $2, $1}' | sed 's/ $//')
+    if [ -n "${top_agents}" ]; then
+      context_parts="${context_parts}Top agents: ${top_agents}. "
     fi
   fi
 
@@ -97,7 +111,7 @@ if [ "${learning_status}" != "disabled" ]; then
 fi
 
 # Build compact context message
-context_msg="Workflow Engine v0.2.7"
+context_msg="Workflow Engine v0.2.8"
 if [ -n "${context_parts}" ]; then
   context_msg="${context_msg} | ${context_parts}"
 fi
