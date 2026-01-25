@@ -271,7 +271,7 @@ Five hooks automate workflow tasks (with adaptive timeouts per ADR-003):
 | Hook | Event | Timeout | Behavior |
 |------|-------|---------|----------|
 | SessionStart | Session begins | 30s | Checks standards freshness, provides workflow context, NaNo status (cached), triggers background-analyse, cleans cache |
-| PreToolUse (Write/Edit) | Before file writes | 15s | Blocks writes to .env, credentials.*, secrets.*, *.local.md |
+| PreToolUse (Write/Edit) | Before file writes | 15s | Blocks secrets (.env, credentials.*, *.local.md); warnt bei Code außerhalb workflow/.claude/ (→ builder) |
 | PostToolUse (Write/Edit) | After file writes | 5s | Logs changes during active orchestration (filenames only, GDPR) |
 | PostToolUse (Task) | After agent delegation | 3s | NaNo: Atomic write delegation observation (flock-based, O(1) counter) |
 | Stop | Session ends | 10s | NaNo: Incremental pattern analysis (nur neue Sessions), evolution candidates |
@@ -325,6 +325,25 @@ Users can override auto-delegation:
 - Use explicit `/workflow:*` commands for full control
 - Say "manuell" or "ohne Delegation" to disable auto-delegation for current request
 - All existing commands continue to work as before
+
+### Interaktivitaets-Regeln (AskUserQuestion)
+
+**Main Chat MUSS den User fragen wenn:**
+- Intent ist unklar oder mehrdeutig (max 2 Fragen zur Klaerung)
+- Multi-step Task benoetigt Scope-Klaerung
+- Quality Gate failed und User-Entscheidung noetig
+- Mehrere valide Loesungswege existieren
+
+**Main Chat fragt NICHT wenn:**
+- Intent ist klar und single-domain → direkt delegieren
+- User hat expliziten Command gegeben (/workflow:*, /builder, etc.)
+- Einfache Ja/Nein Bestaetigung reicht
+- Agent kann selbst Klaerungsfragen stellen
+
+**Format:** Nutze immer das AskUserQuestion Tool mit:
+- Klaren, spezifischen Fragen
+- 2-4 Optionen pro Frage
+- Empfohlene Option als erste mit "(Recommended)"
 
 ## Token-Optimierung: TOON-Format
 

@@ -109,7 +109,7 @@ Die Zugangsstufen definieren, was ein Agent technisch darf. Sie sind in der Fron
 
 ---
 
-## Debug
+## Builder
 
 **Datei:** `.claude/agents/builder.md`
 
@@ -154,7 +154,7 @@ Die Zugangsstufen definieren, was ein Agent technisch darf. Sie sind in der Fron
 - "Schreibe Unit Tests für das Notification-Modul"
 - "Der Build bricht ab -- finde heraus warum"
 
-**Kollaboriert mit:** architect (erhaelt Guidance), devops (Deployment-Issues), security (flaggt Probleme), orchestrator (erhaelt Tasks)
+**Kollaboriert mit:** architect (erhaelt Guidance), devops (Deployment-Issues), security (flaggt Probleme), Main Chat (erhaelt Tasks)
 
 ---
 
@@ -373,7 +373,7 @@ Die Zugangsstufen definieren, was ein Agent technisch darf. Sie sind in der Fron
 - "Recherchiere aktuelle Best Practices für WebSocket-Authentifizierung"
 - "Erstelle einen Bericht über die Codebase-Qualität"
 
-**Kollaboriert mit:** architect (liefert Findings), orchestrator (stellt Kontext bereit), security (Vulnerability Research), devops (Infrastruktur Best Practices)
+**Kollaboriert mit:** architect (liefert Findings), security (Vulnerability Research), devops (Infrastruktur Best Practices)
 
 ---
 
@@ -442,22 +442,22 @@ curl -I https://target.example.com     # Header-Inspektion
 ## Agenten-Hierarchie
 
 ```
-                 +------------------+
-                 |   orchestrator   |  (Koordination)
-                 +--------+---------+
-                          |
-      +-------------------+-------------------+
-      |         |         |         |         |
- +----+---+ +---+----+ +-+------+ +-+------+ +---+-----+
- |architect| |  builder | |devops  | |security| |researcher|
- +---------+ +--------+ +--------+ +--------+ +----------+
-      |
- +----+---+
- | explainer | (Erklärungen)
- +---------+
+                         +-------------+
+                         |  Main Chat  |  (Orchestration)
+                         +------+------+
+                                |
+    +-------+-------+-------+---+---+-------+-------+-------+
+    |       |       |       |       |       |       |       |
++---+---+ +-+--+ +--+--+ +--+---+ +-+--+ +--+---+ +--+--+ +-+---+
+|architect|builder|devops|explainer|guide|innovator|quality|researcher|
++---------+------+------+---------+-----+---------+-------+----------+
+                                                              |
+                                                         +----+----+
+                                                         | security |
+                                                         +----------+
 ```
 
-Main Chat koordiniert und delegiert an alle Agenten. Der Architect stellt Guidance für builder und devops bereit. Security reviewt Architektur- und Deployment-Entscheidungen. Der Explainer behandelt Nutzerfragen die keine Implementation erfordern.
+Main Chat koordiniert und delegiert an alle 9 Agenten. Der Architect stellt Guidance fuer Builder und DevOps bereit. Security reviewt Architektur- und Deployment-Entscheidungen. Der Explainer behandelt Nutzerfragen die keine Implementation erfordern. Guide, Innovator und Quality sind spezialisierte Support-Agenten fuer Prozessverbesserung, Ideation und Qualitaetssicherung.
 
 **Task-zu-Agent-Mapping:**
 

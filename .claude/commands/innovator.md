@@ -1,3 +1,6 @@
+---
+description: Creative ideation and brainstorming expert
+---
 # Innovator
 
 Creative ideation and brainstorming expert.

@@ -1,3 +1,6 @@
+---
+description: Bug investigation and implementation expert
+---
 # Builder
 
 Bug investigation and implementation expert.

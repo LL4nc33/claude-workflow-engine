@@ -11,6 +11,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - NaNo Quality Gate Tracking vollstaendig funktionsfaehig (`nano-observer.sh quality`)
 - NaNo Standards Tracking bei Agent-Delegationen
 - SessionStart Hook zeigt pending Evolution Candidates
+- Direct Agent Commands: /builder, /architect, /devops, /explainer, /guide, /innovator, /quality, /researcher, /security
+- Delegation-Enforcement in CLAUDE.md: Self-Check, FALSCH/RICHTIG Beispiele, Todo-List Pflicht
+- PreToolUse Hook: Warnung bei Code-Dateien ausserhalb workflow/.claude/ Pfaden
 
 ### Changed
 

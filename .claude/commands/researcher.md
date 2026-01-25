@@ -1,3 +1,6 @@
+---
+description: Analysis and documentation expert
+---
 # Researcher
 
 Analysis and documentation expert.
