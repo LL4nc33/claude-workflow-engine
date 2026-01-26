@@ -8,20 +8,11 @@ description: >
 
 # Planning Skill
 
-Dieses Skill triggert den Plan-Mode fuer strukturierte Planungsaufgaben.
+This skill triggers Plan Mode for structured planning tasks.
 
-## Wann Plan-Mode nutzen
+## When to Use Plan Mode
 
-### Trigger-Keywords (Deutsch)
-
-- erstelle Plan, Implementierungsplan, Planungsdokument
-- priorisiere, Prioritaeten setzen
-- entwerfe Architektur, Systemdesign
-- scope, Umfang definieren
-- Roadmap, Meilensteine
-- Phase planen, Reihenfolge festlegen
-
-### Trigger-Keywords (Englisch)
+### Trigger Keywords
 
 - plan, implementation plan, planning document
 - prioritize, set priorities
@@ -30,95 +21,91 @@ Dieses Skill triggert den Plan-Mode fuer strukturierte Planungsaufgaben.
 - roadmap, milestones
 - phase planning, sequence
 
-## Kriterien fuer Plan-Mode
+## Criteria for Plan Mode
 
-### NUTZE EnterPlanMode wenn:
+### USE EnterPlanMode when:
 
-1. **Multi-Step Task** (>3 Dateien betroffen)
-   - Feature-Implementierung
-   - Refactoring ueber mehrere Module
-   - Migration von Daten/APIs
+1. **Multi-Step Task** (>3 files affected)
+   - Feature implementation
+   - Refactoring across modules
+   - Data/API migration
 
-2. **Architektur-Entscheidungen**
-   - Neues System-Design
-   - Technologie-Wahl
-   - API-Design
+2. **Architecture Decisions**
+   - New system design
+   - Technology choice
+   - API design
 
-3. **Unklarer Scope**
-   - "Verbessere die Performance"
-   - "Mach das skalierbarer"
-   - Exploratorische Aufgaben
+3. **Unclear Scope**
+   - "Improve performance"
+   - "Make it more scalable"
+   - Exploratory tasks
 
 4. **Cross-Domain Work**
    - Frontend + Backend + Database
-   - Infrastruktur + Code
+   - Infrastructure + Code
    - Security + Implementation
 
-### NUTZE NICHT EnterPlanMode wenn:
+### DO NOT use EnterPlanMode when:
 
 1. **Single-File Fix**
-   - Typo korrigieren
-   - Einfacher Bug in einer Datei
-   - Kleine Aenderung (<50 Zeilen)
+   - Fix typo
+   - Simple bug in one file
+   - Small change (<50 lines)
 
-2. **Expliziter Command**
-   - User hat /workflow:* Command verwendet
-   - User sagt "mach einfach"
-   - Klare, spezifische Anweisung
+2. **Explicit Command**
+   - User used /workflow:* command
+   - User says "just do it"
+   - Clear, specific instruction
 
-3. **Erklaerung/Frage**
-   - "Was macht dieser Code?"
-   - "Erklaere mir X"
-   - Reine Information, keine Aenderung
+3. **Explanation/Question**
+   - "What does this code do?"
+   - "Explain X to me"
+   - Pure information, no changes
 
-## Aktion bei Trigger
+## Action on Trigger
 
-Wenn ein Planning-Keyword erkannt wird:
-
-```
-1. Pruefe ob Kriterien fuer Plan-Mode erfuellt
-2. Wenn ja:
-   → Rufe EnterPlanMode auf
-   → Sage dem User: "Das ist eine Planungsaufgabe. Ich wechsle in den Plan-Mode um einen strukturierten Ansatz zu entwickeln."
-3. Wenn nein:
-   → Fahre normal fort (ggf. Auto-Delegation)
-```
-
-## Beispiele
-
-### Plan-Mode aktivieren
+When a planning keyword is detected:
 
 ```
-User: "Erstelle einen Implementierungsplan fuer das neue Auth-System"
-→ EnterPlanMode (Multi-Step, Architektur)
+1. Check if Plan Mode criteria are met
+2. If yes:
+   → Call EnterPlanMode
+   → Tell user: "This is a planning task. I'm entering Plan Mode to develop a structured approach."
+3. If no:
+   → Continue normally (auto-delegation)
+```
 
-User: "Wie sollen wir das Datenmodell designen?"
-→ EnterPlanMode (Architektur-Entscheidung)
+## Examples
 
-User: "Plane die Migration zu TypeScript"
+### Activate Plan Mode
+
+```
+User: "Create an implementation plan for the new auth system"
+→ EnterPlanMode (Multi-Step, Architecture)
+
+User: "How should we design the data model?"
+→ EnterPlanMode (Architecture decision)
+
+User: "Plan the TypeScript migration"
 → EnterPlanMode (Multi-Step, Cross-Domain)
 
-User: "Priorisiere die naechsten Features"
-→ EnterPlanMode (Roadmap/Planung)
+User: "Prioritize the next features"
+→ EnterPlanMode (Roadmap/Planning)
 ```
 
-### NICHT Plan-Mode
+### NOT Plan Mode
 
 ```
-User: "Fix den Typo in der README"
-→ Direkt fixen (Single-File, trivial)
+User: "Fix the typo in README"
+→ Fix directly (Single-File, trivial)
 
 User: "/workflow:create-tasks"
-→ Expliziter Command, kein Plan-Mode
+→ Explicit command, no Plan Mode
 
-User: "Erklaere mir wie das Auth funktioniert"
-→ Delegiere an explainer (Erklaerung, keine Aenderung)
+User: "Explain how auth works"
+→ Delegate to explainer (Explanation, no changes)
 ```
 
-## Integration mit Workflow
+## Integration with Superpowers
 
-Der Plan-Mode produziert einen Plan der dann via:
-- `/workflow:create-tasks` → Tasks erstellt
-- `/workflow:orchestrate-tasks` → Tasks ausgefuehrt
-
-werden kann. Das gewaehrleistet strukturiertes Vorgehen.
+For detailed planning, the `superpowers:writing-plans` skill provides structured plan templates. Plan Mode produces plans that can then be executed with `superpowers:executing-plans`.
