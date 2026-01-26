@@ -1,7 +1,7 @@
 {
   "name": "cwe",
-  "version": "0.3.0",
-  "description": "Multi-Agent Workflow System for spec-driven development: 9 specialized agents, smart-workflow, auto-delegation, TOON-optimized context, and quality gates",
+  "version": "0.3.1",
+  "description": "Claude Workflow Engine - Spec-driven development with 9 specialized agents. Works great with superpowers plugin.",
   "author": {
     "name": "LL4nc33",
     "url": "https://github.com/LL4nc33"
@@ -11,11 +11,9 @@
   "license": "MIT",
   "keywords": [
     "workflow",
-    "multi-agent",
-    "standards",
-    "orchestration",
+    "agents",
     "spec-driven",
-    "quality-gates",
-    "auto-delegation"
+    "development",
+    "orchestration"
   ]
 }
