@@ -1,5 +1,5 @@
 {
-  "name": "claude-workflow-engine",
+  "name": "cwe",
   "version": "0.3.0",
   "description": "Multi-Agent Workflow System for spec-driven development: 9 specialized agents, smart-workflow, auto-delegation, TOON-optimized context, and quality gates",
   "author": {
