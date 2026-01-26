@@ -1,165 +1,123 @@
 ---
 name: cwe-principles
 description: >
-  CWE Grundprinzipien - Use PROACTIVELY at session start or when unsure about
-  workflow, delegation, gates, or how components interact. Core operating manual.
+  CWE Core Principles - Use PROACTIVELY at session start or when unsure about
+  workflow, delegation, or how components interact. Core operating manual.
 ---
 
-# CWE Grundprinzipien
+# CWE Core Principles
 
-## 7 Kern-Prinzipien
+## 5 Key Principles
 
-| # | Prinzip | Enforcement | Autonomer Trigger |
-|---|---------|-------------|-------------------|
-| 1 | Agent-First | Hook (warn/block) | PreToolUse auf Write/Edit |
-| 2 | Auto-Delegation | Skill | User-Intent erkannt |
-| 3 | 5-Phase Workflow | Commands | Expliziter /workflow:* oder smart-workflow |
-| 4 | Quality Gates | Hook + Skill | PreToolUse auf Skill (workflow commands) |
-| 5 | Standards Injection | Config | Bei Delegation automatisch |
-| 6 | Context Isolation | Platform | Task tool = isolierter Context |
-| 7 | NaNo Learning | Hooks | PostToolUse(Task), Stop |
+| # | Principle | Description |
+|---|-----------|-------------|
+| 1 | Agent-First | All code work is delegated to specialized agents |
+| 2 | Auto-Delegation | Intent recognition maps user requests to agents |
+| 3 | Spec-Driven | Features start with specs, then tasks, then implementation |
+| 4 | Context Isolation | Agent work stays in agent context (returns summary) |
+| 5 | Superpowers Integration | Agents leverage superpowers skills for TDD, debugging, reviews |
 
-## Wie CWE dir Arbeit abnimmt
+## Workflow Overview
 
 ```
-User sagt etwas
+User says something
     ↓
-[SessionStart Hook] → Context + Warnings injiziert
+[Intent Recognition] → Matches agent? → Delegate to agent
     ↓
-[Auto-Delegation Skill] → Intent erkannt? → Agent delegiert
+[Agent Works] → Isolated context, full tool access
     ↓
-[Standards Injection] → Relevante Standards automatisch
-    ↓
-[Quality Gates] → Blockiert wenn Gate pending
-    ↓
-[NaNo] → Beobachtet, lernt, schlaegt vor
+[Result Summary] → Compact result back to main chat
 ```
 
-## Wann welcher Skill/Hook aktiv wird
+## When Which Agent
 
-| Situation | Komponente | Was passiert |
-|-----------|------------|--------------|
-| Session startet | SessionStart Hook | Context, Warnings, Gate-Status |
-| User will coden | auto-delegation Skill | → builder delegiert |
-| User will planen | planning Skill | → EnterPlanMode |
-| User will erklaeren | auto-delegation Skill | → explainer delegiert |
-| File Write/Edit | pre-write-validate Hook | Agent-First check |
-| /workflow:create-tasks | gate-check Hook | Gate 1 required |
-| /workflow:orchestrate-tasks | gate-check Hook | Gate 2 required |
-| Task delegiert | PostToolUse Hook | NaNo beobachtet |
-| Session endet | Stop Hook | NaNo analysiert |
+| Situation | Agent | What happens |
+|-----------|-------|--------------|
+| User wants to code | builder | Implements with TDD |
+| User wants to understand | explainer | Explains code/concepts |
+| User wants to design | architect | Creates ADRs, designs |
+| User wants to deploy | devops | CI/CD, Docker, K8s |
+| User wants security audit | security | OWASP review |
+| User wants docs | researcher | Analysis, documentation |
+| User wants ideas | innovator | Brainstorming |
+| User wants quality check | quality | Coverage, metrics |
+| User wants process help | guide | Workflow optimization |
 
-## Token-Optimierung
+## How CWE Saves Tokens
 
-CWE spart Tokens durch:
+1. **Context Isolation** - Agent work stays with agent
+2. **Selective Standards** - Only relevant standards injected
+3. **Compact Skills** - Quick reference tables, not prose
 
-1. **TOON Format** - JSON → TOON (~40% kleiner)
-2. **Context Isolation** - Agent-Arbeit bleibt isoliert
-3. **Selective Injection** - Nur relevante Standards
-4. **Kompakte Skills** - Quick Reference statt Prosa
+## Autonomous Behavior
 
-## Autonomes Verhalten
+### The system automatically:
 
-### Das System macht automatisch:
+- Recognizes intent from user messages
+- Delegates to appropriate agent
+- Injects relevant standards
+- Returns compact summaries
 
-- Gate-Status pruefen vor workflow commands
-- Warnen bei Code-Writes ausserhalb erlaubter Pfade
-- Standards matchen basierend auf Task-Keywords
-- Delegations-Patterns beobachten und lernen
-- Evolution-Candidates generieren bei Threshold
+### The user only needs to:
 
-### Der User muss nur:
-
-- Intent klar formulieren ("fix Bug", "erklaer mir X")
-- Bei Unklarheit: Frage beantworten
-- Evolution-Candidates reviewen (optional)
-- Quality Gates bestätigen (bei Failure)
+- State intent clearly ("fix bug", "explain X")
+- Answer clarifying questions (max 2)
+- Review results
 
 ## Quick Reference
 
 ```
-Coden      → builder (automatisch)
-Erklaeren  → explainer (automatisch)
-Planen     → EnterPlanMode (automatisch)
-Deployen   → devops (automatisch)
-Auditieren → security (automatisch)
-
-Gate 1 → nach write-spec (architect + security)
-Gate 2 → nach create-tasks (architect + quality)
-Gate 3 → nach jeder Phase (automatisch)
-Gate 4 → am Ende (security + architect + user)
+Code work   → builder (automatic)
+Explain     → explainer (automatic)
+Plan        → EnterPlanMode (automatic)
+Deploy      → devops (automatic)
+Audit       → security (automatic)
 ```
 
-## Fehlerbehandlung
+## Error Handling
 
-| Problem | Loesung |
-|---------|---------|
-| Gate blockiert | Review durchfuehren oder Override |
-| Hook timeout | Siehe ERROR-RECOVERY.md |
-| NaNo nicht aktiv | /workflow:nano-toggle |
-| Falscher Agent | "manuell" oder expliziter /agent command |
+| Problem | Solution |
+|---------|----------|
+| Wrong agent chosen | Say "manual" or use explicit /agent command |
+| Need more context | Agent will ask or read files |
+| Complex task | Main Chat coordinates multiple agents |
 
-## Harmonisches Zusammenspiel
+## Harmonious Interaction
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│                    USER INTERAKTION                             │
-│  "fix Bug" / "erklaer mir X" / "plane Feature" / "Idee!"       │
+│                    USER INTERACTION                             │
+│  "fix bug" / "explain X" / "plan feature" / "deploy"           │
 └────────────────────────────────────────────────────────────────┘
                               ↓
 ┌────────────────────────────────────────────────────────────────┐
-│ AUTONOME ERKENNUNG (Skills via Description-Keywords)           │
+│ INTENT RECOGNITION (Skills via Description-Keywords)           │
 │                                                                 │
-│  Intent erkannt?                                                │
-│  ├─ Code-Arbeit    → auto-delegation → builder                 │
-│  ├─ Erklaerung     → auto-delegation → explainer               │
-│  ├─ Planung        → planning → EnterPlanMode                  │
-│  ├─ Security       → auto-delegation → security                │
-│  └─ Idee           → /workflow:nano-idea → NaNo speichert      │
+│  Intent recognized?                                             │
+│  ├─ Code work    → auto-delegation → builder                   │
+│  ├─ Explanation  → auto-delegation → explainer                 │
+│  ├─ Planning     → planning → EnterPlanMode                    │
+│  ├─ Security     → auto-delegation → security                  │
+│  └─ Deployment   → auto-delegation → devops                    │
 └────────────────────────────────────────────────────────────────┘
                               ↓
 ┌────────────────────────────────────────────────────────────────┐
-│ ENFORCEMENT (Hooks)                                             │
+│ AGENT EXECUTION (Isolated Context)                              │
 │                                                                 │
-│  PreToolUse:                                                    │
-│  ├─ Write/Edit → Agent-First Check (warn/block/off)            │
-│  └─ Skill      → Gate-Check (blockiert wenn Gate pending)      │
+│  Agent receives:                                                │
+│  ├─ User request                                                │
+│  ├─ Relevant standards (auto-injected)                         │
+│  └─ Full tool access (per agent definition)                    │
 │                                                                 │
-│  PostToolUse:                                                   │
-│  ├─ Task       → NaNo beobachtet Delegation                    │
-│  └─ Write/Edit → Logging bei Orchestration                     │
-└────────────────────────────────────────────────────────────────┘
-                              ↓
-┌────────────────────────────────────────────────────────────────┐
-│ LERNEN & VERBESSERN (NaNo)                                      │
-│                                                                 │
-│  Beobachtungen → Patterns → Evolution Candidates → Review      │
-│                                                                 │
-│  Was NaNo trackt:                                               │
-│  ├─ Delegations (welcher Agent fuer welchen Task)              │
-│  ├─ Standards (welche werden oft gebraucht)                    │
-│  ├─ Quality Gates (pass/fail Patterns)                         │
-│  └─ Ideen (User-Input fuer Verbesserungen)                     │
-│                                                                 │
-│  Bei Threshold → Vorschlag generieren:                         │
-│  ├─ Neuer Standard                                              │
-│  ├─ Config-Aenderung in orchestration.yml                      │
-│  └─ Projekt-spezifischer Skill/Hook                            │
+│  Agent returns:                                                 │
+│  └─ Compact summary (not full work context)                    │
 └────────────────────────────────────────────────────────────────┘
 
-## Intuitiver User-Flow
+## Intuitive User Flow
 
-1. **Sag einfach was du willst** - CWE erkennt den Intent
-2. **Lass dich fuehren** - Bei Unklarheit fragt CWE nach (max 2 Fragen)
-3. **Arbeit wird delegiert** - Agent arbeitet isoliert
-4. **Ergebnis kommt zurueck** - Kompakte Summary, nicht voller Context
-5. **Ideen werden gesammelt** - /workflow:nano-idea oder einfach erwaehnen
-6. **System lernt mit** - NaNo beobachtet und schlaegt vor
-
-## Token-Sparen
-
-- TOON statt JSON (~40% kleiner)
-- Selective Standards (nur relevante)
-- Context Isolation (Agent-Arbeit bleibt beim Agent)
-- Kompakte Skills (Tabellen statt Prosa)
-- Incremental Analysis (nur neue Sessions)
+1. **Just say what you want** - CWE recognizes intent
+2. **Get guided** - CWE asks if unclear (max 2 questions)
+3. **Work is delegated** - Agent works in isolated context
+4. **Result comes back** - Compact summary, not full context
+5. **Iterate** - Continue with next request
+```
