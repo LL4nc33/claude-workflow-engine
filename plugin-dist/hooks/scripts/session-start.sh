@@ -105,10 +105,12 @@ if [ -n "${active_spec}" ]; then
   fi
 fi
 
-# Count available standards for context info
-standards_count=$(find "${ROOT}/workflow/standards" -name "*.md" -not -name "README*" 2>/dev/null | wc -l)
-if [ "${standards_count}" -gt 0 ]; then
-  context_parts="${context_parts}${standards_count} Standards verfuegbar. "
+# Count available standards for context info (skip if workflow not initialized)
+if [ -d "${ROOT}/workflow/standards" ]; then
+  standards_count=$(find "${ROOT}/workflow/standards" -name "*.md" -not -name "README*" 2>/dev/null | wc -l)
+  if [ "${standards_count}" -gt 0 ]; then
+    context_parts="${context_parts}${standards_count} Standards verfuegbar. "
+  fi
 fi
 
 # NaNo learning status (fast check with cache)
