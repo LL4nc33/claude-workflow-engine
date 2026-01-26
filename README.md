@@ -30,10 +30,22 @@ claude --plugin-dir /path/to/plugin-dist
 ## Quick Start
 
 ```bash
-/cwe:init     # Initialize project
+/cwe:init     # Initialize project + install recommended plugins
 /cwe:start    # Guided workflow
 /cwe:help     # Documentation
 ```
+
+`/cwe:init` automatically detects and offers to install missing plugins:
+
+| Plugin | Level | Purpose |
+|--------|-------|---------|
+| superpowers | Required | TDD, debugging, planning |
+| serena | Recommended | Semantic code analysis |
+| feature-dev | Recommended | 7-phase feature workflow |
+| frontend-design | Optional | Production-grade UI |
+| code-simplifier | Optional | Refactoring |
+| claude-md-management | Optional | CLAUDE.md maintenance |
+| plugin-dev | Optional | Plugin creation |
 
 Or just say what you need:
 

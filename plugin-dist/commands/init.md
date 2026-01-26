@@ -1,19 +1,66 @@
 ---
-description: Initialize CWE in current project - creates workflow structure with documentation
-allowed-tools: ["Write", "Bash", "Read", "Glob"]
+description: Initialize CWE in current project - creates workflow structure and checks plugin dependencies
+allowed-tools: ["Write", "Bash", "Read", "Glob", "AskUserQuestion"]
 ---
 
 # Initialize CWE Project
 
-Create the workflow structure for spec-driven development.
+Create the workflow structure for spec-driven development and ensure all recommended plugins are installed.
 
-## Check existing setup
+## Step 1: Check Plugin Dependencies
 
-First, check if workflow/ already exists:
+CWE works best with these plugins installed:
+
+| Plugin | Purpose | Required |
+|--------|---------|----------|
+| superpowers | TDD, debugging, planning, code review | **Yes** |
+| serena | Semantic code analysis via LSP | Recommended |
+| feature-dev | 7-phase feature development | Recommended |
+| frontend-design | Production-grade UI components | Optional |
+| code-simplifier | Code cleanup and refactoring | Optional |
+| claude-md-management | CLAUDE.md maintenance | Optional |
+| plugin-dev | Plugin creation tools | Optional |
+
+### Check installed plugins
+
+Run this command to get installed plugins:
+```bash
+claude plugin list --json 2>/dev/null || echo '[]'
+```
+
+### Compare with required plugins
+
+Required: `superpowers`
+Recommended: `serena`, `feature-dev`
+Optional: `frontend-design`, `code-simplifier`, `claude-md-management`, `plugin-dev`
+
+### If plugins are missing
+
+Use AskUserQuestion to ask the user:
+
+**Question:** "Some recommended plugins are missing. Would you like to install them?"
+
+**Options:**
+1. "Install all missing" - Install all missing plugins
+2. "Install required only" - Install only superpowers (if missing)
+3. "Skip" - Continue without installing
+
+### Install missing plugins
+
+For each plugin to install, run:
+```bash
+claude plugin install <plugin-name>
+```
+
+Show progress for each installation.
+
+## Step 2: Check existing workflow setup
+
+Check if `workflow/` already exists:
 - If exists: Ask user if they want to reinitialize
 - If not: Proceed with creation
 
-## Create structure
+## Step 3: Create structure
 
 Create the following structure:
 
@@ -170,15 +217,30 @@ CWE includes built-in standards for common patterns. Add files here only for pro
 Create `your-standard.md` with clear rules and examples.
 ```
 
-## After creation
+## Step 4: Success message
 
-Show success message:
+Show completion summary:
+
 ```
-CWE initialized successfully!
+✓ CWE initialized successfully!
+
+Plugins:
+  ✓ superpowers (installed)
+  ✓ serena (installed)
+  ✓ feature-dev (installed)
+  ○ frontend-design (skipped)
+  ...
+
+Workflow structure created:
+  workflow/
+  ├── config.yml
+  ├── ideas.md
+  ├── product/mission.md
+  └── specs/
 
 Next steps:
 1. Edit workflow/product/mission.md with your product vision
 2. Run /cwe:start to begin guided development
-
-Tip: Install 'superpowers' plugin for TDD, debugging, and code review skills.
 ```
+
+Adjust the plugin status based on what was actually installed/skipped.

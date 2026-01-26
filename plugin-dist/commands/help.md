@@ -26,7 +26,7 @@ Natural language orchestration for spec-driven development.
 
 | Command | Purpose |
 |---------|---------|
-| `/cwe:init` | Initialize project structure |
+| `/cwe:init` | Initialize project + install missing plugins |
 | `/cwe:start` | Guided workflow (phase detection) |
 | `/cwe:help` | This help |
 | `/cwe:ask` | Questions, discussions (READ-ONLY) |
@@ -115,7 +115,21 @@ Ideas auto-captured via hooks:
 
 ## Quick Start
 
-1. `/cwe:init` - Set up project
+1. `/cwe:init` - Set up project + install recommended plugins
 2. Edit `workflow/product/mission.md`
 3. `/cwe:start` - Begin guided workflow
+
+## Plugin Dependencies
+
+`/cwe:init` automatically checks and offers to install:
+
+| Plugin | Level |
+|--------|-------|
+| superpowers | Required |
+| serena | Recommended |
+| feature-dev | Recommended |
+| frontend-design | Optional |
+| code-simplifier | Optional |
+| claude-md-management | Optional |
+| plugin-dev | Optional |
 ```
