@@ -1,0 +1,21 @@
+{
+  "name": "claude-workflow-engine",
+  "version": "0.3.0",
+  "description": "Multi-Agent Workflow System for spec-driven development: 9 specialized agents, smart-workflow, auto-delegation, TOON-optimized context, and quality gates",
+  "author": {
+    "name": "LL4nc33",
+    "url": "https://github.com/LL4nc33"
+  },
+  "homepage": "https://github.com/LL4nc33/oidanice-agents",
+  "repository": "https://github.com/LL4nc33/oidanice-agents",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "multi-agent",
+    "standards",
+    "orchestration",
+    "spec-driven",
+    "quality-gates",
+    "auto-delegation"
+  ]
+}
