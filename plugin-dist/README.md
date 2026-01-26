@@ -21,8 +21,9 @@ claude plugin install cwe
 ## What is CWE?
 
 CWE provides:
-- **3 Commands** for guided spec-driven development
+- **12 Commands** (3 workflow + 9 agent commands)
 - **9 Specialized Agents** (architect, builder, devops, quality, security, researcher, explainer, innovator, guide)
+- **Auto-Delegation** - just describe what you need, CWE picks the right agent
 - **Standards Skills** embedded for consistent code quality
 
 ## Workflow Phases
@@ -61,7 +62,8 @@ claude --plugin-dir /path/to/plugin-dist
 plugin-dist/
 ├── .claude-plugin/
 │   └── plugin.json      # Plugin manifest
-├── commands/            # 3 commands (init, start, help)
+├── CLAUDE.md            # Auto-delegation rules
+├── commands/            # 12 commands (3 workflow + 9 agents)
 ├── agents/              # 9 specialized agents
 ├── skills/              # 12 standards skills
 └── hooks/               # 2 hooks (SessionStart, Stop)
@@ -69,7 +71,7 @@ plugin-dist/
 
 ## Version History
 
-- **0.3.1** - Simplified: 3 commands, superpowers integration, English only
+- **0.3.1** - Simplified: 12 commands (3 workflow + 9 agents), auto-delegation, superpowers integration, English only
 - **0.3.0** - Plugin structure created
 - **0.2.9a** - Last CLI-focused version
 
