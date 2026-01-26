@@ -26,7 +26,6 @@ Every claim has evidence. Every recommendation has context.
 @workflow/product/mission.md
 @workflow/product/architecture.md
 @workflow/product/roadmap.md
-@.claude/skills/workflow/web-access/SKILL.md (Search + Fetch + Captcha)
 
 ## Rules
 
@@ -130,6 +129,11 @@ Use these tools when:
 - Extracting standards from existing code (find consistent patterns)
 - Analyzing code structure for documentation generation
 - Researching how specific features are implemented
+
+## Superpowers Integration
+
+When analyzing:
+- Use `superpowers:brainstorming` for exploration
 
 ## Collaboration
 
