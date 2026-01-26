@@ -16,40 +16,102 @@ Check the following in order:
 
 ### 2. No mission.md or empty mission.md
 -> Phase: **Plan**
--> Guide: "Let's define your product vision."
--> Help user fill out workflow/product/mission.md
+
+Use AskUserQuestion:
+```
+Question: "What would you like to do?"
+Header: "Plan Phase"
+Options:
+  1. "Define product vision" - Guide through mission.md creation
+  2. "Import existing vision" - Copy from existing docs
+  3. "Skip to specs" - Jump to spec phase (not recommended)
+```
 
 ### 3. No specs/ folders (or all empty)
 -> Phase: **Spec**
--> Guide: "Ready to write your first feature spec?"
--> Ask: "What feature do you want to build?"
--> Create spec folder and guide through spec.md creation
+
+Use AskUserQuestion:
+```
+Question: "Ready to write your first feature spec. What type?"
+Header: "Feature Type"
+Options:
+  1. "New feature" - Create from scratch
+  2. "Bug fix" - Create fix spec
+  3. "Refactoring" - Create refactor spec
+  4. "Integration" - External system integration
+```
+
+Then ask:
+```
+Question: "Describe the feature in a few words:"
+Header: "Feature"
+Options:
+  1. "User authentication"
+  2. "API endpoint"
+  3. "UI component"
+```
+(User can type custom via "Other")
 
 ### 4. Spec exists but no tasks.md
 -> Phase: **Tasks**
--> Guide: "Let's break this spec into tasks."
--> Read spec.md, create tasks.md with implementation steps
 
-When creating tasks with `TaskCreate`, you can specify which agent should handle each task:
+List available specs and use AskUserQuestion:
 ```
-TaskCreate(
-  description: "Implement user authentication",
-  metadata: { agent: "builder" }
-)
+Question: "Which spec should we break into tasks?"
+Header: "Select Spec"
+Options:
+  [Dynamically list spec folders]
 ```
 
-Valid agents: builder, architect, devops, security, researcher, explainer, quality, innovator, guide
-
-If no agent is specified, the system auto-detects based on task keywords or defaults to "builder".
+Then:
+```
+Question: "How should tasks be organized?"
+Header: "Task Style"
+Options:
+  1. "By component" - Group by file/module
+  2. "By priority" - Critical first, nice-to-have last
+  3. "By dependency" - Build order (A before B)
+```
 
 ### 5. Tasks exist but not all completed
 -> Phase: **Build**
--> Guide: "Ready to implement. Which task should we start?"
--> Show task list, delegate to appropriate agent
+
+Show task summary and use AskUserQuestion:
+```
+Question: "X tasks pending. How do you want to proceed?"
+Header: "Build Mode"
+Options:
+  1. "Start next task" - Work on highest priority
+  2. "Select specific task" - Choose from list
+  3. "Run parallel" - Execute up to 3 tasks simultaneously
+  4. "Show all tasks" - Review full task list
+```
+
+If "Select specific task":
+```
+Question: "Which task?"
+Header: "Task"
+Options:
+  [Dynamically list pending tasks]
+```
+
+### 6. All tasks completed
+-> Phase: **Review**
+
+Use AskUserQuestion:
+```
+Question: "All tasks done! What's next?"
+Header: "Review"
+Options:
+  1. "Code review" - Invoke quality agent
+  2. "Run tests" - Verify everything works
+  3. "Create PR" - Prepare pull request
+  4. "Add more tasks" - Continue development
+```
 
 ## Build Phase - Parallel Task Orchestration
 
-When in Build phase, execute tasks in waves:
+When in Build phase and user selects "Run parallel":
 
 ### Wave Execution Algorithm
 
@@ -78,25 +140,14 @@ Wave 2 (1 task, was blocked):
 All tasks completed.
 ```
 
-### 6. All tasks completed
--> Phase: **Review**
--> Guide: "Implementation complete. Let's review."
--> Suggest code review, verification
-
 ## Agent Delegation
 
-When in Build phase, delegate to the right agent:
-- Architecture decisions -> architect
-- Implementation -> builder
-- Infrastructure/Deploy -> devops
-- Security concerns -> security
-- Documentation -> researcher
-- Questions/Learning -> explainer
+When delegating, use appropriate agent based on task type or user selection.
 
 ## Superpowers Integration
 
-Remind user of relevant superpowers skills:
-- Planning -> "Consider using superpowers:writing-plans for detailed planning"
-- Building -> "The builder agent uses TDD via superpowers:test-driven-development"
+After phase detection, remind user of relevant skills:
+- Planning -> "Consider using superpowers:writing-plans"
+- Building -> "Builder uses TDD via superpowers:test-driven-development"
 - Debugging -> "For bugs, try superpowers:systematic-debugging"
-- Review -> "Use superpowers:verification-before-completion before marking done"
+- Review -> "Use superpowers:verification-before-completion"
