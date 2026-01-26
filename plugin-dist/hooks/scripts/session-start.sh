@@ -22,7 +22,7 @@ ROOT="$(find_root)"
 
 # Simple status check
 if [ -d "${ROOT}/workflow" ]; then
-  echo '{"systemMessage": "CWE ready. Run /cwe:start to continue."}'
+  echo '{"systemMessage": "Claude Workflow Engine v0.3.1 | Ready. Run /cwe:start to continue."}'
 else
-  echo '{"systemMessage": "CWE: No project initialized. Run /cwe:init to start."}'
+  echo '{"systemMessage": "Claude Workflow Engine v0.3.1 | No project initialized. Run /cwe:init to start."}'
 fi
