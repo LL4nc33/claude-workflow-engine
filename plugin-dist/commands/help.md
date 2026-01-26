@@ -21,6 +21,15 @@ Spec-driven development with specialized agents.
 | `/cwe:init` | Initialize project with workflow structure |
 | `/cwe:start` | Guided workflow - detects phase, shows next steps |
 | `/cwe:help` | This help message |
+| `/cwe:builder` | Delegate to builder (implementation, fixes) |
+| `/cwe:architect` | Delegate to architect (design, ADRs) |
+| `/cwe:devops` | Delegate to devops (CI/CD, Docker, releases) |
+| `/cwe:security` | Delegate to security (audits, OWASP) |
+| `/cwe:researcher` | Delegate to researcher (docs, analysis) |
+| `/cwe:explainer` | Delegate to explainer (explanations) |
+| `/cwe:quality` | Delegate to quality (tests, coverage) |
+| `/cwe:innovator` | Delegate to innovator (brainstorming) |
+| `/cwe:guide` | Delegate to guide (process improvement) |
 
 ## Workflow Phases
 
@@ -56,6 +65,20 @@ CWE works best with the `superpowers` plugin installed:
 | superpowers:systematic-debugging | Bug hunting |
 | superpowers:verification-before-completion | Pre-commit checks |
 | superpowers:brainstorming | Ideation and exploration |
+
+## Auto-Delegation
+
+Just describe what you need - CWE automatically delegates to the right agent:
+
+| You say... | Agent |
+|------------|-------|
+| "fix the bug" | builder |
+| "explain this code" | explainer |
+| "audit security" | security |
+| "deploy to production" | devops |
+| "brainstorm alternatives" | innovator |
+
+Override with "manual" or use explicit `/cwe:agent` commands.
 
 ## Quick Start
 

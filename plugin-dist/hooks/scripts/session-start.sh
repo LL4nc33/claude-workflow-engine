@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SessionStart Hook: Simple status check for CWE
+# SessionStart Hook: Status check + Auto-Delegation hint for CWE
 # Provides workflow context at session start
 
 # Consume stdin to prevent hook errors
@@ -20,9 +20,19 @@ find_root() {
 
 ROOT="$(find_root)"
 
-# Simple status check
+# Build status message
+VERSION="Claude Workflow Engine v0.3.1"
+
 if [ -d "${ROOT}/workflow" ]; then
-  echo '{"systemMessage": "Claude Workflow Engine v0.3.1 | Ready. Run /cwe:start to continue."}'
+  STATUS="Ready"
+  HINT="Run /cwe:start to continue or just describe what you need."
 else
-  echo '{"systemMessage": "Claude Workflow Engine v0.3.1 | No project initialized. Run /cwe:init to start."}'
+  STATUS="No project initialized"
+  HINT="Run /cwe:init to start."
 fi
+
+# Auto-delegation reminder (compact)
+DELEGATION="Auto-delegation: fix/build->builder | explain->explainer | audit->security | deploy->devops | design->architect | brainstorm->innovator"
+
+# Output combined message
+echo "{\"systemMessage\": \"${VERSION} | ${STATUS}. ${HINT} | ${DELEGATION}\"}"

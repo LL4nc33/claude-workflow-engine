@@ -1,0 +1,71 @@
+# Claude Workflow Engine (CWE) v0.3.1
+
+Spec-driven development with 9 specialized agents.
+
+## Auto-Delegation
+
+When a user request matches these patterns, **automatically delegate** to the appropriate agent using the Task tool. No need to wait for explicit `/cwe:agent` commands.
+
+### Intent-to-Agent Mapping
+
+| User Says... | Agent | Keywords |
+|-------------|-------|----------|
+| "implement/build/create/fix/refactor X" | **builder** | implement, build, create, fix, refactor, code, write |
+| "explain/how does/what is/why X" | **explainer** | explain, how, what, why, understand, tell me |
+| "audit/check security/vulnerabilities" | **security** | audit, security, vulnerability, owasp, gdpr |
+| "deploy/docker/ci/release X" | **devops** | deploy, docker, kubernetes, ci, cd, release, infrastructure |
+| "design/architecture/adr X" | **architect** | design, architecture, adr, api design, system |
+| "document/analyze/research X" | **researcher** | document, analyze, research, compare, report |
+| "test/coverage/quality X" | **quality** | test, coverage, quality, metrics, flaky |
+| "brainstorm/ideas/what if X" | **innovator** | brainstorm, ideas, alternatives, what if, creative |
+| "workflow/process/pattern X" | **guide** | workflow, process, pattern, improve, optimize |
+
+### Decision Rules
+
+```
+User request
+    ↓
+Explicit /cwe:* command? → Execute command
+    ↓ no
+Single-domain intent? → Delegate to matching agent
+    ↓ no
+Multi-step task (>3 subtasks)? → Main chat coordinates
+    ↓ no
+Unclear? → Ask max 2 clarifying questions
+```
+
+### Override
+
+User can say "manual" or "no delegation" to disable auto-delegation for that request.
+
+## Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/cwe:init` | Initialize project with workflow structure |
+| `/cwe:start` | Guided workflow - detects phase, shows next steps |
+| `/cwe:help` | Documentation |
+| `/cwe:builder` | Delegate to builder agent |
+| `/cwe:architect` | Delegate to architect agent |
+| `/cwe:devops` | Delegate to devops agent |
+| `/cwe:security` | Delegate to security agent |
+| `/cwe:researcher` | Delegate to researcher agent |
+| `/cwe:explainer` | Delegate to explainer agent |
+| `/cwe:quality` | Delegate to quality agent |
+| `/cwe:innovator` | Delegate to innovator agent |
+| `/cwe:guide` | Delegate to guide agent |
+
+## Superpowers Integration
+
+CWE agents reference superpowers skills automatically:
+
+| Agent | Uses Superpowers |
+|-------|------------------|
+| builder | test-driven-development, systematic-debugging, verification-before-completion |
+| architect | writing-plans, brainstorming |
+| quality | requesting-code-review, verification-before-completion |
+| researcher | brainstorming |
+
+## Context Isolation
+
+Agent work stays in agent context. Only a compact summary returns to main chat. This saves tokens and keeps context clean.
