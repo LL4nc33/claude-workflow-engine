@@ -66,6 +66,49 @@ CWE agents reference superpowers skills automatically:
 | quality | requesting-code-review, verification-before-completion |
 | researcher | brainstorming |
 
+## Task Metadata
+
+When creating tasks with `TaskCreate`, use the `metadata` field to control execution:
+
+```
+TaskCreate(
+  description: "Implement user authentication",
+  metadata: { agent: "builder" }
+)
+```
+
+### Supported Metadata Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `agent` | string | Which agent handles this task: builder, architect, devops, security, researcher, explainer, quality, innovator, guide |
+| `priority` | number | Execution order within a wave (lower = first) |
+
+If `agent` is not specified, the system auto-detects based on task description keywords or defaults to "builder".
+
+## Parallel Task Orchestration
+
+Tasks werden wave-weise parallel ausgefuehrt:
+- Max 3 Tasks gleichzeitig
+- Dependencies via `blockedBy` respektiert
+- Agent pro Task: `metadata.agent` > auto-detect > builder
+
+### Agent Auto-Detection
+
+| Keywords | Agent |
+|----------|-------|
+| fix, bug, implement, build, feature | builder |
+| test, coverage, quality, validate | quality |
+| deploy, docker, ci, cd, release | devops |
+| security, audit, vulnerability, owasp | security |
+| explain, how, why, what | explainer |
+| design, architecture, adr, api | architect |
+| document, analyze, research | researcher |
+| brainstorm, idea, alternative | innovator |
+| process, workflow, improve | guide |
+
+Fallback: builder
+
 ## Context Isolation
 
 Agent work stays in agent context. Only a compact summary returns to main chat. This saves tokens and keeps context clean.
