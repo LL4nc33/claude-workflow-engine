@@ -168,7 +168,7 @@ fi
 
 escaped_context="$(json_escape "${context_msg}")"
 
-# Output hook response
+# Output hook response (SessionStart uses systemMessage, not hookSpecificOutput)
 cat <<EOF
-{"hookSpecificOutput": {"additionalContext": "${escaped_context}"}}
+{"systemMessage": "${escaped_context}"}
 EOF
