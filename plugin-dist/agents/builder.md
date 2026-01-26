@@ -162,12 +162,25 @@ git blame -L 100,110 file.py
 git log -p -S "suspicious_string" --source --all
 ```
 
-## Superpowers Integration
+## Plugin Integration
 
-When implementing:
-- Use `superpowers:test-driven-development` for TDD workflow
-- Use `superpowers:systematic-debugging` for bug investigation
-- Use `superpowers:verification-before-completion` before completing tasks
+### superpowers
+- `test-driven-development` - TDD workflow for features
+- `systematic-debugging` - Hypothesis-driven bug investigation
+- `verification-before-completion` - Verify before claiming done
+
+### frontend-design
+- Use `frontend-design` skill for UI/component implementation
+- Produces production-grade, distinctive interfaces
+
+### code-simplifier
+- Invoke `code-simplifier` agent for refactoring tasks
+- Simplifies code while preserving functionality
+
+### serena (MCP)
+- `find_symbol` / `find_referencing_symbols` - Navigate code
+- `replace_symbol_body` - Precise code edits
+- `get_symbols_overview` - File structure
 
 ## Collaboration
 

@@ -130,10 +130,17 @@ Use these tools when:
 - Analyzing code structure for documentation generation
 - Researching how specific features are implemented
 
-## Superpowers Integration
+## Plugin Integration
 
-When analyzing:
-- Use `superpowers:brainstorming` for exploration
+### superpowers
+- `brainstorming` - Exploration and alternative discovery
+
+### feature-dev
+- Use `code-explorer` agent to trace code comprehensively
+
+### serena (MCP)
+- `search_for_pattern` - Regex search for patterns
+- `find_symbol` / `get_symbols_overview` - Understand structure
 
 ## Collaboration
 

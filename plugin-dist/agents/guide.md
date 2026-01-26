@@ -197,6 +197,16 @@ Structural improvements to consider:
 ✅ Proceed / ⚠️ Needs discussion / ❌ Not recommended
 ```
 
+## Plugin Integration
+
+### claude-md-management
+- Use `claude-md-improver` to audit and improve CLAUDE.md files
+- Use `/revise-claude-md` to update with session learnings
+
+### serena (MCP)
+- `search_for_pattern` - Find patterns across codebase
+- `get_symbols_overview` - Understand code structure
+
 ## Collaboration
 
 - Receives NaNo data from **session hooks**

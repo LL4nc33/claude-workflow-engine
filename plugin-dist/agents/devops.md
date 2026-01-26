@@ -149,6 +149,16 @@ grype dir:.
 - Access control: [configured]
 ```
 
+## Plugin Integration
+
+### superpowers
+- `verification-before-completion` - Verify deployments work before claiming done
+- `writing-plans` - Plan complex infrastructure changes
+
+### serena (MCP)
+- `search_for_pattern` - Find config patterns in codebase
+- `get_symbols_overview` - Understand app structure for containerization
+
 ## Collaboration
 
 - Receives infrastructure tasks from **Main Chat**

@@ -5,80 +5,113 @@ allowed-tools: ["Read"]
 
 # CWE Help
 
-Display help based on context.
+Display comprehensive help for CWE and all installed plugins.
 
 ## Output
 
 ```markdown
-# CWE - Claude Workflow Engine
+# CWE - Claude Workflow Engine v0.4.0a
 
-Spec-driven development with specialized agents.
+Natural language orchestration for spec-driven development.
 
-## Commands
+## Core Principles
 
-| Command | Description |
-|---------|-------------|
-| `/cwe:init` | Initialize project with workflow structure |
-| `/cwe:start` | Guided workflow - detects phase, shows next steps |
-| `/cwe:help` | This help message |
-| `/cwe:builder` | Delegate to builder (implementation, fixes) |
-| `/cwe:architect` | Delegate to architect (design, ADRs) |
-| `/cwe:devops` | Delegate to devops (CI/CD, Docker, releases) |
-| `/cwe:security` | Delegate to security (audits, OWASP) |
-| `/cwe:researcher` | Delegate to researcher (docs, analysis) |
-| `/cwe:explainer` | Delegate to explainer (explanations) |
-| `/cwe:quality` | Delegate to quality (tests, coverage) |
-| `/cwe:innovator` | Delegate to innovator (brainstorming) |
-| `/cwe:guide` | Delegate to guide (process improvement) |
+1. **Agent-First** - All work delegated to specialized agents
+2. **Auto-Delegation** - Intent recognition maps requests to agents/skills
+3. **Spec-Driven** - Features: specs → tasks → implementation
+4. **Context Isolation** - Agent work returns only summaries
+5. **Plugin Integration** - Agents leverage installed plugin skills
 
-## Workflow Phases
+## CWE Commands
 
-1. **Plan** - Define product vision in `workflow/product/mission.md`
-2. **Spec** - Write feature specs in `workflow/specs/<feature>/spec.md`
-3. **Tasks** - Break specs into tasks in `tasks.md`
-4. **Build** - Implement with specialized agents
-5. **Review** - Verify with quality gates
+| Command | Purpose |
+|---------|---------|
+| `/cwe:init` | Initialize project structure |
+| `/cwe:start` | Guided workflow (phase detection) |
+| `/cwe:help` | This help |
+| `/cwe:ask` | Questions, discussions (READ-ONLY) |
+| `/cwe:builder` | Implementation, fixes |
+| `/cwe:architect` | Design, ADRs |
+| `/cwe:devops` | CI/CD, Docker |
+| `/cwe:security` | Audits, OWASP |
+| `/cwe:researcher` | Docs, analysis |
+| `/cwe:explainer` | Explanations |
+| `/cwe:quality` | Tests, coverage |
+| `/cwe:innovator` | Brainstorming, idea backlog |
+| `/cwe:guide` | Process improvement |
 
-## Agents
+## Plugin Commands
 
-| Agent | Use for |
-|-------|---------|
-| architect | System design, API design, tech decisions |
-| builder | Implementation, bug fixes, features |
-| devops | CI/CD, Docker, infrastructure |
-| quality | Testing, coverage, quality metrics |
-| security | Security audits, vulnerabilities |
-| researcher | Documentation, analysis |
-| explainer | Learning, explanations |
-| innovator | Brainstorming, alternatives |
-| guide | Process improvement |
-
-## Superpowers Integration
-
-CWE works best with the `superpowers` plugin installed:
-
-| Skill | Use for |
-|-------|---------|
-| superpowers:writing-plans | Detailed implementation plans |
-| superpowers:executing-plans | Execute plans step-by-step |
-| superpowers:test-driven-development | TDD workflow |
-| superpowers:systematic-debugging | Bug hunting |
-| superpowers:verification-before-completion | Pre-commit checks |
-| superpowers:brainstorming | Ideation and exploration |
+| Command | Plugin | Purpose |
+|---------|--------|---------|
+| `/feature-dev` | feature-dev | 7-phase feature workflow |
+| `/create-plugin` | plugin-dev | Plugin creation |
+| `/revise-claude-md` | claude-md-management | Update CLAUDE.md |
+| `/brainstorm` | superpowers | Creative ideation |
+| `/write-plan` | superpowers | Implementation planning |
+| `/execute-plan` | superpowers | Execute plans |
 
 ## Auto-Delegation
 
-Just describe what you need - CWE automatically delegates to the right agent:
+Just say what you need:
 
-| You say... | Agent |
-|------------|-------|
-| "fix the bug" | builder |
-| "explain this code" | explainer |
-| "audit security" | security |
-| "deploy to production" | devops |
-| "brainstorm alternatives" | innovator |
+| You Say | Routes To |
+|---------|-----------|
+| "fix the bug" | builder + systematic-debugging |
+| "build a UI component" | builder + frontend-design |
+| "explain this code" | explainer + serena |
+| "what if we..." | innovator + brainstorming |
+| "review my changes" | quality + code-reviewer |
+| "plan the refactoring" | architect + writing-plans |
+| "simplify this function" | code-simplifier |
+| "create a new feature" | /feature-dev |
 
-Override with "manual" or use explicit `/cwe:agent` commands.
+**Override:** Say "manual" to disable.
+
+## Installed Plugins
+
+### superpowers (v4.1.1)
+| Skill | When to Use |
+|-------|-------------|
+| `brainstorming` | Before creative work |
+| `test-driven-development` | Implementing features |
+| `systematic-debugging` | Bugs, test failures |
+| `verification-before-completion` | Before claiming done |
+| `writing-plans` | Multi-step tasks |
+| `requesting-code-review` | After features |
+
+### serena (MCP)
+Semantic code analysis: `find_symbol`, `find_referencing_symbols`, `get_symbols_overview`, `replace_symbol_body`
+
+### feature-dev
+`/feature-dev` command + agents: `code-explorer`, `code-architect`, `code-reviewer`
+
+### frontend-design
+`frontend-design` skill for production-grade UI
+
+### code-simplifier
+`code-simplifier` agent for refactoring
+
+### claude-md-management
+`/revise-claude-md` + `claude-md-improver` skill
+
+### plugin-dev
+`/create-plugin` + skills: command, skill, hook, agent, mcp development
+
+## Workflow Phases
+
+1. **Plan** - `workflow/product/mission.md`
+2. **Spec** - `workflow/specs/<feature>/spec.md`
+3. **Tasks** - Break into tasks
+4. **Build** - Implement with agents
+5. **Review** - Quality verification
+
+## Idea Capture
+
+Ideas auto-captured via hooks:
+- Keywords: idea, what if, could we, alternative, improvement
+- Review with `/cwe:innovator`
+- Stored in `workflow/ideas.md`
 
 ## Quick Start
 

@@ -155,6 +155,15 @@ Use these tools when:
 - Understanding recurring security patterns in the codebase
 - Reviewing whether security feedback from past reviews was addressed
 
+## Plugin Integration
+
+### superpowers
+- `verification-before-completion` - Verify security fixes before claiming done
+
+### serena (MCP)
+- `search_for_pattern` - Find security anti-patterns in code
+- `find_symbol` - Locate auth/validation functions
+
 ## Collaboration
 
 - Receives security tasks from **Main Chat**

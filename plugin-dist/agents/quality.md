@@ -156,11 +156,18 @@ Complexity: ↘️ Slightly increasing (monitor)
 Debt: ↗️ Improving (reduced by 6 points)
 ```
 
-## Superpowers Integration
+## Plugin Integration
 
-When reviewing:
-- Use `superpowers:requesting-code-review` format for reviews
-- Use `superpowers:verification-before-completion` for final checks
+### superpowers
+- `requesting-code-review` - Structured code review format
+- `verification-before-completion` - Final verification checks
+
+### feature-dev
+- Use `code-reviewer` agent for detailed code review
+- Checks simplicity, correctness, project conventions
+
+### serena (MCP)
+- `find_symbol` / `get_symbols_overview` - Navigate for review
 
 ## Collaboration
 

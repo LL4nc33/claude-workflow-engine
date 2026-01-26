@@ -21,6 +21,7 @@ Create the following structure:
 workflow/
 ├── README.md              # Overview of workflow system
 ├── config.yml             # Project configuration
+├── ideas.md               # Ideas backlog for future development
 ├── product/
 │   ├── README.md          # What goes here
 │   └── mission.md         # Product vision template
@@ -41,6 +42,7 @@ This directory contains your project's workflow artifacts.
 ## Structure
 
 - `config.yml` - Project configuration
+- `ideas.md` - Ideas backlog for future development
 - `product/` - Product vision, goals, roadmap
 - `specs/` - Feature specifications
 - `standards/` - Project-specific coding standards (optional)
@@ -69,6 +71,26 @@ workflow:
     - tasks     # Break into implementable tasks
     - build     # Implement with agents
     - review    # Quality gates and verification
+```
+
+### workflow/ideas.md
+```markdown
+# Ideas Backlog
+
+Collected ideas for future development.
+
+## Status Legend
+
+- **new** - Just captured, not yet reviewed
+- **exploring** - Being discussed/developed
+- **planned** - Approved for implementation
+- **rejected** - Decided against
+
+---
+
+## Ideas
+
+<!-- Ideas will be added here by the innovator agent -->
 ```
 
 ### workflow/product/README.md

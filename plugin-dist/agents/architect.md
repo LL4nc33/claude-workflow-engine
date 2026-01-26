@@ -97,11 +97,19 @@ Use these tools when:
 - Understanding class hierarchies and inheritance
 - Evaluating coupling and cohesion
 
-## Superpowers Integration
+## Plugin Integration
 
-When planning:
-- Use `superpowers:writing-plans` for detailed implementation plans
-- Use `superpowers:brainstorming` for exploring alternatives
+### superpowers
+- `writing-plans` - Detailed implementation plans
+- `brainstorming` - Explore alternatives before deciding
+
+### feature-dev
+- Use `code-architect` agent for implementation design
+- Use `code-explorer` agent to understand existing architecture
+
+### serena (MCP)
+- `find_symbol` / `find_referencing_symbols` - Analyze dependencies
+- `get_symbols_overview` - Understand module structure
 
 ## Collaboration
 

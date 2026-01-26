@@ -15,7 +15,7 @@ description: >
 | 2 | Auto-Delegation | Intent recognition maps user requests to agents |
 | 3 | Spec-Driven | Features start with specs, then tasks, then implementation |
 | 4 | Context Isolation | Agent work stays in agent context (returns summary) |
-| 5 | Superpowers Integration | Agents leverage superpowers skills for TDD, debugging, reviews |
+| 5 | Plugin Integration | Agents leverage installed plugin skills (superpowers, serena, feature-dev, etc.) |
 
 ## Workflow Overview
 
@@ -35,11 +35,12 @@ User says something
 |-----------|-------|--------------|
 | User wants to code | builder | Implements with TDD |
 | User wants to understand | explainer | Explains code/concepts |
+| User wants to discuss/ask | ask | Questions, discussions (READ-ONLY) |
 | User wants to design | architect | Creates ADRs, designs |
 | User wants to deploy | devops | CI/CD, Docker, K8s |
 | User wants security audit | security | OWASP review |
 | User wants docs | researcher | Analysis, documentation |
-| User wants ideas | innovator | Brainstorming |
+| User wants ideas | innovator | Brainstorming, idea backlog |
 | User wants quality check | quality | Coverage, metrics |
 | User wants process help | guide | Workflow optimization |
 

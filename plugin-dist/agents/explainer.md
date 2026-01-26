@@ -102,6 +102,15 @@ Use these tools when:
 - Walking through specific implementations (find and read symbol bodies)
 - Answering "how does X work?" questions (locate the relevant symbols)
 
+## Plugin Integration
+
+### serena (MCP)
+- `get_symbols_overview` - Understand file structure for walkthroughs
+- `find_symbol` - Locate specific classes/methods with full context
+
+### feature-dev
+- Use `code-explorer` agent for deep code tracing
+
 ## Collaboration
 
 - Receives questions from users via **Main Chat**
