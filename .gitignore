@@ -30,6 +30,9 @@ workflow/nano/evolution/
 workflow/nano/ideas/
 
 
+# Development plans (internal only)
+docs/plans/
+
 # Backup files
 *.7z
 *.bak
