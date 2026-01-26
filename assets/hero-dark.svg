@@ -17,9 +17,9 @@
   <text x="400" y="95" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="600" fill="#1a1a2e" text-anchor="middle">Claude Workflow Engine</text>
 
   <!-- Subtitle -->
-  <text x="400" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#555555" text-anchor="middle">Multi-Agent Workflow System for Claude Code</text>
+  <text x="400" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#555555" text-anchor="middle">Spec-driven development with 9 specialized agents</text>
 
   <!-- Version badge -->
   <rect x="340" y="150" width="120" height="24" rx="12" fill="#00000010"/>
-  <text x="400" y="167" font-family="ui-monospace, monospace" font-size="12" fill="#444444" text-anchor="middle">v0.2.8</text>
+  <text x="400" y="167" font-family="ui-monospace, monospace" font-size="12" fill="#444444" text-anchor="middle">v0.3.2</text>
 </svg>

@@ -1,6 +1,16 @@
-# Claude Workflow Engine (CWE)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/hero-light.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/hero-dark.svg">
+    <img alt="Claude Workflow Engine" src="assets/hero-light.svg" width="800">
+  </picture>
+</p>
 
-Spec-driven development with 9 specialized agents.
+<p align="center">
+  Spec-driven development with 9 specialized agents.
+</p>
+
+---
 
 ## Installation
 
