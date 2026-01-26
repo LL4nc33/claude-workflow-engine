@@ -21,13 +21,16 @@ source "${SCRIPT_DIR}/common.sh"
 
 # --- Configuration ---
 ROOT="$(get_project_root)"
+PLUGIN_ROOT="$(get_plugin_root)"
 NANO_DIR="${ROOT}/workflow/nano"
 OBSERVATIONS_DIR="${NANO_DIR}/observations"
 PATTERNS_DIR="${NANO_DIR}/patterns"
 EVOLUTION_DIR="${NANO_DIR}/evolution"
 CONFIG_FILE="${NANO_DIR}/config/pattern-rules.yml"
 LOCAL_CONFIG="${ROOT}/.claude/nano.local.md"
-AGENTS_DIR="${ROOT}/.claude/agents"
+# Agent definitions live in the PLUGIN, not the project
+# (when running standalone, agents/ is in plugin-dist, not .claude/agents)
+AGENTS_DIR="${PLUGIN_ROOT}/agents"
 IDEAS_DIR="${NANO_DIR}/ideas"
 
 # Session ID (stable per Claude session)

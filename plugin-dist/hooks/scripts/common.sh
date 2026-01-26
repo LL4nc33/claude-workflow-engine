@@ -1,13 +1,45 @@
 #!/usr/bin/env bash
 # Common utilities for Claude Workflow Engine hooks
 # All hooks source this file for shared functionality
+#
+# IMPORTANT: This script is designed for standalone plugin usage.
+# When installed as a plugin, two directories are relevant:
+#   - PLUGIN ROOT: Where the plugin is installed (has commands/, agents/, hooks/)
+#   - PROJECT ROOT: Where the user's project lives (has workflow/, .claude/, src/)
+#
+# Environment variables:
+#   CLAUDE_PLUGIN_ROOT - Set by Claude to the plugin installation directory
+#   CLAUDE_PROJECT_DIR - Optional: explicitly set project directory
+#   PWD / pwd - Fallback: current working directory (usually the project)
 
-# Get the project root (where .claude/ lives)
+# Get the project root (where workflow/ and .claude/ live)
+# This is the USER'S PROJECT, not the plugin installation directory
 get_project_root() {
-  local dir="${CLAUDE_PLUGIN_ROOT:-$(pwd)}"
-  # Navigate up from hooks/scripts/ to project root
-  dir="$(cd "${dir}" && pwd)"
+  # Priority:
+  # 1. CLAUDE_PROJECT_DIR - explicit project directory (if set)
+  # 2. pwd - current working directory (Claude runs from project root)
+  # Note: CLAUDE_PLUGIN_ROOT is NOT used here - that's the plugin location
+  local dir="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+  dir="$(cd "${dir}" 2>/dev/null && pwd)" || dir="$(pwd)"
   echo "${dir}"
+}
+
+# Get the plugin root (where the plugin is installed)
+# This is where commands/, agents/, hooks/ etc. live
+# Only needed if scripts need to reference plugin assets (rare)
+get_plugin_root() {
+  # CLAUDE_PLUGIN_ROOT is set by Claude when running a plugin
+  # Fallback: assume we're running from the main project (development mode)
+  if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
+    echo "${CLAUDE_PLUGIN_ROOT}"
+  else
+    # Development mode: plugin is part of the project
+    # Navigate from hooks/scripts/ up to project root
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"
+    # hooks/scripts -> hooks -> project or plugin-dist
+    echo "$(cd "${script_dir}/../.." 2>/dev/null && pwd)"
+  fi
 }
 
 # Get the currently active spec (if any orchestration is in progress)
