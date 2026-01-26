@@ -4,6 +4,7 @@ Real-world examples showing CWE v0.4.0a in action.
 
 ## Table of Contents
 
+- [Interactive Menus](#interactive-menus)
 - [Web Application Development](#web-application-development)
 - [API Development](#api-development)
 - [Bug Investigation](#bug-investigation)
@@ -12,6 +13,65 @@ Real-world examples showing CWE v0.4.0a in action.
 - [Code Refactoring](#code-refactoring)
 - [Documentation](#documentation)
 - [Ideation & Planning](#ideation--planning)
+
+---
+
+## Interactive Menus
+
+### Guided Agent Selection
+
+**Scenario**: You want to do something but aren't sure which agent to use.
+
+**Conversation**:
+```
+User: /cwe:builder
+
+CWE: What type of work?
+  1. Fix a bug
+  2. Implement feature
+  3. Refactor code
+  4. Write tests
+  (Other) - type your own
+
+User: 1
+
+CWE: How would you describe the bug?
+  1. Error/Exception - Code throws an error
+  2. Wrong behavior - Works but incorrect result
+  3. Performance issue - Too slow
+  4. UI/Display issue - Visual problem
+
+User: 2
+
+CWE: Describe what needs to be done:
+  1. Show me the code first - Explore before deciding
+  2. I'll describe it - (type via Other)
+
+User: Other → "The login form accepts empty passwords"
+
+CWE: [Delegates to builder + systematic-debugging]
+```
+
+### All Commands Support Interactive Mode
+
+| Command | First Menu |
+|---------|------------|
+| `/cwe:builder` | Task type (fix/implement/refactor/test) |
+| `/cwe:architect` | Design type (system/API/data/ADR) |
+| `/cwe:devops` | Operation (container/CI/deploy/release) |
+| `/cwe:security` | Audit type (full/scan/specific/compliance) |
+| `/cwe:quality` | QA type (tests/coverage/review/metrics) |
+| `/cwe:innovator` | Action (review/brainstorm/backlog) |
+| `/cwe:ask` | Topic (code/architecture/idea) |
+| `/cwe:explainer` | Explain (walkthrough/concept/error) |
+| `/cwe:researcher` | Research (analyze/document/compare) |
+| `/cwe:guide` | Improve (workflow/standards/efficiency) |
+
+**Tip**: Providing arguments skips the menus:
+```
+/cwe:builder fix the login validation  # Direct, no menus
+/cwe:builder                            # Interactive menus
+```
 
 ---
 

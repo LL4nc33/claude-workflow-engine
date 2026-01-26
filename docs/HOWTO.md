@@ -21,7 +21,14 @@ Common tasks and step-by-step instructions for CWE v0.4.0a.
 /cwe:init
 ```
 
-This creates:
+CWE will:
+1. **Check installed plugins** and offer to install missing ones:
+   - Required: `superpowers`
+   - Recommended: `serena`, `feature-dev`
+   - Optional: `frontend-design`, `code-simplifier`, `claude-md-management`, `plugin-dev`
+
+2. **Create the workflow structure**:
+
 ```
 workflow/
 ├── README.md
@@ -80,6 +87,29 @@ Just describe what you need:
 /cwe:architect design user authentication
 /cwe:security audit the payment flow
 ```
+
+### Interactive Menus
+
+Run any agent command **without arguments** to get an interactive menu:
+
+```bash
+/cwe:builder
+# Shows: What type of work?
+#   1. Fix a bug
+#   2. Implement feature
+#   3. Refactor code
+#   4. Write tests
+#   (Other) - type your own
+
+/cwe:architect
+# Shows: What type of architecture work?
+#   1. System design
+#   2. API design
+#   3. Data model
+#   4. ADR
+```
+
+Each menu drills down with follow-up questions until CWE has enough context.
 
 ### Disable Auto-Delegation
 

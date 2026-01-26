@@ -13,10 +13,17 @@ claude plugin install cwe
 ## Quick Start
 
 ```bash
-/cwe:init     # Initialize project
-/cwe:start    # Guided workflow
+/cwe:init     # Initialize project + install recommended plugins
+/cwe:start    # Guided workflow with interactive menus
 /cwe:help     # Documentation
 ```
+
+`/cwe:init` checks and offers to install missing plugins:
+| Plugin | Level | Purpose |
+|--------|-------|---------|
+| superpowers | Required | TDD, debugging, planning |
+| serena | Recommended | Semantic code analysis |
+| feature-dev | Recommended | 7-phase feature workflow |
 
 Or just say what you need:
 
@@ -32,8 +39,10 @@ Or just say what you need:
 CWE provides:
 - **13 Commands** (3 workflow + 10 agent commands)
 - **10 Specialized Agents** (ask, architect, builder, devops, quality, security, researcher, explainer, innovator, guide)
+- **Interactive Menus** - run commands without args for guided selection
 - **Auto-Delegation** - just describe what you need, CWE picks the right agent/skill
 - **Full Plugin Integration** - orchestrates all installed plugins
+- **Automatic Plugin Installation** - `/cwe:init` installs missing dependencies
 
 ## 5 Core Principles
 
