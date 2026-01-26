@@ -8,25 +8,10 @@
 
   <rect width="800" height="200" fill="url(#grad)" rx="8"/>
 
-  <!-- Wave pipes - left side -->
-  <path d="M0 60 H200 Q230 60 230 80 L230 120 Q230 140 260 140 H350"
-        fill="none" stroke="#ffffff10" stroke-width="2"/>
-  <path d="M0 100 H350"
-        fill="none" stroke="#ffffff15" stroke-width="2"/>
-  <path d="M0 140 H200 Q230 140 230 120 L230 80 Q230 60 260 60 H350"
-        fill="none" stroke="#ffffff10" stroke-width="2"/>
-
-  <!-- Wave pipes - right side -->
-  <path d="M450 60 H540 Q570 60 570 80 L570 120 Q570 140 600 140 H800"
-        fill="none" stroke="#ffffff10" stroke-width="2"/>
-  <path d="M450 100 H800"
-        fill="none" stroke="#ffffff15" stroke-width="2"/>
-  <path d="M450 140 H540 Q570 140 570 120 L570 80 Q570 60 600 60 H800"
-        fill="none" stroke="#ffffff10" stroke-width="2"/>
-
-  <!-- Small dots at intersections -->
-  <circle cx="350" cy="100" r="3" fill="#ffffff20"/>
-  <circle cx="450" cy="100" r="3" fill="#ffffff20"/>
+  <!-- Decorative elements -->
+  <circle cx="50" cy="100" r="60" fill="none" stroke="#ffffff10" stroke-width="1"/>
+  <circle cx="750" cy="100" r="80" fill="none" stroke="#ffffff08" stroke-width="1"/>
+  <circle cx="750" cy="100" r="40" fill="none" stroke="#ffffff10" stroke-width="1"/>
 
   <!-- Main text -->
   <text x="400" y="95" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="600" fill="#ffffff" text-anchor="middle">Claude Workflow Engine</text>
