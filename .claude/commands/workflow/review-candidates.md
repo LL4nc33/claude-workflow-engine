@@ -1,3 +1,8 @@
+---
+description: NaNo Evolution-Candidates interaktiv reviewen
+interactive: true
+---
+
 # Review Evolution Candidates
 
 Interaktives Review von erkannten Patterns, die zu neuen Standards promoted werden koennten.

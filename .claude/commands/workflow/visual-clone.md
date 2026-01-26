@@ -1,3 +1,8 @@
+---
+description: Design-Tokens und visuelle Identitaet von Websites extrahieren
+interactive: true
+---
+
 # Visual Website Cloner
 
 Extract the visual identity (colors, fonts, spacing, components) from any website and generate CSS Variables, Tailwind Config, or Design Tokens.

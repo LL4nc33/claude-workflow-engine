@@ -1,3 +1,8 @@
+---
+description: Letzte Workflow-Aenderungen rueckgaengig machen (git-basiert)
+interactive: true
+---
+
 # Workflow Undo
 
 Reverts recent workflow changes safely using git. Useful when a spec or task went wrong.

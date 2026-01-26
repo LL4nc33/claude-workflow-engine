@@ -20,10 +20,14 @@ secrets.*
 workflow/local/
 workflow/*.local.yml
 
+# Quality gate state markers (session-specific)
+.claude/state/
+
 # NaNo Learning System (project-specific learnings, stay local)
 workflow/nano/observations/
 workflow/nano/patterns/
 workflow/nano/evolution/
+workflow/nano/ideas/
 
 
 # Backup files

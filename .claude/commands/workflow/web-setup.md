@@ -1,3 +1,8 @@
+---
+description: Web-Access-Layer konfigurieren (Firecrawl, SearXNG, Captcha)
+interactive: true
+---
+
 # Web Services — Setup
 
 Configure service URLs for the Web-Access-Layer (SearXNG, Firecrawl, Captcha-Solver).

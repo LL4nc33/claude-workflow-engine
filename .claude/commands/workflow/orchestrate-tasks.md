@@ -1,3 +1,8 @@
+---
+description: Phase 5 - Tasks an spezialisierte Agents delegieren
+interactive: true
+---
+
 # Orchestrate Tasks
 
 Delegate tasks from a task list to specialized agents, respecting dependencies and execution phases. This is the final command in the 5-phase workflow.

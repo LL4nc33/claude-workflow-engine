@@ -176,6 +176,174 @@ clean_cache() {
 }
 
 # =============================================================================
+# TOON Format Conversion
+# Converts JSON to TOON format for ~40% token savings
+# =============================================================================
+
+# Convert JSON input to TOON format
+# Falls back to original input if conversion fails or npx not available
+to_toon() {
+  local input="$1"
+
+  # Skip if input is empty or too small (< ~50 chars = ~12 tokens)
+  if [ -z "${input}" ] || [ ${#input} -lt 50 ]; then
+    echo "${input}"
+    return
+  fi
+
+  # Check if npx is available
+  if ! command -v npx &>/dev/null; then
+    echo "${input}"
+    return
+  fi
+
+  # Try conversion, fall back to original on failure
+  local result
+  result=$(echo "${input}" | npx --yes @toon-format/cli 2>/dev/null)
+
+  if [ $? -eq 0 ] && [ -n "${result}" ]; then
+    echo "${result}"
+  else
+    echo "${input}"
+  fi
+}
+
+# =============================================================================
+# Context Injection Utilities
+# Used by pre-delegation-context.sh for auto-context injection
+# =============================================================================
+
+# Extract significant keywords from a prompt
+# Filters out common words, returns space-separated unique keywords
+# Also detects problem-indicators (German error patterns) and adds "debug" keyword
+extract_keywords() {
+  local prompt="$1"
+  local keywords
+  keywords=$(echo "${prompt}" | \
+    tr '[:upper:]' '[:lower:]' | \
+    tr -cs '[:alnum:]' '\n' | \
+    grep -vE '^(the|a|an|is|are|to|for|in|on|of|and|or|with|that|this|it|be|do|does|did|has|have|was|were|will|would|can|could|should|shall|may|might|must|der|die|das|ein|eine|und|oder|fuer|mit|bei|von|zu)$' | \
+    grep -E '.{3,}' | \
+    sort -u | \
+    head -20 | \
+    tr '\n' ' ')
+
+  # Detect problem-indicators (German + English) and add "debug" keyword
+  if echo "${prompt}" | grep -qiE "funktioniert nicht|geht nicht|kaputt|fehler|problem|bug|broken|not working|failed|crash"; then
+    keywords="${keywords}debug "
+  fi
+
+  echo "${keywords}"
+}
+
+# Match standards based on keywords
+# Returns comma-separated list of standard paths
+# SYNC WITH: workflow/orchestration.yml auto_context.keyword_mapping
+# Usage: match_standards "auth login api" 4
+match_standards() {
+  local keywords="$1"
+  local max_standards="${2:-4}"
+  local matched="global/tech-stack"
+  local count=1
+
+  # Auth/Security keywords (sync: orchestration.yml auth_security)
+  if echo "${keywords}" | grep -qiE "auth|login|session|jwt|oauth|password|token|security"; then
+    matched="${matched},api/error-handling"
+    ((count++)) || true
+  fi
+
+  # API keywords (sync: orchestration.yml api)
+  if echo "${keywords}" | grep -qiE "api|endpoint|route|rest|graphql|controller"; then
+    matched="${matched},api/response-format,api/error-handling"
+    count=$((count + 2))
+  fi
+
+  # Database keywords (sync: orchestration.yml database)
+  if echo "${keywords}" | grep -qiE "database|migration|schema|model|entity|query|sql"; then
+    matched="${matched},database/migrations,global/naming"
+    count=$((count + 2))
+  fi
+
+  # Frontend/UI keywords (sync: orchestration.yml frontend)
+  if echo "${keywords}" | grep -qiE "component|ui|view|page|layout|form|button|modal|frontend"; then
+    matched="${matched},frontend/components"
+    ((count++)) || true
+  fi
+
+  # Testing keywords (sync: orchestration.yml testing)
+  if echo "${keywords}" | grep -qiE "test|spec|coverage|mock|jest|vitest|cypress"; then
+    matched="${matched},testing/coverage"
+    ((count++)) || true
+  fi
+
+  # DevOps/CI keywords (sync: orchestration.yml devops)
+  if echo "${keywords}" | grep -qiE "docker|ci|pipeline|deploy|kubernetes|terraform|helm"; then
+    matched="${matched},devops/ci-cd,devops/containerization"
+    count=$((count + 2))
+  fi
+
+  # CLI keywords (sync: orchestration.yml cli)
+  if echo "${keywords}" | grep -qiE "cli|command|args|exit"; then
+    matched="${matched},cli/command-structure,cli/exit-codes"
+    count=$((count + 2))
+  fi
+
+  # Debug/Troubleshooting - inject error-handling for debug tasks
+  if echo "${keywords}" | grep -qiE "debug|fehler|error|bug|broken|kaputt"; then
+    matched="${matched},api/error-handling"
+    ((count++)) || true
+  fi
+
+  # Remove duplicates and limit to max
+  echo "${matched}" | tr ',' '\n' | sort -u | head -n "${max_standards}" | tr '\n' ',' | sed 's/,$//'
+}
+
+# Scan for relevant code files based on keywords
+# Returns formatted list of matching files
+# Usage: scan_relevant_code "auth login" 3
+scan_relevant_code() {
+  local keywords="$1"
+  local max_files="${2:-3}"
+  local root
+  root="$(get_project_root)"
+  local result=""
+
+  # Build search patterns
+  local patterns=""
+  for keyword in ${keywords}; do
+    [ ${#keyword} -lt 4 ] && continue
+    patterns="${patterns}*${keyword}* "
+  done
+
+  [ -z "${patterns}" ] && echo "" && return
+
+  # Find matching files
+  local found_files=""
+  if [ -d "${root}/src" ]; then
+    for pattern in ${patterns}; do
+      local found
+      found=$(find "${root}/src" -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.py" \) -iname "${pattern}" 2>/dev/null | head -n "${max_files}") || true
+      found_files="${found_files}${found}"$'\n'
+    done
+  fi
+
+  # Deduplicate and limit
+  found_files=$(echo "${found_files}" | grep -v '^$' | sort -u | head -n "${max_files}")
+
+  if [ -n "${found_files}" ]; then
+    while IFS= read -r file; do
+      [ -z "${file}" ] && continue
+      local rel_path="${file#${root}/}"
+      local first_line
+      first_line=$(head -1 "${file}" 2>/dev/null | head -c 80) || true
+      result="${result}- ${rel_path}: ${first_line}\n"
+    done <<< "${found_files}"
+  fi
+
+  echo -e "${result}"
+}
+
+# =============================================================================
 # NaNo Learning Utilities (named after Nala & Nino)
 # Shared functions for the learning/observation system.
 # =============================================================================

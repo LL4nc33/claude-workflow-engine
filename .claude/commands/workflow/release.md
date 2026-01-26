@@ -1,3 +1,8 @@
+---
+description: Version bump, Changelog und Git-Tag erstellen
+interactive: true
+---
+
 # Release
 
 Bumps project version, updates all files, generates changelog entry, and creates git tag.

@@ -2,11 +2,11 @@
 # Claude Workflow Engine Orchestration Configuration
 # Optimized for 9-agent system with 4 quality gates, fallback strategies,
 # and observability hooks.
-# Version: 0.2.8
+# Version: 0.2.9
 # =============================================================================
 
 project_name: "Claude Workflow Engine"
-version: "0.2.8"
+version: "0.2.9"
 
 # -----------------------------------------------------------------------------
 # Workflow Phases (5-Phase Command Chain)
@@ -434,6 +434,57 @@ standards_injection:
       # Maximum cached standards (LRU eviction)
       max_entries: 20
 
+  # Auto-context injection for agent delegations
+  # Automatically injects relevant context before each Task tool call
+  # Hook: hooks/scripts/pre-delegation-context.sh
+  auto_context:
+    enabled: true
+
+    # Standards-Injection based on task keywords
+    inject_standards:
+      enabled: true
+      use_selective_matching: true  # Uses keyword patterns below
+      max_standards: 4
+      always_include: [global/tech-stack]
+
+    # Code-Scan for implement/fix tasks
+    scan_relevant_code:
+      enabled: true
+      triggers: [implement, fix, refactor, erweitere, aendere, baue, erstelle, bug]
+      max_files: 3
+      include_summary: true  # Only filename + first line, not full content
+
+    # Architecture context for design tasks
+    include_architecture:
+      enabled: true
+      triggers: [design, architect, entwerf, architektur, system, struktur]
+      source: workflow/product/architecture.md
+      max_tokens: 500
+
+    # Keyword-to-Standards mapping (used by pre-delegation-context.sh)
+    keyword_mapping:
+      auth_security:
+        keywords: [auth, login, session, jwt, oauth, password, token, security]
+        standards: [api/error-handling]
+      api:
+        keywords: [api, endpoint, route, rest, graphql, controller]
+        standards: [api/response-format, api/error-handling]
+      database:
+        keywords: [database, migration, schema, model, entity, query, sql]
+        standards: [database/migrations, global/naming]
+      frontend:
+        keywords: [component, ui, view, page, layout, form, button, modal, frontend]
+        standards: [frontend/components]
+      testing:
+        keywords: [test, spec, coverage, mock, jest, vitest, cypress]
+        standards: [testing/coverage]
+      devops:
+        keywords: [docker, ci, pipeline, deploy, kubernetes, terraform, helm]
+        standards: [devops/ci-cd, devops/containerization]
+      cli:
+        keywords: [cli, command, args, exit]
+        standards: [cli/command-structure, cli/exit-codes]
+
     # Compact injection format: strip comments and empty lines from standards
     compact_format:
       enabled: true
@@ -502,6 +553,10 @@ quality_gates:
           - dependencies_correctly_ordered
           - agent_assignments_appropriate
           - no_scope_creep
+      - agent: quality
+        checks:
+          - tasks_are_testable
+          - acceptance_criteria_defined
     pass_condition: all_reviewers_approve
     on_failure:
       action: pause_and_report
@@ -606,22 +661,36 @@ agent_first:
         - Bug fixing (delegate to builder)
 
     # Force delegation for these actions - COMPREHENSIVE LIST
+    # Bilingual patterns: English + German
     always_delegate:
       # === CODE WORK (builder) ===
       - pattern: "implement|write code|create file|edit file|fix bug|refactor"
         delegate_to: builder
         reason: "All code changes must be isolated"
+      - pattern: "implementiere|erstelle datei|editiere|fixe|refaktoriere|baue|erstelle"
+        delegate_to: builder
+        reason: "Implementation work (German)"
       - pattern: "add feature|build|develop|code"
         delegate_to: builder
         reason: "Implementation work"
       - pattern: "test|write test|unit test|integration test"
         delegate_to: builder
         reason: "Test writing is code work"
+      # === DEBUG/TROUBLESHOOTING (builder) ===
+      - pattern: "funktioniert nicht|geht nicht|broken|kaputt|fehler|error|problem mit|bug|nicht mehr"
+        delegate_to: builder
+        reason: "Debug/Troubleshooting task"
+      - pattern: "doesn't work|not working|broken|failed|failing|crash|exception"
+        delegate_to: builder
+        reason: "Debug/Troubleshooting task (English)"
 
       # === EXPLANATIONS (explainer) ===
       - pattern: "explain|how does|walkthrough|what is|why does"
         delegate_to: explainer
         reason: "Explanations benefit from focused analysis"
+      - pattern: "erklaer|wie funktioniert|was ist|warum|zeig mir"
+        delegate_to: explainer
+        reason: "Explanations (German)"
       - pattern: "understand|learn|teach me|show me"
         delegate_to: explainer
         reason: "Learning queries"
@@ -630,6 +699,9 @@ agent_first:
       - pattern: "analyze|document|research|compare|evaluate"
         delegate_to: researcher
         reason: "Analysis requires deep reading"
+      - pattern: "analysiere|dokumentiere|recherchiere|vergleiche|evaluiere"
+        delegate_to: researcher
+        reason: "Analysis (German)"
       - pattern: "find pattern|discover|extract|summarize codebase"
         delegate_to: researcher
         reason: "Codebase exploration"
@@ -641,6 +713,9 @@ agent_first:
       - pattern: "review security|audit|vulnerability|pentest|owasp"
         delegate_to: security
         reason: "Security work requires specialized tools"
+      - pattern: "sicherheit|schwachstelle|pruefe sicherheit|audit"
+        delegate_to: security
+        reason: "Security work (German)"
       - pattern: "check secrets|scan dependencies|cve|gdpr"
         delegate_to: security
         reason: "Compliance and scanning"
@@ -660,6 +735,9 @@ agent_first:
       - pattern: "design|architecture|adr|system design|api design"
         delegate_to: architect
         reason: "Design decisions need focused thought"
+      - pattern: "entwerf|architektur|systemdesign|api design"
+        delegate_to: architect
+        reason: "Design decisions (German)"
       - pattern: "review api|review design|tech decision|trade-off"
         delegate_to: architect
         reason: "Architectural review"
@@ -671,16 +749,25 @@ agent_first:
       - pattern: "coverage|quality gate|test health|metrics|flaky"
         delegate_to: quality
         reason: "Quality validation and metrics"
+      - pattern: "testabdeckung|qualitaet|metriken"
+        delegate_to: quality
+        reason: "Quality validation (German)"
 
       # === IDEATION (innovator) ===
       - pattern: "brainstorm|ideas|what if|alternatives|creative"
         delegate_to: innovator
         reason: "Creative exploration and ideation"
+      - pattern: "ideen|alternativen|was waere wenn|kreativ"
+        delegate_to: innovator
+        reason: "Ideation (German)"
 
       # === PROCESS (guide) ===
       - pattern: "improve workflow|pattern analysis|process optimization"
         delegate_to: guide
         reason: "Process evolution and learning"
+      - pattern: "workflow verbessern|pattern analyse|prozess optimieren"
+        delegate_to: guide
+        reason: "Process evolution (German)"
 
       # Note: Multi-step tasks are handled by Main Chat directly, not delegated
 

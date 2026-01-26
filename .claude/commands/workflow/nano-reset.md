@@ -1,3 +1,8 @@
+---
+description: NaNo Lern-Daten zuruecksetzen (mit Bestaetigung)
+interactive: true
+---
+
 # NaNo Reset
 
 Setzt das NaNo Learning System zurueck. Loescht alle gesammelten Daten.

@@ -1,3 +1,8 @@
+---
+description: Phase 3 - Technische Spezifikation erstellen
+interactive: true
+---
+
 # Write Spec
 
 Transform shaped requirements into a detailed technical specification. This command takes the output of `/shape-spec` and produces an implementation-ready technical document.

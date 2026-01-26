@@ -1,3 +1,8 @@
+---
+description: Relevante Standards in Delegation-Prompts einfuegen
+interactive: false
+---
+
 # Inject Standards
 
 Inject relevant standards into the current context, formatted appropriately for the situation.

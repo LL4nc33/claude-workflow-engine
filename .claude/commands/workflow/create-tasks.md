@@ -1,3 +1,8 @@
+---
+description: Phase 4 - Spec in implementierbare Tasks aufteilen
+interactive: true
+---
+
 # Create Tasks
 
 Break a technical specification into implementable, prioritized tasks. Creates a task list that can be executed directly or delegated via `/orchestrate-tasks`.

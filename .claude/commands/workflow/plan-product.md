@@ -1,3 +1,8 @@
+---
+description: Phase 1 - Produkt-Vision und Tech-Stack definieren
+interactive: true
+---
+
 # Plan Product
 
 Establish foundational product documentation through an interactive conversation. Creates mission, roadmap, and tech stack files in `workflow/product/`.

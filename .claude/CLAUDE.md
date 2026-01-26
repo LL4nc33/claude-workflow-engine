@@ -109,83 +109,62 @@ For full control, use individual phase commands:
 | `/workflow:web-setup` | Configure Web-Access-Layer (Firecrawl + SearXNG + Captcha-Solver) | Self-hosted instances |
 | `/workflow:clone-setup` | ~~DEPRECATED~~ → Nutze `/workflow:web-setup` | - |
 | `/workflow:visual-clone` | Extract visual identity (colors, fonts, CSS) from websites + optional Design Token Standards generation | `/workflow:web-setup` |
-| `/workflow:homunculus-status` | NaNo Learning Status - Actionable Insights und Quick-Actions | `nano.local.md` |
+| `/workflow:nano-status` | NaNo Learning Status - Actionable Insights und Quick-Actions | `.claude/nano.local.md` |
 | `/workflow:nano-toggle` | NaNo ein/ausschalten + First-Run Setup | - |
 | `/workflow:nano-session` | Aktuelle Session-Observations anzeigen | NaNo aktiv |
-| `/workflow:nano-config` | Interaktive NaNo-Konfiguration | `nano.local.md` |
+| `/workflow:nano-config` | Interaktive NaNo-Konfiguration | `.claude/nano.local.md` |
 | `/workflow:nano-reset` | NaNo-Daten zuruecksetzen (mit Confirmation) | NaNo data |
 | `/workflow:review-candidates` | Interaktives Review von NaNo Evolution-Candidates | NaNo patterns |
 | `/workflow:learning-report` | Umfassender NaNo-Analyse-Report | NaNo observations |
+| `/workflow:nano-idea` | Idee sammeln fuer zukuenftige Vorschlaege | NaNo aktiv |
 | `/workflow:release` | Version bump, Changelog, Git-Tag (SemVer) | `VERSION` file |
 
 Configuration is stored in `web-services.local.md` / `nano.local.md` (gitignored, GDPR-compliant). API responses are converted to [TOON format](https://github.com/toon-format/toon) for ~40% token savings.
 
 ## Agent-First Principle (Context Isolation)
 
-**CRITICAL:** All code work MUST be delegated to agents. Main chat orchestrates only.
+> **Details:** [Agent Conventions Standard](workflow/standards/agents/agent-conventions.md)
 
-```
-Main Chat (Orchestrator)          Agents (Isolated Context)
-========================          ========================
-- User communication              - Code implementation
-- Phase detection                 - Bug fixing
-- Agent selection                 - Code analysis
-- Progress summaries              - Documentation generation
-- Quality gate decisions          - Security audits
-```
+**CRITICAL:** All code work MUST be delegated to agents. Main chat orchestrates only.
 
 **Why:** Agents have isolated context windows. When an agent finishes, only a result summary (~200 tokens) returns to main chat - not the full work context (~4000 tokens). This keeps main chat lean.
 
-### Self-Check vor jeder Aktion
+### Quick Reference
 
-VOR jedem Write/Edit FRAGE DICH:
-- Ist das eine workflow/*.md oder .claude/**/*.md Datei? → OK
-- Ist das CHANGELOG.md oder VERSION? → OK
-- Ist das etwas anderes? → STOPP! Delegiere an builder/devops
+| Main Chat (Orchestrator) | Agents (Isolated Context) |
+|--------------------------|---------------------------|
+| User communication | Code implementation |
+| Phase detection | Bug fixing |
+| Agent selection | Code analysis |
+| Progress summaries | Documentation generation |
+| Quality gate decisions | Security audits |
 
-**STRICT DELEGATION RULE:** Even simple questions get delegated. No exceptions for "quick" answers.
+### Self-Check vor Writes
 
-**FALSCH:**
-- Main Chat schreibt src/auth/login.ts direkt
-- Main Chat analysiert 500 Zeilen Code selbst
-- Main Chat "macht das schnell selbst"
+1. `workflow/*.md` oder `.claude/**/*.md`? -> OK
+2. `CHANGELOG.md` oder `VERSION`? -> OK
+3. Alles andere -> Delegiere an builder/devops
 
-**RICHTIG:**
-- Main Chat delegiert: `/builder implementiere Login`
-- Main Chat delegiert: `/explainer erklaere den Auth-Flow`
-- Main Chat fragt User bei Unklarheit
+### Intent-to-Agent Quick Reference
 
-| Intent | Agent | Examples |
-|--------|-------|----------|
-| Code work | builder | implement, fix, refactor, write test |
-| **ANY question** | **explainer** | "was ist X?", "wie funktioniert Y?", "warum Z?" |
-| Research | researcher | analyze, document, find pattern, compare |
-| Security | security | audit, vulnerability, scan, gdpr check |
-| DevOps | devops | deploy, docker, ci/cd, release, k8s |
-| Architecture | architect | design, adr, api review, trade-off |
-| Quality/Testing | quality | coverage, metrics, quality gates, test health |
-| Ideas/Brainstorm | innovator | explore options, "what if", creative solutions |
-| Process Evolution | guide | pattern analysis, workflow improvement, standards extraction |
-| Multi-step | Main Chat | build complete feature, end-to-end (coordinates agents) |
-| Exploration | researcher/Explore | scan codebase, find in code, investigate |
+| Intent | Agent |
+|--------|-------|
+| Code work | builder |
+| ANY question | explainer |
+| Research/Docs | researcher |
+| Security | security |
+| DevOps/Deploy | devops |
+| Architecture | architect |
+| Quality/Tests | quality |
+| Ideas | innovator |
+| Process | guide |
+| Multi-step | Main Chat (coordinates) |
 
-**Main chat responses (NO delegation) ONLY for:**
-- Yes/No confirmations ("ja", "ok", "nein")
-- Workflow file edits (`workflow/*.md`, `.claude/**/*.md`, `CHANGELOG.md`, `VERSION`)
-- Clarifying questions back to user
-- Progress summaries after agent returns
-
-**Read Operations:**
-- Small configs (< 200 lines) → Main chat OK
-- Large files / multiple files → Delegate to agent (explainer/researcher/Explore)
-- Code exploration → Always delegate (isolated context)
+**Main chat responds directly ONLY for:** Yes/No, workflow file edits, clarifying questions, progress summaries.
 
 ### Todo-List Pflicht
 
-Bei Tasks mit mehr als 2 Schritten MUSS eine Todo-List gefuehrt werden:
-- TodoWrite fuer jeden identifizierten Schritt
-- TodoWrite(in_progress) BEVOR Arbeit beginnt
-- TodoWrite(completed) NACHDEM Arbeit fertig
+Bei Tasks mit >2 Schritten: TodoWrite fuer jeden Schritt (in_progress -> completed).
 
 ## Context Model (3 Layers)
 
@@ -197,10 +176,11 @@ Bei Tasks mit mehr als 2 Schritten MUSS eine Todo-List gefuehrt werden:
 
 | Domain | Path | Standards | Status |
 |--------|------|-----------|--------|
-| global | `workflow/standards/global/` | tech-stack, naming | Active |
+| global | `workflow/standards/global/` | tech-stack, naming, toon-format | Active |
 | devops | `workflow/standards/devops/` | ci-cd, containerization, infrastructure | Active |
-| agents | `workflow/standards/agents/` | agent-conventions | Active |
+| agents | `workflow/standards/agents/` | agent-conventions, plugin-extension, completion-workflow | Active |
 | api | `workflow/standards/api/` | response-format, error-handling | Active |
+| cli | `workflow/standards/cli/` | command-structure, exit-codes, logger-usage, type-definitions, validation-pattern | Active |
 | database | `workflow/standards/database/` | migrations | Active |
 | frontend | `workflow/standards/frontend/` | components, design-tokens | Active |
 | testing | `workflow/standards/testing/` | coverage | Active |
@@ -266,15 +246,17 @@ ENV-Fallbacks für CI/CD: `$FIRECRAWL_URL`, `$SEARXNG_URL`, `$SOLVECAPTCHA_API_K
 
 ## Hook Behavior
 
-Five hooks automate workflow tasks (with adaptive timeouts per ADR-003):
+Seven hooks automate workflow tasks (with adaptive timeouts per ADR-003):
 
 | Hook | Event | Timeout | Behavior |
 |------|-------|---------|----------|
 | SessionStart | Session begins | 30s | Checks standards freshness, provides workflow context, NaNo status (cached), triggers background-analyse, cleans cache |
 | PreToolUse (Write/Edit) | Before file writes | 15s | Blocks secrets (.env, credentials.*, *.local.md); warnt bei Code außerhalb workflow/.claude/ (→ builder) |
+| PreToolUse (Task) | Before agent delegation | 10s | Auto-Context-Injection: Standards + relevanter Code + Architecture (keyword-basiert) |
 | PostToolUse (Write/Edit) | After file writes | 5s | Logs changes during active orchestration (filenames only, GDPR) |
 | PostToolUse (Task) | After agent delegation | 3s | NaNo: Atomic write delegation observation (flock-based, O(1) counter) |
-| Stop | Session ends | 10s | NaNo: Incremental pattern analysis (nur neue Sessions), evolution candidates |
+| Stop (Auto-Devlog) | Session ends | 5s | Suggests `/workflow:devlog` when >3 files changed, orchestration completed, or bug-fix detected |
+| Stop (NaNo Analyze) | Session ends | 10s | NaNo: Incremental pattern analysis (nur neue Sessions), evolution candidates |
 
 Error Recovery: See `workflow/ERROR-RECOVERY.md` for troubleshooting hook timeouts and other failures.
 
@@ -319,6 +301,20 @@ When a user request matches one of these patterns, automatically delegate to the
 - **Ambiguous intent** → Ask user for clarification (max 2 questions)
 - **Explicit command** → Always honor explicit `/workflow:*` commands over auto-delegation
 
+### First-Run Exception
+
+Wenn `workflow/` Verzeichnis NICHT existiert und User "build/create/implementiere X" sagt:
+
+**NICHT** direkt an builder delegieren. Stattdessen fragen:
+
+"Das sieht nach einem neuen Projekt aus. Wie moechtest du starten?
+
+1. **Quick Mode** (`/workflow:quick`) - Schnell: Plan->Spec->Build in ~10min (Recommended)
+2. **Smart Workflow** (`/workflow:smart-workflow`) - Vollstaendig: 5 Phasen mit Quality Gates
+3. **Direkt coden** - Ohne Workflow-Setup (nicht empfohlen fuer groessere Features)
+
+*Mit Workflow bekommst du automatische Standards-Injection, Quality Gates und Dokumentation.*"
+
 ### Fallback to Explicit Mode
 
 Users can override auto-delegation:
@@ -333,6 +329,11 @@ Users can override auto-delegation:
 - Multi-step Task benoetigt Scope-Klaerung
 - Quality Gate failed und User-Entscheidung noetig
 - Mehrere valide Loesungswege existieren
+- **Komplexe Features** die mehrere Implementierungs-Optionen haben:
+  - Auth: "OAuth, JWT, oder Session-basiert?"
+  - Database: "SQL oder NoSQL? Welches ORM?"
+  - API: "REST oder GraphQL?"
+  - UI: "Eigene Komponenten oder Library (shadcn, MUI)?"
 
 **Main Chat fragt NICHT wenn:**
 - Intent ist klar und single-domain → direkt delegieren
@@ -347,52 +348,17 @@ Users can override auto-delegation:
 
 ## Token-Optimierung: TOON-Format
 
+> **Details:** [TOON Format Standard](workflow/standards/global/toon-format.md)
+
 [TOON](https://github.com/toon-format/toon) ist ein token-optimiertes Notation-Format (~40% kompakter als JSON).
-Wende TOON-Konvertierung automatisch an, um Context-Budget zu schonen:
 
-### Wann konvertieren
+**Wann konvertieren:** JSON > 200 Tokens (API-Responses, Tool-Output, Delegation-Prompts)
 
-| Situation | Aktion |
-|-----------|--------|
-| JSON-Response > 200 Tokens (Tool-Output, API, File-Read) | Zusammenfassung/Weitergabe in TOON |
-| JSON in Delegation-Prompts an Subagents | Vor Injection zu TOON konvertieren |
-| Externe API-Responses in Workflows | Pipe durch `npx @toon-format/cli` |
-| JSON < 200 Tokens oder Code-relevantes JSON | Behalten wie es ist |
+**Wann NICHT:** Code-JSON (package.json), kleine Fragmente, programmatisch verarbeitetes JSON
 
-### TOON-Konvertierungsregeln
-
-```
-JSON Array of Objects → TOON Table
-[{"name":"A","val":1},{"name":"B","val":2}]
-→ [2]{name,val}:
-    A,1
-    B,2
-
-JSON Object → TOON Key-Value
-{"title":"X","count":5,"active":true}
-→ title: X
-  count: 5
-  active: true
-
-Nested JSON → TOON Indented
-{"user":{"name":"A","roles":["admin","dev"]}}
-→ user:
-    name: A
-    roles[2]: admin, dev
-```
-
-### Wo NICHT konvertieren
-
-- JSON das als Code geschrieben/editiert wird (package.json, tsconfig.json etc.)
-- JSON in Code-Beispielen die der User sehen soll
-- Kleine JSON-Fragmente (< 200 Tokens)
-- JSON das programmatisch weiterverarbeitet wird
-
-### Workflow-Integration
-
-Jeder Workflow der externe APIs aufruft sollte JSON-Responses durch TOON pipen:
 ```bash
-curl -s "$API_URL" | jq '{relevant_fields}' | npx @toon-format/cli
+# Quick usage
+curl -s "$API_URL" | jq '{fields}' | npx @toon-format/cli
 ```
 
 ## GDPR/EU Compliance

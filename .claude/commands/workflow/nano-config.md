@@ -1,3 +1,8 @@
+---
+description: NaNo Konfiguration interaktiv aendern
+interactive: true
+---
+
 # NaNo Configuration
 
 Interaktive Konfiguration des NaNo Learning Systems.

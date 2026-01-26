@@ -1,3 +1,8 @@
+---
+description: Standards-Index aktualisieren und validieren
+interactive: false
+---
+
 # Index Standards
 
 Rebuild and maintain the standards index file (`index.yml`).

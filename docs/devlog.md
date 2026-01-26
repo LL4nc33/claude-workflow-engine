@@ -4,6 +4,198 @@ Chronologische Dokumentation von Debugging-Sessions, Bugfixes und technischen Er
 
 ---
 
+## 2026-01-26: CWE Convenience-Layer - Natuerliche Sprachentwicklung
+
+### Problem
+
+CWE hatte funktionierende Komponenten (Agents, Standards, Hooks), aber diese arbeiteten nicht "logisch und intuitiv" zusammen:
+- Neue User wurden direkt an builder delegiert statt Workflow-Setup anzubieten
+- Komplexe Features (Auth) wurden ohne Klaerungsfragen gebaut
+- Deutsche Fehler-Patterns ("funktioniert nicht") wurden nicht erkannt
+- Context (Standards, Code) wurde nicht automatisch vor Delegation injiziert
+- Keyword-Mappings waren zwischen orchestration.yml und common.sh inkonsistent
+
+User-Feedback: "es muss wirklich alles logisch und intuitiv funktionieren" und "user sollten per natuerlicher sprache entwickeln koennen".
+
+### Analyse
+
+**End-to-End Szenario-Tests:**
+
+| Szenario | Erwartung | Realitaet vor Fix |
+|----------|-----------|-------------------|
+| Neuer User: "Baue Todo-App" | Workflow-Setup anbieten | Direkt an builder delegiert |
+| "Fuege Auth hinzu" | Fragen: OAuth/JWT/Session? | Keine Klaerung, einfach gebaut |
+| "Login funktioniert nicht" | Als Bug erkannt → builder | Pattern nicht erkannt |
+| "Wie funktioniert Auth?" | → explainer | Funktionierte bereits |
+
+**Gap-Analyse durch researcher Agent:**
+- 5 fehlende Komponenten identifiziert
+- 6 existierende aber nicht getriggerte Features
+- 3 manuelle Interventionen die automatisch sein sollten
+- 2 Redundanzen (Keyword-Mappings, Intent-Patterns)
+- 2 Inkonsistenzen (DE/EN Patterns, Standards-Injection)
+
+### Root Cause
+
+Fehlende "Convenience-Layer" zwischen User-Intent und Agent-Execution:
+1. **Kein Pre-Delegation Context** - Standards/Code wurden nicht automatisch gesammelt
+2. **Keine First-Run Erkennung** - System unterschied nicht zwischen neuem und bestehendem Projekt
+3. **Unvollstaendige Pattern-Erkennung** - Deutsche Umgangssprache nicht abgedeckt
+4. **Keine Feature-Scoping Logik** - Komplexe Features wurden nicht hinterfragt
+
+### Loesung
+
+**Pre-Delegation Context-Injection (PreToolUse Hook):**
+- `hooks/scripts/pre-delegation-context.sh` - Neuer Hook
+- Extrahiert Keywords aus Task-Prompt
+- Injiziert matching Standards automatisch
+- Scannt relevante Code-Files (Top-3)
+- Fuegt Architecture-Context bei Design-Tasks hinzu
+
+**First-Run Guard:**
+- CLAUDE.md erweitert unter "Delegation Decision Rules"
+- Wenn kein `workflow/` Verzeichnis: Frage nach Quick/Smart/Direkt
+- Verhindert dass neue User ohne Setup losbauen
+
+**Feature-Scoping:**
+- Komplexe Features triggern Klaerungsfragen
+- Auth: OAuth/JWT/Session?
+- Database: SQL/NoSQL? ORM?
+- UI: Eigene Komponenten/Library?
+
+**Bilingual Pattern-Erkennung:**
+- orchestration.yml erweitert mit deutschen Patterns
+- "funktioniert nicht|geht nicht|kaputt|fehler" → builder
+- "erklaer|wie funktioniert" → explainer
+- common.sh injiziert "debug" Keyword bei Problem-Indikatoren
+
+**Keyword-Sync:**
+- common.sh hat jetzt SYNC WITH Kommentare
+- Verweist auf orchestration.yml als Single Source of Truth
+
+### Gelernte Lektionen
+
+1. **User-Flows end-to-end testen** - Einzelne Komponenten koennen funktionieren, aber nicht zusammen
+2. **Convenience ist kein Nice-to-have** - Wenn User manuell intervenieren muss, ist das System unvollstaendig
+3. **Bilingual von Anfang an** - Deutsche User nutzen deutsche Umgangssprache
+4. **Pre-Delegation ist kritisch** - Context muss VOR der Delegation da sein, nicht waehrenddessen
+
+### Betroffene Dateien
+
+**Neue Dateien:**
+- `hooks/scripts/pre-delegation-context.sh` - Context-Injection Hook
+
+**Modifizierte Dateien:**
+- `.claude/CLAUDE.md` - First-Run Guard, Feature-Scoping Rules, Hook-Tabelle (7 Hooks)
+- `workflow/orchestration.yml` - auto_context Section, bilingual Patterns, Error-Patterns
+- `hooks/scripts/common.sh` - extract_keywords() mit Problem-Indikatoren, SYNC Kommentare
+- `hooks/hooks.json` - PreToolUse Hook fuer Task registriert
+- `.claude/skills/workflow/auto-delegation/SKILL.md` - Context-Injection dokumentiert
+
+### Metriken
+
+| Metrik | Wert |
+|--------|------|
+| Analysierte Dateien | 18 |
+| Identifizierte Gaps | 12 |
+| Implementierte Fixes | 8 |
+| Neue Hooks | 1 |
+| Erweiterte Patterns | 15+ |
+
+---
+
+## 2026-01-26: CWE Gap-Fixes - Agent-First Enforcement und Auto-Documentation
+
+### Problem
+
+CLAUDE.md dokumentierte Features die technisch nicht enforced waren:
+- Auto-Delegation nur als Text, kein Skill der Intent erkennt
+- Agent-First nur Warning, kein konfigurierbarer Block
+- Quality Gates definiert aber nicht enforced
+- Keine automatische Dokumentation nach Task-Completion
+
+User-Feedback: "der mainchat sollte nur todolist anzeigen und delegieren, editing sollte isoliert passieren" und "es muss automatisch/entgegenkommend sein".
+
+### Analyse
+
+1. **Standards-System existiert** - `workflow/standards/` mit index.yml vorhanden aber unvollstaendig
+2. **Agent-Conventions Standard** - Enthielt keine Enforcement-Rules
+3. **Hooks vorhanden** - pre-write-validate.sh warnte nur, blockierte nicht konfigurierbar
+4. **Keine Completion-Triggers** - Session endete ohne Dokumentations-Empfehlung
+
+Hypothese: Skills werden nicht automatisch getriggert weil Description-Keywords fehlen. Standards existieren aber werden nicht als Single Source of Truth genutzt - CLAUDE.md dupliziert alles inline.
+
+### Root Cause
+
+Disconnect zwischen Dokumentation und Enforcement:
+- CLAUDE.md beschrieb Verhalten das nicht technisch erzwungen wurde
+- Standards waren unvollstaendig (kein Agent-First Enforcement, kein Completion-Workflow)
+- Kein Hook der nach Session-Ende Dokumentation empfiehlt
+- Redundanz zwischen CLAUDE.md und Standards fuehrte zu Drift
+
+### Loesung
+
+**Phase 1-3: Skills fuer proaktive Guidance**
+- `auto-delegation/SKILL.md` - Intent-to-Agent Mapping mit PROACTIVELY Keywords
+- `planning/SKILL.md` - EnterPlanMode Trigger fuer Planungsaufgaben
+- `quality-gates/SKILL.md` - 4-Gate Checklisten
+
+**Phase 4: Agent-First Enforcement**
+- `pre-write-validate.sh` erweitert mit `get_agent_first_mode()`
+- Konfigurierbar via `nano.local.md`: `enforcement: warn|block|off`
+
+**Phase 5: Standards erweitert**
+- `agent-conventions.md` - Agent-First Enforcement Rules, Write Permission Matrix
+- `completion-workflow.md` (NEU) - Verification, Documentation Triggers, NaNo Recording
+
+**Phase 6: Auto-Devlog Hook**
+- `session-stop.sh` (NEU) - Empfiehlt `/workflow:devlog` bei >3 Aenderungen
+- Registriert in hooks.json als Stop-Event
+
+**Phase 7: Redundanz reduziert**
+- CLAUDE.md von 406 auf 349 Zeilen (-14%)
+- Verweise auf Standards statt inline-Duplikation
+- `toon-format.md` (NEU) - TOON-Regeln als eigener Standard extrahiert
+
+### Gelernte Lektionen
+
+1. **Standards als Single Source of Truth** - CLAUDE.md sollte verweisen, nicht duplizieren
+2. **Enforcement > Documentation** - Features muessen technisch erzwungen werden, nicht nur beschrieben
+3. **Hooks fuer Automation** - Session-Ende ist der richtige Zeitpunkt fuer Dokumentations-Reminder
+4. **Agent-First konsequent** - Main Chat sollte wirklich NUR orchestrieren, auch bei "kleinen" Tasks
+
+### Betroffene Dateien
+
+**Neue Dateien:**
+- `.claude/skills/workflow/auto-delegation/SKILL.md`
+- `.claude/skills/workflow/planning/SKILL.md`
+- `.claude/skills/workflow/quality-gates/SKILL.md`
+- `.claude/skills/workflow/cwe-principles/SKILL.md`
+- `.claude/commands/workflow/nano-idea.md`
+- `.claude/commands/workflow/nano-status.md`
+- `hooks/scripts/session-stop.sh`
+- `hooks/scripts/gate-check.sh`
+- `workflow/standards/agents/completion-workflow.md`
+- `workflow/standards/global/toon-format.md`
+- `workflow/standards/frontend/design-tokens.md`
+
+**Modifizierte Dateien:**
+- `.claude/CLAUDE.md` - Redundanz reduziert, Standards-Referenzen
+- `workflow/standards/agents/agent-conventions.md` - Enforcement Rules
+- `workflow/standards/index.yml` - Neue Standards registriert
+- `workflow/orchestration.yml` - Version 0.2.9
+- `workflow/config.yml` - Version 0.2.9
+- `.claude-plugin/plugin.json` - Version 0.2.9
+- `hooks/hooks.json` - Neue Hooks registriert
+- `hooks/scripts/pre-write-validate.sh` - Agent-First Mode
+- `hooks/scripts/common.sh` - to_toon() Funktion
+- `hooks/scripts/session-start.sh` - check_pending_gates()
+- `hooks/scripts/nano-observer.sh` - handle_idea(), analyze_ideas()
+- `.gitignore` - .claude/state/, workflow/nano/ideas/
+- Alle 25 `/workflow:*` Commands - Frontmatter hinzugefuegt
+
+---
+
 ## 2026-01-25: /workflow:devlog Command
 
 ### Problem

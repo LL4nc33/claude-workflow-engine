@@ -1,3 +1,8 @@
+---
+description: Standards aus bestehendem Code extrahieren
+interactive: true
+---
+
 # Discover Standards
 
 Extract tribal knowledge from your codebase into concise, documented standards.

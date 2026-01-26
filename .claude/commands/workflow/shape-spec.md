@@ -1,3 +1,8 @@
+---
+description: Phase 2 - Feature-Requirements sammeln und strukturieren
+interactive: true
+---
+
 # Shape Spec
 
 Gather context and structure planning for significant work. **Run this command while in plan mode.**

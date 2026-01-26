@@ -1,3 +1,8 @@
+---
+description: Auto-detect Phase und gefuehrter 5-Phasen Workflow
+interactive: true
+---
+
 # Smart Workflow
 
 Consolidated workflow command that guides users through all 5 phases automatically. Detects current state and continues from the appropriate phase.
@@ -50,7 +55,7 @@ Based on user selection, execute the appropriate phase workflow:
 
 #### Phase 2: Shape Spec
 - Ask: What feature do you want to build next?
-- Create spec folder with timestamp: `workflow/specs/{YYYYMMDD}-{feature-slug}/`
+- Create spec folder with timestamp: `workflow/specs/{YYYY-MM-DD-HHMM}-{feature-slug}/`
 - Gather 3-5 key requirements (functional + non-functional)
 - Create `shape.md` with gathered requirements
 - Auto-advance to Phase 3

@@ -1,3 +1,8 @@
+---
+description: DEPRECATED - Nutze /workflow:web-setup stattdessen
+interactive: false
+---
+
 # Visual Clone — Setup (DEPRECATED)
 
 > **DEPRECATED:** Dieser Command ist deprecated. Bitte `/workflow:web-setup` verwenden.

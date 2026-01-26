@@ -1,6 +1,6 @@
 {
   "name": "claude-workflow-engine",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Multi-Agent Workflow System: 9 specialized agents, auto-delegation, smart-workflow, TOON-optimized context, and spec-driven development",
   "author": "LL4nc33",
   "license": "MIT",

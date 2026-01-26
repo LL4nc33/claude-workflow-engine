@@ -3,6 +3,9 @@
 # Optimized for fast execution with background checks
 # Target: <50ms perceived latency for initial response
 
+# Consume stdin to prevent hook errors (Claude sends JSON input)
+cat > /dev/null 2>&1 &
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
 
@@ -16,6 +19,42 @@ context_parts=""
 
 # Clean stale cache entries from previous sessions
 clean_cache 3600
+
+# Check for pending quality gates based on active spec state
+check_pending_gates() {
+  local spec_dir="$1"
+  [ -z "${spec_dir}" ] && return
+
+  local root
+  root="$(get_project_root)"
+  local full_path="${root}/workflow/specs/${spec_dir}"
+
+  # Gate 2: Pre-Execution (tasks.md exists but no orchestration started)
+  if [ -f "${full_path}/tasks.md" ] && [ ! -f "${full_path}/progress.md" ]; then
+    if [ ! -f "${root}/.claude/state/gates/gate2_passed" ]; then
+      echo "Gate 2 (Pre-Execution) pending"
+      return
+    fi
+  fi
+
+  # Gate 1: Pre-Implementation (spec.md exists but no tasks.md)
+  if [ -f "${full_path}/spec.md" ] && [ ! -f "${full_path}/tasks.md" ]; then
+    if [ ! -f "${root}/.claude/state/gates/gate1_passed" ]; then
+      echo "Gate 1 (Pre-Implementation) pending"
+      return
+    fi
+  fi
+
+  # Gate 4: Final Acceptance (all tasks completed)
+  if [ -f "${full_path}/progress.md" ]; then
+    if grep -q "Status.*completed\|100%" "${full_path}/progress.md" 2>/dev/null; then
+      if [ ! -f "${root}/.claude/state/gates/gate4_passed" ]; then
+        echo "Gate 4 (Final Acceptance) pending"
+        return
+      fi
+    fi
+  fi
+}
 
 # Fast path: Check index existence first (no find traversal)
 if [ -f "${ROOT}/workflow/standards/index.yml" ]; then
@@ -58,6 +97,12 @@ fi
 active_spec="$(get_active_spec)"
 if [ -n "${active_spec}" ]; then
   context_parts="${context_parts}Aktive Spec: ${active_spec}. "
+
+  # Check for pending quality gates
+  pending_gate="$(check_pending_gates "${active_spec}")"
+  if [ -n "${pending_gate}" ]; then
+    warnings="${warnings}${pending_gate} -> /workflow:quality-gates. "
+  fi
 fi
 
 # Count available standards for context info

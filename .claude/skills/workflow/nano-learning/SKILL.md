@@ -68,6 +68,7 @@ cleanup_after_days: 30
 | `/workflow:nano-reset` | Daten zuruecksetzen (mit Confirmation) |
 | `/workflow:review-candidates` | Interaktives Review von Evolution-Candidates |
 | `/workflow:learning-report` | Umfassender Analyse-Report |
+| `/workflow:nano-idea` | Idee sammeln fuer zukuenftige Vorschlaege |
 
 ## TOON Observation Format
 
@@ -97,6 +98,50 @@ Patterns werden erkannt wenn:
 2. User reviewt via `/workflow:review-candidates`
 3. Bei Approval → Aenderung in `orchestration.yml` oder neuer Standard
 4. Logging in `evolution-log.md` fuer Auditierbarkeit
+
+## Projektbasierte Skill-Generierung
+
+NaNo kann **projekt-spezifische Skills** automatisch vorschlagen basierend auf:
+
+| Beobachtung | Skill-Vorschlag |
+|-------------|-----------------|
+| Gleiche Dateipfade wiederholt bearbeitet | `project-structure` Skill mit Pfad-Konventionen |
+| Bestimmte Tools dominant (z.B. Docker) | Domain-spezifischer Skill (z.B. `docker-patterns`) |
+| Wiederkehrende Error-Patterns | `error-handling` Skill mit Projekt-Loesungen |
+| Agent X immer fuer Task-Type Y | Delegation-Shortcut in `orchestration.yml` |
+
+### Generierungs-Flow
+
+```
+Pattern erkannt (threshold erreicht)
+    ↓
+Candidate generiert in evolution/candidates/
+    ↓
+SessionStart zeigt: "X neue Evolution-Candidates"
+    ↓
+User: /workflow:review-candidates
+    ↓
+Approve → Guide-Agent generiert Skill/Hook
+Reject → Pattern bleibt beobachtet
+Defer → Spaeter nochmal fragen
+```
+
+### Beispiel: Projekt-Skill
+
+Wenn NaNo beobachtet dass 80% der API-Tasks `api/response-format.md` Standard brauchen:
+
+```yaml
+# Generierter evolution/candidates/api-standards-default.yml
+type: config_change
+target: orchestration.yml
+change: |
+  task_groups.backend.standards:
+    - global/tech-stack
+    - api/response-format  # NEU: immer injecten
+    - api/error-handling   # NEU: immer injecten
+reason: "80% der backend Tasks nutzen API standards"
+confidence: 0.85
+```
 
 ## Integration mit Smart-Workflow
 

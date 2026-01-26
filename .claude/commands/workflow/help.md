@@ -1,3 +1,8 @@
+---
+description: Kontextbasierte Hilfe basierend auf aktuellem Workflow-Status
+interactive: true
+---
+
 # Workflow Help
 
 Contextual help command that provides guidance based on your current workflow state.
@@ -261,7 +266,9 @@ Kern-Workflow (5 Phasen):
 
 Convenience:
   /workflow:smart-workflow    — Auto-detect + gefuehrter Flow
+  /workflow:quick             — Schneller 3-Step fuer MVPs
   /workflow:help              — Diese Hilfe (kontextbasiert)
+  /workflow:undo              — Letzte Workflow-Aenderungen rueckgaengig
 
 Standards:
   /workflow:discover-standards — Standards aus Code extrahieren
@@ -269,13 +276,18 @@ Standards:
   /workflow:inject-standards   — Standards in Prompts einfuegen
 
 NaNo Learning:
-  /workflow:homunculus-status  — Lern-Status anzeigen
+  /workflow:nano-status        — Lern-Status anzeigen
   /workflow:nano-toggle        — Learning ein/ausschalten
   /workflow:nano-config        — Einstellungen aendern
+  /workflow:nano-session       — Aktuelle Session-Beobachtungen
+  /workflow:nano-idea          — Idee fuer Verbesserungen sammeln
+  /workflow:nano-reset         — Lern-Daten zuruecksetzen
   /workflow:review-candidates  — Evolution-Candidates reviewen
+  /workflow:learning-report    — Umfassender Analyse-Report
 
 Utilities:
   /workflow:release           — Version bump + Changelog
+  /workflow:devlog            — Session-Dokumentation erstellen
   /workflow:web-setup         — Web-Services konfigurieren
   /workflow:visual-clone      — Design-Tokens extrahieren
 ```

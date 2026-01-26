@@ -1,3 +1,8 @@
+---
+description: Aktuelle Session-Beobachtungen anzeigen
+interactive: false
+---
+
 # NaNo Current Session
 
 Zeigt die Observations der aktuellen Session in menschenlesbarer Form.

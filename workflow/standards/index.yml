@@ -10,6 +10,9 @@ global:
   naming:
     description: Naming conventions for files, code identifiers, APIs, and git artifacts
     tags: [naming, convention, files, variables, endpoints]
+  toon-format:
+    description: Token-optimized notation format for context budget optimization (~40% savings)
+    tags: [toon, json, token, optimization, compression, context]
 
 devops:
   ci-cd:
@@ -41,11 +44,14 @@ cli:
 
 agents:
   agent-conventions:
-    description: Agent definition standards, permission models, skill formats
-    tags: [agent, skill, permission, orchestration]
+    description: Agent definition standards, permission models, skill formats, Agent-First enforcement
+    tags: [agent, skill, permission, orchestration, enforcement, agent-first]
   plugin-extension:
     description: Rules for adding Agents, Skills, Commands to the Engine with sync checklist
     tags: [agent, skill, command, plugin, extension, frontmatter]
+  completion-workflow:
+    description: Task completion checklist, documentation triggers, NaNo observation recording, user notification format
+    tags: [completion, verification, documentation, nano, notification, quality-gate]
 
 api:
   response-format:

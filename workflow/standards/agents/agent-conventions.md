@@ -1,5 +1,69 @@
 # Agent Convention Standards
 
+## Agent-First Enforcement
+
+Main Chat orchestriert, Agents arbeiten. Diese Trennung ist nicht optional.
+
+### Write Permission Matrix
+
+| File Pattern | Main Chat | builder | devops |
+|--------------|-----------|---------|--------|
+| `workflow/*.md` | OK | OK | OK |
+| `.claude/**/*.md` | OK | OK | - |
+| `CHANGELOG.md`, `VERSION` | OK | - | OK |
+| `src/**/*`, `lib/**/*` | BLOCK | OK | - |
+| `Dockerfile`, `*.yml` (CI) | BLOCK | - | OK |
+| Everything else | BLOCK | OK | OK |
+
+### Enforcement Modes
+
+Configure in `.claude/nano.local.md`:
+
+```yaml
+agent_first:
+  enforcement: warn  # warn | block | off
+```
+
+| Mode | Behavior |
+|------|----------|
+| `block` | PreToolUse hook rejects unauthorized writes |
+| `warn` | Log warning, allow write (default) |
+| `off` | No enforcement (development mode) |
+
+### Self-Check vor Writes
+
+Main Chat MUSS vor jedem Write/Edit fragen:
+1. Ist es `workflow/*.md` oder `.claude/**/*.md`? -> OK
+2. Ist es `CHANGELOG.md` oder `VERSION`? -> OK
+3. Alles andere -> Delegiere an builder/devops
+
+### Violation Recovery
+
+Bei versehentlichem Direct-Write:
+1. `git checkout -- {file}` um Aenderung rueckgaengig zu machen
+2. Korrekt an Agent delegieren
+3. NaNo trackt Violations fuer Pattern-Analyse
+
+## Auto-Documentation Triggers
+
+### Wann `/workflow:devlog` anbieten
+
+| Trigger | Condition |
+|---------|-----------|
+| Task-Completion | >3 Dateien geaendert in einer Orchestration |
+| Bug-Fix | builder meldet "Root Cause found" |
+| Feature-Done | Alle Tasks einer Spec auf "completed" |
+| Session-Ende | >30 Minuten aktive Arbeit |
+
+### NaNo Integration
+
+NaNo trackt automatisch:
+- Anzahl geaenderter Dateien pro Task
+- Zeit zwischen Task-Start und Completion
+- Delegation-Patterns (welcher Agent fuer welchen Task)
+
+Diese Daten informieren intelligente devlog-Suggestions.
+
 ## Agent Definition Format
 
 Every agent requires frontmatter with:

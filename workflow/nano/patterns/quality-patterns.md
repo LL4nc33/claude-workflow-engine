@@ -23,4 +23,4 @@ Erkannte Muster bei Quality Gate Ergebnissen.
 |--------|-------|
 | Total Observations | 3 |
 | Gates Tracked | 0 |
-| Last Updated | 2026-01-25T19:57:53+01:00 |
+| Last Updated | 2026-01-25T20:53:07+01:00 |

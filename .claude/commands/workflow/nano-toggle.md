@@ -1,3 +1,8 @@
+---
+description: NaNo Learning System ein/ausschalten
+interactive: true
+---
+
 # NaNo Toggle
 
 Schaltet das NaNo Learning System ein oder aus.

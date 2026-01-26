@@ -1,3 +1,8 @@
+---
+description: Schneller 3-Step Workflow fuer MVPs (Plan->Spec->Build)
+interactive: true
+---
+
 # Quick Workflow
 
 Schneller 3-Step-Workflow für MVPs und kleine Features. Konsolidiert die 5-Phase-Pipeline zu: **Plan → Spec → Build**
@@ -57,7 +62,7 @@ Erstelle basierend auf Antwort eine kompakte `quick-spec.md`:
 - {datei2.ts} - {purpose}
 ```
 
-Speichere unter: `workflow/specs/{YYYYMMDD}-quick-{slug}/quick-spec.md`
+Speichere unter: `workflow/specs/{YYYY-MM-DD-HHMM}-quick-{slug}/quick-spec.md`
 
 ### Step 2: Confirm & Delegate
 

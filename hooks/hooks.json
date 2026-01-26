@@ -1,40 +1,86 @@
 {
-  "hooks": [
-    {
-      "event": "SessionStart",
-      "command": ".claude/hooks/scripts/session-start.sh",
-      "timeout": 30000
-    },
-    {
-      "event": "PreToolUse",
-      "matcher": {
-        "tool_name": ["Write", "Edit"]
+  "description": "Claude Workflow Engine Hooks - Session management, file protection, and NaNo learning",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/scripts/session-start.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/scripts/pre-write-validate.sh",
+            "timeout": 15
+          }
+        ]
       },
-      "command": ".claude/hooks/scripts/pre-write-validate.sh",
-      "timeout": 15000
-    },
-    {
-      "event": "PostToolUse",
-      "matcher": {
-        "tool_name": ["Write", "Edit"]
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/scripts/gate-check.sh",
+            "timeout": 5
+          }
+        ]
       },
-      "command": ".claude/hooks/scripts/post-write-log.sh",
-      "timeout": 5000
-    },
-    {
-      "event": "PostToolUse",
-      "matcher": {
-        "tool_name": ["Task"]
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/scripts/pre-delegation-context.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/scripts/post-write-log.sh",
+            "timeout": 5
+          }
+        ]
       },
-      "command": ".claude/hooks/scripts/nano-observer.sh",
-      "args": ["delegation"],
-      "timeout": 3000
-    },
-    {
-      "event": "Stop",
-      "command": ".claude/hooks/scripts/nano-observer.sh",
-      "args": ["analyze"],
-      "timeout": 10000
-    }
-  ]
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/scripts/nano-observer.sh delegation",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/scripts/session-stop.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/scripts/nano-observer.sh analyze",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
 }

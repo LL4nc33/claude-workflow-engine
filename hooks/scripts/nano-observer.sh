@@ -10,6 +10,7 @@
 #   nano-observer.sh cleanup      # Manual cleanup of old observations
 #   nano-observer.sh status       # Print learning status
 #   nano-observer.sh quality      # Record quality gate result (manual call)
+#   nano-observer.sh idea         # Record an idea/insight for future suggestions
 # =============================================================================
 
 set -euo pipefail
@@ -27,6 +28,7 @@ EVOLUTION_DIR="${NANO_DIR}/evolution"
 CONFIG_FILE="${NANO_DIR}/config/pattern-rules.yml"
 LOCAL_CONFIG="${ROOT}/.claude/nano.local.md"
 AGENTS_DIR="${ROOT}/.claude/agents"
+IDEAS_DIR="${NANO_DIR}/ideas"
 
 # Session ID (stable per Claude session)
 # Priority: 1. CLAUDE_SESSION_ID env var, 2. shared file from session-start hook, 3. fallback to timestamp
@@ -279,6 +281,165 @@ EOF
   echo "Quality gate recorded: ${gate_name} = ${status}"
 }
 
+# Handle idea recording for future suggestions
+# Usage: nano-observer.sh idea <category> <content>
+# Categories: feature, optimization, pattern, tooling, workflow, other
+handle_idea() {
+  local category="${2:-other}"
+  local content="${3:-}"
+  local context="${4:-}"
+
+  # Validate category
+  case "${category}" in
+    feature|optimization|pattern|tooling|workflow|other) ;;
+    *) category="other" ;;
+  esac
+
+  # If no content provided, read from stdin (for longer ideas)
+  if [ -z "${content}" ]; then
+    content=$(timeout 2 cat 2>/dev/null) || true
+  fi
+
+  if [ -z "${content}" ]; then
+    echo "Error: No idea content provided" >&2
+    return 1
+  fi
+
+  # Write to session observations
+  local short_content
+  short_content=$(echo "${content}" | head -c 200 | tr '\n' ' ')
+  write_observation "idea" "category=${category},content=${short_content}"
+
+  # Also store full idea in dedicated ideas directory
+  mkdir -p "${IDEAS_DIR}/${category}"
+  local idea_file="${IDEAS_DIR}/${category}/$(date +%Y%m%d-%H%M%S).md"
+
+  cat > "${idea_file}" << EOF
+# Idea: ${category}
+
+**Recorded:** $(date -Iseconds)
+**Session:** ${SESSION_ID}
+**Context:** ${context:-none}
+
+## Content
+
+${content}
+
+## Status
+
+- [ ] Reviewed
+- [ ] Implemented
+- [ ] Rejected
+EOF
+
+  echo "Idea recorded: ${category} -> ${idea_file}"
+}
+
+# Analyze ideas and generate suggestions
+analyze_ideas() {
+  if [ ! -d "${IDEAS_DIR}" ]; then
+    return 0
+  fi
+
+  local total_ideas=0
+  local category_counts=""
+
+  for category in feature optimization pattern tooling workflow other; do
+    local count=0
+    if [ -d "${IDEAS_DIR}/${category}" ]; then
+      count=$(find "${IDEAS_DIR}/${category}" -name "*.md" -type f 2>/dev/null | wc -l)
+    fi
+    total_ideas=$((total_ideas + count))
+    if [ "${count}" -gt 0 ]; then
+      category_counts="${category_counts}${category}:${count} "
+    fi
+  done
+
+  if [ "${total_ideas}" -eq 0 ]; then
+    return 0
+  fi
+
+  # Generate ideas summary for patterns
+  mkdir -p "${PATTERNS_DIR}"
+  cat > "${PATTERNS_DIR}/ideas-summary.md" << EOF
+# Ideas Summary
+
+Gesammelte Ideen und Insights fuer zukuenftige Verbesserungen.
+
+## By Category
+
+$(for category in feature optimization pattern tooling workflow other; do
+  if [ -d "${IDEAS_DIR}/${category}" ]; then
+    count=$(find "${IDEAS_DIR}/${category}" -name "*.md" -type f 2>/dev/null | wc -l)
+    if [ "${count}" -gt 0 ]; then
+      echo "### ${category^} (${count})"
+      echo ""
+      # List recent ideas (last 5)
+      find "${IDEAS_DIR}/${category}" -name "*.md" -type f -printf '%T@ %p\n' 2>/dev/null | \
+        sort -rn | head -5 | while read -r _ file; do
+          title=$(grep "^# " "${file}" | head -1 | sed 's/^# //')
+          date=$(grep "^\*\*Recorded:\*\*" "${file}" | sed 's/.*: //' | cut -d'T' -f1)
+          echo "- ${date}: ${title}"
+        done
+      echo ""
+    fi
+  fi
+done)
+
+## Metrics
+
+| Metric | Value |
+|--------|-------|
+| Total Ideas | ${total_ideas} |
+| Categories | ${category_counts} |
+| Last Updated | $(date -Iseconds) |
+
+## Usage
+
+Ideen sammeln:
+\`\`\`bash
+nano-observer.sh idea feature "API sollte Rate-Limiting haben"
+nano-observer.sh idea optimization "Cache fuer Standards-Injection"
+\`\`\`
+
+Oder via Workflow:
+\`\`\`
+/workflow:nano-idea "Neue Feature-Idee hier"
+\`\`\`
+EOF
+
+  # Check for idea clusters (same category with 3+ ideas = evolution candidate)
+  for category in feature optimization pattern tooling workflow; do
+    if [ -d "${IDEAS_DIR}/${category}" ]; then
+      local count
+      count=$(find "${IDEAS_DIR}/${category}" -name "*.md" -type f 2>/dev/null | wc -l)
+      if [ "${count}" -ge 3 ]; then
+        local candidate_file="${EVOLUTION_DIR}/candidates/ideas-${category}-$(date +%Y%m%d).yml"
+        if [ ! -f "${candidate_file}" ]; then
+          mkdir -p "${EVOLUTION_DIR}/candidates"
+          cat > "${candidate_file}" << EOF
+# Evolution Candidate: Ideas Cluster
+# Generated: $(date -Iseconds)
+# Status: pending_review
+
+type: ideas_review
+category: ${category}
+confidence: medium
+source: ideas-summary
+idea_count: ${count}
+suggestion: |
+  ${count} ideas have been collected in the "${category}" category.
+  Consider reviewing and consolidating them into actionable items.
+
+ideas_path: workflow/nano/ideas/${category}/
+proposed_action: review_and_prioritize
+EOF
+        fi
+      fi
+    fi
+  done
+}
+
 # Analyze session observations and detect patterns (incremental)
 handle_analyze() {
   if [ ! -d "${OBSERVATIONS_DIR}" ]; then
@@ -295,6 +456,8 @@ handle_analyze() {
   fi
 
   if [ -z "${new_sessions}" ]; then
+    # Still analyze ideas even if no new sessions
+    analyze_ideas
     return 0
   fi
 
@@ -306,6 +469,9 @@ handle_analyze() {
 
   # --- Standards Usage Analysis ---
   analyze_standards_patterns "${CFG_THRESHOLD}"
+
+  # --- Ideas Analysis ---
+  analyze_ideas
 
   # --- Cleanup old session files ---
   cleanup_old_sessions
@@ -563,6 +729,7 @@ handle_status() {
   local standards_count=0
   local quality_count=0
   local delegation_count=0
+  local ideas_count=0
 
   if [ -d "${OBSERVATIONS_DIR}" ]; then
     obs_count=$(find "${OBSERVATIONS_DIR}" -name "session-*.toon" -type f 2>/dev/null | wc -l) || obs_count=0
@@ -572,13 +739,17 @@ handle_status() {
   fi
 
   if [ -d "${PATTERNS_DIR}" ]; then
-    pattern_count=$(grep -l "## Active Patterns" "${PATTERNS_DIR}"/*.md 2>/dev/null | \
+    pattern_count=$(grep -l "## Active Patterns\|## By Category" "${PATTERNS_DIR}"/*.md 2>/dev/null | \
       xargs grep -c "^-\|^|" 2>/dev/null | \
       awk -F: '{sum += $2} END {print sum+0}') || pattern_count=0
   fi
 
   if [ -d "${EVOLUTION_DIR}/candidates" ]; then
     candidate_count=$(find "${EVOLUTION_DIR}/candidates" -name "*.yml" -type f 2>/dev/null | wc -l) || candidate_count=0
+  fi
+
+  if [ -d "${IDEAS_DIR}" ]; then
+    ideas_count=$(find "${IDEAS_DIR}" -name "*.md" -type f 2>/dev/null | wc -l) || ideas_count=0
   fi
 
   cat << EOF
@@ -588,6 +759,7 @@ nano:
   sessions: ${obs_count}
   patterns: ${pattern_count}
   candidates: ${candidate_count}
+  ideas: ${ideas_count}
   threshold: ${CFG_THRESHOLD}
   cleanup_days: ${CFG_CLEANUP_DAYS}
   tracking:
@@ -696,6 +868,9 @@ main() {
     quality)
       handle_quality "$@"
       ;;
+    idea)
+      handle_idea "$@"
+      ;;
     analyze)
       handle_analyze
       check_evolution
@@ -707,12 +882,14 @@ main() {
       handle_status
       ;;
     *)
-      echo "Usage: nano-observer.sh {delegation|quality|analyze|cleanup|status}" >&2
+      echo "Usage: nano-observer.sh {delegation|quality|idea|analyze|cleanup|status}" >&2
       echo "" >&2
       echo "Commands:" >&2
       echo "  delegation     Record agent delegation (called by PostToolUse hook)" >&2
       echo "  quality NAME STATUS [AGENT]  Record quality gate result" >&2
       echo "                 STATUS: pass|fail|skip|warn" >&2
+      echo "  idea CATEGORY CONTENT  Record an idea for future suggestions" >&2
+      echo "                 CATEGORY: feature|optimization|pattern|tooling|workflow|other" >&2
       echo "  analyze        Analyze patterns (called by Stop hook)" >&2
       echo "  cleanup        Remove old session files" >&2
       echo "  status         Print learning status summary" >&2

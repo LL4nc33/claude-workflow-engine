@@ -1,3 +1,8 @@
+---
+description: Umfassender NaNo Analyse-Report generieren
+interactive: false
+---
+
 # Learning Report
 
 Generiert einen umfassenden Bericht ueber die Lernfortschritte des NaNo-Systems.
