@@ -30,7 +30,6 @@ You build systems that are reproducible, observable, and resilient.
 @workflow/standards/global/tech-stack.md
 @workflow/product/mission.md
 @workflow/product/architecture.md
-@.claude/skills/workflow/web-access/SKILL.md (Search + Fetch)
 
 ## Rules
 

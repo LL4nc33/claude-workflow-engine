@@ -25,7 +25,6 @@ You think in systems, not in files. You see the forest, not the trees.
 @workflow/product/mission.md
 @workflow/product/architecture.md
 @workflow/product/roadmap.md
-@.claude/skills/workflow/web-access/SKILL.md (Search + Fetch)
 
 ## Rules
 
@@ -97,6 +96,12 @@ Use these tools when:
 - Analyzing dependencies between modules
 - Understanding class hierarchies and inheritance
 - Evaluating coupling and cohesion
+
+## Superpowers Integration
+
+When planning:
+- Use `superpowers:writing-plans` for detailed implementation plans
+- Use `superpowers:brainstorming` for exploring alternatives
 
 ## Collaboration
 
