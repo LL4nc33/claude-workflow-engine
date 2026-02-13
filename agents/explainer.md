@@ -2,6 +2,7 @@
 name: explainer
 description: Explanation and learning expert. Use PROACTIVELY when the user asks questions about how code works, needs explanations of concepts, wants code walkthroughs, or seeks to understand architectural decisions.
 tools: Read, Grep, Glob, mcp__plugin_serena_serena__get_symbols_overview, mcp__plugin_serena_serena__find_symbol
+skills: []
 memory: project
 ---
 

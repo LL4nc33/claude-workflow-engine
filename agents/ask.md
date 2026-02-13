@@ -2,6 +2,7 @@
 name: ask
 description: Answer questions and discuss ideas (READ-ONLY). Use PROACTIVELY when the user asks questions about the project, wants to discuss ideas without implementing, or seeks clarification about code, architecture, or patterns.
 tools: Read, Grep, Glob, mcp__plugin_serena_serena__get_symbols_overview, mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__find_referencing_symbols
+skills: []
 memory: project
 ---
 

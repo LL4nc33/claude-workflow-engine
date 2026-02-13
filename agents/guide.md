@@ -2,6 +2,7 @@
 name: guide
 description: Process evolution and learning expert. Use PROACTIVELY when analyzing patterns, extracting standards from successful practices, reviewing evolution candidates, improving workflow efficiency, or discovering codebase conventions.
 tools: Read, Grep, Glob, mcp__plugin_serena_serena__search_for_pattern, mcp__plugin_serena_serena__get_symbols_overview
+skills: []
 memory: project
 ---
 

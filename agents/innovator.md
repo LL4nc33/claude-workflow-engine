@@ -2,6 +2,7 @@
 name: innovator
 description: Creative ideation and brainstorming expert. Use PROACTIVELY when exploring new feature ideas, generating alternative solutions, thinking outside the box, or conducting "what if" explorations. Also handles idea backlog management.
 tools: Read, Write, Grep, Glob, WebSearch, WebFetch, mcp__plugin_serena_serena__get_symbols_overview
+skills: []
 memory: project
 ---
 

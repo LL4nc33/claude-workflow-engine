@@ -252,13 +252,14 @@ new `templates/memory/` directory
 | `skills/testing-standards/` | Migrated to `.claude/rules/` |
 | `skills/agent-standards/` | Migrated to `.claude/rules/` |
 
-**Remaining skills after v0.4.1:**
+**Remaining skills after v0.4.1 (7 total):**
 - `skills/auto-delegation/` — CWE's core routing logic
 - `skills/agent-detection/` — Build-phase task routing
 - `skills/quality-gates/` — Multi-stage gate enforcement (unique to CWE)
 - `skills/project-docs/` — **NEW** Standardized documentation (Phase 7)
 - `skills/safety-gate/` — **NEW** Pre-commit safety (Phase 8)
 - `skills/git-standards/` — **NEW** Conventional commits + branch naming (Phase 9)
+- `skills/health-dashboard/` — **NEW** Project health metrics + scoring (Phase 10)
 
 **Files changed:** 10 skill directories deleted
 
