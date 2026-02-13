@@ -11,6 +11,7 @@ You MUST update documentation so the project remembers across sessions:
 
 ### Memory Updates (REQUIRED)
 - **memory/MEMORY.md** — Keep the index current (max 200 lines). Update: what changed, current state, key decisions.
+- **Today's Daily Log (memory/YYYY-MM-DD.md)** — Append entries for this session. Use `## HH:MM — Topic` format. Include: what was done, decisions, files changed.
 - **memory/decisions.md** — Log any design decisions with context, alternatives considered, and rationale.
 - **memory/patterns.md** — Record new patterns or conventions established.
 - **memory/project-context.md** — Update if tech stack, priorities, or team structure changed.
