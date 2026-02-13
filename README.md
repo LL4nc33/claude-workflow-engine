@@ -1,8 +1,23 @@
-# CWE - Claude Workflow Engine v0.4.3
+<div align="center">
+  <img src="docs/assets/cwe-header.svg" alt="Claude Workflow Engine" width="800">
 
-Natural language orchestration for spec-driven development and project lifecycle management.
+  <br><br>
 
-## Installation
+  <a href="#quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_Steps-6366f1?style=flat-square" alt="Quick Start"></a>
+  <img src="https://img.shields.io/badge/version-0.4.3-8b5cf6?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/agents-10-6366f1?style=flat-square" alt="Agents">
+  <img src="https://img.shields.io/badge/claude_code-plugin-8b5cf6?style=flat-square" alt="Claude Code Plugin">
+  <img src="https://img.shields.io/badge/license-MIT-6366f1?style=flat-square" alt="License">
+
+  <br><br>
+
+  <strong>Say what you need. CWE picks the right agent, loads the right standards, and gets it done.</strong>
+
+</div>
+
+<br>
+
+## Quick Start
 
 ```bash
 # 1. Clone the plugin
@@ -12,73 +27,220 @@ git clone https://github.com/LL4nc33/claude-workflow-engine.git
 alias cwe='claude --plugin-dir /path/to/claude-workflow-engine --dangerously-skip-permissions'
 
 # 3. Start CWE in any project
-cd your-project
-cwe
+cd your-project && cwe
+/cwe:init    # Initialize project + install plugins
 ```
 
-After adding the alias, restart your terminal or run `source ~/.bashrc`.
-
-## Quick Start
-
-```bash
-cwe               # Start CWE in current directory
-/cwe:init         # Initialize project + install plugins + MCP servers
-/cwe:start        # Guided workflow with interactive menus
-/cwe:help         # Documentation
-```
-
-Or just say what you need:
+After init, just talk naturally:
 
 ```
-"Fix the login bug"           → builder + systematic-debugging
-"Build a user profile page"   → builder + frontend-design
-"Explain how auth works"      → explainer + serena
-"What if we used GraphQL?"    → innovator + brainstorming
+"Fix the login bug"           → builder agent + systematic-debugging
+"Build a user profile page"   → builder agent + frontend-design
+"Explain how auth works"      → explainer agent + serena
+"What if we used GraphQL?"    → innovator agent + brainstorming
+"Review my changes"           → quality agent + code-reviewer
 ```
+
+<br>
 
 ## What is CWE?
 
-CWE is a **project lifecycle manager** built as a Claude Code plugin. It provides:
+CWE is a **Claude Code plugin** that turns a single AI assistant into a team of 10 specialized agents. Instead of one generic prompt handling everything, CWE automatically routes your requests to the right expert with the right context.
 
-- **10 Specialized Agents** — ask, architect, builder, devops, quality, security, researcher, explainer, innovator, guide
-- **Auto-Delegation** — describe what you need, CWE picks the right agent
-- **Spec-Driven Workflow** — Plan → Spec → Tasks → Build → Review
-- **Standards System** — `.claude/rules/` with path-scoped auto-loading + discovery
-- **Memory System** — Daily Logs + MEMORY.md index, auto-injected at session start
-- **Memory Search** — Local MCP server with semantic + keyword hybrid search (no API key)
-- **Idea Capture** — project-scoped idea observation via JSONL
+**Why not just use Claude Code directly?**
+
+| Without CWE | With CWE |
+|-------------|----------|
+| One prompt does everything | 10 specialized agents with focused expertise |
+| You manage context manually | Standards auto-loaded per file type |
+| Memory resets each session | Daily logs + semantic search across sessions |
+| No workflow structure | Plan → Spec → Tasks → Build → Review |
+| Ad-hoc quality | Quality gates block releases if thresholds fail |
+| Secrets might slip through | Pre-commit safety gate scans every commit |
+
+<br>
 
 ## 6 Core Principles
 
-1. **Agent-First** — All work delegated to specialized agents
-2. **Auto-Delegation** — Intent recognition maps requests to agents/skills
-3. **Spec-Driven** — Features: specs → tasks → implementation
-4. **Context Isolation** — Agent work returns only compact summaries
-5. **Plugin Integration** — Agents leverage installed plugin skills
-6. **Always Document** — Every change updates memory, CHANGELOG, and relevant docs
+| # | Principle | What it means |
+|---|-----------|---------------|
+| 1 | **Agent-First** | All work delegated to specialized agents — never the main context |
+| 2 | **Auto-Delegation** | Describe what you need in natural language, CWE picks the agent |
+| 3 | **Spec-Driven** | Features flow: Plan → Spec → Tasks → Build → Review |
+| 4 | **Context Isolation** | Agent work returns compact summaries, not full context |
+| 5 | **Plugin Integration** | Agents leverage skills from superpowers, serena, feature-dev |
+| 6 | **Always Document** | Every change updates memory, CHANGELOG, and relevant docs |
 
-## Commands
+<br>
+
+## 10 Specialized Agents
+
+| Agent | Identity | When to use |
+|-------|----------|-------------|
+| **builder** | The "Code Coroner" | Write code, fix bugs, implement features, refactor |
+| **architect** | The System Thinker | Design systems, write ADRs, shape feature specs |
+| **ask** | The Discussion Partner | Open questions, brainstorm approaches, think aloud |
+| **explainer** | The Patient Educator | Understand code, concepts, architectural decisions |
+| **quality** | The Quality Guardian | Run tests, check coverage, project health dashboard |
+| **security** | The Cautious Auditor | OWASP audits, secret scanning, GDPR compliance |
+| **devops** | The Infrastructure Expert | Docker, CI/CD, releases, deployment |
+| **researcher** | The Thorough Analyst | Documentation, codebase analysis, tech research |
+| **innovator** | The Idea Forge | Brainstorming, idea backlog, "what if" exploration |
+| **guide** | The Process Whisperer | Discover patterns, extract standards, improve workflow |
+
+<br>
+
+<details>
+<summary><strong>Commands</strong></summary>
 
 ### Workflow
+
 | Command | Purpose |
 |---------|---------|
-| `/cwe:init` | Initialize project + install recommended plugins |
-| `/cwe:start` | Guided workflow (phase detection) |
+| `/cwe:init` | Initialize project + install recommended plugins + MCP servers |
+| `/cwe:start` | Guided workflow with phase detection |
 | `/cwe:help` | Full documentation |
 
-### Agents
+### Agent Commands
+
 | Command | Purpose |
 |---------|---------|
 | `/cwe:ask` | Questions, discussions (READ-ONLY) |
-| `/cwe:builder` | Implementation, fixes |
-| `/cwe:architect` | Design, ADRs, spec shaping |
+| `/cwe:builder` | Implementation, fixes, refactoring |
+| `/cwe:architect` | Design, ADRs, spec shaping (Shape-Spec Interview) |
 | `/cwe:devops` | CI/CD, Docker, releases |
-| `/cwe:security` | Audits, OWASP |
-| `/cwe:researcher` | Docs, analysis |
-| `/cwe:explainer` | Explanations |
-| `/cwe:quality` | Tests, coverage |
+| `/cwe:security` | Security audits, OWASP, GDPR |
+| `/cwe:researcher` | Documentation, analysis, reports |
+| `/cwe:explainer` | Code explanations, concept walkthroughs |
+| `/cwe:quality` | Tests, coverage, health dashboard |
 | `/cwe:innovator` | Brainstorming, idea backlog (4 modes) |
-| `/cwe:guide` | Process improvement, standards discovery |
+| `/cwe:guide` | Process improvement, standards discovery + indexing |
+
+</details>
+
+<details>
+<summary><strong>How Auto-Delegation Works</strong></summary>
+
+```
+User request
+    ↓
+Explicit /command? → Execute command directly
+    ↓ no
+Plugin skill matches? → Invoke skill (priority over agents)
+    ↓ no
+CWE agent matches? → Delegate to agent
+    ↓ no
+Multi-step task? → Orchestrate with subagents
+    ↓ no
+Unclear? → Ask (max 2 questions)
+```
+
+### Intent → Agent Mapping
+
+| Keywords | Agent |
+|----------|-------|
+| implement, build, create, fix, code, feature, bug, refactor | **builder** |
+| question, discuss, think about | **ask** |
+| explain, how, what, why, understand | **explainer** |
+| test, coverage, quality, validate, metrics, gate | **quality** |
+| security, audit, vulnerability, scan, gdpr, owasp | **security** |
+| deploy, docker, ci, cd, release, kubernetes, terraform | **devops** |
+| design, architecture, adr, api, schema | **architect** |
+| analyze, document, research, compare | **researcher** |
+| brainstorm, idea, what if, alternative, explore | **innovator** |
+| workflow, process, pattern, improve, optimize | **guide** |
+
+Say **"manual"** to disable auto-delegation.
+
+</details>
+
+<details>
+<summary><strong>Workflow Phases</strong></summary>
+
+```
+  ┌─────────────────────────────────────────────────────┐
+  │                                                     │
+  │   Plan ──→ Spec ──→ Tasks ──→ Build ──→ Review     │
+  │    │         │                   │         │        │
+  │    │    Shape-Spec          Wave Exec   Quality     │
+  │    │    Interview           (parallel)   Gates      │
+  │    │                                      │         │
+  │    └──────────────────────────────────────┘         │
+  │                  next feature                       │
+  └─────────────────────────────────────────────────────┘
+```
+
+1. **Plan** — Define product vision in `workflow/product/mission.md`
+2. **Spec** — Shape-Spec Interview creates spec folder with plan, scope, references, standards
+3. **Tasks** — Break spec into implementable tasks with dependencies
+4. **Build** — Wave execution: up to 3 agents work in parallel per wave
+5. **Review** — Quality gates verify coverage, complexity, security before release
+
+</details>
+
+<details>
+<summary><strong>Memory System</strong></summary>
+
+CWE remembers across sessions through a layered memory system:
+
+| Layer | File | Purpose |
+|-------|------|---------|
+| Index | `memory/MEMORY.md` | Curated hub (max 200 lines), auto-injected at every session start |
+| Daily Logs | `memory/YYYY-MM-DD.md` | Append-only session logs, today + yesterday injected |
+| Decisions | `memory/decisions.md` | Architecture Decision Records |
+| Patterns | `memory/patterns.md` | Recognized work patterns |
+| Context | `memory/project-context.md` | Tech stack, priorities (auto-seeded at init) |
+| Ideas | `memory/ideas.md` | Curated idea backlog |
+
+**Session lifecycle:**
+- **Start** → MEMORY.md + today's log + yesterday's log injected as context
+- **Working** → Agents read/write memory files as needed
+- **Pre-Compact** → Memory saved before context compression
+- **Stop** → Daily log entry written, old logs (>30 days) cleaned up
+
+**Memory MCP Server** (v0.4.3) — Semantic + keyword hybrid search over all memory files. Local SQLite with vector embeddings, no external API required.
+
+</details>
+
+<details>
+<summary><strong>Safety &amp; Standards</strong></summary>
+
+### Pre-Commit Safety Gate
+
+Automatically scans every `git commit`, `git push`, and `git add -A`:
+
+- API keys & secrets (OpenAI, Anthropic, AWS, GitHub, Slack)
+- Private keys & certificates (.pem, .key, .pfx)
+- Hardcoded passwords & database credentials
+- Environment files (.env)
+- .gitignore completeness validation
+
+Blocked commits show the exact file and line with remediation guidance.
+
+### Git Standards
+
+Enforced via PreToolUse hooks:
+- **Conventional Commits** — `type(scope): subject` (feat, fix, chore, docs, refactor, test, perf, ci, build, revert)
+- **Branch Naming** — `feature/`, `fix/`, `hotfix/`, `chore/`, `release/`
+- **Auto Release Notes** — Generated from conventional commits via `/cwe:devops release`
+
+### Code Standards
+
+8 domain-specific rule files in `.claude/rules/`, auto-loaded by file path:
+- `global-standards.md` — Always active
+- `api-standards.md` — REST endpoints, validation
+- `frontend-standards.md` — Components, state management
+- `database-standards.md` — Migrations, queries
+- `devops-standards.md` — Docker, CI/CD
+- `testing-standards.md` — Coverage, assertions
+- `agent-standards.md` — Agent/skill authoring
+- `documentation-standards.md` — Memory updates, docs
+
+Discover new standards: `/cwe:guide discover`
+
+</details>
+
+<br>
 
 ## Plugin Dependencies
 
@@ -86,57 +248,80 @@ CWE is a **project lifecycle manager** built as a Claude Code plugin. It provide
 
 | Plugin | Level | Purpose |
 |--------|-------|---------|
-| superpowers | Required | TDD, debugging, planning |
-| serena | Recommended | Semantic code analysis |
-| feature-dev | Recommended | 7-phase feature workflow |
+| [superpowers](https://github.com/anthropics/superpowers) | Required | TDD, systematic debugging, planning, code review |
+| [serena](https://github.com/codegen-sh/serena) | Recommended | Semantic code analysis, symbol navigation |
+| [feature-dev](https://github.com/anthropics/feature-dev) | Recommended | 7-phase feature development workflow |
 
-## Project Structure (after `/cwe:init`)
+### MCP Servers
+
+| Server | Purpose |
+|--------|---------|
+| playwright | Browser testing, screenshot verification |
+| context7 | Library documentation lookup |
+| github | GitHub API integration |
+| cwe-memory | Semantic memory search (v0.4.3) |
+
+<br>
+
+## Project Structure
+
+After `/cwe:init`, your project gets:
 
 ```
 your-project/
 ├── workflow/
-│   ├── config.yml          # CWE configuration
-│   ├── ideas.md            # Curated idea backlog
+│   ├── config.yml              # CWE configuration
+│   ├── ideas.md                # Curated idea backlog
 │   ├── product/
-│   │   └── mission.md      # Product vision
-│   ├── specs/              # Feature specifications (folder per spec)
-│   └── standards/          # Project-specific standards
+│   │   └── mission.md          # Product vision
+│   ├── specs/                  # Feature specifications
+│   │   └── YYYY-MM-DD-HHMM-<slug>/
+│   │       ├── plan.md         # Implementation plan
+│   │       ├── shape.md        # Scope & decisions
+│   │       ├── references.md   # Related code & patterns
+│   │       └── standards.md    # Standards snapshot
+│   └── standards/              # Project-specific standards
 ├── memory/
-│   ├── MEMORY.md           # Index (200-line max, auto-injected at start)
-│   ├── YYYY-MM-DD.md       # Daily logs (append-only, auto-injected)
-│   ├── ideas.md            # Idea backlog summary
-│   ├── decisions.md        # Project ADRs
-│   ├── patterns.md         # Recognized work patterns
-│   └── project-context.md  # Tech stack, priorities (auto-seeded)
+│   ├── MEMORY.md               # Index (200-line max, always injected)
+│   ├── YYYY-MM-DD.md           # Daily logs
+│   ├── ideas.md                # Idea backlog summary
+│   ├── decisions.md            # Architecture Decision Records
+│   ├── patterns.md             # Recognized patterns
+│   └── project-context.md      # Tech stack (auto-seeded)
+├── docs/
+│   ├── README.md               # Project README
+│   ├── ARCHITECTURE.md         # System architecture
+│   ├── API.md                  # API documentation
+│   ├── SETUP.md                # Setup guide
+│   └── decisions/              # ADR folder
 └── .claude/
-    └── rules/              # Native Claude Code rules (paths-scoped)
+    └── rules/                  # Path-scoped standards (auto-loaded)
 ```
 
-## Workflow Phases
-
-1. **Plan** — Define product vision
-2. **Spec** — Write feature specifications (Shape-Spec Interview)
-3. **Tasks** — Break into implementable tasks
-4. **Build** — Implement with agents (parallel wave execution)
-5. **Review** — Quality verification + safety gates
+<br>
 
 ## Version History
 
-See [CHANGELOG.md](CHANGELOG.md) for full history.
-See [ROADMAP.md](ROADMAP.md) for planned features and design decisions.
+See [CHANGELOG.md](CHANGELOG.md) for full history. See [ROADMAP.md](ROADMAP.md) for planned features.
 
-- **0.4.3** (current) — Memory MCP Server: semantic + keyword hybrid search, local embeddings
-- **0.4.2** — Memory System v2: daily logs, context injection, auto-seeding
-- **0.4.1** — Native alignment, memory system, idea system v2
-- **0.4.0a** — Plugin integration, skill cleanup, roadmap
-- **0.3.1** — Simplified commands, superpowers integration
-- **0.3.0** — Plugin structure created
-- **0.2.9a** — Last CLI-focused version
+| Version | Highlights |
+|---------|-----------|
+| **0.4.3** (current) | Memory MCP Server: semantic + keyword hybrid search, local embeddings |
+| **0.4.2** | Memory System v2: daily logs, context injection, auto-seeding |
+| **0.4.1** | Native alignment: 10 agents, standards system, idea capture, safety gate |
+| **0.4.0a** | Plugin integration, skill cleanup, roadmap |
+| **0.3.1** | Simplified commands, superpowers integration |
 
-## License
+<br>
 
-MIT
+<div align="center">
 
-## Author
+## Documentation
 
-[LL4nc33](https://github.com/LL4nc33)
+[User Guide](docs/USER-GUIDE.md) | [Architecture](docs/ARCHITECTURE.md) | [Changelog](CHANGELOG.md) | [Roadmap](ROADMAP.md)
+
+<br>
+
+**License:** MIT | **Author:** [LL4nc33](https://github.com/LL4nc33)
+
+</div>

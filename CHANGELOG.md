@@ -24,6 +24,13 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `/cwe:init` now builds cwe-memory-mcp if dist/ missing (Step 1c)
 - `.mcp.json` added at plugin root for MCP server auto-discovery
 
+### Added — Documentation
+- `docs/USER-GUIDE.md`: comprehensive user documentation (~1000 lines, 15 sections)
+- `docs/assets/cwe-logo.svg`: minimalist CWE logo (indigo/violet gradient)
+- `docs/assets/cwe-header.svg`: GitHub README banner (800x200, dark-mode compatible)
+- `README.md`: complete rewrite with HTML design, SVG header, shields.io badges, collapsible sections
+- `commands/help.md`: updated to v0.4.3 with 6th principle, memory search, safety gate, git standards
+
 ---
 
 ## [0.4.2] — 2026-02-13 (Memory System v2 — Phase 1)

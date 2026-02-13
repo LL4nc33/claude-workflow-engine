@@ -10,17 +10,18 @@ Display comprehensive help for CWE and all installed plugins.
 ## Output
 
 ```markdown
-# CWE - Claude Workflow Engine v0.4.1
+# CWE - Claude Workflow Engine v0.4.3
 
 Natural language orchestration for spec-driven development.
 
-## Core Principles
+## 6 Core Principles
 
 1. **Agent-First** - All work delegated to specialized agents
 2. **Auto-Delegation** - Intent recognition maps requests to agents/skills
 3. **Spec-Driven** - Features: specs → tasks → implementation
 4. **Context Isolation** - Agent work returns only summaries
 5. **Plugin Integration** - Agents leverage installed plugin skills
+6. **Always Document** - Every change updates memory, CHANGELOG, and docs
 
 ## CWE Commands
 
@@ -36,7 +37,7 @@ Natural language orchestration for spec-driven development.
 | `/cwe:security` | Audits, OWASP |
 | `/cwe:researcher` | Docs, analysis |
 | `/cwe:explainer` | Explanations |
-| `/cwe:quality` | Tests, coverage |
+| `/cwe:quality` | Tests, coverage, health dashboard |
 | `/cwe:innovator` | Brainstorming, idea backlog (4 modes) |
 | `/cwe:guide` | Process improvement, standards discovery |
 
@@ -60,10 +61,25 @@ Just say what you need:
 ## Standards System
 
 Standards loaded automatically via `.claude/rules/` with `paths` frontmatter.
-7 domains: global, api, frontend, database, devops, testing, agent.
+8 domains: global, api, frontend, database, devops, testing, agent, documentation.
 
 - `/cwe:guide discover` — auto-discover patterns → generate rules
 - `/cwe:guide index` — regenerate `_index.yml` with keyword detection
+
+## Safety Gate
+
+Pre-commit scanning via PreToolUse hook:
+- Scans for secrets, API keys, credentials, PII
+- Validates .gitignore completeness
+- Blocks dangerous commits with remediation guidance
+- Triggers on: `git commit`, `git push`, `git add -A`
+
+## Git Standards
+
+Enforced via PreToolUse hooks:
+- **Conventional Commits** — `type(scope): subject` format
+- **Branch Naming** — `feature/`, `fix/`, `hotfix/`, `chore/`, `release/`
+- Auto-generated release notes from commit history
 
 ## Idea Capture
 
@@ -74,19 +90,21 @@ Ideas auto-captured per-project via hooks:
 
 ## Memory System
 
-Hub-and-Spoke: MEMORY.md as index, detail files on-demand.
-- `memory/ideas.md` — curated idea backlog
-- `memory/sessions.md` — session continuity log
-- `memory/decisions.md` — project ADRs
-- `memory/patterns.md` — recognized work patterns
+Daily Logs + MEMORY.md index, auto-injected at session start:
+- `memory/MEMORY.md` — Curated index (max 200 lines, always loaded)
+- `memory/YYYY-MM-DD.md` — Daily logs (today + yesterday injected)
+- `memory/decisions.md` — Project ADRs
+- `memory/patterns.md` — Recognized work patterns
+- `memory/project-context.md` — Tech stack, priorities (auto-seeded)
+- Memory MCP Server — Semantic + keyword hybrid search (local, no API key)
 
 ## Workflow Phases
 
 1. **Plan** - `workflow/product/mission.md`
-2. **Spec** - `workflow/specs/<feature>/`
-3. **Tasks** - Break into tasks
-4. **Build** - Implement with agents
-5. **Review** - Quality verification
+2. **Spec** - `workflow/specs/<feature>/` (Shape-Spec Interview)
+3. **Tasks** - Break into implementable tasks
+4. **Build** - Implement with agents (parallel wave execution)
+5. **Review** - Quality gates + safety verification
 
 ## Quick Start
 
