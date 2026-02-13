@@ -76,6 +76,13 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Quality agent: health dashboard integration
 - Guide agent: health insights for process improvement suggestions
 
+### Added — Always Document Principle
+- 6th Core Principle: "Always Document" — every change updates memory, CHANGELOG, docs
+- `.claude/rules/documentation-standards.md`: always-active rule with documentation checklist
+- Stop hook (prompt-based): forces memory/MEMORY.md + sessions.md update before session end
+- PreCompact hook (prompt-based): forces memory save before context compaction
+- MCP server installation in `/cwe:init` (playwright, context7, github, filesystem, sequential-thinking)
+
 ---
 
 ## [0.4.0a] — 2025-02-13
