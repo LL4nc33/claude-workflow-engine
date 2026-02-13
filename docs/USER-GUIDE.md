@@ -1241,6 +1241,7 @@ your-project/
 │       └── README.md           # Erklärung
 ├── memory/
 │   ├── MEMORY.md               # Index (auto-seeded)
+│   ├── YYYY-MM-DD.md           # Daily Logs (auto-created)
 │   ├── ideas.md                # Ideen-Übersicht
 │   ├── decisions.md            # ADRs
 │   ├── patterns.md             # Erkannte Muster
@@ -1253,10 +1254,7 @@ your-project/
 │   ├── DEVLOG.md               # Developer Journal
 │   └── decisions/
 │       └── _template.md        # ADR-Vorlage
-├── VERSION                     # z.B. "0.1.0"
-├── CHANGELOG.md                # Keep-a-Changelog Format
-└── .claude/
-    └── rules/                  # Standards (aus CWE kopiert)
+└── VERSION                     # z.B. "0.1.0"
 ```
 
 ---

@@ -269,33 +269,28 @@ After `/cwe:init`, your project gets:
 
 ```
 your-project/
+├── VERSION                     # Single source of truth (semver)
 ├── workflow/
 │   ├── config.yml              # CWE configuration
 │   ├── ideas.md                # Curated idea backlog
 │   ├── product/
 │   │   └── mission.md          # Product vision
-│   ├── specs/                  # Feature specifications
-│   │   └── YYYY-MM-DD-HHMM-<slug>/
-│   │       ├── plan.md         # Implementation plan
-│   │       ├── shape.md        # Scope & decisions
-│   │       ├── references.md   # Related code & patterns
-│   │       └── standards.md    # Standards snapshot
+│   ├── specs/                  # Feature specifications (created per feature)
 │   └── standards/              # Project-specific standards
 ├── memory/
 │   ├── MEMORY.md               # Index (200-line max, always injected)
-│   ├── YYYY-MM-DD.md           # Daily logs
+│   ├── YYYY-MM-DD.md           # Daily logs (auto-created)
 │   ├── ideas.md                # Idea backlog summary
 │   ├── decisions.md            # Architecture Decision Records
 │   ├── patterns.md             # Recognized patterns
 │   └── project-context.md      # Tech stack (auto-seeded)
-├── docs/
-│   ├── README.md               # Project README
-│   ├── ARCHITECTURE.md         # System architecture
-│   ├── API.md                  # API documentation
-│   ├── SETUP.md                # Setup guide
-│   └── decisions/              # ADR folder
-└── .claude/
-    └── rules/                  # Path-scoped standards (auto-loaded)
+└── docs/
+    ├── README.md               # Project README
+    ├── ARCHITECTURE.md         # System architecture
+    ├── API.md                  # API documentation
+    ├── SETUP.md                # Setup guide
+    ├── DEVLOG.md               # Developer journal
+    └── decisions/              # ADR folder
 ```
 
 <br>
