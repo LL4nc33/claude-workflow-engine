@@ -9,13 +9,25 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased] — v0.4.1 (Native Alignment Release)
 
-### Planned — Native Alignment
-- CLAUDE.md radical slim-down (~230 → ~80 lines)
-- Standards migration from Skills to `.claude/rules/` with `paths` frontmatter
-- Agent frontmatter modernization (`skills:`, `hooks:`, `memory:` fields)
-- Memory system (ideas, sessions, decisions via native `memory/`)
-- Delete 10 redundant skills
-- Hooks modernization (JSONL ideas, session logging, SubagentStop)
+### Changed — Native Alignment (Phase 1-3)
+- CLAUDE.md radical slim-down (~230 → ~72 lines)
+- Standards migration from Skills to `.claude/rules/` with `paths` frontmatter (YAML list format)
+- Agent frontmatter modernization (`skills:`, `memory: project` fields)
+- 10 redundant skills deleted (7 standards + cwe-principles + planning + mcp-usage)
+- Rules paths format fixed: comma-separated string → YAML list (per Claude Code docs)
+
+### Changed — Memory & Idea System (Phase 4)
+- Idea system v2: project-scoped via `$CLAUDE_PROJECT_DIR`, JSONL format
+- idea-observer.sh: writes to `~/.claude/cwe/ideas/<project-slug>.jsonl`
+- idea-flush.sh: counts only current project's ideas
+- session-start.sh: reads memory/sessions.md for resume context, shows idea count
+- session-stop.sh: logs sessions to memory/sessions.md, keeps last 50
+- Migration: old `.toon` → per-project JSONL on first run
+- Memory templates: MEMORY.md, ideas.md, sessions.md, decisions.md, patterns.md, project-context.md
+- commands/innovator.md: 4 modes (default/all/review/develop)
+- plugin.json: version bumped to 0.4.1
+
+### Planned — Project Lifecycle Management
 
 ### Planned — Project Lifecycle Management
 - Standardized `docs/` structure (README, ARCHITECTURE, API, SETUP, decisions/)

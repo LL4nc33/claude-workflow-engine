@@ -1,7 +1,7 @@
 {
   "name": "cwe",
-  "version": "0.4.0a",
-  "description": "Claude Workflow Engine - Natural language orchestration for spec-driven development with 10 specialized agents. Full plugin integration (superpowers, serena, feature-dev, frontend-design, code-simplifier, claude-md-management, plugin-dev).",
+  "version": "0.4.1",
+  "description": "Claude Workflow Engine - Natural language orchestration for spec-driven development with 10 specialized agents.",
   "author": {
     "name": "LL4nc33",
     "url": "https://github.com/LL4nc33"

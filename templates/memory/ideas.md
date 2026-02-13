@@ -3,7 +3,6 @@
 Curated ideas for this project. Raw observations in `~/.claude/cwe/ideas/{{project-slug}}.jsonl`.
 
 ## Status Legend
-
 - **new** — Just captured, not yet reviewed
 - **exploring** — Being discussed/developed
 - **planned** — Approved for implementation

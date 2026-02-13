@@ -59,7 +59,7 @@ Auto-captured via UserPromptSubmit hook when these keywords appear:
 idea, what if, could we, maybe, alternative, improvement,
 idee, was wäre wenn, könnte man, vielleicht, alternativ, verbesserung
 
-Stored in `~/.claude/cwe/idea-observations.toon` → Review with `/cwe:innovator`
+Stored per-project in `~/.claude/cwe/ideas/<project-slug>.jsonl` → Review with `/cwe:innovator`
 
 ---
 
