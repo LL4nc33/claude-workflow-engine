@@ -168,6 +168,72 @@ Copy templates from `${CLAUDE_PLUGIN_ROOT}/templates/memory/` for all memory fil
 Copy templates from `${CLAUDE_PLUGIN_ROOT}/templates/docs/` for all docs files.
 Copy `${CLAUDE_PLUGIN_ROOT}/templates/docs/VERSION` to project root.
 
+## Step 3b: Auto-Seed Project Memory
+
+After creating the memory structure, detect the project's tech stack and populate memory files.
+
+### Tech-Stack Detection
+
+Check for these files in the project root:
+
+| File | Stack |
+|------|-------|
+| `package.json` | Node.js — read `dependencies`/`devDependencies` for framework (React, Vue, Next.js, Express, etc.) |
+| `tsconfig.json` | TypeScript (additional to package.json) |
+| `Cargo.toml` | Rust — read `[dependencies]` for key crates |
+| `go.mod` | Go — read module name |
+| `pyproject.toml` | Python — read `[project.dependencies]` or `[tool.poetry.dependencies]` |
+| `requirements.txt` | Python — list major packages |
+| `composer.json` | PHP — read `require` for framework (Laravel, Symfony, etc.) |
+| `Gemfile` | Ruby — read gems for framework (Rails, Sinatra, etc.) |
+| `pom.xml` | Java — read dependencies |
+| `build.gradle` / `build.gradle.kts` | Java/Kotlin — read dependencies |
+| `Dockerfile` | Docker — note presence |
+| `.github/workflows/` | GitHub Actions CI — note presence |
+
+### Populate memory/project-context.md
+
+Replace the `(not configured)` placeholders with detected values:
+
+```markdown
+# Project Context
+
+## Tech Stack
+- Language: [detected language(s)]
+- Framework: [detected framework(s)]
+- Build: [detected build tool]
+- CI: [detected if present]
+
+## Current Phase
+init
+
+## Priorities
+(not set — update after /cwe:start)
+
+## Team
+(not set)
+```
+
+### Populate memory/MEMORY.md
+
+Replace template placeholders:
+- `{{project-name}}` → actual directory name
+- `Stack: (not configured)` → detected tech stack summary
+- `Phase: init` → `Phase: init (just initialized)`
+
+### Create first daily log
+
+Create `memory/YYYY-MM-DD.md` (using today's date) with:
+
+```markdown
+# YYYY-MM-DD
+
+## HH:MM — Project Initialized
+- CWE initialized with /cwe:init
+- Stack: [detected tech stack]
+- Phase: init
+```
+
 **VERSION file rules:**
 - Plain text, single line, semver (e.g. `0.1.0`)
 - ALL other version references (plugin.json, package.json, CHANGELOG, README) read from here
