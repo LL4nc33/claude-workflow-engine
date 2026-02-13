@@ -1,12 +1,19 @@
 # CWE Roadmap
 
-## Completed: v0.4.0a → v0.4.2
+## Completed: v0.4.0a → v0.4.3
+
+### v0.4.3 — Memory MCP Server (Phase 2)
+- `cwe-memory-mcp/`: local MCP server with semantic + keyword hybrid search
+- Transformers.js `all-MiniLM-L6-v2` (384 dim, local, no API key)
+- SQLite + sqlite-vec (vector KNN) + FTS5 (BM25)
+- 4 MCP tools: memory_search, memory_get, memory_write, memory_status
+- chokidar file watcher with debounced auto-reindex
+- Plugin-bundled via `.mcp.json`
 
 ### v0.4.2 — Memory System v2 (Phase 1)
 - Daily Logs (`memory/YYYY-MM-DD.md`) replace sessions.md
 - Context Injection: session-start.sh reads MEMORY.md + today + yesterday
 - Auto-Seeding: `/cwe:init` detects tech stack
-- Phase 2 (v0.4.3): CWE Memory MCP Server with vector search
 
 ### v0.4.1 — Native Alignment (all 10 phases)
 

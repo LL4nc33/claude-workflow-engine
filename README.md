@@ -1,4 +1,4 @@
-# CWE - Claude Workflow Engine v0.4.2
+# CWE - Claude Workflow Engine v0.4.3
 
 Natural language orchestration for spec-driven development and project lifecycle management.
 
@@ -45,6 +45,7 @@ CWE is a **project lifecycle manager** built as a Claude Code plugin. It provide
 - **Spec-Driven Workflow** — Plan → Spec → Tasks → Build → Review
 - **Standards System** — `.claude/rules/` with path-scoped auto-loading + discovery
 - **Memory System** — Daily Logs + MEMORY.md index, auto-injected at session start
+- **Memory Search** — Local MCP server with semantic + keyword hybrid search (no API key)
 - **Idea Capture** — project-scoped idea observation via JSONL
 
 ## 6 Core Principles
@@ -124,7 +125,8 @@ your-project/
 See [CHANGELOG.md](CHANGELOG.md) for full history.
 See [ROADMAP.md](ROADMAP.md) for planned features and design decisions.
 
-- **0.4.2** (current) — Memory System v2: daily logs, context injection, auto-seeding
+- **0.4.3** (current) — Memory MCP Server: semantic + keyword hybrid search, local embeddings
+- **0.4.2** — Memory System v2: daily logs, context injection, auto-seeding
 - **0.4.1** — Native alignment, memory system, idea system v2
 - **0.4.0a** — Plugin integration, skill cleanup, roadmap
 - **0.3.1** — Simplified commands, superpowers integration

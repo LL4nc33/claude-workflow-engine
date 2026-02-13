@@ -7,6 +7,25 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.4.3] — 2026-02-13 (Memory MCP Server — Phase 2)
+
+### Added — CWE Memory MCP Server
+- `cwe-memory-mcp/`: local MCP server for semantic + keyword memory search
+- Hybrid search: 70% vector (sqlite-vec, cosine) + 30% BM25 (FTS5)
+- Local embeddings: Transformers.js `all-MiniLM-L6-v2` (384 dim, ~80MB, no API key)
+- 4 MCP tools: `memory_search`, `memory_get`, `memory_write`, `memory_status`
+- Markdown chunker: ~400 tokens, 80 token overlap, paragraph/sentence splitting
+- chokidar file watcher: debounced 2s auto-reindex on file changes
+- SQLite store: better-sqlite3 + sqlite-vec + FTS5, WAL mode
+- Graceful fallback: BM25-only if sqlite-vec or model fails to load
+- Plugin-bundled via `.mcp.json` — auto-starts with CWE plugin
+
+### Changed
+- `/cwe:init` now builds cwe-memory-mcp if dist/ missing (Step 1c)
+- `.mcp.json` added at plugin root for MCP server auto-discovery
+
+---
+
 ## [0.4.2] — 2026-02-13 (Memory System v2 — Phase 1)
 
 ### Added — Daily Logs
