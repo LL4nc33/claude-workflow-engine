@@ -19,8 +19,9 @@ Eliminate duplication, leverage native primitives, focus on what CWE uniquely pr
 
 ---
 
-### Phase 1: CLAUDE.md Radical Slim-Down
+### Phase 1: CLAUDE.md Radical Slim-Down ✅
 
+**Status:** Completed — 231 → 72 lines.
 **Goal:** ~230 lines → ~80 lines. Stop duplicating what Progressive Disclosure handles.
 
 | Remove | Reason |
@@ -42,8 +43,9 @@ Eliminate duplication, leverage native primitives, focus on what CWE uniquely pr
 
 ---
 
-### Phase 2: Standards System Overhaul (inspired by Agent-OS)
+### Phase 2: Standards System Overhaul (inspired by Agent-OS) ✅
 
+**Status:** Completed — 7 rules + _index.yml created, paths format fixed to YAML list.
 **Goal:** Migrate to `.claude/rules/`, add Discovery + Indexing (Agent-OS' best features).
 
 #### 2a: Standards Migration
@@ -98,8 +100,9 @@ guide agent updated, auto-delegation skill updated, `/cwe:init` updated
 
 ---
 
-### Phase 3: Agent Frontmatter Modernization
+### Phase 3: Agent Frontmatter Modernization ✅
 
+**Status:** Completed — all 10 agents updated with skills: and memory: project.
 **Goal:** Use Claude Code v2.1.x frontmatter fields. Remove prose-based plugin references.
 
 Add to each agent:
@@ -117,8 +120,9 @@ Remove from each agent:
 
 ---
 
-### Phase 4: Memory & Idea System Overhaul
+### Phase 4: Memory & Idea System Overhaul ✅
 
+**Status:** Completed — JSONL per-project, Hub-and-Spoke memory, session logging, .toon migration.
 **Goal:** Replace custom persistence (.toon, hooks) with Claude Code's native memory.
 Fix critical bug: ideas are currently global, not project-scoped (40+ ideas shown in every project).
 
@@ -230,8 +234,9 @@ new `templates/memory/` directory
 
 ---
 
-### Phase 5: Delete Redundant Skills
+### Phase 5: Delete Redundant Skills ✅
 
+**Status:** Completed — 10 skills deleted, 3 remain (auto-delegation, agent-detection, quality-gates).
 **Goal:** Remove skills that duplicate Claude Code native capabilities.
 
 | Skill | Reason for Deletion |
@@ -259,8 +264,10 @@ new `templates/memory/` directory
 
 ---
 
-### Phase 6: Hooks Modernization
+### Phase 6: Hooks Modernization ✅
 
+**Status:** Completed — SubagentStop hook added, all 4 existing hooks modernized in Phase 4.
+PreToolUse hooks for Safety Gate (Phase 8) and Git Standards (Phase 9) prepared but not yet implemented.
 **Goal:** Leverage new hook events, frontmatter hooks, and memory integration.
 
 | Hook | Change |
@@ -559,18 +566,18 @@ Auto-generate `CODEOWNERS` from git history:
 
 ## Phase Summary & Priority
 
-| Phase | Name | Priority | Complexity | Impact |
-|-------|------|----------|------------|--------|
-| 1 | CLAUDE.md slim-down | 🔴 Critical | Low | High (token savings) |
-| 2 | Standards overhaul + Discovery + Index | 🔴 Critical | High | Very High (Agent-OS best features) |
-| 3 | Agent modernization | 🔴 Critical | Medium | High (features) |
-| 4 | Memory & Idea System overhaul | 🟡 High | Medium | High (project-scoped fix) |
-| 5 | Delete redundant skills | 🟡 High | Low | Medium (cleanup) |
-| 6 | Hooks modernization | 🟡 High | Medium | Medium (foundation) |
-| 7 | Spec system + Project docs | 🔴 Critical | High | Very High (spec-driven core) |
-| 8 | Safety gate | 🔴 Critical | Medium | Very High (security) |
-| 9 | Git standards | 🟡 High | Medium | High (consistency) |
-| 10 | Health dashboard | 🟢 Medium | High | High (visibility) |
+| Phase | Name | Status | Impact |
+|-------|------|--------|--------|
+| 1 | CLAUDE.md slim-down | ✅ Done | High (token savings) |
+| 2 | Standards overhaul + Discovery + Index | ✅ Done | Very High (Agent-OS best features) |
+| 3 | Agent modernization | ✅ Done | High (features) |
+| 4 | Memory & Idea System overhaul | ✅ Done | High (project-scoped fix) |
+| 5 | Delete redundant skills | ✅ Done | Medium (cleanup) |
+| 6 | Hooks modernization | ✅ Done | Medium (foundation) |
+| 7 | Spec system + Project docs | 🔜 Next | Very High (spec-driven core) |
+| 8 | Safety gate | 🔜 Next | Very High (security) |
+| 9 | Git standards | ⏳ Planned | High (consistency) |
+| 10 | Health dashboard | ⏳ Planned | High (visibility) |
 
 ---
 

@@ -68,7 +68,7 @@ Create the following structure:
 workflow/
 ├── README.md              # Overview of workflow system
 ├── config.yml             # Project configuration
-├── ideas.md               # Ideas backlog for future development
+├── ideas.md               # Curated ideas backlog (per-project)
 ├── product/
 │   ├── README.md          # What goes here
 │   └── mission.md         # Product vision template
@@ -76,7 +76,17 @@ workflow/
 │   └── README.md          # How to write specs
 └── standards/
     └── README.md          # Project-specific standards (optional)
+
+memory/
+├── MEMORY.md              # Index (200-line max, Hub-and-Spoke)
+├── ideas.md               # Curated idea backlog
+├── sessions.md            # Session continuity log
+├── decisions.md           # Project ADRs
+├── patterns.md            # Recognized work patterns
+└── project-context.md     # Tech stack, priorities
 ```
+
+Copy templates from `${CLAUDE_PLUGIN_ROOT}/templates/memory/` for all memory files.
 
 ## File contents
 
@@ -124,14 +134,14 @@ workflow:
 ```markdown
 # Ideas Backlog
 
-Collected ideas for future development.
+Curated ideas for this project. Raw observations in `~/.claude/cwe/ideas/<project-slug>.jsonl`.
 
 ## Status Legend
 
-- **new** - Just captured, not yet reviewed
-- **exploring** - Being discussed/developed
-- **planned** - Approved for implementation
-- **rejected** - Decided against
+- **new** — Just captured, not yet reviewed
+- **exploring** — Being discussed/developed
+- **planned** — Approved for implementation
+- **rejected** — Decided against
 
 ---
 
@@ -202,19 +212,16 @@ Run `/cwe:start` and follow the guided workflow.
 
 Add project-specific coding standards here.
 
-CWE includes built-in standards for common patterns. Add files here only for project-specific conventions.
+CWE loads built-in standards automatically via `.claude/rules/` with `paths` frontmatter.
+7 domains: global, api, frontend, database, devops, testing, agent.
 
-## Built-in Standards (via Skills)
-
-- API design patterns
-- Database conventions
-- Testing practices
-- Frontend components
-- Agent conventions
+Use `/cwe:guide discover` to auto-discover patterns from your codebase.
+Use `/cwe:guide index` to regenerate the standards index.
 
 ## Adding Custom Standards
 
-Create `your-standard.md` with clear rules and examples.
+Create `.claude/rules/your-standard.md` with `paths:` frontmatter for auto-loading.
+Or add to `workflow/standards/` for project-specific conventions.
 ```
 
 ## Step 4: Success message
@@ -237,6 +244,13 @@ Workflow structure created:
   ├── ideas.md
   ├── product/mission.md
   └── specs/
+
+Memory structure created:
+  memory/
+  ├── MEMORY.md (index)
+  ├── ideas.md, sessions.md
+  ├── decisions.md, patterns.md
+  └── project-context.md
 
 Next steps:
 1. Edit workflow/product/mission.md with your product vision

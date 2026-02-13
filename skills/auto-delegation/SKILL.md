@@ -72,17 +72,18 @@ Plugin skills take priority over agent routing when matched.
 
 ## Context Injection (Automatic)
 
-When delegating, relevant standards are auto-injected:
+Standards are auto-loaded via `.claude/rules/` with `paths` frontmatter.
+The `_index.yml` maps standards to both file paths AND task keywords.
 
-| Task Type | Injected Context |
-|-----------|------------------|
-| **All** | global/tech-stack (always) |
-| **auth/login/jwt** | api/error-handling |
-| **api/endpoint** | api/response-format, api/error-handling |
-| **database/migration** | database/migrations, global/naming |
-| **component/ui** | frontend/components |
-| **test/coverage** | testing/coverage |
-| **docker/deploy** | devops/ci-cd, devops/containerization |
+| Task Keywords | Rules Loaded |
+|---------------|-------------|
+| **All files** | `.claude/rules/global-standards.md` (always) |
+| **api, endpoint, REST** | `.claude/rules/api-standards.md` |
+| **component, UI, frontend** | `.claude/rules/frontend-standards.md` |
+| **migration, schema, database** | `.claude/rules/database-standards.md` |
+| **docker, deploy, CI/CD** | `.claude/rules/devops-standards.md` |
+| **test, coverage, TDD** | `.claude/rules/testing-standards.md` |
+| **agent, skill, hook** | `.claude/rules/agent-standards.md` |
 
 ## Rules
 

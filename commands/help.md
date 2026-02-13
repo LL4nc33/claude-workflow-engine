@@ -10,7 +10,7 @@ Display comprehensive help for CWE and all installed plugins.
 ## Output
 
 ```markdown
-# CWE - Claude Workflow Engine v0.4.0a
+# CWE - Claude Workflow Engine v0.4.1
 
 Natural language orchestration for spec-driven development.
 
@@ -31,25 +31,14 @@ Natural language orchestration for spec-driven development.
 | `/cwe:help` | This help |
 | `/cwe:ask` | Questions, discussions (READ-ONLY) |
 | `/cwe:builder` | Implementation, fixes |
-| `/cwe:architect` | Design, ADRs |
-| `/cwe:devops` | CI/CD, Docker |
+| `/cwe:architect` | Design, ADRs, spec shaping |
+| `/cwe:devops` | CI/CD, Docker, releases |
 | `/cwe:security` | Audits, OWASP |
 | `/cwe:researcher` | Docs, analysis |
 | `/cwe:explainer` | Explanations |
 | `/cwe:quality` | Tests, coverage |
-| `/cwe:innovator` | Brainstorming, idea backlog |
-| `/cwe:guide` | Process improvement |
-
-## Plugin Commands
-
-| Command | Plugin | Purpose |
-|---------|--------|---------|
-| `/feature-dev` | feature-dev | 7-phase feature workflow |
-| `/create-plugin` | plugin-dev | Plugin creation |
-| `/revise-claude-md` | claude-md-management | Update CLAUDE.md |
-| `/brainstorm` | superpowers | Creative ideation |
-| `/write-plan` | superpowers | Implementation planning |
-| `/execute-plan` | superpowers | Execute plans |
+| `/cwe:innovator` | Brainstorming, idea backlog (4 modes) |
+| `/cwe:guide` | Process improvement, standards discovery |
 
 ## Auto-Delegation
 
@@ -68,68 +57,40 @@ Just say what you need:
 
 **Override:** Say "manual" to disable.
 
-## Installed Plugins
+## Standards System
 
-### superpowers (v4.1.1)
-| Skill | When to Use |
-|-------|-------------|
-| `brainstorming` | Before creative work |
-| `test-driven-development` | Implementing features |
-| `systematic-debugging` | Bugs, test failures |
-| `verification-before-completion` | Before claiming done |
-| `writing-plans` | Multi-step tasks |
-| `requesting-code-review` | After features |
+Standards loaded automatically via `.claude/rules/` with `paths` frontmatter.
+7 domains: global, api, frontend, database, devops, testing, agent.
 
-### serena (MCP)
-Semantic code analysis: `find_symbol`, `find_referencing_symbols`, `get_symbols_overview`, `replace_symbol_body`
+- `/cwe:guide discover` — auto-discover patterns → generate rules
+- `/cwe:guide index` — regenerate `_index.yml` with keyword detection
 
-### feature-dev
-`/feature-dev` command + agents: `code-explorer`, `code-architect`, `code-reviewer`
+## Idea Capture
 
-### frontend-design
-`frontend-design` skill for production-grade UI
+Ideas auto-captured per-project via hooks:
+- Keywords: idea, what if, could we, alternative, improvement
+- Stored: `~/.claude/cwe/ideas/<project-slug>.jsonl`
+- Review: `/cwe:innovator` (default | all | review | develop)
 
-### code-simplifier
-`code-simplifier` agent for refactoring
+## Memory System
 
-### claude-md-management
-`/revise-claude-md` + `claude-md-improver` skill
-
-### plugin-dev
-`/create-plugin` + skills: command, skill, hook, agent, mcp development
+Hub-and-Spoke: MEMORY.md as index, detail files on-demand.
+- `memory/ideas.md` — curated idea backlog
+- `memory/sessions.md` — session continuity log
+- `memory/decisions.md` — project ADRs
+- `memory/patterns.md` — recognized work patterns
 
 ## Workflow Phases
 
 1. **Plan** - `workflow/product/mission.md`
-2. **Spec** - `workflow/specs/<feature>/spec.md`
+2. **Spec** - `workflow/specs/<feature>/`
 3. **Tasks** - Break into tasks
 4. **Build** - Implement with agents
 5. **Review** - Quality verification
 
-## Idea Capture
-
-Ideas auto-captured via hooks:
-- Keywords: idea, what if, could we, alternative, improvement
-- Review with `/cwe:innovator`
-- Stored in `workflow/ideas.md`
-
 ## Quick Start
 
-1. `/cwe:init` - Set up project + install recommended plugins
+1. `/cwe:init` - Set up project
 2. Edit `workflow/product/mission.md`
 3. `/cwe:start` - Begin guided workflow
-
-## Plugin Dependencies
-
-`/cwe:init` automatically checks and offers to install:
-
-| Plugin | Level |
-|--------|-------|
-| superpowers | Required |
-| serena | Recommended |
-| feature-dev | Recommended |
-| frontend-design | Optional |
-| code-simplifier | Optional |
-| claude-md-management | Optional |
-| plugin-dev | Optional |
 ```

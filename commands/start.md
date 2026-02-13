@@ -32,16 +32,18 @@ Options:
 
 Use AskUserQuestion:
 ```
-Question: "Ready to write your first feature spec. What type?"
-Header: "Feature Type"
+Question: "Ready to write your first feature spec. What approach?"
+Header: "Spec Approach"
 Options:
-  1. "New feature" - Create from scratch
-  2. "Bug fix" - Create fix spec
-  3. "Refactoring" - Create refactor spec
-  4. "Integration" - External system integration
+  1. "Shape-Spec Interview" - Guided interview via /cwe:architect shape (Recommended)
+  2. "Quick spec" - Create minimal spec from scratch
+  3. "Bug fix spec" - Create fix spec
+  4. "Refactoring spec" - Create refactor spec
 ```
 
-Then ask:
+If "Shape-Spec Interview": delegate to architect agent with `shape` argument.
+
+If quick/bug/refactor, ask:
 ```
 Question: "Describe the feature in a few words:"
 Header: "Feature"
@@ -51,6 +53,9 @@ Options:
   3. "UI component"
 ```
 (User can type custom via "Other")
+
+Spec folders use structure: `workflow/specs/YYYY-MM-DD-HHMM-<slug>/`
+containing: plan.md, shape.md, references.md, standards.md
 
 ### 4. Spec exists but no tasks.md
 -> Phase: **Tasks**

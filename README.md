@@ -1,4 +1,4 @@
-# CWE - Claude Workflow Engine v0.4.0a
+# CWE - Claude Workflow Engine v0.4.1
 
 Natural language orchestration for spec-driven development and project lifecycle management.
 
@@ -34,8 +34,9 @@ CWE is a **project lifecycle manager** built as a Claude Code plugin. It provide
 - **10 Specialized Agents** — ask, architect, builder, devops, quality, security, researcher, explainer, innovator, guide
 - **Auto-Delegation** — describe what you need, CWE picks the right agent
 - **Spec-Driven Workflow** — Plan → Spec → Tasks → Build → Review
-- **Project Standards** — consistent docs, safety gates, git conventions
-- **Plugin Orchestration** — coordinates superpowers, serena, feature-dev, and more
+- **Standards System** — `.claude/rules/` with path-scoped auto-loading + discovery
+- **Memory System** — Hub-and-Spoke: MEMORY.md index + on-demand detail files
+- **Idea Capture** — project-scoped idea observation via JSONL
 
 ## 5 Core Principles
 
@@ -59,14 +60,14 @@ CWE is a **project lifecycle manager** built as a Claude Code plugin. It provide
 |---------|---------|
 | `/cwe:ask` | Questions, discussions (READ-ONLY) |
 | `/cwe:builder` | Implementation, fixes |
-| `/cwe:architect` | Design, ADRs |
+| `/cwe:architect` | Design, ADRs, spec shaping |
 | `/cwe:devops` | CI/CD, Docker, releases |
 | `/cwe:security` | Audits, OWASP |
 | `/cwe:researcher` | Docs, analysis |
 | `/cwe:explainer` | Explanations |
 | `/cwe:quality` | Tests, coverage |
-| `/cwe:innovator` | Brainstorming, idea backlog |
-| `/cwe:guide` | Process improvement |
+| `/cwe:innovator` | Brainstorming, idea backlog (4 modes) |
+| `/cwe:guide` | Process improvement, standards discovery |
 
 ## Plugin Dependencies
 
@@ -82,22 +83,20 @@ CWE is a **project lifecycle manager** built as a Claude Code plugin. It provide
 
 ```
 your-project/
-├── VERSION                 # Single Source of Truth for version
-├── CHANGELOG.md            # Keep-a-Changelog format
-├── DEVLOG.md               # Developer journal
-├── docs/
-│   ├── README.md           # Auto-generated project overview
-│   ├── ARCHITECTURE.md     # System design
-│   ├── API.md              # Endpoint documentation
-│   ├── SETUP.md            # Installation guide
-│   └── decisions/          # Architecture Decision Records
 ├── workflow/
 │   ├── config.yml          # CWE configuration
-│   ├── ideas.md            # Idea backlog
+│   ├── ideas.md            # Curated idea backlog
 │   ├── product/
 │   │   └── mission.md      # Product vision
-│   ├── specs/              # Feature specifications
+│   ├── specs/              # Feature specifications (folder per spec)
 │   └── standards/          # Project-specific standards
+├── memory/
+│   ├── MEMORY.md           # Index (200-line max, Hub-and-Spoke)
+│   ├── ideas.md            # Idea backlog summary
+│   ├── sessions.md         # Session continuity log
+│   ├── decisions.md        # Project ADRs
+│   ├── patterns.md         # Recognized work patterns
+│   └── project-context.md  # Tech stack, priorities
 └── .claude/
     └── rules/              # Native Claude Code rules (paths-scoped)
 ```
@@ -105,7 +104,7 @@ your-project/
 ## Workflow Phases
 
 1. **Plan** — Define product vision
-2. **Spec** — Write feature specifications
+2. **Spec** — Write feature specifications (Shape-Spec Interview)
 3. **Tasks** — Break into implementable tasks
 4. **Build** — Implement with agents (parallel wave execution)
 5. **Review** — Quality verification + safety gates
@@ -115,7 +114,7 @@ your-project/
 See [CHANGELOG.md](CHANGELOG.md) for full history.
 See [ROADMAP.md](ROADMAP.md) for planned features and design decisions.
 
-- **0.5.0** (planned) — Native alignment, project lifecycle management, safety gates
+- **0.4.1** (current) — Native alignment, memory system, idea system v2
 - **0.4.0a** — Plugin integration, skill cleanup, roadmap
 - **0.3.1** — Simplified commands, superpowers integration
 - **0.3.0** — Plugin structure created

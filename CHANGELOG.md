@@ -7,14 +7,13 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [Unreleased] — v0.4.1 (Native Alignment Release)
+## [0.4.1] — 2026-02-13 (Native Alignment Release)
 
 ### Changed — Native Alignment (Phase 1-3)
 - CLAUDE.md radical slim-down (~230 → ~72 lines)
 - Standards migration from Skills to `.claude/rules/` with `paths` frontmatter (YAML list format)
 - Agent frontmatter modernization (`skills:`, `memory: project` fields)
-- 10 redundant skills deleted (7 standards + cwe-principles + planning + mcp-usage)
-- Rules paths format fixed: comma-separated string → YAML list (per Claude Code docs)
+- Rules paths format: corrected to YAML list per Claude Code docs
 
 ### Changed — Memory & Idea System (Phase 4)
 - Idea system v2: project-scoped via `$CLAUDE_PROJECT_DIR`, JSONL format
@@ -25,29 +24,42 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Migration: old `.toon` → per-project JSONL on first run
 - Memory templates: MEMORY.md, ideas.md, sessions.md, decisions.md, patterns.md, project-context.md
 - commands/innovator.md: 4 modes (default/all/review/develop)
-- plugin.json: version bumped to 0.4.1
 
-### Planned — Project Lifecycle Management
+### Removed — Redundant Skills (Phase 5)
+- 10 skills deleted: 7 standards (→ .claude/rules/), cwe-principles (→ CLAUDE.md), planning (→ native), mcp-usage (obsolete)
+- Remaining: auto-delegation, agent-detection, quality-gates
 
-### Planned — Project Lifecycle Management
-- Standardized `docs/` structure (README, ARCHITECTURE, API, SETUP, decisions/)
-- `VERSION` file as Single Source of Truth for all version references
-- `CHANGELOG.md` auto-maintenance with Keep-a-Changelog format
-- `DEVLOG.md` chronological developer journal
-- Auto-README with GitHub HTML + custom SVG banner generation
-- Auto-generated tech stack badges and architecture diagrams
+### Added — Hooks Modernization (Phase 6)
+- SubagentStop hook for agent execution observability
+- subagent-stop.sh: logs agent completions to memory/sessions.md
 
-### Planned — Safety & Git Standards
-- Pre-commit safety gate (secrets, PII, .gitignore validation)
-- Conventional Commits enforcement via PreToolUse hook
-- Branch naming convention enforcement (feature/, fix/, hotfix/, etc.)
-- Auto-generated release notes from conventional commits
+### Changed — Documentation Consistency
+- README.md: v0.4.1, memory system, standards system, idea capture documented
+- commands/help.md: v0.4.1, standards system, memory system, idea JSONL
+- commands/init.md: memory/ scaffolding, updated ideas.md template, standards reference
+- commands/start.md: Shape-Spec Interview option, spec folder structure
+- auto-delegation skill: context injection updated from Skills to .claude/rules/
+- plugin.json: version 0.4.1, simplified description
+- ROADMAP.md: Phase 1-6 marked as completed, summary table updated
 
-### Planned — Project Health Intelligence
-- Health dashboard (coverage, complexity, debt, dependency status)
-- Dependency health monitoring (outdated, vulnerable, license issues)
-- CODEOWNERS auto-generation from git history
-- License compatibility checking
+### Planned — Phase 7: Spec System + Project Documentation
+- Spec folder structure: `workflow/specs/YYYY-MM-DD-HHMM-<slug>/`
+- Shape-Spec Interview via `/cwe:architect shape`
+- docs/ scaffolding (README, ARCHITECTURE, API, SETUP, decisions/)
+- VERSION file as Single Source of Truth
+- Auto-README with GitHub HTML + SVG
+
+### Planned — Phase 8: Pre-Commit Safety Gate
+- safety-gate.sh: secrets, PII, .gitignore validation
+- PreToolUse hook on git commit/push/add -A
+
+### Planned — Phase 9: Git Workflow Standards
+- Conventional Commits enforcement
+- Branch naming enforcement
+- Auto-generated release notes
+
+### Planned — Phase 10: Project Health Dashboard
+- Coverage, complexity, dependencies, docs, git health, security
 
 ---
 
@@ -58,12 +70,9 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - `auto-delegation` = interactive user-request routing (natural language)
   - `agent-detection` = build-phase task-to-agent assignment (structured tasks)
 - **Keyword tables synchronized** across auto-delegation, agent-detection, and CLAUDE.md
-  - "test" consistently routes to **quality** agent (was inconsistent: builder in auto-delegation, quality in agent-detection)
+  - "test" consistently routes to **quality** agent (was inconsistent)
   - Unified canonical keyword list for all 10 agents
-- **Greptile references removed** — security agent and mcp-usage skill no longer reference unavailable Greptile MCP
-  - Security agent now uses Serena tools (`search_for_pattern`, `find_symbol`) instead
-  - `mcp-usage` skill simplified to Serena-only
-  - Agent-Tool Matrix updated (added ask + security Serena tools)
+- **Greptile references removed** — replaced with Serena tools
 - **Version consistency fixed** — `session-start.sh` updated from v0.3.1 to v0.4.0a
 
 ### Added
