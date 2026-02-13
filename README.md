@@ -265,7 +265,7 @@ Discover new standards: `/cwe:guide discover`
 
 ## Project Structure
 
-After `/cwe:init`, your project gets:
+After `/cwe:init`, your project gets (`memory/` and `workflow/` are auto-added to `.gitignore`):
 
 ```
 your-project/

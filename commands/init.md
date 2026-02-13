@@ -258,6 +258,33 @@ Create `memory/YYYY-MM-DD.md` (using today's date) with:
 - `/cwe:devops release patch|minor|major` bumps VERSION and cascades
 - Never hardcode version strings anywhere else
 
+## Step 3c: Patch .gitignore
+
+CWE-generated files (memory/, workflow/, docs/) should NOT be committed to the target project's repo by default. After creating the structure, patch the project's `.gitignore`.
+
+### Check and append
+
+Read the existing `.gitignore` (or create one if missing). Append the following block **only if the CWE marker comment is not already present**:
+
+```bash
+grep -q '# CWE (Claude Workflow Engine)' .gitignore 2>/dev/null
+```
+
+If the marker is NOT found, append:
+
+```
+# CWE (Claude Workflow Engine)
+memory/
+workflow/
+VERSION
+```
+
+**Important:**
+- Do NOT add `docs/` — users may want to commit their project documentation
+- Do NOT add `.claude/` — that's managed by Claude Code itself
+- If `.gitignore` doesn't exist, create it with the CWE block
+- Inform the user: "Added memory/ and workflow/ to .gitignore — CWE session data won't be committed."
+
 ## File contents
 
 ### workflow/README.md
