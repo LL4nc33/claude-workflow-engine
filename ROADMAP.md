@@ -447,8 +447,9 @@ New `skills/safety-gate/SKILL.md`:
 
 ---
 
-### Phase 9: Git Workflow Standards
+### Phase 9: Git Workflow Standards ✅
 
+**Status:** Completed — git-standards skill, commit-format.sh, branch-naming.sh, PreToolUse hooks.
 **Goal:** Consistent git practices across all CWE-managed projects.
 
 #### 9a: Conventional Commits
@@ -578,7 +579,7 @@ Auto-generate `CODEOWNERS` from git history:
 | 6 | Hooks modernization | ✅ Done | Medium (foundation) |
 | 7 | Spec system + Project docs | ✅ Done | Very High (spec-driven core) |
 | 8 | Safety gate | ✅ Done | Very High (security) |
-| 9 | Git standards | ⏳ Planned | High (consistency) |
+| 9 | Git standards | ✅ Done | High (consistency) |
 | 10 | Health dashboard | ⏳ Planned | High (visibility) |
 
 ---

@@ -61,10 +61,12 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `skills/safety-gate/SKILL.md`: describes scanning rules + remediation guidance
 - .gitignore validation (required entries: .env, *.pem, *.key, node_modules/, .DS_Store)
 
-### Planned — Phase 9: Git Workflow Standards
-- Conventional Commits enforcement
-- Branch naming enforcement
-- Auto-generated release notes
+### Added — Git Workflow Standards (Phase 9)
+- `skills/git-standards/SKILL.md`: Conventional Commits format + branch naming conventions
+- `hooks/scripts/commit-format.sh`: validates commit message format on git commit -m
+- `hooks/scripts/branch-naming.sh`: validates branch names on git checkout -b / git switch -c
+- PreToolUse hooks for commit-format.sh and branch-naming.sh
+- Auto-generated release notes spec (via /cwe:devops release)
 
 ### Planned — Phase 10: Project Health Dashboard
 - Coverage, complexity, dependencies, docs, git health, security
