@@ -386,8 +386,9 @@ The **devops** agent gains release documentation:
 
 ---
 
-### Phase 8: Pre-Commit Safety Gate
+### Phase 8: Pre-Commit Safety Gate ✅
 
+**Status:** Completed — safety-gate.sh, PreToolUse hook, safety-gate skill.
 **Goal:** Nothing dangerous gets committed or pushed. Ever.
 
 #### 8a: Safety Scan Script
@@ -576,7 +577,7 @@ Auto-generate `CODEOWNERS` from git history:
 | 5 | Delete redundant skills | ✅ Done | Medium (cleanup) |
 | 6 | Hooks modernization | ✅ Done | Medium (foundation) |
 | 7 | Spec system + Project docs | ✅ Done | Very High (spec-driven core) |
-| 8 | Safety gate | 🔜 Next | Very High (security) |
+| 8 | Safety gate | ✅ Done | Very High (security) |
 | 9 | Git standards | ⏳ Planned | High (consistency) |
 | 10 | Health dashboard | ⏳ Planned | High (visibility) |
 

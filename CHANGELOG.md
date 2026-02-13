@@ -55,9 +55,11 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - agents/researcher.md: expanded docs responsibilities with project-docs skill
 - agents/devops.md: release flow with VERSION SSOT + project-docs skill
 
-### Planned — Phase 8: Pre-Commit Safety Gate
-- safety-gate.sh: secrets, PII, .gitignore validation
-- PreToolUse hook on git commit/push/add -A
+### Added — Pre-Commit Safety Gate (Phase 8)
+- `hooks/scripts/safety-gate.sh`: scans for secrets, API keys, PII, credentials, dangerous file types
+- PreToolUse hook on Bash: triggers safety-gate.sh on git commit/push/add -A
+- `skills/safety-gate/SKILL.md`: describes scanning rules + remediation guidance
+- .gitignore validation (required entries: .env, *.pem, *.key, node_modules/, .DS_Store)
 
 ### Planned — Phase 9: Git Workflow Standards
 - Conventional Commits enforcement
