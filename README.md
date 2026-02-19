@@ -95,11 +95,12 @@ CWE is a **Claude Code plugin** that turns a single AI assistant into a team of 
 
 ### Workflow
 
-|   Command    |                            Purpose                             |
-|--------------|----------------------------------------------------------------|
-| `/cwe:init`  | Initialize project + install recommended plugins + MCP servers |
-| `/cwe:start` | Guided workflow with phase detection                           |
-| `/cwe:help`  | Full documentation                                             |
+|      Command       |                            Purpose                             |
+|--------------------|----------------------------------------------------------------|
+| `/cwe:init`        | Initialize project + install recommended plugins + MCP servers |
+| `/cwe:start`       | Guided workflow with phase detection                           |
+| `/cwe:help`        | Full documentation                                             |
+| `/cwe:screenshot`  | Clipboard screenshot capture + analysis (WSL2, macOS, Linux)   |
 
 ### Agent Commands
 
@@ -143,12 +144,12 @@ Unclear? → Ask (max 2 questions)
 | question, discuss, think about                                               | **ask**        |
 | explain, how, what, why, understand                                          | **explainer**  |
 | test, write tests, coverage, quality, validate, assert, metrics, flaky, gate | **quality**    |
-| security, audit, vulnerability, scan, gdpr, owasp                            | **security**   |
-| deploy, docker, ci, cd, release, kubernetes, terraform                       | **devops**     |
+| security, audit, vulnerability, scan, gdpr, owasp, cve                       | **security**   |
+| deploy, docker, ci, cd, release, kubernetes, k8s, terraform                  | **devops**     |
 | design, architecture, adr, api, schema                                       | **architect**  |
 | analyze, document, research, compare                                         | **researcher** |
-| brainstorm, idea, what if, alternative, explore                              | **innovator**  |
-| workflow, process, pattern, improve, optimize                                | **guide**      |
+| brainstorm, idea, ideas, what if, alternative, explore                       | **innovator**  |
+| workflow, process, pattern, improve, optimize, optimization                  | **guide**      |
 
 Say **"manual"** to disable auto-delegation.
 
@@ -240,7 +241,7 @@ Discover new standards: `/cwe:guide discover`
 </details>
 
 <details>
-<summary><strong>Statusline — Live Session Tracking</strong></summary>
+<summary><strong>Statusline — Live Session Tracking (Claude Code feature, configured by CWE)</strong></summary>
 
 <br>
 
