@@ -242,17 +242,43 @@ Discover new standards: `/cwe:guide discover`
 <details>
 <summary><strong>Statusline — Live Session Tracking</strong></summary>
 
-CWE configures a custom status bar at the bottom of Claude Code that shows:
+<br>
+
+<div align="center">
 
 ```
-code-workspace-engine  |  context ━━━━──── 55% 110k/200k  |  EUR 2.77  |  time 17m01s  |  lines +148/-132
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                 │
+│  ● Claude Code                                                      ─  □  ✕    │
+│  ─────────────────────────────────────────────────────────────────────────────   │
+│                                                                                 │
+│  ❯ Fix the authentication bug in the login flow                                 │
+│                                                                                 │
+│  ● Using builder agent with systematic-debugging skill                          │
+│                                                                                 │
+│    I found the issue — the JWT token validation was missing the                 │
+│    audience check. Here's the fix:                                              │
+│                                                                                 │
+│  ● Edited src/auth/jwt.ts (+3/-1)                                               │
+│  ● Ran 12 tests — all passing                                                   │
+│                                                                                 │
+│  ❯ █                                                                            │
+│                                                                                 │
+│  ─────────────────────────────────────────────────────────────────────────────   │
+│  my-saas-app  │  context ━━━━━━━──── 42% 84k/200k  │  EUR 1.85  │  time 8m32s  │
+│  ⏵⏵ bypass permissions on (shift+tab to cycle)                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+</div>
+
+Track your session in real time — always visible at the bottom of Claude Code:
 
 - **Project name** — always know which project you're in
-- **Context bar** — color-coded (green/yellow/red) with token count
-- **Cost** — track how much a project costs per session (configurable currency)
-- **Time** — track how long you've been working on it
-- **Lines** — see code changes at a glance
+- **Context bar** — color-coded progress (green → yellow → red) with token count
+- **Cost** — track how much each project costs per session
+- **Time** — see how long you've been working
+- **Lines** — code changes at a glance
 
 Currency is configurable during `/cwe:init` (EUR, USD, GBP, CHF) and stored in `.claude/cwe-settings.yml`.
 
