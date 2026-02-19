@@ -6,7 +6,7 @@
 # Consume stdin to prevent hook errors (must be synchronous, no &)
 cat > /dev/null 2>&1
 
-VERSION="Code Workspace Engine v0.4.3"
+VERSION="Code Workspace Engine v0.5.0"
 MAX_MEMORY_CHARS=8000
 MAX_MEMORY_LINES=200
 
@@ -130,7 +130,7 @@ if [ "$IDEA_COUNT" -gt 0 ]; then
 fi
 
 # --- Auto-delegation reminder (compact) ---
-DELEGATION="Auto-delegation: fix/build->builder | explain->explainer | audit->security | deploy->devops | design->architect | brainstorm->innovator"
+DELEGATION="Auto-delegation: fix/build->builder | explain->explainer | ask/discuss->ask | audit->security | deploy->devops | design->architect | brainstorm->innovator | workflow/process->guide"
 
 # --- Compose the full system message as real multi-line text ---
 HEADER="${VERSION} | ${STATUS}. ${HINT}${IDEA_INFO} | ${DELEGATION}"
