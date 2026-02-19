@@ -28,6 +28,7 @@ Natural language orchestration for spec-driven development.
 | Command | Purpose |
 |---------|---------|
 | `/cwe:init` | Initialize project + install missing plugins |
+| `/cwe:plugins` | Check and install plugin + MCP dependencies |
 | `/cwe:start` | Guided workflow (phase detection) |
 | `/cwe:help` | This help |
 | `/cwe:ask` | Questions, discussions (READ-ONLY) |
