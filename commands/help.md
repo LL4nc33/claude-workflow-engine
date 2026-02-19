@@ -40,6 +40,8 @@ Natural language orchestration for spec-driven development.
 | `/cwe:quality` | Tests, coverage, health dashboard |
 | `/cwe:innovator` | Brainstorming, idea backlog (4 modes) |
 | `/cwe:guide` | Process improvement, standards discovery |
+| `/cwe:screenshot` | Clipboard screenshot capture + analysis |
+| `/cwe:web-research` | Web search + scraping (SearXNG, Firecrawl) |
 
 ## Auto-Delegation
 

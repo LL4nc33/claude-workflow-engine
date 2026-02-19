@@ -101,6 +101,7 @@ CWE is a **Claude Code plugin** that turns a single AI assistant into a team of 
 | `/cwe:start`       | Guided workflow with phase detection                           |
 | `/cwe:help`        | Full documentation                                             |
 | `/cwe:screenshot`  | Clipboard screenshot capture + analysis (WSL2, macOS, Linux)   |
+| `/cwe:web-research` | Web search + scraping (SearXNG, Firecrawl, trafilatura)       |
 
 ### Agent Commands
 
