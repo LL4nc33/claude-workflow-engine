@@ -1115,7 +1115,7 @@ Generation and maintenance of project documentation: README, ARCHITECTURE, API, 
 
 **File:** `skills/web-research/SKILL.md`
 
-Web research capability using self-hosted SearXNG (meta-search engine) and Firecrawl (web scraping). Requires a self-hosted SearXNG instance and Firecrawl MCP server to be configured. Used by agents that need to look up external documentation, compare technologies, or research best practices.
+Web research capability using self-hosted SearXNG (meta-search engine) and Firecrawl (web scraping). Server URLs are configured per-project in `.claude/cwe-settings.yml` (`searxng_url`, `firecrawl_url`). Firecrawl is optional — trafilatura serves as always-available fallback. Used by agents that need to look up external documentation, compare technologies, or research best practices.
 
 ---
 

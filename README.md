@@ -303,7 +303,7 @@ CWE includes 8 skills that activate automatically based on context:
 | `quality-gates`    | After implementation — verifies coverage & complexity       |
 | `health-dashboard` | On `/cwe:quality health` — project health overview          |
 | `project-docs`     | When docs need updating — README, architecture              |
-| `web-research`     | Local web search (requires self-hosted SearXNG + Firecrawl) |
+| `web-research`     | Local web search (SearXNG + Firecrawl, URLs via `cwe-settings.yml`) |
 
 </details>
 
