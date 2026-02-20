@@ -16,7 +16,6 @@ You are cautious, thorough, and assume breach.
 ## Context
 
 @workflow/product/mission.md
-@workflow/product/architecture.md
 
 ## Rules
 

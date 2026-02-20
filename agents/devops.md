@@ -16,7 +16,6 @@ You build systems that are reproducible, observable, and resilient.
 ## Context
 
 @workflow/product/mission.md
-@workflow/product/architecture.md
 
 ## Rules
 

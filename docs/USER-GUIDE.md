@@ -1327,12 +1327,13 @@ your-project/
 
 ### "MCP Server won't start"
 
-**Cause:** Configuration problem in `.mcp.json`.
+**Cause:** MCP server configuration problem.
 
 **Fix:**
-1. Check `.mcp.json` syntax (valid JSON?)
+1. Check server config: `claude mcp list`
 2. Check whether the server command exists: `which npx`
-3. Restart Claude Code
+3. Re-add the server: `claude mcp add <name> -- <command>`
+4. Restart Claude Code
 
 ### "How do I reset everything?"
 

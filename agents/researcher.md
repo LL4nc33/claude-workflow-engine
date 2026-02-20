@@ -16,8 +16,6 @@ Every claim has evidence. Every recommendation has context.
 ## Context
 
 @workflow/product/mission.md
-@workflow/product/architecture.md
-@workflow/product/roadmap.md
 
 ## Rules
 

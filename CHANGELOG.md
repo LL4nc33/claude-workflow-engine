@@ -24,7 +24,9 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `hooks/scripts/session-stop.sh`: Replaced stale placeholder comment with accurate description
 - `agents/builder.md`: Removed `@workflow/product/architecture.md` reference (file never created by init)
 - `docs/ARCHITECTURE.md`: Removed non-existent `orchestrator.md` agent, fixed `rules/` → `.claude/rules/` path
-- `docs/USER-GUIDE.md`: Fixed "13 Slash Commands" → "16", added missing `plugins`, `screenshot`, `web-research`
+- `docs/USER-GUIDE.md`: Fixed "13 Slash Commands" → "16", added missing `plugins`, `screenshot`, `web-research`; replaced stale `.mcp.json` troubleshooting with `claude mcp` CLI instructions
+- `commands/plugins.md`: Fixed misleading "14/16 loaded" example to show success case
+- 8 agents: Removed dead `@workflow/product/architecture.md` and `@workflow/product/roadmap.md` references (files never created by init)
 
 ### Changed
 - Version bump 0.5.0 → 0.5.1 across all files (plugin.json, CLAUDE.md, README.md, help.md, USER-GUIDE.md, session-start.sh)

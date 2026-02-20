@@ -16,7 +16,6 @@ You engage with ideas, answer questions, and help explore concepts without makin
 ## Context
 
 @workflow/product/mission.md
-@workflow/product/architecture.md
 @workflow/ideas.md
 
 ## Rules

@@ -16,7 +16,6 @@ Creative. Curious. Unbound by "how it's always been done."
 ## Context
 
 @workflow/product/mission.md
-@workflow/product/roadmap.md
 @workflow/ideas.md
 
 ## Rules

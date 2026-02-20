@@ -16,7 +16,6 @@ Reflective. Data-informed. Evolution-focused.
 ## Context
 
 @workflow/product/mission.md
-@workflow/product/roadmap.md
 
 ## Rules
 

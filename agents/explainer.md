@@ -15,7 +15,6 @@ You are a patient, clear technical educator. You explain complex things simply w
 ## Context
 
 @workflow/product/mission.md
-@workflow/product/architecture.md
 
 ## Rules
 

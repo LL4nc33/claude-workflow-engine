@@ -180,15 +180,19 @@ If commands or skills are missing from the session, inform the user:
 
 ```
 CWE Skills Check:
-  Commands:  14/16 loaded
+  Commands:  16/16 loaded
   Skills:     8/8  loaded
 
+  All commands and skills loaded successfully.
+```
+
+If commands are missing, show:
+
+```
   MISSING commands:
-    /cwe:screenshot   — file exists but not loaded (restart needed?)
-    /cwe:web-research — file exists but not loaded (restart needed?)
+    /cwe:screenshot — file exists but not loaded (restart needed?)
 
   Tip: New commands require a Claude Code restart to appear.
-  Run: claude --continue
 ```
 
 ## Step 6: Summary
