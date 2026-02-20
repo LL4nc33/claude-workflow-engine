@@ -31,6 +31,8 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - Version bump 0.5.0 → 0.5.1 across all files (plugin.json, CLAUDE.md, README.md, help.md, USER-GUIDE.md, session-start.sh)
 - `README.md`: Added explanation for `--dangerously-skip-permissions` flag, mentioned statusline setup in Quick Start
+- `.gitignore`: Hardened — protects private data (cwe-settings.yml, agent-memory, *.local.md/json/yml, credentials, keys, IDE settings)
+- `.claude/cwe-settings.yml`: Removed from tracking (user-local preference, created by `/cwe:init`)
 
 ---
 

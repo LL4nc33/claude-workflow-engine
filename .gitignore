@@ -1,30 +1,49 @@
-# Backups
-_backup/
+# ============================================
+# CWE Plugin .gitignore
+# Protects private/local data from being pushed
+# ============================================
 
-# OS files
-.DS_Store
-Thumbs.db
+# --- Private / User-local (NEVER commit) ---
+.claude/cwe-settings.yml
+.claude/agent-memory/
+.claude/agent-memory-local/
+*.local.md
+*.local.json
+*.local.yml
 
-# IDE
-.vscode/settings.json
-.idea/
-
-# Dependencies
-node_modules/
-
-__pycache__/
-.venv/
-
-# Environment
+# --- Credentials & Secrets ---
 .env*
-
-# Certificates/Keys
 *.pem
 *.key
 *.pfx
+*.p12
+*.crt
+id_rsa*
+id_ed25519*
+id_ecdsa*
 
-# Claude Code local settings
-.claude/agent-memory-local/
+# --- IDE / Editor ---
+.vscode/settings.json
+.vscode/*.code-workspace
+.idea/
 
-# Serena IDE cache
+# --- OS ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- Dependencies ---
+node_modules/
+__pycache__/
+.venv/
+vendor/
+
+# --- Build / Cache ---
+dist/
+build/
+*.pyc
+.cache/
+
+# --- Tool caches ---
 .serena/
+_backup/
