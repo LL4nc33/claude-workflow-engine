@@ -11,10 +11,17 @@ Search the web and scrape pages using local self-hosted services.
 
 ## Prerequisites
 
-| Service | URL | Required |
-|---------|-----|----------|
-| SearXNG | `http://localhost:8080` | Yes — local metasearch |
-| Firecrawl | `http://localhost:3002` | Optional — JS-capable scraping |
+URLs are configured per-project in `.claude/cwe-settings.yml`:
+
+```yaml
+searxng_url: http://localhost:8080
+firecrawl_url: http://localhost:3002
+```
+
+| Service | Config Key | Required |
+|---------|-----------|----------|
+| SearXNG | `searxng_url` | Yes — local metasearch |
+| Firecrawl | `firecrawl_url` | Optional — JS-capable scraping |
 | trafilatura | Python library | Fallback — always available |
 
 ## Interactive Mode (no arguments)
@@ -34,7 +41,7 @@ Options:
 Ask for the search query, then run:
 
 ```bash
-curl -s "http://localhost:8080/search?q=QUERY&format=json&language=de" | python3 -c "
+curl -s "${SEARXNG_URL}/search?q=QUERY&format=json&language=de" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
 for i, r in enumerate(data.get('results', [])[:10], 1):
@@ -53,7 +60,7 @@ Ask for the URL, then scrape it:
 
 1. **Try Firecrawl first** (better for JS-heavy sites):
 ```bash
-curl -s -X POST "http://localhost:3002/v1/scrape" \
+curl -s -X POST "${FIRECRAWL_URL}/v1/scrape" \
   -H "Content-Type: application/json" \
   -d '{"url":"URL_HERE","formats":["markdown"],"onlyMainContent":true}' | python3 -c "
 import sys, json

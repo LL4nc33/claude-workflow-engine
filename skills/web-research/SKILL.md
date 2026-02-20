@@ -10,12 +10,23 @@ description: >
 
 Local self-hosted web search and scraping for research tasks.
 
+## Configuration
+
+URLs are configured per-project in `.claude/cwe-settings.yml`:
+
+```yaml
+searxng_url: http://localhost:8080    # Your SearXNG instance
+firecrawl_url: http://localhost:3002  # Your Firecrawl instance (optional)
+```
+
+If not configured, defaults: `SEARXNG_URL=http://localhost:8080`, `FIRECRAWL_URL=http://localhost:3002`
+
 ## Services
 
-| Service | URL | Purpose | Status |
-|---------|-----|---------|--------|
-| SearXNG | `http://localhost:8080` | Web search (metasearch) | Primary |
-| Firecrawl | `http://localhost:3002` | JS-capable scraping | Optional (may be offline) |
+| Service | Config Key | Purpose | Status |
+|---------|-----------|---------|--------|
+| SearXNG | `searxng_url` | Web search (metasearch) | Primary |
+| Firecrawl | `firecrawl_url` | JS-capable scraping | Optional (may be offline) |
 | trafilatura | Python library | Static page scraping | Fallback (always available) |
 
 ## When to Use
@@ -28,7 +39,7 @@ Local self-hosted web search and scraping for research tasks.
 ## SearXNG Search
 
 ```bash
-curl -s "http://localhost:8080/search?q=QUERY&format=json&language=de" | python3 -c "
+curl -s "${SEARXNG_URL}/search?q=QUERY&format=json&language=de" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
 for i, r in enumerate(data.get('results', [])[:10], 1):
@@ -64,7 +75,7 @@ for i, r in enumerate(data.get('results', [])[:10], 1):
 Best for JS-heavy sites. Test availability first:
 
 ```bash
-curl -s -X POST "http://localhost:3002/v1/scrape" \
+curl -s -X POST "${FIRECRAWL_URL}/v1/scrape" \
   -H "Content-Type: application/json" \
   -d '{"url":"https://example.com","formats":["markdown"],"onlyMainContent":true}' | python3 -c "
 import sys, json
@@ -111,7 +122,7 @@ print(text[:5000] if text else 'ERROR: No content')
 
 ```bash
 # 1. Search
-curl -s 'http://localhost:8080/search?q=claude+code+plugins&format=json&language=en' | python3 -c "
+curl -s "${SEARXNG_URL}/search?q=claude+code+plugins&format=json&language=en" | python3 -c "
 import sys, json
 results = json.load(sys.stdin).get('results', [])[:5]
 for r in results:
