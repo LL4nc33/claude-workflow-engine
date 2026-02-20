@@ -1,4 +1,4 @@
-# Code Workspace Engine (CWE) v0.5.0
+# Code Workspace Engine (CWE) v0.5.1
 
 Natural language orchestration for spec-driven development.
 

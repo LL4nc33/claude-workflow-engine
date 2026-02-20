@@ -164,6 +164,29 @@ If the file already exists, update just the `currency:` line. If not, create it.
 
 ---
 
+## Step 1e: Install Statusline
+
+CWE provides a live statusline for Claude Code showing context usage, cost, and session time.
+
+### Copy statusline script
+
+```bash
+cp "${CLAUDE_PLUGIN_ROOT}/templates/statusline.py" "$HOME/.claude/statusline.sh"
+chmod +x "$HOME/.claude/statusline.sh"
+```
+
+### Configure Claude Code settings
+
+Add the statusline to the user's Claude Code `settings.json`:
+
+```bash
+claude config set --global status_line 'python3 ~/.claude/statusline.sh'
+```
+
+If it fails or the user declines, skip — the statusline is optional but recommended.
+
+---
+
 ## Step 2: Check existing workflow setup
 
 Check if `workflow/` already exists:

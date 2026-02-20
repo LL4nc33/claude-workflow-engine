@@ -7,6 +7,31 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.5.1] — 2026-02-20
+
+### Added
+- `hooks/scripts/_lib.sh`: Shared helper library for all hook scripts (`json_escape`, `json_msg`, `grep_count`, `line_count`, `resolve_root`, `resolve_slug`)
+- `templates/statusline.py`: Statusline template for automatic installation during `/cwe:init`
+- `docs/ARCHITECTURE.md`: Plugin architecture documentation (plugin structure, agent system, hook flow, skill system, memory)
+- `commands/init.md`: Step 1e — automatic statusline installation after currency config
+
+### Fixed
+- **All hook scripts**: Hardened JSON output via shared `_lib.sh` — prevents newlines, unescaped quotes, backslashes, and tabs from breaking JSON
+- `hooks/scripts/idea-flush.sh:24`: **Root cause of "JSON validation failed"** — `grep -c || echo 0` produced `0\n0` (newline in JSON) when no raw ideas existed; now uses `grep_count` wrapper
+- `hooks/scripts/idea-observer.sh`: Escape order bug (backslashes before quotes) + now uses `json_escape` for all user input
+- `hooks/scripts/session-start.sh`: Replaced custom `json_escape_stdin` with shared `json_escape`; bumped version to v0.5.1
+- `hooks/scripts/subagent-stop.sh`: Removed redundant dead-code guard (duplicate memory directory check)
+- `hooks/scripts/session-stop.sh`: Replaced stale placeholder comment with accurate description
+- `agents/builder.md`: Removed `@workflow/product/architecture.md` reference (file never created by init)
+- `docs/ARCHITECTURE.md`: Removed non-existent `orchestrator.md` agent, fixed `rules/` → `.claude/rules/` path
+- `docs/USER-GUIDE.md`: Fixed "13 Slash Commands" → "16", added missing `plugins`, `screenshot`, `web-research`
+
+### Changed
+- Version bump 0.5.0 → 0.5.1 across all files (plugin.json, CLAUDE.md, README.md, help.md, USER-GUIDE.md, session-start.sh)
+- `README.md`: Added explanation for `--dangerously-skip-permissions` flag, mentioned statusline setup in Quick Start
+
+---
+
 ## [0.5.0] — 2026-02-19
 
 ### Added

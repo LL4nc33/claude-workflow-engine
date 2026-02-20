@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 # On session stop: Notify if new idea observations exist for CURRENT project
 
+source "$(dirname "$0")/_lib.sh"
+
 # Consume stdin to prevent hook errors
 cat > /dev/null 2>&1
 
-# Determine project slug from $CLAUDE_PROJECT_DIR or PWD
-if [ -n "$CLAUDE_PROJECT_DIR" ]; then
-  PROJECT_SLUG=$(basename "$CLAUDE_PROJECT_DIR" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
-else
-  PROJECT_SLUG="_global"
-fi
+resolve_slug
 
 IDEAS_FILE="$HOME/.claude/cwe/ideas/${PROJECT_SLUG}.jsonl"
 
@@ -18,11 +15,9 @@ IDEAS_FILE="$HOME/.claude/cwe/ideas/${PROJECT_SLUG}.jsonl"
 [ ! -s "$IDEAS_FILE" ] && exit 0
 
 # Count ideas for this project only
-COUNT=$(wc -l < "$IDEAS_FILE" | tr -d ' ')
+COUNT=$(line_count "$IDEAS_FILE")
+RAW=$(grep_count '"status":"raw"' "$IDEAS_FILE")
 
-# Count by status
-RAW=$(grep -c '"status":"raw"' "$IDEAS_FILE" 2>/dev/null || echo 0)
-
-echo "{\"systemMessage\":\"${COUNT} idea(s) captured for ${PROJECT_SLUG} (${RAW} unreviewed). Review with /cwe:innovator.\"}"
+json_msg "${COUNT} idea(s) captured for ${PROJECT_SLUG} (${RAW} unreviewed). Review with /cwe:innovator."
 
 exit 0

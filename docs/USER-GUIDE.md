@@ -1,6 +1,6 @@
 # CWE User Guide
 
-> Complete documentation for the Code Workspace Engine plugin v0.5.0
+> Complete documentation for the Code Workspace Engine plugin v0.5.1
 
 ---
 
@@ -1194,10 +1194,13 @@ code-workspace-engine/
 │   ├── researcher.md           # Analyst (READ-ONLY + docs/)
 │   └── security.md             # Security Auditor (RESTRICTED)
 │
-├── commands/                   # 13 Slash Commands
+├── commands/                   # 16 Slash Commands
 │   ├── help.md                 # /cwe:help
 │   ├── init.md                 # /cwe:init (Project Setup)
 │   ├── start.md                # /cwe:start (Guided Workflow)
+│   ├── plugins.md              # /cwe:plugins (Dependency Management)
+│   ├── screenshot.md           # /cwe:screenshot (Clipboard Capture)
+│   ├── web-research.md         # /cwe:web-research (SearXNG + Firecrawl)
 │   ├── ask.md                  # /cwe:ask
 │   ├── builder.md              # /cwe:builder
 │   ├── architect.md            # /cwe:architect

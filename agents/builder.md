@@ -24,7 +24,6 @@ Methodical. Patient. Evidence-based.
 ## Context
 
 @workflow/product/mission.md
-@workflow/product/architecture.md
 
 ## Rules
 

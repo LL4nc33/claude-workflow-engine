@@ -4,7 +4,7 @@
   <br><br>
 
   <a href="#quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_Steps-6366f1?style=flat-square" alt="Quick Start"></a>
-  <img src="https://img.shields.io/badge/version-0.5.0-8b5cf6?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.5.1-8b5cf6?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/agents-10-6366f1?style=flat-square" alt="Agents">
   <img src="https://img.shields.io/badge/claude_code-plugin-8b5cf6?style=flat-square" alt="Claude Code Plugin">
   <img src="https://img.shields.io/badge/license-MIT-6366f1?style=flat-square" alt="License">
@@ -24,11 +24,13 @@
 git clone https://github.com/LL4nc33/code-workspace-engine.git
 
 # 2. Set up the alias (add to ~/.bashrc or ~/.zshrc)
+# --dangerously-skip-permissions lets CWE agents run tools without manual approval each time.
+# Only use this in trusted environments — it bypasses Claude Code's per-tool confirmation prompts.
 alias cwe='claude --plugin-dir /path/to/code-workspace-engine --dangerously-skip-permissions'
 
 # 3. Start CWE in any project
 cd your-project && cwe
-/cwe:init    # Initialize project + install plugins
+/cwe:init    # Initialize project + install plugins + configure statusline
 ```
 
 After init, just talk naturally:
@@ -367,7 +369,8 @@ See [CHANGELOG.md](CHANGELOG.md) for full history. See [ROADMAP.md](ROADMAP.md) 
 
 |   Version  |                                  Highlights                                |
 |------------|----------------------------------------------------------------------------|
-| **0.5.0**  | Statusline with live cost/context tracking, currency config, hook fixes    | (current)
+| **0.5.1**  | Hook hardening (_lib.sh), ARCHITECTURE.md, statusline template, doc fixes  | (current)
+| **0.5.0**  | Statusline with live cost/context tracking, currency config, hook fixes    |
 | **0.4.4**  | Removed cwe-memory MCP, added screenshot + web-research, consistency fixes |
 | **0.4.3**  | Documentation: USER-GUIDE, README rewrite, SVG assets                      |
 | **0.4.2**  | Memory System v2: daily logs, context injection, auto-seeding              |

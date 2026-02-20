@@ -3,19 +3,16 @@
 # Reads project memory (MEMORY.md + daily logs) for session continuity
 # Outputs JSON: {"systemMessage": "..."}
 
+source "$(dirname "$0")/_lib.sh"
+
 # Consume stdin to prevent hook errors (must be synchronous, no &)
 cat > /dev/null 2>&1
 
-VERSION="Code Workspace Engine v0.5.0"
+VERSION="Code Workspace Engine v0.5.1"
 MAX_MEMORY_CHARS=8000
 MAX_MEMORY_LINES=200
 
-# --- Determine project root ---
-if [ -n "$CLAUDE_PROJECT_DIR" ]; then
-  ROOT="$CLAUDE_PROJECT_DIR"
-else
-  ROOT="$PWD"
-fi
+resolve_root
 
 # --- Build status message ---
 if [ -d "${ROOT}/workflow" ]; then
@@ -27,31 +24,12 @@ else
 fi
 
 # --- Check for idea count ---
-PROJECT_SLUG=$(basename "$ROOT" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+resolve_slug
 IDEAS_FILE="$HOME/.claude/cwe/ideas/${PROJECT_SLUG}.jsonl"
 IDEA_COUNT=0
 if [ -f "$IDEAS_FILE" ]; then
-  IDEA_COUNT=$(wc -l < "$IDEAS_FILE" | tr -d ' ')
+  IDEA_COUNT=$(line_count "$IDEAS_FILE")
 fi
-
-# --- JSON-escape a string ---
-# Uses bash parameter expansion for backslash/quote/tab/CR (reliable),
-# and sed only for newline joining (single pass, no multi-line escaping issues).
-# Input: stdin. Output: stdout. Pure bash + minimal sed.
-json_escape_stdin() {
-  local content
-  content=$(cat)
-  if [ -z "$content" ]; then
-    return
-  fi
-  # Order matters: backslashes first, then the rest
-  content="${content//\\/\\\\}"
-  content="${content//\"/\\\"}"
-  content="${content//$'\t'/\\t}"
-  content="${content//$'\r'/}"
-  # Replace real newlines with literal \n using sed slurp
-  printf '%s' "$content" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/\\n/g'
-}
 
 # --- Read a file safely (up to N lines) ---
 read_file_limited() {
@@ -66,10 +44,10 @@ read_file_limited() {
 get_yesterday() {
   local yesterday
   # Try GNU date first (Linux)
-  yesterday=$(date -d "yesterday" +%Y-%m-%d 2>/dev/null)
-  if [ $? -ne 0 ] || [ -z "$yesterday" ]; then
+  yesterday=$(date -d "yesterday" +%Y-%m-%d 2>/dev/null) || true
+  if [ -z "$yesterday" ]; then
     # Try BSD date (macOS)
-    yesterday=$(date -v-1d +%Y-%m-%d 2>/dev/null)
+    yesterday=$(date -v-1d +%Y-%m-%d 2>/dev/null) || true
   fi
   printf '%s' "$yesterday"
 }
@@ -132,7 +110,7 @@ fi
 # --- Auto-delegation reminder (compact) ---
 DELEGATION="Auto-delegation: fix/build->builder | explain->explainer | ask/discuss->ask | audit->security | deploy->devops | design->architect | brainstorm->innovator | workflow/process->guide"
 
-# --- Compose the full system message as real multi-line text ---
+# --- Compose the full system message ---
 HEADER="${VERSION} | ${STATUS}. ${HINT}${IDEA_INFO} | ${DELEGATION}"
 
 if [ -n "$MEMORY_BLOCK" ]; then
@@ -144,7 +122,5 @@ else
   FULL_MESSAGE="${HEADER}"
 fi
 
-# --- JSON-escape and output ---
-ESCAPED=$(printf '%s' "$FULL_MESSAGE" | json_escape_stdin)
-
-echo "{\"systemMessage\": \"${ESCAPED}\"}"
+# --- Output via safe JSON helper ---
+json_msg "$FULL_MESSAGE"
