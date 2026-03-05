@@ -17,8 +17,12 @@ Config aus `~/.claude/cwe.local.md` lesen:
 ```yaml
 bookstack:
   url: https://<your-bookstack-host>
-  token: <your-api-token>
+  token: <token-id>:<token-secret>
 ```
+
+**Wichtig:** BookStack Token besteht aus zwei Teilen — Token ID und Token Secret.
+Format: `<Token-ID>:<Token-Secret>` (zu finden unter Profil → API Tokens).
+Beispiel: `abc123xyz:secretvalue456`
 
 ```bash
 BS_URL=$(grep -A2 'bookstack:' ~/.claude/cwe.local.md | grep 'url:' | awk '{print $2}')
