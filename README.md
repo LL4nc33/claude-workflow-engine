@@ -105,7 +105,8 @@ CWE is a **Claude Code plugin** that turns a single AI assistant into a team of 
 | `/cwe:help`        | Full documentation                                             |
 | `/cwe:screenshot`  | Clipboard screenshot capture + analysis (WSL2, macOS, Linux)   |
 | `/cwe:web-research` | Web search + scraping (SearXNG, Firecrawl, trafilatura)       |
-| `/cwe:gitea`       | Privater Git-Mirror (push, list, create, delete, clone, status) |
+| `/cwe:gitea`       | Privater Git-Mirror (push, ssh-push, list, create, delete, clone, status) |
+| `/cwe:docs`        | Dokumentationen auf BookStack hochladen und verwalten |
 
 ### Agent Commands
 

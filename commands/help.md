@@ -43,7 +43,8 @@ Natural language orchestration for spec-driven development.
 | `/cwe:guide` | Process improvement, standards discovery |
 | `/cwe:screenshot` | Clipboard screenshot capture + analysis |
 | `/cwe:web-research` | Web search + scraping (SearXNG, Firecrawl) |
-| `/cwe:gitea` | Privater Git-Mirror (push, list, create, delete, clone, status) |
+| `/cwe:gitea` | Privater Git-Mirror (push, ssh-push, list, create, delete, clone, status) |
+| `/cwe:docs` | Dokumentationen auf BookStack hochladen und verwalten |
 
 ## Auto-Delegation
 

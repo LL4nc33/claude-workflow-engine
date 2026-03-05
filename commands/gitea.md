@@ -118,6 +118,65 @@ Klont ein Repo von Gitea.
 git clone "https://$GITEA_USER:$GITEA_PASS@<host>/$GITEA_USER/<name>.git"
 ```
 
+### `ssh-push` (für große Repos / LFS)
+
+Pushed das aktuelle Git-Repo ueber SSH statt HTTPS. Ideal fuer grosse Repos oder wenn Git LFS verwendet wird.
+
+**Voraussetzung:** SSH-Key muss auf dem Gitea-Server hinterlegt sein.
+
+**Zusaetzliche Config** (optional, in `~/.claude/cwe.local.md`):
+
+```yaml
+gitea:
+  url: https://<your-gitea-host>
+  username: <your-username>
+  password: <your-password>
+  ssh_host: <your-gitea-host>   # Hostname fuer SSH (ohne https://)
+  ssh_port: 22                  # SSH-Port (Default: 22)
+```
+
+**Ablauf:**
+
+1. Pruefe ob aktuelles Verzeichnis ein Git-Repo ist
+2. Bestimme Repo-Name (aus `$ARGUMENTS` oder Verzeichnisname)
+3. Pruefe ob SSH-Key vorhanden ist:
+   ```bash
+   ssh-keygen -l -f ~/.ssh/id_rsa 2>/dev/null || ssh-keygen -l -f ~/.ssh/id_ed25519 2>/dev/null
+   ```
+   Falls kein Key: Zeige Hinweis "Kein SSH-Key gefunden. Erstelle einen mit: ssh-keygen -t ed25519"
+4. Teste SSH-Verbindung zum Gitea-Server:
+   ```bash
+   ssh -p <ssh_port> -o ConnectTimeout=5 -o StrictHostKeyChecking=accept-new git@<ssh_host> 2>&1
+   ```
+5. Pruefe ob Repo auf Gitea existiert (via API wie bei `push`), erstelle es falls nicht
+6. Pruefe ob `gitea-ssh` Remote existiert:
+   ```bash
+   git remote get-url gitea-ssh 2>/dev/null
+   ```
+   Falls nicht → hinzufuegen:
+   ```bash
+   git remote add gitea-ssh "ssh://git@<ssh_host>:<ssh_port>/<user>/<repo>.git"
+   ```
+   Falls URL nicht stimmt → aktualisieren:
+   ```bash
+   git remote set-url gitea-ssh "ssh://git@<ssh_host>:<ssh_port>/<user>/<repo>.git"
+   ```
+7. Push:
+   ```bash
+   git push gitea-ssh --all
+   git push gitea-ssh --tags
+   ```
+8. Falls LFS vorhanden:
+   ```bash
+   git lfs push gitea-ssh --all 2>/dev/null
+   ```
+9. Zeige Erfolg: Remote-URL, Branches, Tags, LFS-Objekte (falls vorhanden)
+
+**Fehlerbehandlung SSH:**
+- **Permission denied:** "SSH-Key nicht auf Gitea-Server hinterlegt. Gehe zu: $GITEA_URL/user/settings/keys"
+- **Connection refused:** "SSH-Verbindung fehlgeschlagen. Pruefe ssh_host und ssh_port in ~/.claude/cwe.local.md"
+- **Host key verification failed:** Passiert beim ersten Verbinden — wird automatisch mit `StrictHostKeyChecking=accept-new` akzeptiert
+
 ### `status`
 
 Zeigt ob das aktuelle Repo einen `gitea` Remote hat und ob es aktuell ist.

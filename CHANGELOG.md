@@ -21,7 +21,10 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `docs/plans/` removed from repo (session-specific, added to `.gitignore`)
 
 ### Added
-- `/cwe:gitea` command: Privater Git-Mirror auf Gitea — push, list, create, delete, clone, status (config via `~/.claude/cwe.local.md`)
+- `/cwe:gitea` command: Privater Git-Mirror auf Gitea — push, ssh-push, list, create, delete, clone, status (config via `~/.claude/cwe.local.md`)
+- `/cwe:gitea ssh-push`: SSH-basierter Push für große Repos und Git LFS
+- `/cwe:docs` command: Dokumentationen auf BookStack hochladen und verwalten (upload, upload-dir, list, create-book, create-chapter, search, delete)
+- `skills/bookstack/SKILL.md`: BookStack REST API Referenz (Auth, Endpunkte, curl-Snippets, Fehlerbehandlung)
 - `.gitattributes`: Enforces LF line endings for `*.sh` and `*.py` files
 - Intent-router keywords: `architektur`, `systemdesign`, `migration`, `dokument`, `analysier`, `vergleich`, `deploy` (without -ment), `schwachstell`, `brainstorm` (without -ing), and many more
 
