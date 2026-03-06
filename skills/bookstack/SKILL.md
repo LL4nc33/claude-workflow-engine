@@ -47,6 +47,43 @@ Jeder Request benoetigt:
 | Pages | `/api/pages/{id}` | GET, PUT, DELETE |
 | Search | `/api/search` | GET |
 
+## Bewährte Vorgehensweise
+
+### Stil deiner Docs anpassen (WICHTIG)
+
+Bevor du Pages erstellst: **schaue dir bestehende Pages des Users an** und übernimm deren Stil.
+
+```bash
+# Bestehende Page als Stil-Referenz holen
+curl -s "$BS_URL/api/pages/<id>" \
+  -H "Authorization: Token $BS_TOKEN" | python3 -c "
+import sys, json, re
+d = json.load(sys.stdin)
+html = d.get('html', '')
+text = re.sub(r'<[^>]+>', ' ', html)
+print(re.sub(r'\s+', ' ', text).strip()[:2000])
+"
+```
+
+Typische Stile in Homelab-Wikis:
+- **Kompakt** — kurze Übersichtstabelle (`Info | Wert`) oben
+- **Praxisorientiert** — direkt Befehle, Ports, Konfiguration
+- **Keine Kapitel** — Pages direkt im Buch ohne Zwischenschicht
+- **Auf Deutsch** mit Sections wie `Übersicht`, `Installation`, `Zugriff`, `Wartung`
+
+### Pages ohne Kapitel erstellen (empfohlen)
+
+Pages immer direkt mit `book_id` erstellen, **ohne** `chapter_id` — außer der User fragt explizit nach Kapiteln:
+
+```bash
+curl -s -X POST "$BS_URL/api/pages" \
+  -H "Authorization: Token $BS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d "{\"book_id\": $BOOK_ID, \"name\": \"$TITLE\", \"markdown\": \"$CONTENT\"}"
+```
+
+**WICHTIG:** `chapter_id: 0` zum Entfernen eines Kapitels funktioniert NICHT — die Page verliert dabei auch ihre `book_id` und wird unsichtbar. Pages immer neu erstellen statt verschieben.
+
 ## Snippets
 
 ### Pages erstellen
@@ -58,7 +95,7 @@ curl -s -X POST "$BS_URL/api/pages" \
   -d "{\"book_id\": $BOOK_ID, \"chapter_id\": $CHAPTER_ID, \"name\": \"$TITLE\", \"markdown\": \"$CONTENT\"}"
 ```
 
-`chapter_id` ist optional. Bevorzugtes Format: `markdown` (alternativ: `html`).
+`chapter_id` ist optional — weglassen für Pages direkt im Buch. Bevorzugtes Format: `markdown` (alternativ: `html`).
 
 ### Pages aktualisieren
 
@@ -126,6 +163,49 @@ for r in json.load(sys.stdin).get('data', []):
 ```bash
 curl -s -X DELETE "$BS_URL/api/pages/$PAGE_ID" \
   -H "Authorization: Token $BS_TOKEN"
+```
+
+## Python-Upload-Pattern (empfohlen für mehrere Pages)
+
+Für mehrere Pages in einem Durchgang — bewährtes Pattern:
+
+```python
+import json, subprocess
+
+BS_URL = "https://<your-bookstack-host>"
+BS_TOKEN = "<token-id>:<token-secret>"
+BOOK_ID = 123
+
+def upload(title, content, chapter_id=None):
+    payload = {"book_id": BOOK_ID, "name": title, "markdown": content}
+    if chapter_id:
+        payload["chapter_id"] = chapter_id
+    r = subprocess.run([
+        "curl", "-s", "-X", "POST", f"{BS_URL}/api/pages",
+        "-H", f"Authorization: Token {BS_TOKEN}",
+        "-H", "Content-Type: application/json",
+        "-d", json.dumps(payload)
+    ], capture_output=True, text=True)
+    d = json.loads(r.stdout)
+    if "id" in d:
+        print(f"OK [{d['id']}] {d['name']}")
+    else:
+        print(f"ERR {d}")
+
+upload("Übersicht", "## Übersicht\n\n| Info | Wert |\n...")
+upload("Commands", "## Commands\n\n| Command | Beschreibung |\n...")
+```
+
+Credentials aus `~/.claude/cwe.local.md` lesen:
+
+```python
+import subprocess, re
+
+def get_config():
+    content = open('/home/' + subprocess.getoutput('whoami') + '/.claude/cwe.local.md').read()
+    url = re.search(r'bookstack:.*?url:\s*(\S+)', content, re.DOTALL)
+    token = re.search(r'bookstack:.*?token:\s*(\S+)', content, re.DOTALL)
+    return url.group(1), token.group(1)
 ```
 
 ## Markdown-Verarbeitung
