@@ -4,6 +4,8 @@ description: Bug investigation and implementation expert. Use PROACTIVELY when f
 tools: Read, Write, Edit, Bash, Grep, Glob, mcp__plugin_serena_serena__find_referencing_symbols, mcp__plugin_serena_serena__replace_symbol_body, mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__get_symbols_overview
 skills: [auto-delegation, quality-gates]
 memory: project
+permissionMode: acceptEdits
+maxTurns: 50
 ---
 
 # Builder Agent

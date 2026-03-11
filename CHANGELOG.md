@@ -7,6 +7,44 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.7.0] — 2026-03-11 (Multi-Terminal + Feature Alignment)
+
+### Added — Multi-Terminal Parallel Development (Paket 4)
+- `/cwe:autopilot` command: Autonomous task loop — sync, find TODOs, execute, commit, push
+- `/cwe:coordinate` command: Team-lead coordination — fetch, review commits, dispatch handoffs
+- `/cwe:check-handoff` command: Read and summarize pending handoff entries
+- `/cwe:handoff` command: Write structured handoff entries, commit + push
+- `/cwe:qa-merge` command: QA-verified merge of terminal branches to main
+- `skills/multi-terminal/SKILL.md`: Multi-Terminal reference (handoff protocol, entry format, presets)
+- `templates/multi-terminal/`: Terminal prompt templates, handoff file templates, README
+- `hooks/scripts/handoff-sync.py`: Entry-count sync from other terminal branches (UserPromptSubmit)
+- `hooks/scripts/mt-session-init.py`: Worktree detection + handoff context injection (SessionStart)
+- Multi-Terminal setup integrated into `/cwe:init` (Presets: 2T, 3T, 4T, Custom)
+- Branch-detection guard: MT hooks silently skip when not in `t\d+-` worktree
+
+### Added — Hook Events Modernization (Paket 1)
+- `SessionEnd` event: `session-stop.sh` now fires on actual session end (not every turn)
+- `SubagentStart` event: `subagent-start.sh` logs agent start to daily log
+- `hooks/scripts/subagent-start.sh`: New hook script for agent start observability
+
+### Changed — Hook Events (Paket 1)
+- `session-stop.sh` moved from `Stop` → `SessionEnd` (fires once at session end, not every turn)
+- `Stop` event now only contains `idea-flush.sh` (needs per-turn checking)
+
+### Changed — Agent Memory Scopes (Paket 2)
+- `guide` agent: `memory: project` → `memory: user` (workflow patterns are cross-project)
+- `innovator` agent: `memory: project` → `memory: user` (creative ideas are cross-project)
+- `security` agent: `memory: project` → `memory: user` (security patterns apply everywhere)
+
+### Added — Agent Frontmatter (Paket 3)
+- All 10 agents now have `permissionMode` and `maxTurns` frontmatter fields
+- READ-ONLY agents (ask, explainer, guide, security, researcher, architect): `permissionMode: plan`
+- Edit agents (builder, devops): `permissionMode: acceptEdits`
+- Mixed agents (quality, innovator): `permissionMode: default`
+- Turn limits: 30 (ask, explainer, guide, innovator), 40 (security, researcher, architect, quality), 50 (builder, devops)
+
+---
+
 ## [0.6.2] — 2026-02-23
 
 ### Fixed

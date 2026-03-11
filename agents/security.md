@@ -3,7 +3,9 @@ name: security
 description: Security audit and vulnerability expert. Use PROACTIVELY when reviewing authentication, authorization, input validation, secrets management, dependency vulnerabilities, or any OWASP Top 10 concerns.
 tools: Read, Grep, Glob, Bash(trivy:*), Bash(grype:*), Bash(semgrep:*), Bash(nmap:*), Bash(curl:*), mcp__plugin_serena_serena__search_for_pattern, mcp__plugin_serena_serena__find_symbol
 skills: [quality-gates]
-memory: project
+memory: user
+permissionMode: plan
+maxTurns: 40
 ---
 
 # Security Agent

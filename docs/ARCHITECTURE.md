@@ -29,7 +29,12 @@ code-workspace-engine/
 │   ├── screenshot.md        # Screenshot capture
 │   ├── web-research.md      # Web search + scraping
 │   ├── gitea.md             # Gitea Git-Mirror management (incl. SSH)
-│   └── docs.md              # BookStack documentation upload
+│   ├── docs.md              # BookStack documentation upload
+│   ├── autopilot.md         # Multi-terminal autonomous task loop
+│   ├── coordinate.md        # Multi-terminal team-lead coordination
+│   ├── check-handoff.md     # Read pending handoff entries
+│   ├── handoff.md           # Write handoff to another terminal
+│   └── qa-merge.md          # QA-verified merge to main
 ├── skills/                  # Proactive skills (auto-activated)
 │   ├── auto-delegation/     # Routes requests to agents
 │   ├── agent-detection/     # Assigns agents to tasks
@@ -39,7 +44,8 @@ code-workspace-engine/
 │   ├── health-dashboard/    # Project health overview
 │   ├── project-docs/        # Documentation maintenance
 │   ├── web-research/        # Web search + scraping coordination
-│   └── delegator/           # Multi-agent decomposition + dispatch
+│   ├── delegator/           # Multi-agent decomposition + dispatch
+│   └── multi-terminal/      # Multi-terminal parallel development
 ├── hooks/                   # Event-driven automation
 │   ├── hooks.json           # Hook event registrations
 │   └── scripts/             # Shell/Python scripts for hooks
@@ -52,9 +58,12 @@ code-workspace-engine/
 │       ├── commit-format.sh # Conventional Commits enforcement
 │       ├── branch-naming.sh # Branch naming validation
 │       ├── session-start.sh # Memory injection, version display
-│       ├── session-stop.sh  # Daily log entry, cleanup
+│       ├── session-stop.sh  # Daily log entry, cleanup (SessionEnd)
+│       ├── subagent-start.sh# Agent start logging
 │       ├── subagent-stop.sh # Agent execution logging
-│       └── idea-flush.sh    # Flush idea backlog
+│       ├── idea-flush.sh    # Flush idea backlog
+│       ├── handoff-sync.py  # Multi-terminal handoff sync
+│       └── mt-session-init.py # Multi-terminal worktree detection
 ├── .claude/rules/           # Auto-loaded coding standards
 │   ├── global-standards.md
 │   ├── api-standards.md
@@ -64,7 +73,8 @@ code-workspace-engine/
 │   ├── docs/                # Documentation templates
 │   ├── memory/              # Memory file templates
 │   ├── specs/               # Spec templates
-│   └── statusline.py        # Statusline script
+│   ├── statusline.py        # Statusline script
+│   └── multi-terminal/      # MT terminal prompts, handoff templates
 ├── .gitattributes           # Git LFS and line-ending config
 └── docs/                    # Plugin documentation
 ```
@@ -76,7 +86,9 @@ Each agent is a Markdown file with YAML frontmatter defining:
 - **description** — When to use (matched by auto-delegation)
 - **tools** — Allowed tool access (principle of least privilege)
 - **skills** — Skills the agent can invoke
-- **memory** — Memory access level
+- **memory** — Memory access level (`project` or `user`)
+- **permissionMode** — Permission enforcement (`plan`, `acceptEdits`, `default`)
+- **maxTurns** — Maximum turn limit per invocation
 
 ### Auto-Delegation Flow
 
@@ -109,14 +121,19 @@ Hooks are event-driven shell scripts registered in `hooks/hooks.json`.
 
 | Event | Trigger | Scripts |
 |-------|---------|---------|
-| `UserPromptSubmit` | User sends a message | `intent-router.py` — keyword-based agent routing (runs first in chain) |
-| `UserPromptSubmit` | User sends a message | `url-scraper.py` — auto-scrapes non-YouTube URLs (Firecrawl → trafilatura → curl) |
+| `UserPromptSubmit` | User sends a message | `intent-router.py` — keyword-based agent routing |
+| `UserPromptSubmit` | User sends a message | `url-scraper.py` — auto-scrapes non-YouTube URLs |
 | `UserPromptSubmit` | User sends a message | `idea-observer.sh` — captures ideas to JSONL |
-| `UserPromptSubmit` | User sends a message | `yt-transcript.sh` — fetches YouTube transcript + metadata |
+| `UserPromptSubmit` | User sends a message | `yt-transcript.sh` — fetches YouTube transcript |
+| `UserPromptSubmit` | User sends a message | `handoff-sync.py` — multi-terminal handoff sync |
 | `SessionStart` | Session begins | `session-start.sh` — Memory injection, version display |
-| `Stop` | Session ends | `session-stop.sh` — daily log entry, cleanup |
+| `SessionStart` | Session begins | `mt-session-init.py` — multi-terminal worktree detection |
+| `Stop` | Every turn | `idea-flush.sh` — flush idea backlog |
+| `SessionEnd` | Session ends | `session-stop.sh` — daily log entry, cleanup |
+| `SubagentStart` | Agent starts | `subagent-start.sh` — logs agent start |
 | `SubagentStop` | Agent completes | `subagent-stop.sh` — logs agent execution |
-| `PreToolUse` | Before tool execution | `safety-gate` (prompt-based) — scans for secrets |
+| `PreCompact` | Before compaction | `session-stop.sh` — save daily log before compact |
+| `PreToolUse` | Before Bash | `safety-gate.sh`, `commit-format.sh`, `branch-naming.sh` |
 
 ### Hook Data Flow
 
@@ -203,3 +220,29 @@ Plan → Spec → Tasks → Build → Review
 3. **Tasks** — Break spec into tasks with dependencies
 4. **Build** — Wave execution (up to 3 parallel agents)
 5. **Review** — Quality gates before release
+
+## Multi-Terminal Parallel Development
+
+CWE supports parallel development across multiple Claude Code terminals using git worktrees.
+
+### Architecture
+
+Each terminal operates in its own git worktree with a dedicated branch (`t{N}-{role}`). Terminals communicate via structured handoff files in `shared/handoff/`.
+
+### Components
+
+- **Presets** — 2T (Dev+QA), 3T (Frontend+Backend+QA), 4T (+Infra), Custom
+- **Handoff Protocol** — Entry-based communication with status tracking (TODO→IN PROGRESS→DONE)
+- **Sync Hook** — `handoff-sync.py` merges new entries from other branches on each prompt
+- **Session Init** — `mt-session-init.py` detects worktree context and shows pending handoffs
+- **Branch Detection** — All MT hooks silently skip when branch doesn't match `t\d+-` pattern
+
+### Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/cwe:autopilot` | Autonomous sync→work→handoff→push loop |
+| `/cwe:coordinate` | Team-lead overview and task dispatch |
+| `/cwe:check-handoff` | Read pending handoffs for this terminal |
+| `/cwe:handoff` | Write structured handoff entry |
+| `/cwe:qa-merge` | QA-verified merge to main |

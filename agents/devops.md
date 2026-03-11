@@ -4,6 +4,8 @@ description: Infrastructure and deployment expert. Use PROACTIVELY when working 
 tools: Read, Write, Edit, Bash, Grep, Glob
 skills: [auto-delegation, quality-gates]
 memory: project
+permissionMode: acceptEdits
+maxTurns: 50
 ---
 
 # DevOps Agent

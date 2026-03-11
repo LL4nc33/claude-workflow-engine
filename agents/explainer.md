@@ -4,6 +4,8 @@ description: Explanation and learning expert. Use PROACTIVELY when the user asks
 tools: Read, Grep, Glob, mcp__plugin_serena_serena__get_symbols_overview, mcp__plugin_serena_serena__find_symbol
 skills: []
 memory: project
+permissionMode: plan
+maxTurns: 30
 ---
 
 # Explainer Agent

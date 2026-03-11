@@ -10,7 +10,7 @@ Display comprehensive help for CWE and all installed plugins.
 ## Output
 
 ```markdown
-# CWE - Code Workspace Engine v0.6.2
+# CWE - Code Workspace Engine v0.7.0
 
 Natural language orchestration for spec-driven development.
 
@@ -45,6 +45,11 @@ Natural language orchestration for spec-driven development.
 | `/cwe:web-research` | Web search + scraping (SearXNG, Firecrawl) |
 | `/cwe:gitea` | Privater Git-Mirror (push, ssh-push, list, create, delete, clone, status) |
 | `/cwe:docs` | Dokumentationen auf BookStack hochladen und verwalten |
+| `/cwe:autopilot` | Autonomous multi-terminal task loop |
+| `/cwe:coordinate` | Team-lead coordination across terminals |
+| `/cwe:check-handoff` | Read pending handoff entries |
+| `/cwe:handoff` | Write handoff to another terminal |
+| `/cwe:qa-merge` | QA-verified merge to main |
 
 ## Auto-Delegation
 

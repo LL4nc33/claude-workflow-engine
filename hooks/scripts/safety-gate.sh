@@ -95,6 +95,9 @@ while IFS= read -r file; do
       ISSUES+=("BLOCKED [certificate/key file] $file — should not be committed")
       continue
       ;;
+    .env.example|.env.example.*)
+      # Template-Dateien: absichtlich committed, kein Block
+      ;;
     .env|.env.*|*.env)
       ISSUES+=("BLOCKED [env file] $file — should be in .gitignore")
       continue

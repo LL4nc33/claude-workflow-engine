@@ -4,6 +4,8 @@ description: Quality assurance and testing expert. Use PROACTIVELY when validati
 tools: Read, Grep, Glob, Bash(jest:*), Bash(npm test*), Bash(npx nyc*), Bash(npx eslint*), mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__get_symbols_overview
 skills: [quality-gates]
 memory: project
+permissionMode: default
+maxTurns: 40
 ---
 
 # Quality Agent

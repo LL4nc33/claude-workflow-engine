@@ -4,6 +4,8 @@ description: System design and architecture expert. Use PROACTIVELY when making 
 tools: Read, Grep, Glob, WebSearch, WebFetch, mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__get_symbols_overview, mcp__plugin_serena_serena__find_referencing_symbols
 skills: [auto-delegation, quality-gates]
 memory: project
+permissionMode: plan
+maxTurns: 40
 ---
 
 # Architect Agent

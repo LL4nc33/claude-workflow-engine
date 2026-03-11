@@ -508,6 +508,110 @@ Create `.claude/rules/your-standard.md` with `paths:` frontmatter for auto-loadi
 Or add to `workflow/standards/` for project-specific conventions.
 ```
 
+## Step 3d: Multi-Terminal Development (optional)
+
+Use AskUserQuestion:
+
+**Question:** "Multi-Terminal Parallel Development einrichten?"
+**Header:** "Multi-Terminal"
+
+**Options:**
+1. "2 Terminals (Dev + QA)" — Preset A
+2. "3 Terminals (Frontend + Backend + QA)" — Preset B
+3. "4 Terminals (Frontend + Backend + Infra + QA)" — Preset C
+4. "Custom (eigene Rollen)" — User defines roles
+5. "Nein, später" — Skip
+
+### If "Nein, später": Skip to Step 4.
+
+### Preset Configuration
+
+| Preset | Branches | Handoff Files |
+|--------|----------|---------------|
+| A (2T) | `t1-dev`, `t2-qa` | `dev-qa.md` |
+| B (3T) | `t1-frontend`, `t2-backend`, `t3-qa` | `frontend-backend.md`, `frontend-qa.md`, `backend-qa.md` |
+| C (4T) | `t1-frontend`, `t2-backend`, `t3-infra`, `t4-qa` | `frontend-backend.md`, `frontend-qa.md`, `backend-qa.md`, `backend-infra.md`, `infra-qa.md` |
+| D | User-defined | Generated from role pairs |
+
+### For Custom (D): Ask the user
+- "Wie viele Terminals?" (2-6)
+- For each: "Rolle für Terminal {N}?" (e.g., api, worker, mobile)
+
+### Setup Steps (for any preset)
+
+1. **Create branches:**
+```bash
+# For each terminal:
+git branch t{N}-{role}
+```
+
+2. **Create worktrees:**
+```bash
+mkdir -p .trees
+# For each terminal:
+git worktree add .trees/t{N}-{role} t{N}-{role}
+```
+
+3. **Create shared handoff directory:**
+```bash
+mkdir -p shared/handoff
+```
+
+4. **Generate handoff files** from `${CLAUDE_PLUGIN_ROOT}/templates/multi-terminal/handoff-template.md`:
+Replace `{{SOURCE_ROLE}}`, `{{TARGET_ROLE}}`, `{{SOURCE_NUM}}`, `{{TARGET_NUM}}` placeholders.
+
+5. **Copy handoff README:**
+```bash
+cp "${CLAUDE_PLUGIN_ROOT}/templates/multi-terminal/README.md" shared/handoff/README.md
+```
+
+6. **Generate terminal prompts** from `${CLAUDE_PLUGIN_ROOT}/templates/multi-terminal/terminal-prompt.md`:
+```bash
+mkdir -p terminal-prompts
+```
+Replace `{{NUM}}`, `{{ROLE}}`, `{{ROLE_SLUG}}`, `{{AGENT_LIST}}` placeholders.
+
+Agent mapping for `{{AGENT_LIST}}`:
+- Frontend: `builder, quality, architect, explainer`
+- Backend: `builder, devops, architect, security`
+- QA: `quality, security, researcher, ask`
+- Infra: `devops, security, architect, researcher`
+- Dev (generic): `builder, quality, architect, devops`
+
+7. **Add to .gitignore:**
+```
+.trees/
+```
+
+8. **Initial commit on each branch:**
+```bash
+# For each terminal branch:
+git checkout t{N}-{role}
+git add shared/ terminal-prompts/
+git commit -m "chore: initialize multi-terminal structure for t{N}-{role}"
+git checkout main
+```
+
+9. **Show setup summary:**
+```
+Multi-Terminal Development initialized!
+
+Terminals:
+  T1: {role} → .trees/t1-{role}/
+  T2: {role} → .trees/t2-{role}/
+  ...
+
+To start a terminal:
+  cd .trees/t{N}-{role} && claude
+
+Commands:
+  /cwe:autopilot      — Autonomous task loop
+  /cwe:coordinate     — Team-lead coordination
+  /cwe:check-handoff  — Check pending handoffs
+  /cwe:handoff        — Send work to another terminal
+  /cwe:qa-merge       — QA-verified merge to main
+```
+
 ## Step 4: Success message
 
 Show completion summary:

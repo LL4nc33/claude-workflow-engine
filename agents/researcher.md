@@ -4,6 +4,8 @@ description: Analysis and documentation expert. Use PROACTIVELY when analyzing c
 tools: Read, Grep, Glob, WebSearch, WebFetch, mcp__plugin_serena_serena__search_for_pattern, mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__get_symbols_overview
 skills: [project-docs]
 memory: project
+permissionMode: plan
+maxTurns: 40
 ---
 
 # Researcher Agent

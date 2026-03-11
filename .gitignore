@@ -45,6 +45,11 @@ build/
 *.pyc
 .cache/
 
+# --- Multi-Terminal (generated in target projects) ---
+.trees/
+shared/handoff/.changelog
+terminal-prompts/
+
 # --- Tool caches ---
 .serena/
 _backup/
