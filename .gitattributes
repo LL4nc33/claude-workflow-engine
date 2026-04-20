@@ -1,3 +1,14 @@
 # Force LF for shell scripts (prevents CRLF on Windows/WSL)
 *.sh text eol=lf
 *.py text eol=lf
+
+# GitHub Linguist hints — CWE is primarily a shell-based plugin.
+# Tool scripts in scripts/ are opt-in media/content utilities — don't
+# skew the language stats toward Python.
+scripts/** linguist-vendored
+templates/statusline.py linguist-vendored
+hooks/scripts/*.py linguist-detectable=true
+
+# Documentation and plans aren't code
+docs/** linguist-documentation
+*.md linguist-detectable=false
