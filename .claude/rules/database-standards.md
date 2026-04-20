@@ -27,9 +27,9 @@ paths:
 - Staging: auto-migrate, subset seed, destructive with approval
 - Production: manual trigger, no seed, never destructive directly
 
-## GDPR Compliance
-- PII columns require review
-- Data deletion needs audit trail
+## Data Privacy (configure per-project compliance regime)
+- PII columns require review before merge
+- Data deletion needs an audit trail
 - Encryption-at-rest for sensitive columns
-- EU-only data residency for new tables
+- For regulated workloads, add a project-specific `compliance-standards.md` covering residency (GDPR EU-only, HIPAA US-BA, etc.), retention windows, and access controls
 

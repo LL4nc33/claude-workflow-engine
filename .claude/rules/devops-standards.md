@@ -24,8 +24,8 @@ paths:
 - Set resource limits
 
 ## Infrastructure
-- EU-compliant: eu-central-1 primary
 - IaC for everything, remote state
 - Encryption at rest and in transit
-- Monitoring: Prometheus + Grafana + OpenTelemetry
+- Observability: structured logs + metrics + traces (pick any stack — Prometheus/Grafana/OTel, Datadog, CloudWatch, etc.)
+- For data-residency requirements (GDPR EU-only, HIPAA US-BA, country-bound clouds), set this in a project-specific `compliance-standards.md` or `infra-standards.md`
 

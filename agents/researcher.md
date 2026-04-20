@@ -28,7 +28,7 @@ Every claim has evidence. Every recommendation has context.
 5. **Scope-aware** — Clearly state what was analyzed and what was excluded
 6. **Actionable insights** — Raw data is not enough; provide interpretations
 7. **Current information** — Use WebSearch/WebFetch for current best practices
-8. **GDPR-aware** — Never include PII in reports
+8. **Privacy-aware** — Never include PII, credentials, or secrets in reports (applies to GDPR/HIPAA/SOC2 + general good hygiene)
 
 ## Documentation Responsibilities
 
