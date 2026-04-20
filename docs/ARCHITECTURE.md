@@ -53,7 +53,7 @@ code-workspace-engine/
 │       ├── intent-router.py # Keyword-based agent routing
 │       ├── url-scraper.py   # Auto-scrape URLs (Firecrawl/trafilatura/curl)
 │       ├── idea-observer.sh # Capture ideas to JSONL
-│       ├── yt-transcript.sh # YouTube transcript + metadata
+│       ├── transcript.sh    # Transcribe (YouTube + via TScribe for IG/TikTok/Podcast)
 │       ├── safety-gate.sh   # Secret scanning pre-commit
 │       ├── commit-format.sh # Conventional Commits enforcement
 │       ├── branch-naming.sh # Branch naming validation
@@ -124,7 +124,7 @@ Hooks are event-driven shell scripts registered in `hooks/hooks.json`.
 | `UserPromptSubmit` | User sends a message | `intent-router.py` — keyword-based agent routing |
 | `UserPromptSubmit` | User sends a message | `url-scraper.py` — auto-scrapes non-YouTube URLs |
 | `UserPromptSubmit` | User sends a message | `idea-observer.sh` — captures ideas to JSONL |
-| `UserPromptSubmit` | User sends a message | `yt-transcript.sh` — fetches YouTube transcript |
+| `UserPromptSubmit` | User sends a message | `transcript.sh` — fetches YouTube transcript |
 | `UserPromptSubmit` | User sends a message | `handoff-sync.py` — multi-terminal handoff sync |
 | `SessionStart` | Session begins | `session-start.sh` — Memory injection, version display |
 | `SessionStart` | Session begins | `mt-session-init.py` — multi-terminal worktree detection |
@@ -165,13 +165,15 @@ When two or more agents are matched (e.g., "build" + "test" + "document"), the h
 2. **trafilatura** — fast article extraction, no JS
 3. **curl + html.parser** — minimal fallback
 
-Output is written to `/tmp/url-scrape-<hash>.json` and injected as a `systemMessage`. YouTube URLs are skipped (deferred to `yt-transcript.sh`).
+Output is written to `/tmp/url-scrape-<hash>.json` and injected as a `systemMessage`. YouTube URLs are skipped (deferred to `transcript.sh`).
 
-### YouTube Transcript Hook
+### Transcript Hook
 
-`hooks/scripts/yt-transcript.sh` runs on `UserPromptSubmit` when the user message contains a YouTube URL (`youtube.com` or `youtu.be`). It auto-detects the video ID, fetches the transcript and metadata (title, channel, duration).
+`hooks/scripts/transcript.sh` runs on `UserPromptSubmit` when the user message contains a YouTube URL (`youtube.com` or `youtu.be`). It auto-detects the video ID, fetches the transcript and metadata (title, channel, duration) via tubetranscript.
 
-Output is written to `/tmp/yt-transcript-<id>.json` and injected as a `systemMessage`.
+The `/cwe:transcript` command additionally supports Instagram/TikTok/Podcast URLs via a user-configured TScribe (faster-whisper) server (`tscribe_url` in `cwe-settings.yml`).
+
+Output is written to `/tmp/transcript-<id>.json` and injected as a `systemMessage`.
 
 ## Skill System
 

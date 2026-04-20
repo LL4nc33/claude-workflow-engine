@@ -5,10 +5,13 @@
 
 set -euo pipefail
 
+PY=$(command -v python3 || command -v python || true)
+[ -z "$PY" ] && exit 0
+
 TOOL_INPUT=$(cat)
 
-# Use python3 for robust JSON parsing (handles escaped quotes, newlines, heredocs)
-COMMAND=$(echo "$TOOL_INPUT" | python3 -c "
+# Use python for robust JSON parsing (handles escaped quotes, newlines, heredocs)
+COMMAND=$(echo "$TOOL_INPUT" | "$PY" -c "
 import sys, json
 try:
     data = json.load(sys.stdin)
@@ -43,7 +46,7 @@ esac
 #   git commit -m "message"
 #   git commit -m 'message'
 #   git commit -m "$(cat <<'EOF'\nmessage\nEOF\n)"
-MSG=$(echo "$COMMAND" | python3 -c "
+MSG=$(echo "$COMMAND" | "$PY" -c "
 import sys, re
 cmd = sys.stdin.read()
 

@@ -168,7 +168,15 @@ If the file already exists, update just the `currency:` line. If not, create it.
 
 CWE provides a live statusline for Claude Code showing context usage, cost, and session time.
 
-### Copy statusline script
+### Check for existing statusline
+
+```bash
+test -f "$HOME/.claude/statusline.py" && echo "EXISTS" || echo "MISSING"
+```
+
+**If EXISTS:** Do NOT overwrite — the user may have a customized statusline. Skip to configuring Claude Code settings.
+
+**If MISSING:** Copy the template:
 
 ```bash
 cp "${CLAUDE_PLUGIN_ROOT}/templates/statusline.py" "$HOME/.claude/statusline.py"
@@ -177,7 +185,7 @@ chmod +x "$HOME/.claude/statusline.py"
 
 ### Configure Claude Code settings
 
-Add the statusline to the user's Claude Code `settings.json`:
+Add the statusline to the user's Claude Code `settings.json` (safe to run even if already configured):
 
 ```bash
 claude config set --global status_line 'python3 ~/.claude/statusline.py'
@@ -218,6 +226,144 @@ curl -s --max-time 3 "${SEARXNG_URL:-http://localhost:8080}/search?q=test&format
 ```
 
 ---
+
+## Step 1g: Configure Transcript Service (optional)
+
+CWE's `/cwe:transcript` command supports Instagram/TikTok/Podcast URLs via a user-provided [TScribe](https://github.com/transcribe-tools/tscribe)-compatible faster-whisper API. YouTube always works via tubetranscript fallback (no config needed).
+
+Ask the user with AskUserQuestion:
+
+```
+Question: "Hast du einen TScribe-kompatiblen Whisper-Server fuer Instagram/TikTok/Podcast Transkripte?"
+Header: "Transcript"
+Options:
+  1. "Ja, TScribe-URL eintragen" - User gibt eigene URL an
+  2. "Nein, nur YouTube" - tubetranscript Fallback, skip TScribe
+```
+
+### If "Ja":
+
+Ask for URL (example: `https://scribe.example.com` or `http://localhost:8000`).
+
+Write/update `.claude/cwe-settings.yml`:
+```yaml
+tscribe_url: <user-url>
+```
+
+## Step 1h: Configure Document Tools (optional)
+
+### Stirling PDF (for /cwe:pdf)
+
+CWE's `/cwe:pdf` command reads PDFs by converting pages to images via [Stirling PDF API](https://github.com/Stirling-Tools/Stirling-PDF) (local, open-source). Without it, `/cwe:pdf` is disabled.
+
+```
+Question: "Hast du einen Stirling PDF Server fuer /cwe:pdf?"
+Header: "PDF Reader"
+Options:
+  1. "Ja, URL eintragen" - Stirling ist erreichbar
+  2. "Nein, spaeter" - /cwe:pdf wird nicht funktionieren bis konfiguriert
+  3. "Docker starten?" - Start stirlingtools/stirling-pdf via Docker
+```
+
+### If "Ja" — ask for URL (default: `http://localhost:8080`).
+
+Write/update `.claude/cwe-settings.yml`:
+```yaml
+stirling_pdf_url: http://localhost:8080
+```
+
+### If "Docker starten" — suggest:
+```bash
+docker run -d --name stirling-pdf -p 8080:8080 stirlingtools/stirling-pdf:latest
+```
+Then write the URL as `http://localhost:8080`.
+
+## Step 1i: Configure Media Generation (optional)
+
+CWE's media skills (`/cwe:image`, `/cwe:video`, `/cwe:faceswap`, `/cwe:headswap`, `/cwe:upscale`) require API keys.
+
+```
+Question: "Media-Generation-Tools einrichten?"
+Header: "Media Tools"
+Options:
+  1. "Ja, API-Keys eintragen" - OpenRouter + MagicHour keys setup
+  2. "Nur OpenRouter (Image only)" - Nur /cwe:image funktioniert
+  3. "Nein, spaeter" - Skills installiert aber bis zur Konfiguration nicht nutzbar
+```
+
+### If configuring keys:
+
+Check if `${CLAUDE_PLUGIN_ROOT}/scripts/media-keys.sh` already exists. If yes, ask before overwriting.
+
+Ask for keys (without echoing to terminal — use masked input if possible):
+- **OpenRouter** (for `/cwe:image`): Sign up at https://openrouter.ai/settings/keys
+- **MagicHour** (for video/faceswap/etc.): Sign up at https://magichour.ai/
+
+Write to `${CLAUDE_PLUGIN_ROOT}/scripts/media-keys.sh`:
+```bash
+#!/usr/bin/env bash
+# Media Tools API Keys — NEVER COMMIT (already in .gitignore)
+export OPENROUTER_API_KEY="<user-input>"
+export MAGICHOUR_API_KEY="<user-input>"
+```
+
+Set file permissions: `chmod 600 scripts/media-keys.sh`.
+
+## Step 1j: Configure Remotion (optional, for /cwe:motion)
+
+```
+Question: "Remotion-Projekt fuer /cwe:motion konfigurieren?"
+Header: "Motion Graphics"
+Options:
+  1. "Bestehendes Projekt nutzen" - Pfad zu Remotion-Projekt angeben
+  2. "Neues Projekt anlegen" - npx create-video@latest in ./remotion/
+  3. "Nein, spaeter" - /cwe:motion wird nicht funktionieren bis konfiguriert
+```
+
+### If existing:
+```yaml
+remotion_project_dir: /path/to/remotion-project
+```
+
+### If new:
+```bash
+npx create-video@latest remotion
+```
+Then:
+```yaml
+remotion_project_dir: ./remotion
+```
+
+## Step 1k: Configure Gitea Mirror (optional)
+
+`/cwe:gitea` pushes to a private Gitea mirror. See `commands/gitea.md` for config format (needs `~/.claude/cwe.local.md` with `gitea:` block — not in CWE settings to keep credentials out of cwe-settings.yml).
+
+```
+Question: "Gitea-Mirror fuer /cwe:gitea einrichten?"
+Header: "Gitea"
+Options:
+  1. "Ja, jetzt konfigurieren" - Guide user to create ~/.claude/cwe.local.md
+  2. "Nein, spaeter" - Skip (Docs in commands/gitea.md)
+```
+
+### If yes:
+
+Show template and ask user to fill it in:
+```yaml
+# ~/.claude/cwe.local.md
+---
+gitea:
+  url: https://<your-gitea-host>
+  user: <username>
+  password: <token-or-app-password>
+  ssh_host: <your-gitea-host>
+  ssh_port: 22
+bookstack:
+  url: https://<your-bookstack-host>
+  token_id: <token-id>
+  token_secret: <token-secret>
+---
+```
 
 ## Step 2: Check existing workflow setup
 

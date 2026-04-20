@@ -7,6 +7,57 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.8.1] — 2026-04-21 (PDF + Screenshot-Flip + Init Extensions + Docs)
+
+### Added
+- `/cwe:pdf`: Read PDFs by converting pages to images via configurable Stirling PDF API (requires user-provided URL in `.claude/cwe-settings.yml`)
+- `/cwe:screenshot`: Flipped from Bash-inline to `scripts/screenshot.py` — detects WSL2/macOS/Wayland/X11, reads clipboard, returns JSON (59 → 35 lines Markdown, deterministic logic in Python)
+
+### Changed
+- `/cwe:init` expanded with 5 new optional setup steps: Transcript (TScribe URL), Stirling PDF, Media Keys (OpenRouter + MagicHour), Remotion project dir, Gitea/BookStack
+- `/cwe:init` now detects existing `~/.claude/statusline.py` and does not overwrite it
+- `templates/statusline.py`: Compact one-line format (ctx | usage | time)
+- Hook scripts (`commit-format.sh`, `transcript.sh`) auto-detect `python3` or `python` via `$(command -v python3 || command -v python)` — fixes environments where only one binary exists
+- README: Updated badges to show 17 skills, 25 commands, version 0.8.1; added Media Generation section to command tables
+- SVG header: Updated version label from v0.6.2 to v0.8.1
+- CHANGELOG, ARCHITECTURE, USER-GUIDE: All yt-transcript references renamed to transcript
+
+### Security
+- Private research commands (doj-scrape, doj-search, newsroom) added to `.gitignore` — they stay local only
+
+---
+
+## [0.8.0] — 2026-04-21 (Media Tools + Content Tools)
+
+### Added — Media Generation
+- `scripts/_media_lib.py`: Shared helpers (JSON output, API-key loading, OpenRouter + MagicHour HTTP, job polling, downloads)
+- `/cwe:image`: Text-to-Image + Image-Editing via Gemini on OpenRouter (scripts/gemini_image.py)
+- `/cwe:faceswap`: Face Swap for photos and videos (scripts/magichour_faceswap.py)
+- `/cwe:headswap`: Head Swap for photos (scripts/magichour_headswap.py)
+- `/cwe:upscale`: Image Upscaler 2x/4x (scripts/magichour_upscale.py)
+- `/cwe:video`: Text/Image-to-Video (scripts/magichour_video.py)
+- `/cwe:motion`: React-based Motion Graphics via Remotion (skills/motion/SKILL.md — reads remotion_project_dir from settings)
+- API keys live in `scripts/media-keys.sh` (gitignored); `/cwe:init` configures them
+
+### Added — Content Tools
+- `/cwe:transcript` (renamed from `/cwe:yt-transcript`): Audio/Video transcription for YouTube + any URL via user-configured TScribe (faster-whisper) server. tubetranscript remains as YouTube fallback when TScribe is unreachable.
+- `intent-router.py`: Now also routes Instagram/TikTok URLs to `/cwe:transcript`; added routing for `pdf`, `image`, `video`, `upscale`, `faceswap`, `headswap` commands
+
+### Changed
+- Renamed `hooks/scripts/yt-transcript.sh` → `hooks/scripts/transcript.sh`
+- Removed all hardcoded private infrastructure — all external services (Stirling PDF, TScribe, SearXNG, Firecrawl, Remotion) now read from `.claude/cwe-settings.yml` with graceful fallbacks
+
+---
+
+## [0.7.1] — 2026-04-20 (Multi-OS Portability + Stability)
+
+### Fixed
+- **macOS compatibility**: All hooks (`branch-naming.sh`, `safety-gate.sh`, `subagent-start.sh`, `subagent-stop.sh`) replaced `grep -oP` (GNU PCRE) with `grep -oE` (POSIX extended regex) — fixes silent breakage on macOS BSD grep
+- `session-start.sh`: Version no longer hardcoded, reads from `.claude-plugin/plugin.json`
+- `handoff-sync.py`: `git fetch` throttled to 60s intervals (was firing on every prompt); output now uses `systemMessage` for consistency with other hooks
+
+---
+
 ## [0.7.0] — 2026-03-11 (Multi-Terminal + Feature Alignment)
 
 ### Added — Multi-Terminal Parallel Development (Paket 4)

@@ -971,11 +971,11 @@ Keyword-based agent routing that runs before the LLM sees the prompt. Matches us
 
 Automatically detects non-YouTube URLs in user messages and scrapes their content using Firecrawl (with trafilatura fallback). The scraped content is injected as `systemMessage` so Claude can reference it directly.
 
-### UserPromptSubmit: YT Transcript
+### UserPromptSubmit: Transcript
 
-**Script:** `hooks/scripts/yt-transcript.sh`
+**Script:** `hooks/scripts/transcript.sh`
 
-Detects YouTube URLs (`youtube.com`, `youtu.be`) in user messages and extracts the video transcript. The transcript is injected as `systemMessage` for immediate use.
+Detects YouTube URLs (`youtube.com`, `youtu.be`) in user messages and extracts the video transcript via tubetranscript. The transcript is injected as `systemMessage` for immediate use. For non-YouTube URLs (Instagram, TikTok, Podcasts), use `/cwe:transcript` which routes through a user-configured TScribe server.
 
 ### SubagentStop: Agent Logging
 
@@ -1035,7 +1035,7 @@ User works
     ├── idea-observer.sh → Ideas captured
     ├── intent-router.py → Agent routing
     ├── url-scraper.py → URL content scraped
-    ├── yt-transcript.sh → YouTube transcript fetched
+    ├── transcript.sh → Transcript fetched
     ├── safety-gate.sh → Commits checked
     ├── commit-format.sh → Format validated
     ├── branch-naming.sh → Branch validated
@@ -1283,7 +1283,7 @@ code-workspace-engine/
 │       ├── idea-flush.sh       # Idea Export
 │       ├── intent-router.py    # Keyword-based Agent Routing
 │       ├── url-scraper.py      # Auto URL Scraping
-│       ├── yt-transcript.sh    # YouTube Transcript Extraction
+│       ├── transcript.sh       # Transcript Extraction (YouTube + optional TScribe)
 │       ├── subagent-stop.sh    # Agent Logging
 │       ├── safety-gate.sh      # Pre-Commit Scanning
 │       ├── commit-format.sh    # Conventional Commits

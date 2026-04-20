@@ -4,8 +4,10 @@
   <br><br>
 
   <a href="#quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_Steps-6366f1?style=flat-square" alt="Quick Start"></a>
-  <img src="https://img.shields.io/badge/version-0.7.0-8b5cf6?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.7.1-8b5cf6?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/agents-10-6366f1?style=flat-square" alt="Agents">
+  <img src="https://img.shields.io/badge/skills-17-8b5cf6?style=flat-square" alt="Skills">
+  <img src="https://img.shields.io/badge/commands-25-6366f1?style=flat-square" alt="Commands">
   <img src="https://img.shields.io/badge/claude_code-plugin-8b5cf6?style=flat-square" alt="Claude Code Plugin">
   <img src="https://img.shields.io/badge/license-MIT-6366f1?style=flat-square" alt="License">
 
@@ -107,6 +109,19 @@ CWE is a **Claude Code plugin** that turns a single AI assistant into a team of 
 | `/cwe:web-research` | Web search + scraping (SearXNG, Firecrawl, trafilatura)       |
 | `/cwe:gitea`       | Privater Git-Mirror (push, ssh-push, list, create, delete, clone, status) |
 | `/cwe:docs`        | Dokumentationen auf BookStack hochladen und verwalten |
+| `/cwe:transcript`  | Transkription (YouTube, Instagram, TikTok, Podcast via faster-whisper) |
+| `/cwe:pdf`         | PDF lesen (Stirling PDF → Bilder → visuelle Analyse) |
+
+### Media Generation
+
+|      Command       |                            Purpose                             |
+|--------------------|----------------------------------------------------------------|
+| `/cwe:image`       | Bilder generieren (Gemini via OpenRouter)                      |
+| `/cwe:video`       | Videos generieren (MagicHour Text/Image-to-Video)              |
+| `/cwe:faceswap`    | Face Swap für Fotos oder Videos (MagicHour)                    |
+| `/cwe:headswap`    | Head Swap für Fotos (MagicHour)                                |
+| `/cwe:upscale`     | Bild-Upscaling 2x/4x (MagicHour)                               |
+| `/cwe:motion`      | Motion Graphics via Remotion (React-basiert)                   |
 
 ### Agent Commands
 
@@ -153,7 +168,7 @@ Hooks run automatically on every user prompt, in order:
 | `intent-router.py` | 3s | Keyword-based agent routing (before LLM) |
 | `url-scraper.py` | 30s | Auto-scrapes non-YouTube URLs (Firecrawl → trafilatura → curl fallback) |
 | `idea-observer.sh` | 3s | Captures ideas mentioned in conversation |
-| `yt-transcript.sh` | 45s | Auto-fetches YouTube video transcripts |
+| `transcript.sh` | 45s | Auto-fetches YouTube video transcripts |
 
 ### Intent → Agent Mapping
 
@@ -308,7 +323,7 @@ Currency is configurable during `/cwe:init` (EUR, USD, GBP, CHF) and stored in `
 <details>
 <summary><strong>Skills — Proactive Workflows</strong></summary>
 
-CWE includes 9 skills that activate automatically based on context:
+CWE includes 17 skills that activate automatically based on context:
 
 |        Skill       |                   When it activates                         |
 |--------------------|-------------------------------------------------------------|
@@ -386,7 +401,8 @@ See [CHANGELOG.md](CHANGELOG.md) for full history. See [ROADMAP.md](ROADMAP.md) 
 
 |   Version  |                                  Highlights                                |
 |------------|----------------------------------------------------------------------------|
-| **0.7.0**  | CRLF fix, debug agent, expanded keywords, terminal SVG | (current)
+| **0.7.1**  | Media Tools (image/video/faceswap/upscale/motion), Content Tools (transcript/pdf), Multi-OS portability | (current)
+| **0.7.0**  | CRLF fix, debug agent, expanded keywords, terminal SVG |
 | **0.6.1**  | URL Auto-Scraper: Firecrawl → trafilatura → curl fallback, JSON output |
 | **0.6.0**  | Hybrid delegation: intent-router hook, minimal CLAUDE.md, sharp descriptions |
 | **0.5.1**  | Hook hardening (_lib.sh), ARCHITECTURE.md, statusline template, doc fixes  |
