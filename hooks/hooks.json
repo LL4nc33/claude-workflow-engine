@@ -20,7 +20,7 @@
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/yt-transcript.sh",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/transcript.sh",
             "timeout": 45
           },
           {

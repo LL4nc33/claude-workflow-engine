@@ -4,6 +4,9 @@
 
 source "$(dirname "$0")/_lib.sh"
 
+PY=$(command -v python3 || command -v python || true)
+[ -z "$PY" ] && exit 0
+
 # Read user prompt from stdin
 PROMPT=$(cat)
 
@@ -22,7 +25,7 @@ if [ -z "$VIDEO_ID" ]; then
 fi
 
 # Fetch transcript via inline Python (no external dependencies)
-RESULT=$(python3 -c '
+RESULT=$("$PY" -c '
 import sys, re, json, html, time, urllib.request, urllib.error
 
 vid = sys.argv[1]
@@ -100,24 +103,24 @@ print(json.dumps({
 ' "$VIDEO_ID" 2>/dev/null)
 
 if [ -z "$RESULT" ]; then
-  json_msg "[yt-transcript] Fehler beim Laden des Transkripts fuer Video $VIDEO_ID"
+  json_msg "[transcript] Fehler beim Laden des Transkripts fuer Video $VIDEO_ID"
   exit 0
 fi
 
 # Extract title and duration for the summary line
-TITLE=$(echo "$RESULT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('title','?'))" 2>/dev/null)
-DURATION=$(echo "$RESULT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('duration','?'))" 2>/dev/null)
-CHANNEL=$(echo "$RESULT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('channel','?'))" 2>/dev/null)
-HAS_TRANSCRIPT=$(echo "$RESULT" | python3 -c "import sys,json; d=json.load(sys.stdin); print('yes' if d.get('transcript') else 'no')" 2>/dev/null)
+TITLE=$(echo "$RESULT" | "$PY" -c "import sys,json; d=json.load(sys.stdin); print(d.get('title','?'))" 2>/dev/null)
+DURATION=$(echo "$RESULT" | "$PY" -c "import sys,json; d=json.load(sys.stdin); print(d.get('duration','?'))" 2>/dev/null)
+CHANNEL=$(echo "$RESULT" | "$PY" -c "import sys,json; d=json.load(sys.stdin); print(d.get('channel','?'))" 2>/dev/null)
+HAS_TRANSCRIPT=$(echo "$RESULT" | "$PY" -c "import sys,json; d=json.load(sys.stdin); print('yes' if d.get('transcript') else 'no')" 2>/dev/null)
 
 if [ "$HAS_TRANSCRIPT" = "yes" ]; then
   # Save transcript to temp file for Claude to read if needed
-  TEMP_FILE="/tmp/yt-transcript-${VIDEO_ID}.json"
+  TEMP_FILE="/tmp/transcript-${VIDEO_ID}.json"
   echo "$RESULT" > "$TEMP_FILE"
-  json_msg "[yt-transcript] Auto-fetched: \"${TITLE}\" (${CHANNEL}, ${DURATION}). Transcript saved to ${TEMP_FILE}. Read it with the Read tool to get the full transcript content."
+  json_msg "[transcript] Auto-fetched: \"${TITLE}\" (${CHANNEL}, ${DURATION}). Transcript saved to ${TEMP_FILE}. Read it with the Read tool to get the full transcript content."
 else
-  ERROR=$(echo "$RESULT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('transcript_error','unknown'))" 2>/dev/null)
-  json_msg "[yt-transcript] Video: \"${TITLE}\" (${CHANNEL}, ${DURATION}). Transcript error: ${ERROR}"
+  ERROR=$(echo "$RESULT" | "$PY" -c "import sys,json; d=json.load(sys.stdin); print(d.get('transcript_error','unknown'))" 2>/dev/null)
+  json_msg "[transcript] Video: \"${TITLE}\" (${CHANNEL}, ${DURATION}). Transcript error: ${ERROR}"
 fi
 
 exit 0

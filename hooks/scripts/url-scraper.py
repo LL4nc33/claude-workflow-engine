@@ -16,7 +16,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 
-# YouTube patterns to exclude (handled by yt-transcript.sh)
+# YouTube patterns to exclude (handled by transcript.sh)
 YT_PATTERN = re.compile(
     r"https?://(www\.)?(youtube\.com|youtu\.be|m\.youtube\.com)/"
 )

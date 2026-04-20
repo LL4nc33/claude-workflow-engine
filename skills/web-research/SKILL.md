@@ -156,5 +156,5 @@ Scrape body: `{"url": "...", "formats": ["markdown"], "onlyMainContent": true, "
 
 - SearXNG: local network, no auth, no rate limits
 - Firecrawl: may be offline — always try trafilatura as fallback
-- For YouTube: use `tools/yt-transcript.py` instead
+- For YouTube/video/audio URLs: use `/cwe:transcript` instead
 - trafilatura: `pip install trafilatura` if not installed

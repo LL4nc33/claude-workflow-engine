@@ -177,10 +177,11 @@ AGENTS = [
 # These route to /cwe: commands via Skill tool, not Task subagents
 UTILITIES = [
     {
-        "command": "yt-transcript",
+        "command": "transcript",
         "patterns": [
             r"https?://(www\.)?(youtube\.com|youtu\.be)/",
-            r"\b(youtube|video.?transcript|transkript)\b",
+            r"https?://(www\.)?(instagram\.com|tiktok\.com)/",
+            r"\b(youtube|video.?transcript|transkript|transcript)\b",
         ],
     },
     {
@@ -199,6 +200,47 @@ UTILITIES = [
         "patterns": [
             r"\b(web.?search|web.?research|google|suche?.im.?(web|internet|netz))\b",
             r"\b(scrape|crawl|webseite.?lesen)\b",
+        ],
+    },
+    {
+        "command": "pdf",
+        "patterns": [
+            r"\.pdf\b",
+            r"\b(pdf.?lesen|pdf.?analy|pdf.?extra|read.?pdf|analyze.?pdf)\b",
+        ],
+    },
+    {
+        "command": "image",
+        "patterns": [
+            r"\b(generiere|generate|erstelle|create).{0,20}\b(bild|image|foto|picture)\b",
+            r"\b(text.?to.?image|t2i)\b",
+        ],
+    },
+    {
+        "command": "video",
+        "patterns": [
+            r"\b(generiere|generate|erstelle|create).{0,20}\b(video|clip)\b",
+            r"\b(text.?to.?video|t2v|image.?to.?video|i2v)\b",
+        ],
+    },
+    {
+        "command": "upscale",
+        "patterns": [
+            r"\b(upscale|hochskalier|upscal)\b",
+        ],
+    },
+    {
+        "command": "faceswap",
+        "patterns": [
+            r"\bface.?swap\b",
+            r"\bgesicht.?(austausch|ersetz|tausch)\b",
+        ],
+    },
+    {
+        "command": "headswap",
+        "patterns": [
+            r"\bhead.?swap\b",
+            r"\bkopf.?(austausch|ersetz|tausch)\b",
         ],
     },
 ]

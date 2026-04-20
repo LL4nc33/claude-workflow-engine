@@ -12,6 +12,13 @@ docs/plans/
 *.local.json
 *.local.yml
 
+# Private commands / skills (project-specific, not for public distribution)
+commands/doj-scrape.md
+commands/doj-search.md
+commands/newsroom.md
+skills/newsroom/
+memory/.archive/
+
 # --- Credentials & Secrets ---
 .env*
 *.pem
@@ -22,6 +29,7 @@ docs/plans/
 id_rsa*
 id_ed25519*
 id_ecdsa*
+scripts/media-keys.sh
 
 # --- IDE / Editor ---
 .vscode/settings.json
