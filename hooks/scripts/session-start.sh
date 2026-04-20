@@ -8,7 +8,15 @@ source "$(dirname "$0")/_lib.sh"
 # Consume stdin to prevent hook errors (must be synchronous, no &)
 cat > /dev/null 2>&1
 
-VERSION="Code Workspace Engine v0.7.0"
+# Read version from plugin.json (single source of truth)
+PLUGIN_JSON="$(dirname "$0")/../../.claude-plugin/plugin.json"
+if [ -f "$PLUGIN_JSON" ]; then
+  VERSION_NUM=$(grep -oE '"version"[[:space:]]*:[[:space:]]*"[^"]+"' "$PLUGIN_JSON" | head -1 | sed -E 's/.*"([^"]+)"$/\1/')
+  VERSION="Code Workspace Engine v${VERSION_NUM:-?}"
+else
+  VERSION="Code Workspace Engine"
+fi
+
 MAX_MEMORY_CHARS=8000
 MAX_MEMORY_LINES=200
 

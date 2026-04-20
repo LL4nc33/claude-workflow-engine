@@ -40,11 +40,25 @@ handoff_dir = os.path.join(root, "shared", "handoff")
 if not os.path.isdir(handoff_dir):
     sys.exit(0)
 
-# Fetch latest from all remotes (quiet, best effort)
-subprocess.run(
-    ["git", "fetch", "--all", "--quiet"],
-    capture_output=True, timeout=15
-)
+# Fetch latest from all remotes (quiet, best effort) — throttled to 60s
+import time
+fetch_marker = os.path.join("/tmp", f"cwe-handoff-fetch-{branch}.ts")
+now = time.time()
+try:
+    last_fetch = os.path.getmtime(fetch_marker)
+except OSError:
+    last_fetch = 0
+
+if now - last_fetch > 60:
+    subprocess.run(
+        ["git", "fetch", "--all", "--quiet"],
+        capture_output=True, timeout=15
+    )
+    try:
+        with open(fetch_marker, "w") as f:
+            f.write(str(now))
+    except OSError:
+        pass
 
 # Get list of other terminal branches
 try:
@@ -131,14 +145,14 @@ for handoff_file in os.listdir(handoff_dir):
         except Exception:
             continue
 
-# Output result
+# Output result (use systemMessage for consistency with other hooks)
 if synced > 0:
     # Stage synced changes
     subprocess.run(
         ["git", "add", "shared/handoff/"],
         capture_output=True, timeout=5
     )
-    msg = json.dumps({"result": f"Synced {synced} new handoff entries from other terminals."})
-    print(msg)
+    print(json.dumps({"systemMessage": f"[handoff-sync] Synced {synced} new handoff entries from other terminals."}))
 else:
-    print(json.dumps({"result": ""}))
+    # Silent exit — no message when nothing to sync
+    sys.exit(0)

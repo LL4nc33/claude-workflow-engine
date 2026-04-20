@@ -11,7 +11,7 @@ set -euo pipefail
 TOOL_INPUT=$(cat)
 
 # Extract the command being run
-COMMAND=$(echo "$TOOL_INPUT" | grep -oP '"command"\s*:\s*"[^"]*"' | head -1 | sed 's/"command"\s*:\s*"//;s/"$//' || true)
+COMMAND=$(echo "$TOOL_INPUT" | grep -oE '"command"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed -E 's/"command"[[:space:]]*:[[:space:]]*"//;s/"$//' || true)
 
 # Only check git commit, git push, git add -A/--all
 case "$COMMAND" in

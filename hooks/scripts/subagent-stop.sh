@@ -15,7 +15,7 @@ resolve_root
 mkdir -p "${ROOT}/memory"
 
 # Extract agent name from input if available (best effort)
-AGENT_NAME=$(echo "$INPUT" | grep -oP '"agent_type"\s*:\s*"[^"]*"' | head -1 | sed 's/.*"agent_type"\s*:\s*"\([^"]*\)".*/\1/' 2>/dev/null) || true
+AGENT_NAME=$(echo "$INPUT" | grep -oE '"agent_type"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed -E 's/.*"agent_type"[[:space:]]*:[[:space:]]*"([^"]*)".*/\1/' 2>/dev/null) || true
 
 if [ -n "$AGENT_NAME" ]; then
   DATE=$(date +%Y-%m-%d)
