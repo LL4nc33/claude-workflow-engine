@@ -1,7 +1,7 @@
-# CWE v0.8.1 User Guide
+# CWE v0.8.2 User Guide
 
-> Complete documentation for the Code Workspace Engine plugin v0.8.1.
-> Last updated: 2026-04-21 (v0.8.1)
+> Complete documentation for the Code Workspace Engine plugin v0.8.2.
+> Last updated: 2026-04-21 (v0.8.2)
 
 ---
 

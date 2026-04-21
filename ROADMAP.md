@@ -1,12 +1,19 @@
 # CWE Roadmap
 
-Current: **v0.8.1** — Media + Content Tools, Multi-OS portability, configurable services.
+Current: **v0.8.2** — Hardening pass (11 blockers + ~40 should-fixes resolved via 10-agent review).
 
 For historical detail see `CHANGELOG.md`.
 
 ---
 
 ## Done
+
+### v0.8.2 — Hardening Pass (2026-04-21)
+- 10 parallel review agents across hooks/media/utility-scripts/agents/skills/commands/rules/templates/docs/privacy → 11 blockers + ~40 should-fixes
+- Security: PowerShell injection closed in screenshot.py; env-var leak stopped in load_keys(); safety-gate no longer blocks git on self-errors
+- commit-format.sh regex rewritten (was effectively broken); qa-merge glob bugs fixed; port-collision SearXNG/Stirling resolved
+- 10 agents de-coupled from pre-init `@workflow/` includes; 16 skills gained `allowed-tools`; rules neutralised + indexed correctly
+- USER-GUIDE v0.7.0 → v0.8.2 with Media/External-Services/Multi-Terminal sections; templates' `{{PLACEHOLDERS}}` converted to natural-language hints
 
 ### v0.8.1 — Polish & Documentation (2026-04-21)
 - `/cwe:pdf` configurable via Stirling PDF

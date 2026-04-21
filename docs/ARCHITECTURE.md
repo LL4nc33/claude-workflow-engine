@@ -1,8 +1,10 @@
 # CWE Architecture
 
+> Version: v0.8.2 · Last reviewed: 2026-04-21
+
 ## Overview
 
-Code Workspace Engine (CWE) is a Claude Code plugin that provides agent-based orchestration for spec-driven development. It extends Claude Code with 10 specialized agents, automated workflows, and cross-session memory.
+Code Workspace Engine (CWE) is a Claude Code plugin that provides agent-based orchestration for spec-driven development. It extends Claude Code with 10 specialized agents, 17 skills, 25 commands, and cross-session memory.
 
 ## Plugin Structure
 
