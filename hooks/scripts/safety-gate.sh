@@ -7,11 +7,28 @@
 
 set -euo pipefail
 
+# Scanner failure must NEVER block git. Only a deliberate secret match exits 2.
+# Any unexpected error (missing `file` binary, grep anomaly, etc.) → exit 0.
+trap 'exit 0' ERR
+
 # Read tool input from stdin
 TOOL_INPUT=$(cat)
 
-# Extract the command being run
-COMMAND=$(echo "$TOOL_INPUT" | grep -oE '"command"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed -E 's/"command"[[:space:]]*:[[:space:]]*"//;s/"$//' || true)
+# Robust JSON parsing (handles escaped quotes, heredocs, newlines)
+PY=$(command -v python3 || command -v python || true)
+if [ -z "$PY" ]; then
+  # No python available — can't safely parse, let through
+  exit 0
+fi
+
+COMMAND=$(printf '%s' "$TOOL_INPUT" | "$PY" -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    print(data.get('command', ''))
+except Exception:
+    pass
+" 2>/dev/null || true)
 
 # Only check git commit, git push, git add -A/--all
 case "$COMMAND" in
@@ -22,6 +39,7 @@ case "$COMMAND" in
     ;;
 esac
 
+run_scan() {
 ISSUES=()
 WARNINGS=()
 
@@ -173,4 +191,9 @@ if [ ${#WARNINGS[@]} -gt 0 ]; then
   echo ""
 fi
 
+return 0
+}
+
+# Run scan; any unexpected error trips the ERR trap → exit 0 (non-blocking)
+run_scan
 exit 0

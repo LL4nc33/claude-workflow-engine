@@ -46,27 +46,31 @@ esac
 #   git commit -m "message"
 #   git commit -m 'message'
 #   git commit -m "$(cat <<'EOF'\nmessage\nEOF\n)"
-MSG=$(echo "$COMMAND" | "$PY" -c "
+PY_EXTRACT=$(cat <<'PY'
 import sys, re
 cmd = sys.stdin.read()
 
-# Try heredoc: -m \"\$(cat <<'EOF'\n..first line..\n...\nEOF\n)\"
-m = re.search(r'-m\s+.*?<<.*?EOF.*?\n(.*?)\n.*?EOF', cmd, re.DOTALL)
+# Strategy 1: heredoc — -m "$(cat <<'EOF' ... EOF)"
+m = re.search(r"-m\s+.*?<<.*?EOF.*?\n(.*?)\n.*?EOF", cmd, re.DOTALL)
 if m:
-    print(m.group(1).split('\n')[0].strip())
+    print(m.group(1).split("\n")[0].strip())
     sys.exit(0)
 
-# Try quoted: -m \"message\" or -m 'message'
-m = re.search(r'-m\s+[\"'\''](.*?)[\"\\'']', cmd)
+# Strategy 2: quoted — -m "message" or -m 'message'
+m = re.search(r'''-m\s+(?:"([^"]*)"|'([^']*)')''', cmd)
 if m:
-    print(m.group(1).split('\n')[0].strip())
+    msg = m.group(1) if m.group(1) is not None else m.group(2)
+    print(msg.split("\n")[0].strip())
     sys.exit(0)
 
-# Try unquoted: -m message
-m = re.search(r'-m\s+(\S+)', cmd)
+# Strategy 3: unquoted — -m message
+m = re.search(r"-m\s+(\S+)", cmd)
 if m:
     print(m.group(1))
-" 2>/dev/null || true)
+PY
+)
+
+MSG=$(printf '%s' "$COMMAND" | "$PY" -c "$PY_EXTRACT" 2>/dev/null || true)
 
 # If we can't extract the message, let it through
 if [ -z "$MSG" ]; then

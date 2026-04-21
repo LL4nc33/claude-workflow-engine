@@ -7,8 +7,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from _media_lib import (
     load_keys, require_key, resolve_output, extract_flag,
-    magichour_post, magichour_poll, download_result, json_ok, json_err
+    magichour_post, magichour_poll, download_result, json_ok, json_err,
+    resolve_asset_url
 )
+
+def _is_url(s):
+    low = str(s).lower()
+    return low.startswith("http://") or low.startswith("https://")
 
 def main():
     args = sys.argv[1:]
@@ -30,14 +35,14 @@ def main():
     if not input_path:
         json_err("Kein Input-Bild angegeben", "Usage: magichour_upscale.py bild.png [--scale 2|4] [--output pfad]")
 
-    if not Path(input_path).exists():
+    if not _is_url(input_path) and not Path(input_path).exists():
         json_err(f"Bild nicht gefunden: {input_path}")
 
     output_path = resolve_output(args, "png")
 
     resp = magichour_post("image-upscaler", {
         "assets": {
-            "image_url": str(Path(input_path).resolve()),
+            "image_url": resolve_asset_url(input_path),
         },
         "scale_factor": int(scale),
     }, api_key)

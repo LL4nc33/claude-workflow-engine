@@ -147,11 +147,8 @@ for handoff_file in os.listdir(handoff_dir):
 
 # Output result (use systemMessage for consistency with other hooks)
 if synced > 0:
-    # Stage synced changes
-    subprocess.run(
-        ["git", "add", "shared/handoff/"],
-        capture_output=True, timeout=5
-    )
+    # NOTE: do NOT auto-stage. Staging/committing is the user's decision
+    # (via /cwe:handoff or manual git). We only write the local file.
     print(json.dumps({"systemMessage": f"[handoff-sync] Synced {synced} new handoff entries from other terminals."}))
 else:
     # Silent exit — no message when nothing to sync

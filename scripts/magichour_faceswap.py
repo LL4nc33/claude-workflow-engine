@@ -8,8 +8,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 from _media_lib import (
     load_keys, require_key, resolve_output, extract_flag,
     magichour_post, magichour_poll, magichour_poll_video,
-    download_result, json_ok, json_err
+    download_result, json_ok, json_err, resolve_asset_url
 )
+
+def _is_url(s):
+    low = str(s).lower()
+    return low.startswith("http://") or low.startswith("https://")
 
 VIDEO_EXTS = {".mp4", ".mov", ".avi", ".webm", ".mkv"}
 
@@ -28,22 +32,27 @@ def main():
             "Usage: magichour_faceswap.py --source foto.jpg --face gesicht.jpg"
         )
 
-    source_path = Path(source)
-    face_path = Path(face)
+    # Allow HTTPS URLs to pass through; only validate existence for local paths.
+    if not _is_url(source):
+        if not Path(source).exists():
+            json_err(f"Source nicht gefunden: {source}")
+    if not _is_url(face):
+        if not Path(face).exists():
+            json_err(f"Face nicht gefunden: {face}")
 
-    if not source_path.exists():
-        json_err(f"Source nicht gefunden: {source}")
-    if not face_path.exists():
-        json_err(f"Face nicht gefunden: {face}")
+    # Detect video by suffix (works for both local paths and URLs)
+    src_suffix = Path(source.split("?", 1)[0]).suffix.lower()
+    is_video = src_suffix in VIDEO_EXTS
 
-    is_video = source_path.suffix.lower() in VIDEO_EXTS
+    source_url = resolve_asset_url(source)
+    face_url = resolve_asset_url(face)
 
     if is_video:
         output_path = resolve_output(args, "mp4")
         resp = magichour_post("face-swap-video", {
             "assets": {
-                "source_video_url": str(source_path.resolve()),
-                "target_image_url": str(face_path.resolve()),
+                "source_video_url": source_url,
+                "target_image_url": face_url,
             }
         }, api_key)
 
@@ -56,8 +65,8 @@ def main():
         output_path = resolve_output(args, "png")
         resp = magichour_post("face-swap", {
             "assets": {
-                "source_image_url": str(source_path.resolve()),
-                "target_image_url": str(face_path.resolve()),
+                "source_image_url": source_url,
+                "target_image_url": face_url,
             }
         }, api_key)
 

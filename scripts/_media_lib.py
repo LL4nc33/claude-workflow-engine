@@ -3,7 +3,7 @@
 
 import json
 import os
-import subprocess
+import re
 import sys
 import time
 from datetime import datetime
@@ -35,7 +35,12 @@ def json_err(error, hint=""):
 # ---------------------------------------------------------------------------
 
 def load_keys():
-    """Load API keys from media-keys.sh. Returns dict."""
+    """Load API keys from media-keys.sh by parsing exported lines only.
+
+    Does NOT source the file or dump shell env — only reads the file
+    line-by-line and extracts the two known keys. This prevents leaking
+    unrelated secrets from the user's environment.
+    """
     keys_file = Path(__file__).parent / "media-keys.sh"
     if not keys_file.exists():
         json_err(
@@ -43,22 +48,37 @@ def load_keys():
             f"Erstelle {keys_file} mit OPENROUTER_API_KEY und MAGICHOUR_API_KEY"
         )
 
-    result = subprocess.run(
-        ["bash", "-c", f"source {keys_file} && env"],
-        capture_output=True, text=True
+    allowed = ("OPENROUTER_API_KEY", "MAGICHOUR_API_KEY")
+    # Match: export VAR="value" | export VAR='value' | export VAR=value
+    pattern = re.compile(
+        r'^\s*(?:export\s+)?([A-Z_][A-Z0-9_]*)\s*=\s*'
+        r'(?:"([^"]*)"|\'([^\']*)\'|([^\s#]*))\s*(?:#.*)?$'
     )
-    env = {}
-    for line in result.stdout.splitlines():
-        if "=" in line:
-            k, _, v = line.partition("=")
-            env[k] = v
 
-    keys = {
-        "OPENROUTER_API_KEY": env.get("OPENROUTER_API_KEY", ""),
-        "MAGICHOUR_API_KEY": env.get("MAGICHOUR_API_KEY", ""),
+    parsed = {}
+    try:
+        with open(keys_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.rstrip("\n")
+                if not line or line.lstrip().startswith("#"):
+                    continue
+                m = pattern.match(line)
+                if not m:
+                    continue
+                name = m.group(1)
+                if name not in allowed:
+                    continue
+                value = m.group(2) if m.group(2) is not None else (
+                    m.group(3) if m.group(3) is not None else (m.group(4) or "")
+                )
+                parsed[name] = value
+    except OSError as e:
+        json_err("media-keys.sh konnte nicht gelesen werden", str(e))
+
+    return {
+        "OPENROUTER_API_KEY": parsed.get("OPENROUTER_API_KEY", ""),
+        "MAGICHOUR_API_KEY": parsed.get("MAGICHOUR_API_KEY", ""),
     }
-
-    return keys
 
 
 def require_key(keys, name):
@@ -69,6 +89,36 @@ def require_key(keys, name):
             f"Trage deinen Key in scripts/media-keys.sh ein"
         )
     return keys[name]
+
+
+# ---------------------------------------------------------------------------
+# Asset URL resolution
+# ---------------------------------------------------------------------------
+
+def resolve_asset_url(path_or_url):
+    """Return a URL suitable for MagicHour's *_url asset fields.
+
+    MagicHour requires publicly reachable HTTPS URLs. If the caller already
+    supplied an http(s) URL, pass it through. If it's a local filesystem
+    path, fail cleanly with a clear hint — MagicHour cannot fetch localhost
+    paths, and the proper upload-endpoint flow is not implemented here.
+    """
+    if path_or_url is None:
+        json_err(
+            "Kein Asset-Pfad/URL angegeben",
+            "Erwartet: öffentliche https-URL"
+        )
+
+    s = str(path_or_url).strip()
+    low = s.lower()
+    if low.startswith("http://") or low.startswith("https://"):
+        return s
+
+    json_err(
+        "Lokale Pfade werden von MagicHour nicht unterstützt",
+        "Local paths require upload — please host the file at a public "
+        "HTTPS URL and retry. (Got: " + s + ")"
+    )
 
 
 # ---------------------------------------------------------------------------

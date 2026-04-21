@@ -7,8 +7,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from _media_lib import (
     load_keys, require_key, resolve_output, extract_flag,
-    magichour_post, magichour_poll, download_result, json_ok, json_err
+    magichour_post, magichour_poll, download_result, json_ok, json_err,
+    resolve_asset_url
 )
+
+def _is_url(s):
+    low = str(s).lower()
+    return low.startswith("http://") or low.startswith("https://")
 
 def main():
     args = sys.argv[1:]
@@ -25,17 +30,17 @@ def main():
             "Usage: magichour_headswap.py --source foto.jpg --head kopf.jpg"
         )
 
-    if not Path(source).exists():
+    if not _is_url(source) and not Path(source).exists():
         json_err(f"Source nicht gefunden: {source}")
-    if not Path(head).exists():
+    if not _is_url(head) and not Path(head).exists():
         json_err(f"Head nicht gefunden: {head}")
 
     output_path = resolve_output(args, "png")
 
     resp = magichour_post("head-swap", {
         "assets": {
-            "source_image_url": str(Path(source).resolve()),
-            "swap_image_url": str(Path(head).resolve()),
+            "source_image_url": resolve_asset_url(source),
+            "swap_image_url": resolve_asset_url(head),
         }
     }, api_key)
 

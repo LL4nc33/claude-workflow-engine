@@ -56,7 +56,13 @@ def detect_platform():
 
 
 def save_wsl(output: Path) -> bool:
-    """Use PowerShell to read Windows clipboard, save to Windows path."""
+    """Use PowerShell to read Windows clipboard, save to Windows path.
+
+    Security: the Windows path is passed via the CWE_OUT environment variable
+    and never interpolated into the PowerShell script text. This prevents
+    command injection via filenames containing single quotes or other PS meta
+    characters (e.g. "foo'; rm -rf *; '.png").
+    """
     try:
         win_dir = subprocess.check_output(
             ["wslpath", "-w", str(output.parent)], text=True
@@ -67,15 +73,23 @@ def save_wsl(output: Path) -> bool:
     ps_script = (
         "Add-Type -AssemblyName System.Windows.Forms; "
         "if ([System.Windows.Forms.Clipboard]::ContainsImage()) { "
-        f"[System.Windows.Forms.Clipboard]::GetImage().Save('{win_path}', "
+        "[System.Windows.Forms.Clipboard]::GetImage().Save($env:CWE_OUT, "
         "[System.Drawing.Imaging.ImageFormat]::Png); "
         "Write-Output 'SAVED' "
         "} else { Write-Output 'NO_IMAGE' }"
     )
+    env = os.environ.copy()
+    env["CWE_OUT"] = win_path
     result = subprocess.run(
         ["powershell.exe", "-Command", ps_script],
-        capture_output=True, text=True, timeout=10
+        capture_output=True, text=True, timeout=10, env=env
     )
+    if result.returncode != 0 or (result.stderr and result.stderr.strip()):
+        stderr_tail = (result.stderr or "").strip()[-200:]
+        json_err(
+            "PowerShell-Aufruf fehlgeschlagen",
+            f"rc={result.returncode} stderr={stderr_tail}"
+        )
     return "SAVED" in result.stdout
 
 
@@ -94,33 +108,63 @@ def save_macos(output: Path) -> bool:
 
 
 def save_wayland(output: Path) -> bool:
-    """Use wl-paste on Wayland."""
+    """Use wl-paste on Wayland. Writes atomically via a temp file."""
     if not shutil.which("wl-paste"):
         json_err(
             "wl-clipboard nicht installiert",
             "sudo apt install wl-clipboard"
         )
-    with open(output, "wb") as f:
-        result = subprocess.run(
-            ["wl-paste", "--type", "image/png"],
-            stdout=f, stderr=subprocess.DEVNULL, timeout=10
-        )
-    return result.returncode == 0 and output.stat().st_size > 0
+    tmp = output.with_suffix(output.suffix + ".tmp")
+    try:
+        with open(tmp, "wb") as f:
+            result = subprocess.run(
+                ["wl-paste", "--type", "image/png"],
+                stdout=f, stderr=subprocess.DEVNULL, timeout=10
+            )
+        if result.returncode == 0 and tmp.stat().st_size > 0:
+            os.replace(tmp, output)
+            return True
+        try:
+            tmp.unlink()
+        except FileNotFoundError:
+            pass
+        return False
+    except Exception:
+        try:
+            tmp.unlink()
+        except FileNotFoundError:
+            pass
+        raise
 
 
 def save_x11(output: Path) -> bool:
-    """Use xclip on X11."""
+    """Use xclip on X11. Writes atomically via a temp file."""
     if not shutil.which("xclip"):
         json_err(
             "xclip nicht installiert",
             "sudo apt install xclip"
         )
-    with open(output, "wb") as f:
-        result = subprocess.run(
-            ["xclip", "-selection", "clipboard", "-t", "image/png", "-o"],
-            stdout=f, stderr=subprocess.DEVNULL, timeout=10
-        )
-    return result.returncode == 0 and output.stat().st_size > 0
+    tmp = output.with_suffix(output.suffix + ".tmp")
+    try:
+        with open(tmp, "wb") as f:
+            result = subprocess.run(
+                ["xclip", "-selection", "clipboard", "-t", "image/png", "-o"],
+                stdout=f, stderr=subprocess.DEVNULL, timeout=10
+            )
+        if result.returncode == 0 and tmp.stat().st_size > 0:
+            os.replace(tmp, output)
+            return True
+        try:
+            tmp.unlink()
+        except FileNotFoundError:
+            pass
+        return False
+    except Exception:
+        try:
+            tmp.unlink()
+        except FileNotFoundError:
+            pass
+        raise
 
 
 def main():
@@ -128,8 +172,12 @@ def main():
     output = Path.cwd() / "clipboard-screenshot.png"
     if "--output" in args:
         idx = args.index("--output")
-        if idx + 1 < len(args):
-            output = Path(args[idx + 1])
+        if idx + 1 >= len(args) or args[idx + 1].startswith("-"):
+            json_err(
+                "--output requires a path argument",
+                "Beispiel: --output /tmp/shot.png"
+            )
+        output = Path(args[idx + 1])
 
     output.parent.mkdir(parents=True, exist_ok=True)
 
