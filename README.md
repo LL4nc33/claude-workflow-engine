@@ -4,7 +4,7 @@
   <br><br>
 
   <a href="#quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_Steps-6366f1?style=flat-square" alt="Quick Start"></a>
-  <img src="https://img.shields.io/badge/version-0.8.1-8b5cf6?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.8.2-8b5cf6?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/agents-10-6366f1?style=flat-square" alt="Agents">
   <img src="https://img.shields.io/badge/skills-17-8b5cf6?style=flat-square" alt="Skills">
   <img src="https://img.shields.io/badge/commands-25-6366f1?style=flat-square" alt="Commands">
@@ -401,7 +401,8 @@ See [CHANGELOG.md](CHANGELOG.md) for full history. See [ROADMAP.md](ROADMAP.md) 
 
 |   Version  |                                  Highlights                                |
 |------------|----------------------------------------------------------------------------|
-| **0.8.1**  | PDF + screenshot Python-flip, /cwe:init service setup, doc refresh | (current)
+| **0.8.2**  | Hardening pass: 10-agent review → 11 blockers fixed (hooks, media, screenshot, commands, templates, docs), ~40 should-fixes, port/key collisions resolved | (current)
+| **0.8.1**  | PDF + screenshot Python-flip, /cwe:init service setup, doc refresh |
 | **0.8.0**  | Media Tools (image/video/faceswap/headswap/upscale/motion) + Content Tools (transcript/pdf) |
 | **0.7.1**  | Multi-OS portability (macOS grep, python3/python), hook stability |
 | **0.7.0**  | Multi-Terminal parallel development (autopilot, coordinate, handoff, qa-merge) |

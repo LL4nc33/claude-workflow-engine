@@ -1,7 +1,7 @@
 {
   "name": "cwe",
-  "version": "0.8.1",
-  "description": "Code Workspace Engine - Natural language orchestration for spec-driven development. 10 agents, 17 skills, 25 commands including Media Tools (image/video/faceswap/motion), Content Tools (transcript/pdf), screenshot, and configurable service integration via /cwe:init.",
+  "version": "0.8.2",
+  "description": "Code Workspace Engine - Natural language orchestration for spec-driven development. 10 agents, 17 skills, 25 commands including Media Tools, Content Tools, and configurable service integration via /cwe:init. Multi-OS, least-privilege, regulation-neutral.",
   "author": {
     "name": "LL4nc33",
     "url": "https://github.com/LL4nc33"

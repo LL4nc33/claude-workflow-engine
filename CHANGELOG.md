@@ -7,6 +7,44 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.8.2] — 2026-04-21 (Hardening — 10-Agent Review Pass)
+
+Full-codebase review by 10 parallel sub-agents (hooks, media scripts, utility scripts, agents, skills, commands, rules, templates, docs, plugin+privacy) produced 11 blockers and ~40 should-fix items. All blockers and most should-fix items resolved in a single release.
+
+### Fixed — Blockers
+- `safety-gate.sh` no longer blocks git on scanner-internal errors (trap ERR → exit 0); COMMAND extraction now uses robust Python JSON parsing instead of fragile grep on quoted strings
+- `commit-format.sh` regex extraction rewritten via heredoc — previous broken quote-escapes meant the hook effectively never rejected bad messages
+- `handoff-sync.py` no longer auto-stages `shared/handoff/` — respects the user's working-tree state
+- `_media_lib.py` `load_keys()` no longer dumps the entire shell env; parses media-keys.sh directly via regex, returns only the 2 allow-listed keys
+- MagicHour scripts (faceswap/headswap/upscale/video) now detect local-path vs HTTPS-URL inputs; local paths fail cleanly with guidance (MagicHour requires hosted URLs)
+- `screenshot.py` PowerShell command injection closed — Windows path passed via `CWE_OUT` env var, never interpolated into PS script text
+- `commands/help.md` + `commands/plugins.md` no longer hardcode version/command counts — dynamic lookup from plugin.json + `ls commands/*.md`
+- `templates/statusline.py` docstring aligned with reality (no currency/cost feature yet); `/cwe:init` currency prompt removed
+- 13 template placeholders (`{{INSTALL_COMMAND}}` etc.) converted to natural-language hints; 4 auto-filled placeholders (`{{PROJECT_NAME}}`, `{{project-name}}`, `{{project-slug}}`, `{{DATE}}`) explicitly documented in `/cwe:init`
+- `docs/USER-GUIDE.md` + `CLAUDE.md` bumped from stale v0.7.0 → v0.8.2; command/skill counts corrected (25 cmds / 17 skills); Media Tools + External Services + Multi-Terminal sections added to USER-GUIDE
+
+### Changed — Should-fix
+- 5 media skills use `${CLAUDE_PLUGIN_ROOT}` instead of undocumented `${CLAUDE_SKILL_DIR}`
+- 11 prose skills declare `allowed-tools` (least privilege); `bookstack` and `git-standards` descriptions demoted from PROACTIVELY (they're invoked by commands/hooks, not free-text)
+- Keyword→agent tables deduplicated: auto-delegation is canonical; agent-detection and delegator reference it
+- Agents: `quality` permission `default`→`plan` (was inconsistent with READ-ONLY rule); `innovator` `default`→`acceptEdits`; `researcher` gains Write/Edit for docs flows; `quality` tools broadened beyond Node (pytest, cargo, go, ruff, mypy, golangci-lint); 4 conversational agents `maxTurns: 30→40`
+- All 10 agents: `@workflow/product/mission.md` frontmatter include removed (file absent in fresh installs); replaced by Read-tool guidance in Context section
+- `/cwe:init`: SearXNG default port `:8080` → `:4000` (was colliding with Stirling PDF); Gitea/BookStack split into separate setup steps
+- `commands/gitea.md`: `username:` → `user:` key (consistent with init.md template); `~/.claude/cwe.local.md` → `$HOME/.claude/cwe.local.md`
+- `commands/autopilot.md`: explicit `CYCLE/MAX_CYCLES` counter pattern (was claimed but missing)
+- `commands/qa-merge.md`: replaced broken `git merge origin/t1-*` glob with enumerated loop; same for worktree removal
+- `commands/check-handoff.md`: dirty-tree guard added before `git checkout -- shared/handoff/`
+- `commands/devops.md`: VERSION-file guard at top of release flow
+- `commands/transcript.md` + `commands/pdf.md`: Python-based YAML parsing for `cwe-settings.yml` (was brittle grep|sed)
+- `.claude/rules/_index.yml` synced with each file's frontmatter `paths:`; `frontend-standards.md` paths broadened to include Svelte/Astro/Angular; `database-standards.md` migration-naming rule generalised beyond one tool; `testing-standards.md` gains "Testing Stacks" section (Vitest/Playwright/pytest/hypothesis/contract)
+- `documentation-standards.md` — verified frontmatter present (previously believed missing)
+- PII rule canonicalised in `global-standards.md`; api/database/testing point there
+
+### Security
+- Last stray private hostnames in `docs/USER-GUIDE.md` example yaml replaced with `localhost:*` defaults
+
+---
+
 ## [0.8.1] — 2026-04-21 (PDF + Screenshot-Flip + Init Extensions + Docs)
 
 ### Added

@@ -1,6 +1,7 @@
-# CWE User Guide
+# CWE v0.8.1 User Guide
 
-> Complete documentation for the Code Workspace Engine plugin v0.7.0
+> Complete documentation for the Code Workspace Engine plugin v0.8.1.
+> Last updated: 2026-04-21 (v0.8.1)
 
 ---
 
@@ -18,9 +19,12 @@
 10. [The Idea System](#10-the-idea-system)
 11. [Skills — Progressive Disclosure](#11-skills--progressive-disclosure)
 12. [Quality Gates](#12-quality-gates)
-13. [Project Structure Reference](#13-project-structure-reference)
-14. [FAQ / Troubleshooting](#14-faq--troubleshooting)
-15. [Lifecycle Diagram: How Everything Connects](#15-lifecycle-diagram-how-everything-connects)
+13. [Multi-Terminal Parallel Development](#13-multi-terminal-parallel-development)
+14. [Media Tools](#14-media-tools)
+15. [External Services](#15-external-services)
+16. [Project Structure Reference](#16-project-structure-reference)
+17. [FAQ / Troubleshooting](#17-faq--troubleshooting)
+18. [Lifecycle Diagram: How Everything Connects](#18-lifecycle-diagram-how-everything-connects)
 
 ---
 
@@ -912,7 +916,7 @@ Hooks are shell scripts and prompts that automatically react to events. They run
 | `SessionStart` | Session begins | Context Injection |
 | `Stop` | Session ends | Write Daily Log |
 | `PreCompact` | Context is being compacted | Save memory |
-| `UserPromptSubmit` | User writes something | Idea Observer, Intent Router, URL Scraper, YT Transcript |
+| `UserPromptSubmit` | User writes something | Idea Observer, Intent Router, URL Scraper, Transcript |
 | `SubagentStop` | Agent finishes | Agent Logging |
 | `PreToolUse (Bash)` | Before Bash command | Safety Gate, Commit Format, Branch Naming |
 
@@ -1165,6 +1169,54 @@ Web research capability using self-hosted SearXNG (meta-search engine) and Firec
 
 Multi-agent request coordination. When a user request requires 2+ different agents (e.g., "build auth with tests and docs"), the delegator decomposes it into sub-tasks with dependency ordering and executes them via wave-based parallel dispatch. Common patterns: Feature Dev (architect → builder → quality + researcher), Bug Fix + Test (builder → quality), Full Pipeline (architect → builder → quality + security + researcher → devops).
 
+### multi-terminal
+
+**File:** `skills/multi-terminal/SKILL.md`
+
+Multi-Terminal Parallel Development reference. Handoff protocol, entry format, routing, and coordination patterns for parallel terminal workflows (2T/3T/4T presets). See [Section 13](#13-multi-terminal-parallel-development).
+
+### bookstack
+
+**File:** `skills/bookstack/SKILL.md`
+
+BookStack REST API wrapper for documentation uploads: pages, chapters, books. Used by `/cwe:docs`. Configure `bookstack_url` + API token in `.claude/cwe-settings.yml`.
+
+### image
+
+**File:** `skills/image/SKILL.md`
+
+Text/image-to-image generation via OpenRouter (Gemini). Invokes `scripts/gemini_image.py`. Requires `OPENROUTER_API_KEY` in `scripts/media-keys.sh`.
+
+### video
+
+**File:** `skills/video/SKILL.md`
+
+Text/image-to-video generation via MagicHour. Invokes `scripts/magichour_video.py`. Requires `MAGICHOUR_API_KEY`.
+
+### faceswap
+
+**File:** `skills/faceswap/SKILL.md`
+
+Face swap (photo + video) via MagicHour. Invokes `scripts/magichour_faceswap.py`. Requires `MAGICHOUR_API_KEY`.
+
+### headswap
+
+**File:** `skills/headswap/SKILL.md`
+
+Full head swap via MagicHour. Invokes `scripts/magichour_headswap.py`. Requires `MAGICHOUR_API_KEY`.
+
+### upscale
+
+**File:** `skills/upscale/SKILL.md`
+
+Image upscaling (2x/4x) via MagicHour. Invokes `scripts/magichour_upscale.py`. Requires `MAGICHOUR_API_KEY`.
+
+### motion
+
+**File:** `skills/motion/SKILL.md`
+
+Programmatic motion graphics via a Remotion (React) project. Renders animated scenes, title cards, and data visualizations declaratively.
+
 ---
 
 ## 12. Quality Gates
@@ -1224,7 +1276,178 @@ The `/cwe:quality health` command calculates an overall score:
 
 ---
 
-## 13. Project Structure Reference
+## 13. Multi-Terminal Parallel Development
+
+Multi-terminal (MT) parallel development (added in the v0.7 series) lets you run 2–4 Claude Code terminals concurrently in git worktrees, each on its own branch, coordinated via structured handoffs.
+
+### Why Multi-Terminal
+
+A single terminal processes one request at a time. With MT, a team lead in terminal 0 can dispatch frontend work to terminal 1, backend work to terminal 2, and QA to terminal 3 — all running in parallel, each with isolated context and branch.
+
+### Presets
+
+| Preset | Terminals | Typical roles |
+|--------|-----------|---------------|
+| **2T** | Dev + QA | Solo developer, paired quality |
+| **3T** | Frontend + Backend + QA | Small feature team |
+| **4T** | Frontend + Backend + QA + Infra | Full-stack + CI/CD work |
+| **Custom** | User-defined | Any mix of roles |
+
+Each terminal runs in its own worktree on a branch prefixed `t<N>-<role>/...` (e.g. `t1-frontend/feature-login`). MT hooks detect the prefix and silently skip when not in a worktree.
+
+### The 5 MT Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/cwe:autopilot` | Autonomous task loop: sync → find TODOs → execute → commit → push |
+| `/cwe:coordinate` | Team-lead coordination: fetch other terminals, review their commits, dispatch handoffs |
+| `/cwe:handoff` | Write a structured handoff entry to another terminal, commit, and push |
+| `/cwe:check-handoff` | Read and summarize pending handoff entries for this terminal |
+| `/cwe:qa-merge` | QA-verified merge of terminal branches back to main (team lead / QA role) |
+
+### Handoff Protocol
+
+Handoffs are structured markdown entries written into a shared location and synced via `handoff-sync.py` (UserPromptSubmit hook). When two terminals write conflicting handoff state, the one with more entries wins (entry-count merge strategy).
+
+See `skills/multi-terminal/SKILL.md` for the full entry format and routing rules.
+
+---
+
+## 14. Media Tools
+
+CWE v0.8.0 added media generation skills that call external image/video APIs via Python scripts in `scripts/`. API keys live in `scripts/media-keys.sh` (gitignored). These are skills (not slash commands) — invoke them by intent.
+
+### image
+
+One-sentence purpose: text-to-image and image-to-image generation via OpenRouter's Gemini endpoint.
+Example: "generate an image of a red fox in a snowy forest"
+Requires: `OPENROUTER_API_KEY` in `scripts/media-keys.sh`.
+
+### video
+
+One-sentence purpose: text-to-video and image-to-video generation via MagicHour.
+Example: "turn this photo into a 5-second cinematic pan"
+Requires: `MAGICHOUR_API_KEY` in `scripts/media-keys.sh`.
+
+### faceswap
+
+One-sentence purpose: swap a face onto a target photo or video via MagicHour.
+Example: "swap the face from source.jpg onto target.mp4"
+Requires: `MAGICHOUR_API_KEY` in `scripts/media-keys.sh`.
+
+### headswap
+
+One-sentence purpose: swap a full head (not just face) onto a target image via MagicHour.
+Example: "put the head from portrait.jpg onto the figure in scene.jpg"
+Requires: `MAGICHOUR_API_KEY` in `scripts/media-keys.sh`.
+
+### upscale
+
+One-sentence purpose: 2x or 4x image upscaling via MagicHour.
+Example: "upscale logo.png to 4x"
+Requires: `MAGICHOUR_API_KEY` in `scripts/media-keys.sh`.
+
+### motion
+
+One-sentence purpose: programmatic motion graphics via a Remotion (React) project.
+Example: "render a 10-second title card with fade-in text"
+Requires: Node.js + Remotion project set up under `scripts/motion/` (see project README).
+
+---
+
+## 15. External Services
+
+CWE integrates with several configurable external services. All endpoints are set per-project in `.claude/cwe-settings.yml` (gitignored) — no URLs are hardcoded.
+
+| Service | Purpose | Settings key | Used by |
+|---------|---------|--------------|---------|
+| **SearXNG** | Meta-search engine (self-hosted) | `searxng_url` | `/cwe:web-research`, `web-research` skill |
+| **Firecrawl** | Web scraping with JS rendering | `firecrawl_url` | `/cwe:web-research`, `url-scraper.py` hook |
+| **Stirling PDF** | PDF-to-image rendering | `stirling_pdf_url` | `/cwe:pdf` |
+| **TScribe** | Video/audio transcription (faster-whisper, self-hosted) | `tscribe_url` | `/cwe:transcript` (non-YouTube URLs) |
+| **OpenRouter** | LLM gateway incl. Gemini (used for image generation) | API key in `scripts/media-keys.sh` | `image` skill |
+| **MagicHour** | Image/video generation APIs | API key in `scripts/media-keys.sh` | `video`, `faceswap`, `headswap`, `upscale` skills |
+| **Gitea** | Private git mirror | `gitea_url`, SSH key | `/cwe:gitea` |
+| **BookStack** | Self-hosted docs/wiki | `bookstack_url`, API token | `/cwe:docs`, `bookstack` skill |
+| **Ollama / Qdrant** (preview, v0.9) | Local LLM + vector store | TBD in v0.9 | TBD |
+
+### Fallback behavior
+
+- **Firecrawl** is optional — `trafilatura` runs as always-available local fallback in `url-scraper.py`.
+- **TScribe** is optional for YouTube — `tubetranscript` serves YouTube transcripts directly without TScribe.
+- All other services are used only when the corresponding command is invoked.
+
+### Configuration file
+
+`.claude/cwe-settings.yml` (project-local, in `.gitignore`):
+
+```yaml
+currency: EUR
+searxng_url: http://localhost:4000
+firecrawl_url: http://localhost:3002
+stirling_pdf_url: http://localhost:8080
+tscribe_url: http://localhost:5000
+gitea_url: https://gitea.example.org
+bookstack_url: https://docs.example.org
+```
+
+---
+
+## 16. Project Structure Reference
+
+### All 25 Slash Commands
+
+Grouped by category. Descriptions pulled from each command's frontmatter.
+
+**Workflow & Meta**
+
+| Command | Description |
+|---------|-------------|
+| `/cwe:init` | Initialize CWE in current project — creates workflow structure and checks plugin dependencies |
+| `/cwe:start` | Guided workflow — detects current phase and shows next steps |
+| `/cwe:help` | Show CWE documentation and available commands |
+| `/cwe:plugins` | Check and install CWE plugin dependencies, MCP servers, and verify CWE skills |
+
+**Agents** (all marked "MUSS VERWENDET WERDEN" for forced delegation)
+
+| Command | Description |
+|---------|-------------|
+| `/cwe:architect` | Systemdesign, Architekturentscheidungen, ADRs, technische Planung (READ-ONLY außer Markdown) |
+| `/cwe:ask` | Fragen, Diskussionen, Ideen-Austausch — STRIKT READ-ONLY |
+| `/cwe:builder` | Code-Implementierung, Bug-Fixes, Refactoring, Feature-Entwicklung (voller Dateisystem-Zugriff) |
+| `/cwe:devops` | CI/CD, Docker/Kubernetes, IaC, Deployment-Automatisierung |
+| `/cwe:explainer` | Code-Erklärungen, Architektur-Walkthroughs, Konzept-Vermittlung — STRIKT READ-ONLY |
+| `/cwe:guide` | Workflow-Optimierung, Process-Improvement, Pattern-Erkennung, Standards-Evolution |
+| `/cwe:innovator` | Brainstorming, Ideen-Entwicklung, Idea-Backlog-Review |
+| `/cwe:quality` | Testing, Coverage-Analyse, Quality Gates, Code-Metriken |
+| `/cwe:researcher` | Codebase-Analyse, Dokumentation, Dependency-Mapping, Wissenssynthese |
+| `/cwe:security` | Security-Audits, Vulnerability-Assessments, Secrets-Erkennung, OWASP-Checks (READ-ONLY Audit-Modus) |
+
+**Content Tools**
+
+| Command | Description |
+|---------|-------------|
+| `/cwe:transcript` | Video/audio transcripts for URLs (YouTube, Instagram, TikTok, podcasts) via TScribe (self-hosted faster-whisper) or tubetranscript fallback |
+| `/cwe:pdf` | Read/analyze PDFs — converts pages to images via Stirling PDF API and reads them visually |
+
+**Utilities**
+
+| Command | Description |
+|---------|-------------|
+| `/cwe:screenshot` | Analyze a screenshot or read image from clipboard — Multi-OS (WSL2/macOS/Linux) |
+| `/cwe:web-research` | Local SearXNG search + Firecrawl/trafilatura scraping |
+| `/cwe:gitea` | Privater Git-Mirror auf Gitea — push, list, create, delete, clone, status |
+| `/cwe:docs` | BookStack Upload — Pages, Kapitel und Bücher per REST API |
+
+**Multi-Terminal**
+
+| Command | Description |
+|---------|-------------|
+| `/cwe:autopilot` | Autonomous multi-terminal task loop — sync, find TODOs, execute, commit, push |
+| `/cwe:coordinate` | Team-lead coordination — fetch, review commits, dispatch handoffs across terminals |
+| `/cwe:handoff` | Write a structured handoff entry to another terminal, commit and push |
+| `/cwe:check-handoff` | Read and summarize pending handoff entries for this terminal |
+| `/cwe:qa-merge` | QA-verified merge of terminal branches to main (team lead / QA only) |
 
 ### CWE Plugin Structure
 
@@ -1242,36 +1465,56 @@ code-workspace-engine/
 │   ├── researcher.md           # Analyst (READ-ONLY + docs/)
 │   └── security.md             # Security Auditor (RESTRICTED)
 │
-├── commands/                   # 19 Slash Commands
-│   ├── help.md                 # /cwe:help
-│   ├── init.md                 # /cwe:init (Project Setup)
-│   ├── start.md                # /cwe:start (Guided Workflow)
-│   ├── plugins.md              # /cwe:plugins (Dependency Management)
-│   ├── screenshot.md           # /cwe:screenshot (Clipboard Capture)
-│   ├── web-research.md         # /cwe:web-research (SearXNG + Firecrawl)
+├── commands/                   # 25 Slash Commands (see table below)
+│   │  # Workflow & Meta
+│   ├── init.md                 # /cwe:init — Initialize CWE in current project
+│   ├── start.md                # /cwe:start — Guided workflow (phase detection)
+│   ├── help.md                 # /cwe:help — Show CWE documentation
+│   ├── plugins.md              # /cwe:plugins — Check/install plugin dependencies
+│   │  # Agents
+│   ├── architect.md            # /cwe:architect
 │   ├── ask.md                  # /cwe:ask
 │   ├── builder.md              # /cwe:builder
-│   ├── architect.md            # /cwe:architect
 │   ├── devops.md               # /cwe:devops
-│   ├── security.md             # /cwe:security
-│   ├── researcher.md           # /cwe:researcher
 │   ├── explainer.md            # /cwe:explainer
-│   ├── quality.md              # /cwe:quality
-│   ├── innovator.md            # /cwe:innovator
 │   ├── guide.md                # /cwe:guide
-│   ├── gitea.md                # /cwe:gitea (Git-Mirror, incl. SSH)
-│   └── docs.md                 # /cwe:docs (BookStack Upload)
+│   ├── innovator.md            # /cwe:innovator
+│   ├── quality.md              # /cwe:quality
+│   ├── researcher.md           # /cwe:researcher
+│   ├── security.md             # /cwe:security
+│   │  # Content Tools
+│   ├── transcript.md           # /cwe:transcript — TScribe + tubetranscript
+│   ├── pdf.md                  # /cwe:pdf — Stirling PDF rendering
+│   │  # Utilities
+│   ├── screenshot.md           # /cwe:screenshot — Multi-OS clipboard capture
+│   ├── web-research.md         # /cwe:web-research — SearXNG + Firecrawl
+│   ├── gitea.md                # /cwe:gitea — Private git mirror
+│   ├── docs.md                 # /cwe:docs — BookStack upload
+│   │  # Multi-Terminal
+│   ├── autopilot.md            # /cwe:autopilot — Autonomous task loop
+│   ├── coordinate.md           # /cwe:coordinate — Team-lead coordination
+│   ├── handoff.md              # /cwe:handoff — Write handoff entry
+│   ├── check-handoff.md        # /cwe:check-handoff — Summarize pending handoffs
+│   └── qa-merge.md             # /cwe:qa-merge — QA-verified merge
 │
-├── skills/                     # 9 Skills
-│   ├── auto-delegation/SKILL.md
+├── skills/                     # 17 Skills
 │   ├── agent-detection/SKILL.md
+│   ├── auto-delegation/SKILL.md
+│   ├── bookstack/SKILL.md
+│   ├── delegator/SKILL.md
+│   ├── faceswap/SKILL.md
+│   ├── git-standards/SKILL.md
+│   ├── headswap/SKILL.md
+│   ├── health-dashboard/SKILL.md
+│   ├── image/SKILL.md
+│   ├── motion/SKILL.md
+│   ├── multi-terminal/SKILL.md
+│   ├── project-docs/SKILL.md
 │   ├── quality-gates/SKILL.md
 │   ├── safety-gate/SKILL.md
-│   ├── git-standards/SKILL.md
-│   ├── health-dashboard/SKILL.md
-│   ├── project-docs/SKILL.md
-│   ├── web-research/SKILL.md
-│   └── delegator/SKILL.md
+│   ├── upscale/SKILL.md
+│   ├── video/SKILL.md
+│   └── web-research/SKILL.md
 │
 ├── hooks/                      # Automation
 │   ├── hooks.json              # Hook configuration
@@ -1358,7 +1601,7 @@ your-project/
 
 ---
 
-## 14. FAQ / Troubleshooting
+## 17. FAQ / Troubleshooting
 
 ### "CWE routes to the wrong agent"
 
@@ -1427,7 +1670,7 @@ rm -f VERSION CHANGELOG.md
 
 ---
 
-## 15. Lifecycle Diagram: How Everything Connects
+## 18. Lifecycle Diagram: How Everything Connects
 
 ```
 ┌───────────────────────────────────────────────────────────────────┐
