@@ -8,6 +8,8 @@ paths:
 
 # Agent Standards
 
+Note: "Permission Levels" below are CWE conventions — map them to your project's tooling.
+
 ## Agent Definition
 - Frontmatter required: name, description, tools
 - Include PROACTIVELY in description for auto-delegation

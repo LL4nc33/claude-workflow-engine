@@ -11,26 +11,26 @@ Manage Repos auf dem selbst-gehosteten Gitea-Server fuer Privacy-relevante Proje
 
 ## Konfiguration
 
-Lies die Gitea-Config aus der Datei `.claude/cwe.local.md` im Home-Verzeichnis des Users.
+Lies die Gitea-Config aus der Datei `$HOME/.claude/cwe.local.md`.
 Suche nach dem `gitea:` Block im YAML-Frontmatter ODER als Markdown-Abschnitt.
 
 Falls die Datei nicht existiert oder kein `gitea:` Block vorhanden:
 
-1. Frage mit AskUserQuestion nach URL, Username und Passwort
-2. Speichere die Config in `~/.claude/cwe.local.md` (erstelle oder ergaenze die Datei)
+1. Frage mit AskUserQuestion nach URL, User und Passwort
+2. Speichere die Config in `$HOME/.claude/cwe.local.md` (erstelle oder ergaenze die Datei)
 
-Config-Format (in `~/.claude/cwe.local.md`):
+Config-Format (in `$HOME/.claude/cwe.local.md`):
 
 ```yaml
 gitea:
   url: https://<your-gitea-host>
-  username: <your-username>
+  user: <your-user>
   password: <your-password>
 ```
 
 Setze die Variablen:
 - `GITEA_URL` — Server-URL (ohne trailing slash)
-- `GITEA_USER` — Username
+- `GITEA_USER` — User
 - `GITEA_PASS` — Passwort
 
 ## Subcommands
@@ -124,12 +124,12 @@ Pushed das aktuelle Git-Repo ueber SSH statt HTTPS. Ideal fuer grosse Repos oder
 
 **Voraussetzung:** SSH-Key muss auf dem Gitea-Server hinterlegt sein.
 
-**Zusaetzliche Config** (optional, in `~/.claude/cwe.local.md`):
+**Zusaetzliche Config** (optional, in `$HOME/.claude/cwe.local.md`):
 
 ```yaml
 gitea:
   url: https://<your-gitea-host>
-  username: <your-username>
+  user: <your-user>
   password: <your-password>
   ssh_host: <your-gitea-host>   # Hostname fuer SSH (ohne https://)
   ssh_port: 22                  # SSH-Port (Default: 22)
@@ -174,7 +174,7 @@ gitea:
 
 **Fehlerbehandlung SSH:**
 - **Permission denied:** "SSH-Key nicht auf Gitea-Server hinterlegt. Gehe zu: $GITEA_URL/user/settings/keys"
-- **Connection refused:** "SSH-Verbindung fehlgeschlagen. Pruefe ssh_host und ssh_port in ~/.claude/cwe.local.md"
+- **Connection refused:** "SSH-Verbindung fehlgeschlagen. Pruefe ssh_host und ssh_port in $HOME/.claude/cwe.local.md"
 - **Host key verification failed:** Passiert beim ersten Verbinden — wird automatisch mit `StrictHostKeyChecking=accept-new` akzeptiert
 
 ### `status`
@@ -196,6 +196,6 @@ Halte die Ausgabe kompakt und informativ:
 
 - **Kein Git-Repo:** "Das aktuelle Verzeichnis ist kein Git-Repo."
 - **Gitea nicht erreichbar:** "Gitea-Server nicht erreichbar unter URL. Pruefe die Verbindung."
-- **Auth-Fehler (401/403):** "Authentifizierung fehlgeschlagen. Pruefe Username/Passwort in ~/.claude/cwe.local.md"
+- **Auth-Fehler (401/403):** "Authentifizierung fehlgeschlagen. Pruefe User/Passwort in $HOME/.claude/cwe.local.md"
 - **Repo existiert schon (create):** "Repo existiert bereits. Nutze `/cwe:gitea push` um es zu aktualisieren."
 - **Push-Fehler:** Zeige git-Fehlermeldung und schlage Loesung vor (force-push nur nach Bestaetigung)

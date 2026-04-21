@@ -18,8 +18,20 @@ Beispiele:
 
 Lies die Stirling-URL aus `.claude/cwe-settings.yml` (Schlüssel: `stirling_pdf_url`). Fällt sie auf `http://localhost:8080` zurück wenn nicht gesetzt.
 
+Use a Python parser instead of `grep | sed` — YAML values may be quoted, contain `:` or `#`, or have trailing whitespace/comments. The fallback default is preserved if the key is absent.
+
 ```bash
-STIRLING_URL=$(grep '^stirling_pdf_url:' .claude/cwe-settings.yml 2>/dev/null | sed 's/^stirling_pdf_url:\s*//' | tr -d '"')
+STIRLING_URL=$(python3 -c "
+import sys, re, os
+p = '.claude/cwe-settings.yml'
+if not os.path.exists(p): sys.exit(0)
+with open(p) as f:
+    for line in f:
+        m = re.match(r'^\s*stirling_pdf_url\s*:\s*[\"\']?(\S+?)[\"\']?\s*(#.*)?$', line)
+        if m:
+            print(m.group(1))
+            break
+" 2>/dev/null)
 STIRLING_URL=${STIRLING_URL:-http://localhost:8080}
 ```
 

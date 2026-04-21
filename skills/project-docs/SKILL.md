@@ -4,6 +4,7 @@ description: >
   Use when docs need updating: README generation, docs freshness checks,
   tech stack badge detection, architecture diagram updates.
   Triggered by researcher (docs update|check) or devops (release).
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Bash"]
 ---
 
 # Project Documentation Skill

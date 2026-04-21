@@ -13,8 +13,18 @@ Delegate to the **devops** agent for infrastructure work.
 
 If user runs `/cwe:devops release <level>`:
 
+**Pre-flight guard — VERSION file must exist.** If it is missing, the project was likely never initialized via `/cwe:init` and running the release flow would create a version out of thin air. Abort with a clear error:
+
+```bash
+if [ ! -f VERSION ]; then
+  echo "ERROR: VERSION file missing. Run /cwe:init first." >&2
+  exit 1
+fi
+CURRENT=$(cat VERSION)
+```
+
 Delegate to devops agent with release flow:
-1. Read current `VERSION` file
+1. Read current `VERSION` file (already loaded into `$CURRENT` by the guard above)
 2. Bump: `patch` (0.1.0→0.1.1), `minor` (0.1.0→0.2.0), `major` (0.1.0→1.0.0)
 3. Write new VERSION, cascade to all files (project-docs skill)
 4. Update CHANGELOG.md with new version section

@@ -1,9 +1,10 @@
 ---
 name: git-standards
 description: >
-  Use PROACTIVELY when writing commit messages, creating branches,
-  or preparing releases. Enforces Conventional Commits and branch naming.
-  Enforced via PreToolUse hooks on git commit and git checkout -b.
+  Conventional Commits and branch-naming reference for CWE-managed projects.
+  Enforced via PreToolUse hooks on git commit and git checkout -b (not via free-text routing).
+  Consulted when writing commit messages, creating branches, or preparing releases.
+allowed-tools: ["Bash", "Read"]
 ---
 
 # Git Standards

@@ -17,7 +17,7 @@ paths:
 - Error hierarchy with typed exceptions
 - Never expose internal details in responses
 - Machine-readable codes + human-readable messages
-- Never include PII in error messages or logs (applies to GDPR/HIPAA/SOC2 + general good hygiene)
+- See global-standards.md for PII/secret-hygiene rules.
 - Log levels: ERROR (5xx), WARN (handled), INFO (lifecycle)
 
 ## Endpoint Naming

@@ -1,19 +1,31 @@
 #!/usr/bin/env python3
 """Claude Code Statusline — Compact format
-Format: ctx ━─────── 6% 57k/1000k  |  5h/7d 16%/22%  |  t 11m51s
+
+Shows: workspace | context bar + usage | rate limits (if present) | session time
+
+Example output:
+    my-project  |  ctx ━━━────── 35% 350k/1000k  |  5h/7d 16%/22%  |  t 11m51s
+
+The statusline reads Claude Code's stdin JSON and prints a single line.
+ANSI colors are disabled automatically when stdout is not a TTY or NO_COLOR is set.
 """
-import json, sys
+import json
+import os
+import sys
 
 data = json.load(sys.stdin)
 
-# ── Colors ──
-B = '\033[1m'
-DIM = '\033[2m'
-GREEN = '\033[32m'
-YELLOW = '\033[33m'
-RED = '\033[31m'
-CYAN = '\033[36m'
-R = '\033[0m'
+# ── Colors (disabled when not a TTY or NO_COLOR is set) ──
+if not sys.stdout.isatty() or os.environ.get('NO_COLOR'):
+    B = DIM = GREEN = YELLOW = RED = CYAN = R = ''
+else:
+    B = '\033[1m'
+    DIM = '\033[2m'
+    GREEN = '\033[32m'
+    YELLOW = '\033[33m'
+    RED = '\033[31m'
+    CYAN = '\033[36m'
+    R = '\033[0m'
 
 def fk(n):
     return f"{n/1000:.0f}k" if n >= 1000 else str(n)
@@ -65,5 +77,5 @@ if rate_str:
     parts.append(rate_str)
 parts.append(f"t {CYAN}{m}m{s:02d}s{R}")
 
-dir_name = __import__('os').path.basename(data.get('workspace', {}).get('current_dir', ''))
+dir_name = os.path.basename(data.get('workspace', {}).get('current_dir', ''))
 print(f"{CYAN}{dir_name}{R}  {DIM}|{R}  " + f"  {DIM}|{R}  ".join(parts))

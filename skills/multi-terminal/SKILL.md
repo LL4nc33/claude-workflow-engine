@@ -1,6 +1,7 @@
 ---
 name: multi-terminal
 description: Multi-Terminal Parallel Development reference. Handoff protocol, entry format, routing, and coordination patterns for parallel terminal workflows.
+allowed-tools: ["Read", "Write", "Edit", "Bash"]
 ---
 
 # Multi-Terminal Parallel Development

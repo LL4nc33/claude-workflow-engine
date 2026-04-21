@@ -25,7 +25,7 @@ You think in systems, not in files. You see the forest, not the trees.
 
 ## Context
 
-@workflow/product/mission.md
+Read `workflow/product/mission.md` via the Read tool when needed; handle gracefully if missing.
 
 ## Rules
 

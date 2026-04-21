@@ -8,7 +8,7 @@ argument-hint: "<prompt> [--input bild.jpg] [--output pfad.png] [--model flash|3
 ---
 
 ```bash
-python3 $(dirname $(dirname ${CLAUDE_SKILL_DIR}))/scripts/gemini_image.py $ARGUMENTS
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/gemini_image.py $ARGUMENTS
 ```
 
 Lies das Ergebnis-JSON. Bei `success: true` → zeig das Bild mit Read-Tool.

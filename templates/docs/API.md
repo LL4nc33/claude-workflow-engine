@@ -3,7 +3,7 @@
 ## Base URL
 
 ```
-{{API_BASE_URL}}
+[e.g. https://api.example.com/v1]
 ```
 
 ## Authentication

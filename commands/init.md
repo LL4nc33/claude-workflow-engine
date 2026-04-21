@@ -139,34 +139,9 @@ Store the decision. If `SKIP_MEMORY=true`:
 
 ---
 
-## Step 1d: Configure Statusline Currency
-
-Use AskUserQuestion to ask:
-
-**Question:** "Which currency for the statusline cost display?"
-
-**Options:**
-1. "EUR" — Euro (default)
-2. "USD" — US Dollar
-3. "GBP" — British Pound
-4. "CHF" — Swiss Franc
-
-Save the choice to `.claude/cwe-settings.yml`:
-
-```yaml
-# CWE Project Settings
-# Set during /cwe:init
-
-currency: EUR
-```
-
-If the file already exists, update just the `currency:` line. If not, create it.
-
----
-
 ## Step 1e: Install Statusline
 
-CWE provides a live statusline for Claude Code showing context usage, cost, and session time.
+CWE provides a live statusline for Claude Code showing context usage, rate-limit windows, and session time (no cost/currency tracking — keep it compact).
 
 ### Check for existing statusline
 
@@ -210,19 +185,19 @@ Options:
 
 ### If "Ja, beides" or "Nur SearXNG":
 
-Ask for URLs (defaults: SearXNG `http://localhost:8080`, Firecrawl `http://localhost:3002`).
+Ask for URLs (defaults: SearXNG `http://localhost:4000`, Firecrawl `http://localhost:3002`).
 
 Write or update `.claude/cwe-settings.yml`:
 
 ```yaml
-searxng_url: http://localhost:8080
+searxng_url: http://localhost:4000
 firecrawl_url: http://localhost:3002
 ```
 
 ### Quick connectivity test:
 
 ```bash
-curl -s --max-time 3 "${SEARXNG_URL:-http://localhost:8080}/search?q=test&format=json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'SearXNG OK — {len(d.get(\"results\",[]))} results')" 2>/dev/null || echo "SearXNG nicht erreichbar"
+curl -s --max-time 3 "${SEARXNG_URL:-http://localhost:4000}/search?q=test&format=json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'SearXNG OK — {len(d.get(\"results\",[]))} results')" 2>/dev/null || echo "SearXNG nicht erreichbar"
 ```
 
 ---
@@ -336,21 +311,22 @@ remotion_project_dir: ./remotion
 
 ## Step 1k: Configure Gitea Mirror (optional)
 
-`/cwe:gitea` pushes to a private Gitea mirror. See `commands/gitea.md` for config format (needs `~/.claude/cwe.local.md` with `gitea:` block — not in CWE settings to keep credentials out of cwe-settings.yml).
+`/cwe:gitea` pushes to a private Gitea mirror. Credentials live in `$HOME/.claude/cwe.local.md` (not in `cwe-settings.yml`, to keep secrets out of project config).
 
 ```
 Question: "Gitea-Mirror fuer /cwe:gitea einrichten?"
 Header: "Gitea"
 Options:
-  1. "Ja, jetzt konfigurieren" - Guide user to create ~/.claude/cwe.local.md
+  1. "Ja, jetzt konfigurieren" - Guide user to create $HOME/.claude/cwe.local.md
   2. "Nein, spaeter" - Skip (Docs in commands/gitea.md)
 ```
 
 ### If yes:
 
-Show template and ask user to fill it in:
+Show the Gitea-only block and ask the user to fill it in. Merge this block into `$HOME/.claude/cwe.local.md` — create the file with a YAML frontmatter section if missing, or append the `gitea:` key to the existing frontmatter. Do NOT add any `bookstack:` section here (that is Step 1l).
+
 ```yaml
-# ~/.claude/cwe.local.md
+# $HOME/.claude/cwe.local.md
 ---
 gitea:
   url: https://<your-gitea-host>
@@ -358,6 +334,28 @@ gitea:
   password: <token-or-app-password>
   ssh_host: <your-gitea-host>
   ssh_port: 22
+---
+```
+
+## Step 1l: Configure BookStack (optional)
+
+BookStack is used by docs-oriented workflows for publishing notes/pages to a self-hosted knowledge base. Credentials live in the same `$HOME/.claude/cwe.local.md` as Gitea, under a separate `bookstack:` block.
+
+```
+Question: "BookStack fuer Notizen/Wissensbasis einrichten?"
+Header: "BookStack"
+Options:
+  1. "Ja, jetzt konfigurieren" - Add bookstack: block to $HOME/.claude/cwe.local.md
+  2. "Nein, spaeter" - Skip
+```
+
+### If yes:
+
+Show the BookStack-only block and ask the user to fill it in. Merge this block into `$HOME/.claude/cwe.local.md` under the same frontmatter section (add alongside `gitea:` if present; do NOT replace it).
+
+```yaml
+# $HOME/.claude/cwe.local.md
+---
 bookstack:
   url: https://<your-bookstack-host>
   token_id: <token-id>
@@ -463,9 +461,49 @@ init
 ### Populate memory/MEMORY.md
 
 Replace template placeholders:
-- `{{project-name}}` → actual directory name
+- `{{project-name}}` → actual directory name (`basename "$PWD"`)
+- `{{project-slug}}` → lowercased, hyphenated directory name (`basename "$PWD" | tr '[:upper:] ' '[:lower:]-'`)
 - `Stack: (not configured)` → detected tech stack summary
 - `Phase: init` → `Phase: init (just initialized)`
+
+### Placeholder Substitution (applies to all copied templates)
+
+After copying templates, run these substitutions on the freshly-created files. **Two kinds of placeholders exist:**
+
+**Auto-filled by this command** (must be substituted before presenting files to the user):
+
+| Placeholder | Value | Files |
+|-------------|-------|-------|
+| `{{PROJECT_NAME}}` | `basename "$PWD"` | docs/README.md, docs/SETUP.md, docs/API.md, docs/DEVLOG.md, workflow/config.yml |
+| `{{project-name}}` | `basename "$PWD"` | memory/MEMORY.md |
+| `{{project-slug}}` | `basename "$PWD" \| tr '[:upper:] ' '[:lower:]-'` | memory/MEMORY.md, memory/ideas.md, workflow/ideas.md |
+| `{{DATE}}` | `date +%Y-%m-%d` | docs/DEVLOG.md, memory/<today>.md |
+
+Example substitution block (run after templates are copied, skip memory/ lines if `SKIP_MEMORY=true`):
+
+```bash
+PROJECT_NAME="$(basename "$PWD")"
+PROJECT_SLUG="$(basename "$PWD" | tr '[:upper:] ' '[:lower:]-')"
+TODAY="$(date +%Y-%m-%d)"
+
+# docs/
+sed -i "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" docs/README.md docs/SETUP.md docs/API.md docs/DEVLOG.md 2>/dev/null || true
+sed -i "s/{{DATE}}/${TODAY}/g" docs/DEVLOG.md 2>/dev/null || true
+
+# workflow/
+sed -i "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" workflow/config.yml 2>/dev/null || true
+sed -i "s/{{project-slug}}/${PROJECT_SLUG}/g" workflow/ideas.md 2>/dev/null || true
+
+# memory/ (skip if SKIP_MEMORY=true)
+if [ "$SKIP_MEMORY" != "true" ]; then
+  sed -i "s/{{project-name}}/${PROJECT_NAME}/g" memory/MEMORY.md 2>/dev/null || true
+  sed -i "s/{{project-slug}}/${PROJECT_SLUG}/g" memory/MEMORY.md memory/ideas.md 2>/dev/null || true
+fi
+```
+
+**User-filled** (left as natural-language hints like `[e.g. npm install, ...]` — the user edits these when populating their project). These are NOT placeholders to substitute; they are inline prompts. Do not run sed on them.
+
+Examples intentionally left for the user to edit: install/dev/test/lint commands in README.md and SETUP.md, license, repo URL, API base URL, ADR title/deciders/number.
 
 ### Create first daily log
 

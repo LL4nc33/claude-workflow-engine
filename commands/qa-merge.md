@@ -76,10 +76,24 @@ If conflicts arise, stop and inform the user. Do NOT auto-resolve.
 
 ### Octopus Merge
 
+Glob patterns do NOT expand against remote refs, so enumerate matching branches first and merge them explicitly:
+
 ```bash
 git checkout main
 git pull origin main
-git merge origin/t1-* origin/t2-* origin/t3-* -m "merge: multi-terminal development complete"
+
+BRANCHES=$(git branch -r | grep -oE 'origin/t[0-9]+-[a-z0-9-]+' | sort)
+if [ -z "$BRANCHES" ]; then
+  echo "No terminal branches (origin/t<N>-*) found to merge."
+  exit 1
+fi
+
+for br in $BRANCHES; do
+  git merge --no-ff "$br" -m "merge($br): multi-terminal integration" || {
+    echo "Merge of $br failed — resolve conflicts and re-run."
+    exit 1
+  }
+done
 ```
 
 ## Step 4: Post-Merge
@@ -96,11 +110,22 @@ Use AskUserQuestion: "Worktree-Branches löschen?"
 
 ```bash
 # If cleanup:
-git worktree remove .trees/t1-* 2>/dev/null
-git worktree remove .trees/t2-* 2>/dev/null
-git worktree remove .trees/t3-* 2>/dev/null
-git branch -d t1-* t2-* t3-* 2>/dev/null
-git push origin --delete t1-* t2-* t3-* 2>/dev/null
+# Glob patterns do NOT expand for worktree paths or remote branches — enumerate explicitly.
+
+# Remove worktrees under .trees/t<N>-*
+for wt in $(git worktree list --porcelain | awk '/^worktree / && /\.trees\/t[0-9]+/ {print $2}'); do
+  git worktree remove --force "$wt"
+done
+
+# Delete local terminal branches
+for br in $(git branch | grep -oE 't[0-9]+-[a-z0-9-]+'); do
+  git branch -d "$br" 2>/dev/null || git branch -D "$br"
+done
+
+# Delete remote terminal branches
+for br in $(git branch -r | grep -oE 'origin/t[0-9]+-[a-z0-9-]+' | sed 's#^origin/##'); do
+  git push origin --delete "$br" 2>/dev/null || true
+done
 ```
 
 ## Step 5: Summary

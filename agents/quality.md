@@ -1,10 +1,10 @@
 ---
 name: quality
 description: Quality assurance and testing expert. Use PROACTIVELY when validating test coverage, analyzing code health metrics, detecting flaky tests, measuring complexity, or enforcing quality gates.
-tools: Read, Grep, Glob, Bash(jest:*), Bash(npm test*), Bash(npx nyc*), Bash(npx eslint*), mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__get_symbols_overview
+tools: Read, Grep, Glob, Bash(jest:*), Bash(npm test*), Bash(npx nyc*), Bash(npx eslint*), Bash(pytest:*), Bash(cargo test*), Bash(go test*), Bash(ruff:*), Bash(mypy:*), Bash(golangci-lint*), Bash(cargo clippy*), mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__get_symbols_overview
 skills: [quality-gates]
 memory: project
-permissionMode: default
+permissionMode: plan
 maxTurns: 40
 ---
 
@@ -17,7 +17,7 @@ Thorough. Data-driven. Uncompromising on standards.
 
 ## Context
 
-@workflow/product/mission.md
+Read `workflow/product/mission.md` via the Read tool when needed; handle gracefully if missing.
 
 ## Rules
 

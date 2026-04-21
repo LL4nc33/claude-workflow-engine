@@ -10,11 +10,11 @@
 
 ```bash
 # Clone
-git clone {{REPO_URL}}
+git clone [e.g. https://github.com/you/your-repo.git]
 cd {{PROJECT_NAME}}
 
 # Install dependencies
-{{INSTALL_COMMAND}}
+[e.g. npm install, pip install -r requirements.txt, cargo build]
 
 # Environment
 cp .env.example .env
@@ -25,13 +25,13 @@ cp .env.example .env
 
 ```bash
 # Start dev server
-{{DEV_COMMAND}}
+[e.g. npm run dev, python manage.py runserver]
 
 # Run tests
-{{TEST_COMMAND}}
+[e.g. npm test, pytest, cargo test]
 
 # Lint
-{{LINT_COMMAND}}
+[e.g. npm run lint, ruff check ., cargo clippy]
 ```
 
 ## Environment Variables

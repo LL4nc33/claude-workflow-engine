@@ -3,6 +3,7 @@ name: quality-gates
 description: >
   Use PROACTIVELY when: completing tasks, before merging, after implementation,
   checking acceptance criteria. Provides quality gate checkpoints.
+allowed-tools: ["Bash", "Read"]
 ---
 
 # Quality Gates Skill

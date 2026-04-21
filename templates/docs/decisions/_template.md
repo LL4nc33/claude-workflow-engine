@@ -1,8 +1,8 @@
-# ADR-{{NNN}}: {{TITLE}}
+# ADR-NNN: [Title]
 
 **Status:** Proposed | Accepted | Deprecated | Superseded by ADR-XXX
 **Date:** {{DATE}}
-**Deciders:** {{WHO}}
+**Deciders:** [Name(s)]
 
 ## Context
 
@@ -14,12 +14,12 @@
 
 ## Options Considered
 
-### Option A: {{NAME}}
+### Option A: [Name]
 
 - **Pros:** [advantages]
 - **Cons:** [disadvantages]
 
-### Option B: {{NAME}}
+### Option B: [Name]
 
 - **Pros:** [advantages]
 - **Cons:** [disadvantages]

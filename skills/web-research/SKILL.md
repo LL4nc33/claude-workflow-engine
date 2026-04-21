@@ -4,6 +4,7 @@ description: >
   Use PROACTIVELY when you need to search the web or read/scrape any webpage.
   Provides local SearXNG search and Firecrawl/trafilatura web scraping.
   Use this instead of WebSearch/WebFetch when those tools fail or for better results.
+allowed-tools: ["Bash", "Read", "WebSearch", "WebFetch"]
 ---
 
 # Web Research — SearXNG + Scraping

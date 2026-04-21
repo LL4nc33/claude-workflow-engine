@@ -4,6 +4,7 @@ description: >
   Use PROACTIVELY before any git commit, push, or publish operation.
   Scans for secrets, credentials, PII, and validates .gitignore.
   Blocks dangerous commits with actionable remediation guidance.
+allowed-tools: ["Bash", "Read", "Grep"]
 ---
 
 # Safety Gate

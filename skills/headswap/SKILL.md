@@ -7,7 +7,7 @@ argument-hint: "--source <foto.jpg> --head <kopf.jpg> [--output pfad]"
 ---
 
 ```bash
-python3 $(dirname $(dirname ${CLAUDE_SKILL_DIR}))/scripts/magichour_headswap.py $ARGUMENTS
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/magichour_headswap.py $ARGUMENTS
 ```
 
 Lies das Ergebnis-JSON. Bei `success: true` → zeig das Ergebnis mit Read-Tool.

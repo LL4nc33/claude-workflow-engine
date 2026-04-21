@@ -4,6 +4,7 @@ description: >
   Use PROACTIVELY when user sends a free-text request (not a /command).
   Routes natural language to the right agent or plugin skill.
   NOT for Build-phase task assignment — see agent-detection for that.
+allowed-tools: ["Task"]
 ---
 
 # Auto-Delegation

@@ -4,6 +4,7 @@ description: >
   Use when checking project health, code quality, dependency status,
   documentation freshness, or git health. Invoked via /cwe:quality health
   or PROACTIVELY at session start for status overview.
+allowed-tools: ["Bash", "Read", "Glob"]
 ---
 
 # Health Dashboard

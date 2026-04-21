@@ -17,8 +17,8 @@ standards:
     priority: 1
 
   - file: frontend-standards.md
-    paths: ["**/*.tsx", "**/*.jsx", "**/*.vue", "**/components/**", "**/pages/**"]
-    keywords: ["component", "UI", "layout", "style", "CSS", "design token", "accessibility", "a11y", "frontend", "React", "Vue"]
+    paths: ["**/*.tsx", "**/*.jsx", "**/*.vue", "**/*.svelte", "**/*.astro", "**/*.component.ts", "**/components/**", "**/pages/**", "**/routes/**"]
+    keywords: ["component", "UI", "layout", "style", "CSS", "design token", "accessibility", "a11y", "frontend", "React", "Vue", "Svelte", "Astro", "Angular", "SolidJS"]
     auto_inject: true
     priority: 1
 
@@ -29,14 +29,14 @@ standards:
     priority: 1
 
   - file: devops-standards.md
-    paths: ["**/docker*", "**/Dockerfile*", "**/.github/**", "**/terraform/**", "**/k8s/**"]
+    paths: ["**/docker*", "**/Dockerfile*", "**/.github/**", "**/terraform/**", "**/k8s/**", "**/docker-compose*.yml", "**/.github/**/*.yml"]
     keywords: ["Docker", "CI/CD", "pipeline", "deploy", "Kubernetes", "infrastructure", "container", "Terraform"]
     auto_inject: true
     priority: 1
 
   - file: testing-standards.md
-    paths: ["**/*.test.*", "**/*.spec.*", "**/test_*", "**/*_test.*", "**/__tests__/**"]
-    keywords: ["test", "coverage", "TDD", "unit test", "integration test", "E2E", "assert", "mock", "fixture"]
+    paths: ["**/*.test.*", "**/*.spec.*", "**/test_*", "**/*_test.*", "**/__tests__/**", "**/tests/**"]
+    keywords: ["test", "coverage", "TDD", "unit test", "integration test", "E2E", "assert", "mock", "fixture", "Playwright", "Cypress", "Vitest", "Jest", "pytest"]
     auto_inject: true
     priority: 1
 

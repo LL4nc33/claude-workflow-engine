@@ -25,9 +25,16 @@ If not in a multi-terminal branch, inform the user:
 git fetch --all --quiet 2>/dev/null
 ```
 
-Pull latest handoff changes from other branches (best effort):
+Pull latest handoff changes from other branches (best effort).
+
+**Dirty-tree guard:** `git checkout <branch> -- shared/handoff/` silently overwrites the working-tree copy of those files. If `shared/handoff/` has uncommitted changes, refuse to proceed — the user should commit or stash first.
 
 ```bash
+if [ -n "$(git status --porcelain shared/handoff/ 2>/dev/null)" ]; then
+  echo "ERROR: shared/handoff/ has uncommitted changes. Commit or stash first before syncing from other terminals." >&2
+  exit 1
+fi
+
 # Merge shared/handoff from other terminal branches
 for remote_branch in $(git branch -r | grep -E 'origin/t[0-9]+-' | grep -v "origin/$(git branch --show-current)"); do
   git checkout "$remote_branch" -- shared/handoff/ 2>/dev/null || true

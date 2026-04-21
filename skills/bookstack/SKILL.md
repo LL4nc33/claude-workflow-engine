@@ -1,9 +1,10 @@
 ---
 name: bookstack
 description: >
-  Use PROACTIVELY when uploading, creating, or updating documentation on BookStack.
+  Used by the /cwe:docs command when uploading, creating, or updating documentation on BookStack.
   Provides API reference, auth, curl snippets and error handling for BookStack REST API.
-  Used by /cwe:docs command — do not duplicate workflow logic here.
+  Not invoked from free-text user requests — workflow lives in /cwe:docs.
+allowed-tools: ["Bash", "Read"]
 ---
 
 # BookStack API — Implementierungsdetails

@@ -21,7 +21,21 @@ If the branch does NOT match `t\d+-.*`, stop and inform the user:
 
 ## Cycle
 
-Repeat the following loop until no more TODOs remain or the user interrupts:
+Repeat the following loop until no more TODOs remain, the user interrupts, or the cycle counter hits its limit.
+
+Initialize a visible cycle counter before entering the loop and increment it at the top of each iteration. Pattern:
+
+```bash
+CYCLE=0
+MAX_CYCLES=10
+while [ $CYCLE -lt $MAX_CYCLES ]; do
+  CYCLE=$((CYCLE+1))
+  echo "--- Cycle $CYCLE/$MAX_CYCLES ---"
+  # ... autopilot logic (steps 1-5 below) ...
+done
+```
+
+If `$CYCLE` reaches `$MAX_CYCLES`, stop and ask the user whether to continue (resetting the counter) or exit.
 
 ### 1. Sync
 
@@ -82,4 +96,4 @@ Return to step 1 (Sync).
 - Never force-push
 - Always commit before switching tasks
 - If a task seems destructive or unclear, pause and ask the user
-- Maximum 10 cycles before pausing for user confirmation
+- Maximum 10 cycles before pausing for user confirmation (enforced by the `$CYCLE`/`$MAX_CYCLES` counter shown above)

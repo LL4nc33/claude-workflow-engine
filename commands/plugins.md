@@ -119,30 +119,32 @@ claude mcp add sequential-thinking -- npx @modelcontextprotocol/server-sequentia
 
 ## Step 5: Verify CWE Skills & Commands
 
-Check that all CWE commands and skills are loaded. List the expected commands and skills, then verify which ones appear.
+Check that all CWE commands and skills are loaded. The expected command inventory is derived dynamically from the plugin's `commands/` directory — do NOT maintain a hardcoded list.
 
-### Expected CWE Commands
+### Enumerate Expected CWE Commands
 
-These should all be available as `/cwe:<name>`:
+```bash
+EXPECTED_COMMANDS=$(ls "${CLAUDE_PLUGIN_ROOT}"/commands/*.md 2>/dev/null | xargs -I{} basename {} .md | sort)
+EXPECTED_COUNT=$(echo "$EXPECTED_COMMANDS" | grep -c .)
+echo "Expected commands: ${EXPECTED_COUNT}"
+echo "$EXPECTED_COMMANDS"
+```
 
-| Command | File |
-|---------|------|
-| init | commands/init.md |
-| plugins | commands/plugins.md |
-| start | commands/start.md |
-| help | commands/help.md |
-| ask | commands/ask.md |
-| builder | commands/builder.md |
-| architect | commands/architect.md |
-| devops | commands/devops.md |
-| security | commands/security.md |
-| researcher | commands/researcher.md |
-| explainer | commands/explainer.md |
-| quality | commands/quality.md |
-| innovator | commands/innovator.md |
-| guide | commands/guide.md |
-| screenshot | commands/screenshot.md |
-| web-research | commands/web-research.md |
+Each discovered name is expected to be available as `/cwe:<name>`.
+
+### Check Which Commands Are Loaded
+
+For each expected command, verify it is visible in the current session. Report results as a table:
+
+```
+Commands:
+  init                 loaded
+  plugins              loaded
+  ...
+  <name>               MISSING (file exists but not loaded)
+```
+
+Count how many are `loaded` vs `MISSING` and use those real counts in the summary — never hardcode the total.
 
 ### Expected CWE Skills
 
@@ -176,12 +178,12 @@ if not dirs:
 "
 ```
 
-If commands or skills are missing from the session, inform the user:
+If commands or skills are missing from the session, inform the user. Use the real counts from the enumeration step — never use a hardcoded total:
 
 ```
 CWE Skills Check:
-  Commands:  16/16 loaded
-  Skills:     8/8  loaded
+  Commands:  ${LOADED_CMD}/${EXPECTED_CMD} loaded
+  Skills:    ${LOADED_SKILL}/${EXPECTED_SKILL} loaded
 
   All commands and skills loaded successfully.
 ```
@@ -197,17 +199,19 @@ If commands are missing, show:
 
 ## Step 6: Summary
 
+Use real counts from the enumeration/verification steps. Do NOT hardcode command or skill totals — they change as the plugin evolves.
+
 ```
 CWE Dependencies Check Complete
 
-Plugins:  5/7 installed
-MCP:      3/5 configured
-Commands: 16/16 loaded
-Skills:   8/8  loaded
+Plugins:  <installed>/<expected> installed
+MCP:      <configured>/<expected> configured
+Commands: <loaded>/<expected> loaded
+Skills:   <loaded>/<expected> loaded
 
 Changes this run:
-  + installed feature-dev
-  + installed playwright MCP server
+  + installed <plugin-name>
+  + installed <mcp-server> MCP server
 
 All good — run /cwe:init for full project setup.
 ```

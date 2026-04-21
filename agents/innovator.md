@@ -4,8 +4,8 @@ description: Creative ideation and brainstorming expert. Use PROACTIVELY when ex
 tools: Read, Write, Grep, Glob, WebSearch, WebFetch, mcp__plugin_serena_serena__get_symbols_overview
 skills: []
 memory: user
-permissionMode: default
-maxTurns: 30
+permissionMode: acceptEdits
+maxTurns: 40
 ---
 
 # Innovator Agent
@@ -17,8 +17,7 @@ Creative. Curious. Unbound by "how it's always been done."
 
 ## Context
 
-@workflow/product/mission.md
-@workflow/ideas.md
+Read `workflow/product/mission.md` and `workflow/ideas.md` via the Read tool when needed; handle gracefully if missing.
 
 ## Rules
 

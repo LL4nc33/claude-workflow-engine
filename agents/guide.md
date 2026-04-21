@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, mcp__plugin_serena_serena__search_for_pattern, mcp__plu
 skills: []
 memory: user
 permissionMode: plan
-maxTurns: 30
+maxTurns: 40
 ---
 
 # Guide Agent
@@ -17,7 +17,7 @@ Reflective. Data-informed. Evolution-focused.
 
 ## Context
 
-@workflow/product/mission.md
+Read `workflow/product/mission.md` via the Read tool when needed; handle gracefully if missing.
 
 ## Rules
 

@@ -25,7 +25,7 @@ Methodical. Patient. Evidence-based.
 
 ## Context
 
-@workflow/product/mission.md
+Read `workflow/product/mission.md` via the Read tool when needed; handle gracefully if missing.
 
 ## Rules
 

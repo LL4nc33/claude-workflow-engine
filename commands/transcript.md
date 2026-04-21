@@ -13,8 +13,20 @@ Transkribiert Audio/Video von jeder URL: YouTube, Instagram Reels, TikTok, Podca
 
 Lies die TScribe-URL aus `.claude/cwe-settings.yml` (Schlüssel: `tscribe_url`). Wenn nicht gesetzt, nur YouTube-Fallback verfügbar.
 
+Use a Python parser instead of `grep | sed` — YAML values may be quoted, contain `:` or `#`, or have trailing whitespace/comments. The snippet below is safe against all of those and silently falls back to empty when the file/key is missing.
+
 ```bash
-TSCRIBE_URL=$(grep '^tscribe_url:' .claude/cwe-settings.yml 2>/dev/null | sed 's/^tscribe_url:\s*//' | tr -d '"')
+TSCRIBE_URL=$(python3 -c "
+import sys, re, os
+p = '.claude/cwe-settings.yml'
+if not os.path.exists(p): sys.exit(0)
+with open(p) as f:
+    for line in f:
+        m = re.match(r'^\s*tscribe_url\s*:\s*[\"\']?(\S+?)[\"\']?\s*(#.*)?$', line)
+        if m:
+            print(m.group(1))
+            break
+" 2>/dev/null)
 ```
 
 Wenn kein TScribe-Server konfiguriert ist und die URL keine YouTube-URL ist, informiere den User und verweise auf Setup-Optionen:

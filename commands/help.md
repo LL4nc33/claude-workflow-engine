@@ -1,16 +1,58 @@
 ---
 description: Show CWE documentation and available commands
-allowed-tools: ["Read"]
+allowed-tools: ["Bash", "Read"]
 ---
 
 # CWE Help
 
-Display comprehensive help for CWE and all installed plugins.
+Display comprehensive help for CWE and all installed plugins. The version and command list are read dynamically from the plugin directory — never hardcode them.
 
-## Output
+## Step 1: Read Current Version
+
+Run this bash snippet to extract the current plugin version from `plugin.json`:
+
+```bash
+VERSION=$(grep -oE '"version"[[:space:]]*:[[:space:]]*"[^"]+"' "${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json" | head -1 | sed -E 's/.*"([^"]+)"$/\1/')
+echo "Code Workspace Engine v${VERSION:-?}"
+```
+
+Use `${VERSION:-?}` in the header below. If the version read fails, use `?` as a fallback.
+
+## Step 2: Enumerate Commands Dynamically
+
+List every command file from the plugin's `commands/` directory:
+
+```bash
+ls "${CLAUDE_PLUGIN_ROOT}"/commands/*.md 2>/dev/null | xargs -I{} basename {} .md | sort
+```
+
+Then, for each command name discovered, optionally read the `description:` field from its frontmatter to describe it:
+
+```bash
+for f in "${CLAUDE_PLUGIN_ROOT}"/commands/*.md; do
+  name=$(basename "$f" .md)
+  desc=$(grep -oE '^description:.*$' "$f" | head -1 | sed -E 's/^description:[[:space:]]*//')
+  printf '%-20s %s\n' "/cwe:${name}" "${desc}"
+done
+```
+
+Group the resulting commands by category based on their descriptions. Suggested categories:
+
+- **Setup & Meta:** init, plugins, start, help
+- **Agent Commands:** ask, builder, architect, devops, security, researcher, explainer, quality, innovator, guide
+- **Media & Content:** image, video, faceswap, headswap, upscale, motion, pdf, transcript, screenshot
+- **Research & Docs:** web-research, docs
+- **Multi-Terminal:** autopilot, coordinate, check-handoff, handoff, qa-merge
+- **Integration:** gitea
+
+Any command not matching a suggested category should be grouped under **Other**. Do not omit any command discovered by the `ls` step.
+
+## Step 3: Render Output
+
+Render output using this template. Substitute `${VERSION}` with the value from Step 1, and populate the command tables from Step 2.
 
 ```markdown
-# CWE - Code Workspace Engine v0.7.0
+# CWE - Code Workspace Engine v${VERSION}
 
 Natural language orchestration for spec-driven development.
 
@@ -25,31 +67,12 @@ Natural language orchestration for spec-driven development.
 
 ## CWE Commands
 
+(Populated dynamically from Step 2 — group by category, one table row per command.)
+
 | Command | Purpose |
 |---------|---------|
-| `/cwe:init` | Initialize project + install missing plugins |
-| `/cwe:plugins` | Check and install plugin + MCP dependencies |
-| `/cwe:start` | Guided workflow (phase detection) |
-| `/cwe:help` | This help |
-| `/cwe:ask` | Questions, discussions (READ-ONLY) |
-| `/cwe:builder` | Implementation, fixes |
-| `/cwe:architect` | Design, ADRs, spec shaping |
-| `/cwe:devops` | CI/CD, Docker, releases |
-| `/cwe:security` | Audits, OWASP |
-| `/cwe:researcher` | Docs, analysis |
-| `/cwe:explainer` | Explanations |
-| `/cwe:quality` | Tests, coverage, health dashboard |
-| `/cwe:innovator` | Brainstorming, idea backlog (4 modes) |
-| `/cwe:guide` | Process improvement, standards discovery |
-| `/cwe:screenshot` | Clipboard screenshot capture + analysis |
-| `/cwe:web-research` | Web search + scraping (SearXNG, Firecrawl) |
-| `/cwe:gitea` | Privater Git-Mirror (push, ssh-push, list, create, delete, clone, status) |
-| `/cwe:docs` | Dokumentationen auf BookStack hochladen und verwalten |
-| `/cwe:autopilot` | Autonomous multi-terminal task loop |
-| `/cwe:coordinate` | Team-lead coordination across terminals |
-| `/cwe:check-handoff` | Read pending handoff entries |
-| `/cwe:handoff` | Write handoff to another terminal |
-| `/cwe:qa-merge` | QA-verified merge to main |
+| `/cwe:<name>` | <description from frontmatter> |
+| ... | ... |
 
 ## Auto-Delegation
 
@@ -123,3 +146,9 @@ Daily Logs + MEMORY.md index, auto-injected at session start:
 2. Edit `workflow/product/mission.md`
 3. `/cwe:start` - Begin guided workflow
 ```
+
+## Rules
+
+- Never hardcode the version — always read it from `plugin.json`.
+- Never hardcode the command list — always enumerate via `ls commands/*.md`.
+- If a command's frontmatter has no `description`, display the command name only.

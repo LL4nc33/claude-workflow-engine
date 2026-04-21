@@ -3,11 +3,18 @@ paths:
   - "**/*.tsx"
   - "**/*.jsx"
   - "**/*.vue"
+  - "**/*.svelte"
+  - "**/*.astro"
+  - "**/*.component.ts"
   - "**/components/**"
   - "**/pages/**"
+  - "**/routes/**"
 ---
 
 # Frontend Standards
+
+## Framework Scope
+These rules apply across frameworks (React, Vue, Svelte, Astro, Angular, SolidJS, etc.). Naming conventions and patterns below are not React-specific — adapt the syntax to your framework while preserving the intent (explicit prop typing, accessibility, token-based styling).
 
 ## Component Structure
 - One component per directory with co-located test and styles

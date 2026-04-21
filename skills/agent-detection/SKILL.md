@@ -4,6 +4,7 @@ description: >
   Use during Build phase to assign agents to structured tasks from tasks.md.
   Maps task metadata and keywords to specialized agents.
   NOT for interactive user requests — see auto-delegation for that.
+allowed-tools: ["Task", "Read"]
 ---
 
 # Agent Detection
@@ -29,21 +30,9 @@ Task from tasks.md
 
 ## Keyword → Agent Mapping
 
-Priority order (first match wins):
+Keyword table: see `skills/auto-delegation/SKILL.md` and `hooks/scripts/intent-router.py` (source of truth).
 
-| Priority | Agent | Keywords |
-|----------|-------|----------|
-| 1 | **builder** | implement, fix, build, create, code, feature, bug, refactor |
-| 2 | **quality** | test, write tests, coverage, quality, validate, assert, metrics, flaky, gate |
-| 3 | **devops** | deploy, docker, ci, cd, release, kubernetes, k8s, terraform |
-| 4 | **security** | security, audit, vulnerability, scan, gdpr, owasp, cve |
-| 5 | **explainer** | explain, how, why, what, understand |
-| 6 | **architect** | design, architecture, adr, api, schema |
-| 7 | **researcher** | analyze, document, research, compare |
-| 8 | **innovator** | brainstorm, idea, ideas, what if, alternative, explore |
-| 9 | **guide** | workflow, process, pattern, improve, optimize, optimization |
-
-**Fallback:** `builder` (if no keywords match)
+Detection order: first match wins, starting with `builder` (highest priority) and falling through to specialized agents. **Fallback:** `builder` (if no keywords match).
 
 ## Metadata Override
 

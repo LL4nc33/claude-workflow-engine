@@ -34,5 +34,12 @@ paths:
 - Tests block merge (required check)
 - Coverage decrease > 2% blocks merge
 - Flaky test = broken test (fix immediately)
-- No real PII in test data
+- See global-standards.md for PII/secret-hygiene rules.
+
+## Testing Stacks (examples)
+- **Unit/integration (JS/TS)**: Vitest or Jest — co-located `*.test.ts` files
+- **E2E (web)**: Playwright preferred (headless+headed, parallel), Cypress acceptable
+- **Unit/integration (Python)**: pytest with fixtures; pytest-asyncio for async; hypothesis for property-based
+- **Snapshot testing**: use sparingly; prefer structured assertions over snapshot diffs
+- **Contract testing**: OpenAPI / JSON Schema validation in API tests
 

@@ -17,7 +17,7 @@ You build systems that are reproducible, observable, and resilient.
 
 ## Context
 
-@workflow/product/mission.md
+Read `workflow/product/mission.md` via the Read tool when needed; handle gracefully if missing.
 
 ## Rules
 

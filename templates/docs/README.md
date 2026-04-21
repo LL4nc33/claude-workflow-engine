@@ -1,15 +1,15 @@
 # {{PROJECT_NAME}}
 
-> {{PROJECT_DESCRIPTION}}
+> [Describe your project in 1-2 sentences]
 
 ## Quick Start
 
 ```bash
 # Installation
-{{INSTALL_COMMAND}}
+[e.g. npm install, pip install -r requirements.txt, cargo build]
 
 # Development
-{{DEV_COMMAND}}
+[e.g. npm run dev, python manage.py runserver]
 ```
 
 ## Documentation
@@ -22,4 +22,4 @@
 
 - **Version:** See `VERSION` file
 - **Changelog:** [CHANGELOG.md](../CHANGELOG.md)
-- **License:** {{LICENSE}}
+- **License:** [e.g. MIT, Apache-2.0, proprietary]

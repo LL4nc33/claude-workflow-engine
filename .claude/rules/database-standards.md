@@ -10,7 +10,7 @@ paths:
 # Database Standards
 
 ## Migration Rules
-- File naming: `{YYYYMMDD_HHMMSS}_{description}.{up|down}.sql`
+- File naming: use a monotonic timestamp or sequence prefix supported by your migration tool (Flyway `V1__`, Alembic auto-generated, Prisma migrations folder with timestamp, Django `0001_initial`). The principle is chronological ordering + readable descriptor.
 - Every UP needs a DOWN (reversible migrations)
 - One concern per migration file
 - Use `IF NOT EXISTS` / `IF EXISTS` for idempotency
@@ -28,7 +28,7 @@ paths:
 - Production: manual trigger, no seed, never destructive directly
 
 ## Data Privacy (configure per-project compliance regime)
-- PII columns require review before merge
+- PII columns require schema review before merge (domain-specific to DB; see global-standards.md for general PII/secret-hygiene rules)
 - Data deletion needs an audit trail
 - Encryption-at-rest for sensitive columns
 - For regulated workloads, add a project-specific `compliance-standards.md` covering residency (GDPR EU-only, HIPAA US-BA, etc.), retention windows, and access controls

@@ -5,6 +5,7 @@ description: >
   to complete. Decomposes multi-step requests into sub-tasks with dependency
   ordering and executes them via wave-based parallel dispatch.
   NOT for single-agent tasks (-> auto-delegation directly).
+allowed-tools: ["Task", "Read"]
 ---
 
 # Delegator — Multi-Agent Request Coordination
@@ -39,17 +40,11 @@ Decompose multi-step user requests into sub-tasks and dispatch them to specializ
 
 ### Step 1: Identify Concerns
 
-Scan the request for keywords that map to different agents:
+Scan the request for keywords that map to different agents.
 
-| Keywords Found | Agent |
-|---------------|-------|
-| implement, build, create, fix, code, feature, bug, refactor | builder |
-| test, write tests, coverage, quality, validate | quality |
-| security, audit, vulnerability, scan | security |
-| deploy, docker, ci, cd, release | devops |
-| design, architecture, adr, api, schema | architect |
-| analyze, document, research, compare | researcher |
-| explain, how, what, why, understand | explainer |
+Keyword table: see `skills/auto-delegation/SKILL.md` and `hooks/scripts/intent-router.py` (source of truth).
+
+Count how many distinct agents are referenced by the request's keywords — 2 or more distinct agents means multi-step (proceed), 1 means fall back to auto-delegation.
 
 ### Step 2: Create Sub-Tasks
 
