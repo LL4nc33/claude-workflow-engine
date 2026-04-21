@@ -9,6 +9,8 @@
 
 1. [What is CWE?](#1-what-is-cwe)
 2. [Installation & Setup](#2-installation--setup)
+   - [First-Time Onboarding](#first-time-onboarding)
+   - [/cwe:init Walkthrough](#cweinit-walkthrough)
 3. [The 6 Core Principles](#3-the-6-core-principles)
 4. [Understanding Auto-Delegation](#4-understanding-auto-delegation)
 5. [The 10 Agents in Detail](#5-the-10-agents-in-detail)
@@ -108,92 +110,142 @@ CWE works together with other Claude Code plugins. `/cwe:init` checks for and of
 | **context7** | Library documentation lookup (React, Vue, etc.) |
 | **github** | GitHub API integration (Issues, PRs, Actions) |
 
+### First-Time Onboarding
+
+Never used CWE before? This is the end-to-end story of bringing a project online.
+
+**Prerequisites checklist**
+
+- [ ] Claude Code CLI installed and authenticated (`claude --version` works)
+- [ ] Git installed and the target project is a Git repo (or you are okay with `git init`)
+- [ ] A terminal in the project root you want to initialize
+- [ ] Optional: Node.js (only needed if you plan to use MCP servers via `npx`)
+
+**Expected time**
+
+- **~5 minutes** if you skip every optional service (plugin install + folder creation only)
+- **15–30 minutes** if you configure the full stack (MCP servers, SearXNG/Firecrawl, TScribe, Stirling PDF, media API keys, Remotion, Gitea, BookStack, Multi-Terminal)
+
+You can always re-run `/cwe:init` later to configure any service you skipped — it is idempotent and only prompts for missing pieces.
+
+**Decision points you will encounter**
+
+`/cwe:init` is a guided interview. For every optional service, "Skip" is a valid and safe answer — the related command simply stays disabled until configured. The major questions, in order:
+
+1. **Plugin installs** — Install missing Claude Code plugins? Skip = keep only what you already have (superpowers is the only true blocker).
+2. **MCP servers** — Install playwright/context7/github? Skip = those integrations are unavailable; everything else still works.
+3. **Serena memory** — If Serena is detected: skip `memory/` and let Serena handle it, or create `memory/` anyway (both coexist fine).
+4. **Statusline** — Installs a compact statusline to `~/.claude/statusline.py`. If one already exists, it is left untouched.
+5. **Web research / Transcripts / PDF / Media / Remotion / Gitea / BookStack** — Each is a separate Skip-by-default prompt. Say "later" to any you do not have running.
+6. **Multi-Terminal preset** — 2T, 3T, 4T, Custom, or Skip. Skip = standard single-terminal workflow.
+
+**Post-init verification**
+
+Once `/cwe:init` finishes, smoke-test the installation:
+
+- `/cwe:help` — should print the command index (confirms the plugin is loaded)
+- `/cwe:plugins` — reports health of plugins, MCP servers, and optional services
+- `/cwe:start` — walks you into the guided Plan → Spec → Tasks → Build → Review loop
+- `/cwe:researcher` (or any other agent command) — confirms agent delegation works
+
+You should also see: `workflow/`, `docs/`, a `VERSION` file, and (unless you skipped) `memory/` at the project root. The project's `.gitignore` should contain a `# CWE (Code Workspace Engine)` block.
+
+**If something does not work**
+
+- Open `.claude/cwe-settings.yml` — this holds every optional-service URL you configured. Missing keys mean the related command will refuse to run.
+- Run `/cwe:plugins` for a one-shot health check of plugins, MCP, and services.
+- See Section 17 (FAQ / Troubleshooting) for common issues (hooks not firing, CRLF problems on WSL, MCP install failures).
+- External service URLs and setup guides are consolidated in Section 15 (External Services).
+
+**When to re-run `/cwe:init`**
+
+- A new optional service becomes available (you finally set up SearXNG, got a MagicHour key, stood up Stirling PDF).
+- You want to add Multi-Terminal to a project that was initialized without it.
+- Templates or the init flow itself gain new steps in a CWE release — re-running picks up the new prompts without overwriting existing `workflow/` or `memory/` content.
+
 ### /cwe:init Walkthrough
 
-When first running in a project, `/cwe:init` performs the following steps:
+A concise map of the current `/cwe:init` flow. The authoritative source is [`commands/init.md`](../commands/init.md) — this subsection is a quick-reference only.
 
-**Step 1: Plugin Check**
-- Checks whether superpowers, serena, feature-dev are installed
-- Offers installation via `claude plugin add`
-- Optional plugins (frontend-design, plugin-dev) are offered
+**Step 1 — Plugin dependencies**
+Detects installed plugins via `claude plugin list`. `superpowers` is required; `serena` and `feature-dev` are recommended; `frontend-design`, `code-simplifier`, `claude-md-management`, `plugin-dev` are optional. Offers to install missing ones.
 
-**Step 1b: Currency Preference**
-- Asks which currency to use for session cost tracking (EUR, USD, GBP, CHF)
-- Saves the preference to `.claude/cwe-settings.yml`
-- Used by the Statusline to display session costs in your chosen currency
+**Step 1b — MCP server dependencies**
+Runs `claude mcp list`. Recommended: `playwright`, `context7`, `github`. Optional: `filesystem`, `sequential-thinking`. Platform-aware install commands (Linux/macOS vs Windows).
 
-**Step 2: MCP Server Check**
-- Checks whether playwright, context7, github MCP servers are configured
-- Offers `claude mcp add` for missing servers
+**Step 1c — Serena memory detection**
+If the Serena plugin is installed, offers to skip creating `memory/` (Serena provides `write_memory`/`read_memory`/`list_memories` natively). Session hooks gracefully no-op when `memory/` is absent.
 
-**Step 2b: Serena Detection**
-- If the Serena plugin is detected, `/cwe:init` notes that Serena provides its own memory system
-- Users can skip creating the `memory/` directory when Serena is available, as Serena handles symbol-level code memory independently
-- The `workflow/` and `docs/` directories are still created as usual
+**Step 1e — Statusline**
+Installs `~/.claude/statusline.py` if missing (never overwrites a customized one) and registers it with `claude config set --global status_line`. Compact format: context bar, session time, lines changed — no cost or currency.
 
-**Step 3: Create Project Structure**
-```
-workflow/
-├── config.yml           # CWE configuration
-├── ideas.md             # Curated idea backlog
-├── product/
-│   └── mission.md       # Product vision (start here!)
-├── specs/               # Feature specifications (one folder each)
-└── standards/           # Project-specific standards
+**Step 1f — Web Research services (optional)**
+SearXNG (default `http://localhost:4000`) and Firecrawl (`http://localhost:3002`) for `/cwe:web-research`. URLs saved to `.claude/cwe-settings.yml`. Skip = command stays inert.
 
-memory/
-├── MEMORY.md            # Index (max 200 lines)
-├── ideas.md             # Idea overview
-├── decisions.md         # Architecture Decision Records
-├── patterns.md          # Recognized patterns
-└── project-context.md   # Tech stack (auto-seeded!)
+**Step 1g — Transcript service (optional)**
+TScribe-compatible Whisper URL for Instagram/TikTok/Podcast transcripts via `/cwe:transcript`. YouTube always works without this. Key: `tscribe_url`.
 
-docs/
-├── README.md            # Project README
-├── ARCHITECTURE.md      # System architecture
-├── API.md               # API documentation
-├── SETUP.md             # Setup guide
-└── decisions/           # ADR folder
-    └── _template.md     # ADR template
+**Step 1h — Stirling PDF (optional)**
+URL for the [Stirling PDF](https://github.com/Stirling-Tools/Stirling-PDF) container that backs `/cwe:pdf` (default `http://localhost:8080`). Option to print the Docker run one-liner. Key: `stirling_pdf_url`.
 
-VERSION                  # Single Source of Truth (e.g. "0.1.0")
-CHANGELOG.md             # Keep-a-Changelog format
-```
+**Step 1i — Media generation keys (optional)**
+API keys for `/cwe:image`, `/cwe:video`, `/cwe:faceswap`, `/cwe:headswap`, `/cwe:upscale`. Writes `scripts/media-keys.sh` (chmod 600, gitignored) with `OPENROUTER_API_KEY` and `MAGICHOUR_API_KEY`.
 
-**Step 4: Auto-Seeding**
-- Detects tech stack from package.json, Cargo.toml, go.mod, etc.
-- Writes the result to `memory/project-context.md`
-- Initializes `memory/MEMORY.md` with project metadata
+**Step 1j — Remotion project (optional)**
+Point `/cwe:motion` at an existing Remotion project or scaffold a new one via `npx create-video@latest`. Key: `remotion_project_dir`.
+
+**Step 1k — Gitea mirror (optional)**
+Credentials for `/cwe:gitea` (URL, user, token, SSH host/port) stored in `$HOME/.claude/cwe.local.md` frontmatter — never in the project config.
+
+**Step 1l — BookStack (optional)**
+Publishing target for docs-oriented workflows. `bookstack:` block appended to the same `$HOME/.claude/cwe.local.md` alongside `gitea:`.
+
+**Step 2 — Existing workflow check**
+If `workflow/` already exists, asks before reinitializing.
+
+**Step 3 — Create project structure**
+Generates `workflow/` (config.yml, ideas.md, product/mission.md, specs/, standards/), `docs/` (README, ARCHITECTURE, API, SETUP, DEVLOG, decisions/_template.md), `VERSION`, and — unless Step 1c skipped it — `memory/` (MEMORY.md, today's daily log, ideas.md, decisions.md, patterns.md, project-context.md).
+
+**Step 3b — Auto-seed memory**
+Detects tech stack from `package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`, `composer.json`, `Gemfile`, `pom.xml`, `build.gradle`, `Dockerfile`, `.github/workflows/`, etc. Substitutes `{{PROJECT_NAME}}`, `{{project-slug}}`, `{{DATE}}` placeholders. Writes today's daily log.
+
+**Step 3c — Patch project `.gitignore`**
+Appends a `# CWE (Code Workspace Engine)` block covering `memory/`, `workflow/`, `VERSION`. `docs/` and `.claude/` are intentionally **not** added.
+
+**Step 3d — Multi-Terminal setup (optional)**
+Presets: **2T** (Dev+QA), **3T** (Frontend+Backend+QA), **4T** (+Infra), **Custom** (2–6 roles), or Skip. Creates branches (`t{N}-{role}`), worktrees in `.trees/`, `shared/handoff/` files, and `terminal-prompts/` with a role-appropriate agent list. Appends `.trees/` to `.gitignore`.
+
+**Step 4 — Success summary**
+Prints what was installed, what was skipped, the created directory tree, and the suggested next steps (`edit mission.md`, `/cwe:start`, `/cwe:architect shape`).
 
 ### Statusline — Real-Time Session Dashboard
 
 CWE provides a Python-based statusline displayed at the bottom of Claude Code, giving you real-time visibility into your session.
 
-**What it shows:**
+**What it shows (compact one-line format):**
 
 | Element | Description |
 |---------|-------------|
-| Project name | Current project identifier |
+| Workspace | Current project identifier |
 | Context usage bar | Color-coded bar showing context window usage (green/yellow/red) |
-| Session cost | Running cost in your configured currency |
+| Rate-limit windows | 5h / 7d usage percentages |
 | Session time | Elapsed time since session start |
-| Lines changed | Lines added and removed in this session |
 
 **Example:**
 ```
-code-workspace-engine  |  context ━━━━──── 55% 110k/200k  |  EUR 2.77  |  time 17m01s  |  lines +148/-132
+code-workspace-engine  |  ctx ━━━━──── 55% 110k/200k  |  5h/7d 16%/22%  |  t 17m01s
 ```
 
 **Configuration:**
-- Currency is set during `/cwe:init` (EUR, USD, GBP, CHF)
-- Stored in `.claude/cwe-settings.yml`
-- Can be changed by editing the settings file directly
+- The template lives at `templates/statusline.py` and is copied to `~/.claude/statusline.py` by `/cwe:init` (only if the file doesn't already exist — your customizations are preserved).
+- `NO_COLOR=1` disables ANSI colors; colors are also auto-disabled when stdout is not a TTY.
 
 **Benefits:**
-- Track project costs per session
 - See context window usage before it fills up (plan compactions)
-- Monitor session duration for time tracking
-- See code churn at a glance
+- Monitor 5h / 7d rate-limit windows at a glance
+- Session duration for time tracking
+
+**Note on cost tracking:** v0.8.2 removed the currency/cost feature — it was half-implemented in earlier versions. If cost visibility matters to your workflow, it's on the roadmap (see ROADMAP.md).
 
 ---
 
@@ -1382,7 +1434,6 @@ CWE integrates with several configurable external services. All endpoints are se
 `.claude/cwe-settings.yml` (project-local, in `.gitignore`):
 
 ```yaml
-currency: EUR
 searxng_url: http://localhost:4000
 firecrawl_url: http://localhost:3002
 stirling_pdf_url: http://localhost:8080
@@ -1569,7 +1620,7 @@ In the target project:
 ```
 your-project/
 ├── .claude/
-│   └── cwe-settings.yml          # CWE preferences (currency, etc.)
+│   └── cwe-settings.yml          # CWE preferences (service URLs, etc.)
 ├── workflow/
 │   ├── config.yml              # CWE configuration
 │   ├── ideas.md                # Curated idea backlog
