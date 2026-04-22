@@ -399,6 +399,8 @@ your-project/
 
 See [CHANGELOG.md](CHANGELOG.md) for full history. See [ROADMAP.md](ROADMAP.md) for planned features.
 
+> **Testing note (v0.8.2):** Primary test platform is WSL2 (Ubuntu on Windows 11). macOS, Linux Wayland/X11, and several external services (MagicHour, OpenRouter, TScribe, Stirling PDF, Gitea, BookStack) are supported in code but were not end-to-end tested in this release. See [CHANGELOG.md § Testing Coverage Caveat](CHANGELOG.md#testing-coverage-caveat) for the full list. Please open an issue if something doesn't work on your platform.
+
 |   Version  |                                  Highlights                                |
 |------------|----------------------------------------------------------------------------|
 | **0.8.2**  | Hardening pass: 10-agent review → 11 blockers fixed (hooks, media, screenshot, commands, templates, docs), ~40 should-fixes, port/key collisions resolved | (current)

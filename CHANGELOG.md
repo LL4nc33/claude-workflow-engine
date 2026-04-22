@@ -11,6 +11,21 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 Full-codebase review by 10 parallel sub-agents (hooks, media scripts, utility scripts, agents, skills, commands, rules, templates, docs, plugin+privacy) produced 11 blockers and ~40 should-fix items. All blockers and most should-fix items resolved in a single release.
 
+### Testing Coverage Caveat
+
+This release was smoke-tested on WSL2 (Ubuntu on Windows 11). The following code paths exist in the codebase but were **NOT tested on their target platforms** in v0.8.2 — please report issues if you encounter problems:
+- `scripts/screenshot.py` `save_macos()` — pngpaste path (needs real macOS)
+- `scripts/screenshot.py` `save_wayland()` — wl-paste path (needs Linux Wayland session)
+- `scripts/screenshot.py` `save_x11()` — xclip path (needs Linux X11 session)
+- MagicHour API integration end-to-end (local-path-detection verified; live API calls require valid key + hosted asset URLs)
+- OpenRouter API integration end-to-end (requires valid key)
+- TScribe transcript integration (requires user-hosted faster-whisper server)
+- Stirling PDF integration (requires user-hosted Stirling server)
+- Gitea push/pull flows (requires Gitea instance)
+- BookStack uploads (requires BookStack instance)
+
+All other paths (hook chain, intent-router, url-scraper, WSL2 screenshot, media scripts' error handling, templates, all 10 agents' frontmatter, all 17 skills' frontmatter, all 8 rules' paths, version consistency) were verified in a 33-point smoke-test pass.
+
 ### Fixed — Blockers
 - `safety-gate.sh` no longer blocks git on scanner-internal errors (trap ERR → exit 0); COMMAND extraction now uses robust Python JSON parsing instead of fragile grep on quoted strings
 - `commit-format.sh` regex extraction rewritten via heredoc — previous broken quote-escapes meant the hook effectively never rejected bad messages

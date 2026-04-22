@@ -98,7 +98,12 @@ def save_wsl(output: Path) -> bool:
 
 
 def save_macos(output: Path) -> bool:
-    """Use pngpaste on macOS (brew install pngpaste)."""
+    """Use pngpaste on macOS (brew install pngpaste).
+
+    NOT YET TESTED on real macOS hardware (v0.8.2). The logic mirrors the
+    other platforms' shape: check binary, run, verify file non-empty.
+    Please report issues at https://github.com/LL4nc33/code-workspace-engine/issues
+    """
     if not shutil.which("pngpaste"):
         json_err(
             "pngpaste nicht installiert",

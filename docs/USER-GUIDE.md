@@ -1485,7 +1485,7 @@ Grouped by category. Descriptions pulled from each command's frontmatter.
 
 | Command | Description |
 |---------|-------------|
-| `/cwe:screenshot` | Analyze a screenshot or read image from clipboard — Multi-OS (WSL2/macOS/Linux) |
+| `/cwe:screenshot` | Analyze a screenshot or read image from clipboard — WSL2 tested in v0.8.2; macOS/Linux Wayland/X11 paths untested, please report issues |
 | `/cwe:web-research` | Local SearXNG search + Firecrawl/trafilatura scraping |
 | `/cwe:gitea` | Privater Git-Mirror auf Gitea — push, list, create, delete, clone, status |
 | `/cwe:docs` | BookStack Upload — Pages, Kapitel und Bücher per REST API |

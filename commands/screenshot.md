@@ -27,9 +27,9 @@ Parse das JSON-Ergebnis:
 
 ## Unterstuetzte Plattformen
 
-| OS | Tool | Install |
-|----|------|---------|
-| WSL2 | PowerShell (Windows Clipboard) | Automatisch verfuegbar |
-| macOS | `pngpaste` | `brew install pngpaste` |
-| Linux Wayland | `wl-paste` | `sudo apt install wl-clipboard` |
-| Linux X11 | `xclip` | `sudo apt install xclip` |
+| OS | Tool | Install | Status |
+|----|------|---------|--------|
+| WSL2 | PowerShell (Windows Clipboard) | Automatisch verfuegbar | Getestet (v0.8.2) |
+| macOS | `pngpaste` | `brew install pngpaste` | **Nicht getestet** — bitte bei Problemen Issue öffnen |
+| Linux Wayland | `wl-paste` | `sudo apt install wl-clipboard` | Nicht getestet |
+| Linux X11 | `xclip` | `sudo apt install xclip` | Nicht getestet |
