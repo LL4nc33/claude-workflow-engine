@@ -1,4 +1,4 @@
-# CWE v0.8.1
+# CWE v0.8.2
 
 Orchestration plugin. Delegation via hooks — follow systemMessage routing hints.
 

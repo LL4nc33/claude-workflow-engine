@@ -58,10 +58,11 @@ def detect_platform():
 def save_wsl(output: Path) -> bool:
     """Use PowerShell to read Windows clipboard, save to Windows path.
 
-    Security: the Windows path is passed via the CWE_OUT environment variable
-    and never interpolated into the PowerShell script text. This prevents
-    command injection via filenames containing single quotes or other PS meta
-    characters (e.g. "foo'; rm -rf *; '.png").
+    Security: the Windows path is passed through stdin as a literal line,
+    never interpolated into PowerShell script text. This prevents command
+    injection via filenames with single quotes or PS meta characters.
+    Linux env vars don't cross WSL→Windows process boundaries cleanly,
+    so we use stdin instead.
     """
     try:
         win_dir = subprocess.check_output(
@@ -70,21 +71,24 @@ def save_wsl(output: Path) -> bool:
     except (subprocess.CalledProcessError, FileNotFoundError):
         json_err("wslpath fehlgeschlagen", "Bist du wirklich in WSL2?")
     win_path = f"{win_dir}\\{output.name}"
+    # Read path from stdin → injection-safe and WSL-boundary-safe.
     ps_script = (
+        "$p = [Console]::In.ReadLine(); "
         "Add-Type -AssemblyName System.Windows.Forms; "
         "if ([System.Windows.Forms.Clipboard]::ContainsImage()) { "
-        "[System.Windows.Forms.Clipboard]::GetImage().Save($env:CWE_OUT, "
+        "[System.Windows.Forms.Clipboard]::GetImage().Save($p, "
         "[System.Drawing.Imaging.ImageFormat]::Png); "
         "Write-Output 'SAVED' "
         "} else { Write-Output 'NO_IMAGE' }"
     )
-    env = os.environ.copy()
-    env["CWE_OUT"] = win_path
     result = subprocess.run(
-        ["powershell.exe", "-Command", ps_script],
-        capture_output=True, text=True, timeout=10, env=env
+        ["powershell.exe", "-NoProfile", "-Command", ps_script],
+        input=win_path + "\n",
+        capture_output=True, text=True, timeout=10
     )
-    if result.returncode != 0 or (result.stderr and result.stderr.strip()):
+    # PowerShell writes progress/verbose to stderr even on success; only
+    # fail on non-zero returncode AND empty stdout (real crash).
+    if result.returncode != 0 and "SAVED" not in result.stdout and "NO_IMAGE" not in result.stdout:
         stderr_tail = (result.stderr or "").strip()[-200:]
         json_err(
             "PowerShell-Aufruf fehlgeschlagen",
