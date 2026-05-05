@@ -1,29 +1,19 @@
 #!/usr/bin/env python3
-"""Read screenshot from clipboard across platforms (WSL2 / macOS / Linux Wayland / Linux X11 / SSH-bridge).
+"""Read screenshot from clipboard across platforms (WSL2 / macOS / Linux Wayland / Linux X11).
 
 Usage:
   python3 screenshot.py [--output PATH]
 
 Default output: <cwd>/clipboard-screenshot.png
-
-SSH-bridge mode: when running over SSH on a remote host (e.g. an LXC), this
-script connects to a local clipboard bridge running on the developer's
-workstation, reachable via an SSH RemoteForward. Default port 47998 (override
-with CWE_CCPASTE_PORT). The bridge itself is started/stopped by the CWE
-SessionStart/SessionEnd hooks on WSL.
 """
 
 import json
 import os
 import platform
 import shutil
-import socket
 import subprocess
 import sys
 from pathlib import Path
-
-CCPASTE_PORT_DEFAULT = 47998
-CCPASTE_PORT = int(os.environ.get("CWE_CCPASTE_PORT", CCPASTE_PORT_DEFAULT))
 
 
 def json_ok(path, **meta):
@@ -50,30 +40,8 @@ def is_wsl():
         return False
 
 
-def is_ssh_session():
-    """Detect interactive SSH session (env-based, set by sshd)."""
-    return bool(os.environ.get("SSH_CONNECTION") or os.environ.get("SSH_CLIENT"))
-
-
-def ccpaste_bridge_reachable(port: int = None, timeout: float = 0.4) -> bool:
-    """Quick TCP probe to 127.0.0.1:port. Used as SSH-bridge probe."""
-    p = port or CCPASTE_PORT
-    try:
-        with socket.create_connection(("127.0.0.1", p), timeout=timeout) as s:
-            s.shutdown(socket.SHUT_RDWR)
-        return True
-    except (OSError, ConnectionError):
-        return False
-
-
 def detect_platform():
-    """Returns one of: wsl, macos, wayland, x11, ssh-bridge, unknown.
-
-    Order matters: WSL local takes precedence over SSH-bridge so a user
-    running Claude Code directly on WSL still uses the fast PowerShell path.
-    SSH-bridge is only chosen when remote-on-SSH AND a bridge is reachable
-    via the RemoteForward tunnel.
-    """
+    """Returns one of: wsl, macos, wayland, x11, unknown."""
     if is_wsl():
         return "wsl"
     system = platform.system()
@@ -84,8 +52,6 @@ def detect_platform():
             return "wayland"
         if os.environ.get("DISPLAY"):
             return "x11"
-        if is_ssh_session() and ccpaste_bridge_reachable():
-            return "ssh-bridge"
     return "unknown"
 
 
@@ -180,76 +146,6 @@ def save_wayland(output: Path) -> bool:
         raise
 
 
-def save_ssh_bridge(output: Path) -> bool:
-    """Pull PNG from a clipboard bridge over an SSH RemoteForward tunnel.
-
-    Protocol (line-based request, raw-bytes response):
-      → "GET\\n"
-      ← "OK <size>\\n" + <size> bytes  OR  "EMPTY\\n"  OR  "ERR <msg>\\n"
-
-    The bridge runs on the developer's workstation (started by the CWE
-    SessionStart hook on WSL) and reads the Windows clipboard via PowerShell.
-    Connection goes through 127.0.0.1:CCPASTE_PORT, which the developer's
-    SSH client maps back to the workstation via `-R 47998:127.0.0.1:47998`.
-    """
-    tmp = output.with_suffix(output.suffix + ".tmp")
-    try:
-        with socket.create_connection(("127.0.0.1", CCPASTE_PORT), timeout=10) as s:
-            s.sendall(b"GET\n")
-            # Read header up to newline
-            header = b""
-            while not header.endswith(b"\n") and len(header) < 64:
-                chunk = s.recv(1)
-                if not chunk:
-                    break
-                header += chunk
-            line = header.decode("ascii", errors="replace").strip()
-            if line == "EMPTY":
-                return False
-            if not line.startswith("OK "):
-                json_err(
-                    "Bridge-Antwort ungueltig",
-                    f"Got: {line[:80]!r}. Bridge-Logs: tail ~/.cache/cwe/ccpaste-bridge.log"
-                )
-            try:
-                size = int(line.split(" ", 1)[1])
-            except (ValueError, IndexError):
-                json_err("Bridge-Header parse failed", f"Header: {line!r}")
-            with open(tmp, "wb") as f:
-                remaining = size
-                while remaining > 0:
-                    chunk = s.recv(min(65536, remaining))
-                    if not chunk:
-                        break
-                    f.write(chunk)
-                    remaining -= len(chunk)
-            if remaining > 0:
-                try:
-                    tmp.unlink()
-                except FileNotFoundError:
-                    pass
-                json_err(
-                    "Bridge-Verbindung abgebrochen",
-                    f"Erwartet {size} bytes, fehlten {remaining}"
-                )
-            os.replace(tmp, output)
-            return True
-    except (socket.timeout, OSError) as e:
-        try:
-            tmp.unlink()
-        except FileNotFoundError:
-            pass
-        json_err(
-            "Bridge nicht erreichbar",
-            (
-                f"Port {CCPASTE_PORT} nicht offen. "
-                "Lauft die Bridge auf deinem Laptop? Ist 'RemoteForward "
-                f"{CCPASTE_PORT} 127.0.0.1:{CCPASTE_PORT}' im SSH-Client gesetzt? "
-                f"Original error: {e}"
-            )
-        )
-
-
 def save_x11(output: Path) -> bool:
     """Use xclip on X11. Writes atomically via a temp file."""
     if not shutil.which("xclip"):
@@ -304,19 +200,11 @@ def main():
         saved = save_wayland(output)
     elif platform_id == "x11":
         saved = save_x11(output)
-    elif platform_id == "ssh-bridge":
-        saved = save_ssh_bridge(output)
     else:
-        # No display/clipboard locally and no SSH-bridge reachable.
-        hint = f"Unterstuetzt: WSL2, macOS, Linux Wayland/X11, SSH+Bridge. Erkannt: {platform.system()}"
-        if is_ssh_session():
-            hint += (
-                f" (SSH-Session ohne Bridge auf 127.0.0.1:{CCPASTE_PORT}. "
-                "Auf dem Laptop CWE-Plugin laden, oder manuell "
-                "'python3 scripts/ccpaste-bridge.py serve' starten + "
-                f"SSH mit '-R {CCPASTE_PORT}:127.0.0.1:{CCPASTE_PORT}' verbinden.)"
-            )
-        json_err("Plattform nicht erkannt", hint)
+        json_err(
+            "Plattform nicht erkannt",
+            f"Unterstuetzt: WSL2, macOS, Linux Wayland/X11. Erkannt: {platform.system()}"
+        )
 
     if not saved:
         json_err(
